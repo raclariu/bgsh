@@ -1,11 +1,11 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { signUp } from '../actions/userActions'
-import Loader from '../components/Loader'
+import Loader from './Loader'
 
 const useStyles = makeStyles((theme) => ({
 	root       : {
@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SignUpScreen = ({ history }) => {
+const SignUp = () => {
 	const classes = useStyles()
+	const history = useHistory()
 
 	const [ email, setEmail ] = useState('')
 	const [ username, setUsername ] = useState('')
@@ -45,7 +46,7 @@ const SignUpScreen = ({ history }) => {
 				history.push('/collection')
 			}
 		},
-		[ error, userInfo, history ]
+		[ history, userInfo ]
 	)
 
 	const submitHandler = (e) => {
@@ -59,13 +60,8 @@ const SignUpScreen = ({ history }) => {
 				<Loader />
 			) : (
 				<Fragment>
-					<Typography className={classes.typography} align="center" variant="h4">
-						Sign Up
-					</Typography>
-
 					<form className={classes.root} noValidate autoComplete="off">
 						<TextField
-							className={classes.input}
 							error={error && error.errors.emailError ? true : false}
 							helperText={error ? error.errors.emailError : false}
 							onChange={(e) => setEmail(e.target.value)}
@@ -139,4 +135,4 @@ const SignUpScreen = ({ history }) => {
 	)
 }
 
-export default SignUpScreen
+export default SignUp

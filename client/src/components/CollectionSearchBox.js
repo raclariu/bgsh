@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -16,12 +17,19 @@ const CollectionSearchBox = () => {
 
 	const history = useHistory()
 
+	const userSignIn = useSelector((state) => state.userSignIn)
+	const { userInfo } = userSignIn
+
 	const [ keyword, setKeyword ] = useState('')
 
 	const submitSearchHandler = (e) => {
 		e.preventDefault()
 
-		history.push(`/collection?search=${keyword}&page=1`)
+		if (userInfo) {
+			history.push(`/collection?search=${keyword}&page=1`)
+		} else {
+			history.push('/signin')
+		}
 	}
 
 	return (

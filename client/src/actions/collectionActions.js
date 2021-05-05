@@ -22,11 +22,10 @@ export const getCollectionFromBGG = (bggUsername) => async (dispatch, getState) 
 			}
 		}
 
-		const { data } = await axios.post('/api/collections/', { bggUsername }, config)
+		await axios.post('/api/collections/', { bggUsername }, config)
 
 		dispatch({
-			type    : COLLECTION_LIST_BGG_SUCCESS,
-			payload : data
+			type : COLLECTION_LIST_BGG_SUCCESS
 		})
 
 		dispatch({

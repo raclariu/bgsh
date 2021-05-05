@@ -2,16 +2,16 @@ import React, { Fragment, useEffect } from 'react'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
+import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import Pagination from '@material-ui/lab/Pagination'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
-import Pagination from '@material-ui/lab/Pagination'
 import LinkIcon from '@material-ui/icons/Link'
 import GradeIcon from '@material-ui/icons/Grade'
-import Loader from '../components/Loader'
 import GetCollectionBox from '../components/GetCollectionBox'
 import CollectionSearchBox from '../components/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/skeletons/CollectionGameSkeleton'
@@ -53,8 +53,7 @@ const MyCollectionScreen = () => {
 	const history = useHistory()
 	const location = useLocation()
 
-	const searchKeyword = new URLSearchParams(location.search).get('search') || ''
-	const pageNumber = Number(new URLSearchParams(location.search).get('page')) || 1
+	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 
 	const userCollectionDB = useSelector((state) => state.userCollectionDB)
 	const {
@@ -73,26 +72,17 @@ const MyCollectionScreen = () => {
 
 	useEffect(
 		() => {
-			if (!userInfo) {
+			if (userInfo) {
+				dispatch(getCollectionFromDB(searchKeyword, pageNumber))
+			} else {
 				history.push('/signin')
 			}
 		},
-		[ history, userInfo ]
-	)
-
-	useEffect(
-		() => {
-			dispatch(getCollectionFromDB(searchKeyword, pageNumber))
-		},
-		[ dispatch, resetCollBGG, searchKeyword, pageNumber ]
+		[ history, userInfo, dispatch, resetCollBGG, searchKeyword, pageNumber ]
 	)
 
 	const onPageChange = (e, page) => {
-		window.scrollTo({
-			top      : 100,
-			left     : 100,
-			behavior : 'smooth'
-		})
+		window.scrollTo(100, 100)
 
 		if (searchKeyword) {
 			history.push(`/collection?search=${searchKeyword}&page=${page}`)
@@ -116,7 +106,7 @@ const MyCollectionScreen = () => {
 	return (
 		<Fragment>
 			{searchKeyword ? (
-				<Button component={RouterLink} to="/collection" variant="contained" color="primary" size="large">
+				<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
 					Go Back
 				</Button>
 			) : (
@@ -139,7 +129,7 @@ const MyCollectionScreen = () => {
 					<Grid container className={classes.gridContainer} spacing={3} direction="row">
 						{dbCollection.map((game) => (
 							<Grid item xl={3} lg={3} md={4} sm={6} xs={12} key={game._id}>
-								<LazyLoad height={200} offset={150} once placeholder={<CollectionGameSkeleton />}>
+								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
 									<Paper variant="outlined" className={classes.paper}>
 										<img
 											className={classes.thumbnail}
@@ -192,7 +182,7 @@ const MyCollectionScreen = () => {
 						shape="rounded"
 					/>
 				) : (
-					<Loader />
+					<div style={{ height: '40px' }} />
 				)}
 			</Grid>
 		</Fragment>

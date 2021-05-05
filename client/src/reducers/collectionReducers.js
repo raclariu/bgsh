@@ -13,7 +13,7 @@ export const getCollectionFromBGGReducer = (state = {}, action) => {
 		case COLLECTION_LIST_BGG_REQUEST:
 			return { loading: true }
 		case COLLECTION_LIST_BGG_SUCCESS:
-			return { loading: false, success: true, bggCollection: action.payload }
+			return { loading: false, success: true }
 		case COLLECTION_LIST_BGG_FAIL:
 			return { loading: false, error: action.payload }
 		case COLLECTION_LIST_BGG_RESET:

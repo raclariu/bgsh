@@ -20,13 +20,21 @@ const GetCollectionBox = () => {
 
 	const [ bggUsername, setBggUsername ] = useState('')
 
+	const userSignIn = useSelector((state) => state.userSignIn)
+	const { userInfo } = userSignIn
+
 	const userCollectionDB = useSelector((state) => state.userCollectionDB)
 	const { error } = userCollectionDB
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
-		dispatch(getCollectionFromBGG(bggUsername))
-		history.push('/collection')
+
+		if (userInfo) {
+			dispatch(getCollectionFromBGG(bggUsername))
+			history.push('/collection')
+		} else {
+			history.push('/signin')
+		}
 	}
 
 	return (

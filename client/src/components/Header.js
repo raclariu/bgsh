@@ -64,6 +64,7 @@ const Header = () => {
 
 					{userInfo ? (
 						<Fragment>
+							<Typography variant="body2">{userInfo.username.toUpperCase()}</Typography>
 							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
 								<AccountCircleIcon />
 							</IconButton>

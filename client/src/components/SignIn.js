@@ -1,11 +1,11 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { signIn } from '../actions/userActions'
-import Loader from '../components/Loader'
+import Loader from './Loader'
 
 const useStyles = makeStyles((theme) => ({
 	root       : {
@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SignInScreen = ({ history }) => {
+const SignIn = () => {
 	const classes = useStyles()
+	const history = useHistory()
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
@@ -40,7 +41,7 @@ const SignInScreen = ({ history }) => {
 				history.push('/collection')
 			}
 		},
-		[ error, userInfo, history ]
+		[ history, userInfo ]
 	)
 
 	const submitHandler = (e) => {
@@ -54,9 +55,6 @@ const SignInScreen = ({ history }) => {
 				<Loader />
 			) : (
 				<Fragment>
-					<Typography className={classes.typography} align="center" variant="h4">
-						Sign In
-					</Typography>
 					<form className={classes.root} noValidate autoComplete="off">
 						<TextField
 							error={error && error.errors.emailError ? true : false}
@@ -104,4 +102,4 @@ const SignInScreen = ({ history }) => {
 	)
 }
 
-export default SignInScreen
+export default SignIn
