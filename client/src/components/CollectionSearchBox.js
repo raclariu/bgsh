@@ -40,11 +40,13 @@ const CollectionSearchBox = () => {
 					value={keyword}
 					variant="outlined"
 					id="keyword"
+					name="keyword"
 					label="Search for a game"
-					type="text"
+					type="search"
 					fullWidth
 				/>
 			</Grid>
+
 			<Grid item>
 				<Button
 					className={classes.button}

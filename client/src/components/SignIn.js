@@ -8,18 +8,12 @@ import { signIn } from '../actions/userActions'
 import Loader from './Loader'
 
 const useStyles = makeStyles((theme) => ({
-	root       : {
+	root  : {
 		width  : '100%',
 		margin : theme.spacing(4, 0, 0, 0)
 	},
-	input      : {
-		margin : theme.spacing(4, 0, 0, 0)
-	},
-	submitBtn  : {
-		margin : theme.spacing(4, 0, 0, 0)
-	},
-	typography : {
-		margin : theme.spacing(4, 0, 0, 0)
+	input : {
+		minHeight : '95px'
 	}
 }))
 
@@ -51,55 +45,54 @@ const SignIn = () => {
 
 	return (
 		<Fragment>
-			{loading ? (
-				<Loader />
-			) : (
-				<Fragment>
-					<form className={classes.root} noValidate autoComplete="off">
-						<TextField
-							error={error && error.errors.emailError ? true : false}
-							helperText={error ? error.errors.emailError : false}
-							onChange={(e) => setEmail(e.target.value)}
-							variant="outlined"
-							value={email}
-							id="email"
-							label="Email"
-							type="email"
-							fullWidth
-							autoFocus
-							required
-						/>
+			<form className={classes.root} noValidate autoComplete="off">
+				<TextField
+					className={classes.input}
+					error={error && error.errors.emailError ? true : false}
+					helperText={error ? error.errors.emailError : false}
+					onChange={(e) => setEmail(e.target.value)}
+					variant="outlined"
+					value={email}
+					id="email"
+					name="email"
+					label="Email"
+					type="email"
+					fullWidth
+					autoFocus
+					required
+				/>
 
-						<TextField
-							className={classes.input}
-							error={error && error.errors.passwordError ? true : false}
-							helperText={error ? error.errors.passwordError : false}
-							onChange={(e) => setPassword(e.target.value)}
-							variant="outlined"
-							value={password}
-							id="password"
-							label="Password"
-							type="password"
-							fullWidth
-							required
-						/>
+				<TextField
+					className={classes.input}
+					error={error && error.errors.passwordError ? true : false}
+					helperText={error ? error.errors.passwordError : false}
+					onChange={(e) => setPassword(e.target.value)}
+					variant="outlined"
+					value={password}
+					id="password"
+					name="password"
+					label="Password"
+					type="password"
+					fullWidth
+					required
+				/>
 
-						<Button
-							className={classes.submitBtn}
-							onClick={submitHandler}
-							type="submit"
-							variant="contained"
-							color="primary"
-							size="large"
-							fullWidth
-						>
-							Sign In
-						</Button>
-					</form>
-				</Fragment>
-			)}
+				<Button
+					onClick={submitHandler}
+					type="submit"
+					variant="contained"
+					color="primary"
+					size="large"
+					disabled={loading}
+					fullWidth
+				>
+					{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
+				</Button>
+			</form>
 		</Fragment>
 	)
 }
 
 export default SignIn
+
+// * de facut ochi pentru parola

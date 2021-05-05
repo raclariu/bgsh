@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
-import { Container } from '@material-ui/core'
+import Container from '@material-ui/core/Container'
 import Header from './components/Header'
 import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
@@ -10,8 +10,9 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<Header />
-			<Container>
-				<main style={{ paddingTop: '25px', paddingBottom: '25px' }}>
+
+			<main>
+				<Container>
 					<Route path="/" exact>
 						<HomePageScreen />
 					</Route>
@@ -27,8 +28,8 @@ const App = () => {
 					<Route path="/signout" exact>
 						<Redirect to="/" />
 					</Route>
-				</main>
-			</Container>
+				</Container>
+			</main>
 		</BrowserRouter>
 	)
 }
