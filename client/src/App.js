@@ -11,25 +11,23 @@ const App = () => {
 		<BrowserRouter>
 			<Header />
 
-			<main>
-				<Container>
-					<Route path="/" exact>
-						<HomePageScreen />
-					</Route>
-					<Route path="/signin" exact>
-						<AuthScreen value="signin" />
-					</Route>
-					<Route path="/signup" exact>
-						<AuthScreen value="signup" />
-					</Route>
-					<Route path="/collection" exact>
-						<MyCollectionScreen />
-					</Route>
-					<Route path="/signout" exact>
-						<Redirect to="/" />
-					</Route>
-				</Container>
-			</main>
+			<Container>
+				<Route path="/" exact>
+					<HomePageScreen />
+				</Route>
+				<Route path="/signin" exact>
+					<AuthScreen value="signin" />
+				</Route>
+				<Route path="/signup" exact>
+					<AuthScreen value="signup" />
+				</Route>
+				<Route path="/collection" exact>
+					<MyCollectionScreen />
+				</Route>
+				<Route path="/signout" exact>
+					<Redirect to="/" />
+				</Route>
+			</Container>
 		</BrowserRouter>
 	)
 }

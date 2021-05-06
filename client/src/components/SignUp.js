@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
+import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { signUp } from '../actions/userActions'
 import Loader from './Loader'
 
@@ -25,6 +28,8 @@ const SignUp = () => {
 	const [ username, setUsername ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
+	const [ passVisibility, setPassVisibility ] = useState(false)
+	const [ passConfirmationVisibility, setPassConfirmationVisibility ] = useState(false)
 
 	const dispatch = useDispatch()
 
@@ -48,6 +53,14 @@ const SignUp = () => {
 		dispatch(signUp(email, username, password, passwordConfirmation))
 	}
 
+	const handleShowHidePass = () => {
+		setPassVisibility(!passVisibility)
+	}
+
+	const handleShowHidePassConfirmation = () => {
+		setPassConfirmationVisibility(!passConfirmationVisibility)
+	}
+
 	return (
 		<Fragment>
 			<form className={classes.root} noValidate autoComplete="off">
@@ -56,8 +69,8 @@ const SignUp = () => {
 					error={error && error.errors.emailError ? true : false}
 					helperText={error ? error.errors.emailError : false}
 					onChange={(e) => setEmail(e.target.value)}
-					variant="outlined"
 					value={email}
+					variant="outlined"
 					id="email"
 					name="email"
 					label="Email"
@@ -72,8 +85,8 @@ const SignUp = () => {
 					error={error && error.errors.usernameError ? true : false}
 					helperText={error ? error.errors.usernameError : false}
 					onChange={(e) => setUsername(e.target.value)}
-					variant="outlined"
 					value={username}
+					variant="outlined"
 					id="username"
 					name="username"
 					label="Username"
@@ -87,12 +100,19 @@ const SignUp = () => {
 					error={error && error.errors.passwordError ? true : false}
 					helperText={error ? error.errors.passwordError : false}
 					onChange={(e) => setPassword(e.target.value)}
-					variant="outlined"
 					value={password}
+					variant="outlined"
 					id="password"
 					name="password"
 					label="Password"
-					type="password"
+					type={passVisibility ? 'text' : 'password'}
+					InputProps={{
+						endAdornment : (
+							<IconButton onClick={handleShowHidePass} size="small" edge="end">
+								{passVisibility ? <Visibility /> : <VisibilityOff />}
+							</IconButton>
+						)
+					}}
 					fullWidth
 					required
 				/>
@@ -102,12 +122,19 @@ const SignUp = () => {
 					error={error && error.errors.passwordConfirmationError ? true : false}
 					helperText={error ? error.errors.passwordConfirmationError : false}
 					onChange={(e) => setPasswordConfirmation(e.target.value)}
-					variant="outlined"
 					value={passwordConfirmation}
+					variant="outlined"
 					id="passwordConfirmation"
 					name="passwordConfirmation"
 					label="Confirm Password"
-					type="password"
+					type={passConfirmationVisibility ? 'text' : 'password'}
+					InputProps={{
+						endAdornment : (
+							<IconButton onClick={handleShowHidePassConfirmation} size="small" edge="end">
+								{passConfirmationVisibility ? <Visibility /> : <VisibilityOff />}
+							</IconButton>
+						)
+					}}
 					fullWidth
 					required
 				/>

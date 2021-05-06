@@ -24,9 +24,6 @@ const GetCollectionBox = () => {
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
 
-	const userCollectionDB = useSelector((state) => state.userCollectionDB)
-	const { error } = userCollectionDB
-
 	const userCollectionBGG = useSelector((state) => state.userCollectionBGG)
 	const { loading } = userCollectionBGG
 
@@ -45,8 +42,6 @@ const GetCollectionBox = () => {
 		<form>
 			<Grid item>
 				<TextField
-					error={error && error.errors.bggUsernameError ? true : false}
-					helperText={error ? error.errors.bggUsernameError : false}
 					onChange={(e) => setBggUsername(e.target.value)}
 					value={bggUsername}
 					variant="outlined"
@@ -60,7 +55,7 @@ const GetCollectionBox = () => {
 				<Button
 					className={classes.button}
 					onClick={submitToBGGHandler}
-					disabled={bggUsername.length < 4}
+					disabled={bggUsername.length < 4 || loading}
 					type="submit"
 					variant="contained"
 					color="primary"

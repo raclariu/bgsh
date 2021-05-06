@@ -4,6 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
@@ -14,13 +15,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import MenuIcon from '@material-ui/icons/Menu'
-import HomeIcon from '@material-ui/icons/Home'
-import PersonIcon from '@material-ui/icons/Person'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import MeetingRoomIcon from '@material-ui/icons/MeetingRoom'
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
+import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined'
+import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
 import { signOut } from '../actions/userActions'
+import pink from '@material-ui/core/colors/pink'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
 	root     : {
 		flexGrow : 1
 	},
@@ -35,6 +36,12 @@ const useStyles = makeStyles(() => ({
 	},
 	listText : {
 		textDecoration : 'none'
+	},
+	avatar   : {
+		color           : theme.palette.getContrastText(pink[500]),
+		backgroundColor : pink[500],
+		width           : theme.spacing(4),
+		height          : theme.spacing(4)
 	}
 }))
 
@@ -64,13 +71,13 @@ const Header = () => {
 						<Fragment>
 							<Typography variant="body2">{userInfo.username.toUpperCase()}</Typography>
 							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
-								<AccountCircleIcon />
+								<Avatar className={classes.avatar}>{userInfo.username[0].toUpperCase()}</Avatar>
 							</IconButton>
 							<Drawer anchor="right" open={isOpen} onClick={() => setIsOpen(!isOpen)}>
 								<List className={classes.list}>
 									<ListItem button component={RouterLink} to="/">
 										<ListItemIcon>
-											<HomeIcon />
+											<HomeOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="Home" />
 									</ListItem>
@@ -79,7 +86,7 @@ const Header = () => {
 
 									<ListItem button component={RouterLink} to="/collection">
 										<ListItemIcon>
-											<PersonIcon />
+											<LibraryBooksOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="My Collection" />
 									</ListItem>
@@ -88,7 +95,7 @@ const Header = () => {
 
 									<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
 										<ListItemIcon>
-											<MeetingRoomIcon />
+											<MeetingRoomOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="Sign Out" />
 									</ListItem>
@@ -108,7 +115,7 @@ const Header = () => {
 								<List className={classes.list}>
 									<ListItem button component={RouterLink} to="/">
 										<ListItemIcon>
-											<HomeIcon />
+											<HomeOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="Home" />
 									</ListItem>

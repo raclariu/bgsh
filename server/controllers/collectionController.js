@@ -1,6 +1,5 @@
 import axios from 'axios'
 import asyncHandler from 'express-async-handler'
-import { validationResult } from 'express-validator'
 import { parseXML } from '../helpers/helpers.js'
 import Fuse from 'fuse.js'
 import Collection from '../models/collectionModel.js'
@@ -10,21 +9,6 @@ import Collection from '../models/collectionModel.js'
 // @access  Private route
 const getCollectionFromBGG = asyncHandler(async (req, res) => {
 	const { bggUsername } = req.body
-
-	console.log('loaded from BGG')
-
-	const validationErrors = validationResult(req)
-	if (!validationErrors.isEmpty()) {
-		const err = validationErrors.mapped()
-
-		throw {
-			status : 'ERROR',
-			errors : {
-				bggUsernameError : err.bggUsername.msg,
-				message          : 'Failed to update collection'
-			}
-		}
-	}
 
 	const collectionExist = await Collection.findOne({ user: req.user._id })
 
@@ -78,7 +62,6 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const querySearchKeyword = req.query.search
 
 	if (querySearchKeyword) {
-		console.log('loaded from db with keyword')
 		const getCollection = await Collection.find({ user: req.user._id }).lean()
 
 		const fuse = new Fuse(getCollection, { keys: [ 'title' ], threshold: 0.3 })
@@ -97,7 +80,6 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
-		console.log('loaded from db with any')
 		const count = await Collection.countDocuments({ user: req.user._id })
 
 		const getCollection = await Collection.find({ user: req.user._id })
