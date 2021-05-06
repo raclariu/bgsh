@@ -97,9 +97,12 @@ const MyCollectionScreen = () => {
 	return (
 		<div className={classes.root}>
 			{searchKeyword ? (
-				<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
-					Go Back
-				</Button>
+				<div>
+					<CollectionSearchBox />
+					<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
+						Go Back
+					</Button>
+				</div>
 			) : (
 				<Grid container spacing={3} justify="center">
 					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>

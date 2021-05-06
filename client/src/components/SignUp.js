@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
+import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
 import { signUp } from '../actions/userActions'
 import Loader from './Loader'
 
@@ -108,9 +109,11 @@ const SignUp = () => {
 					type={passVisibility ? 'text' : 'password'}
 					InputProps={{
 						endAdornment : (
-							<IconButton onClick={handleShowHidePass} size="small" edge="end">
-								{passVisibility ? <Visibility /> : <VisibilityOff />}
-							</IconButton>
+							<InputAdornment position="end">
+								<IconButton onClick={handleShowHidePass}>
+									{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+								</IconButton>
+							</InputAdornment>
 						)
 					}}
 					fullWidth
@@ -130,9 +133,15 @@ const SignUp = () => {
 					type={passConfirmationVisibility ? 'text' : 'password'}
 					InputProps={{
 						endAdornment : (
-							<IconButton onClick={handleShowHidePassConfirmation} size="small" edge="end">
-								{passConfirmationVisibility ? <Visibility /> : <VisibilityOff />}
-							</IconButton>
+							<InputAdornment position="end">
+								<IconButton onClick={handleShowHidePassConfirmation}>
+									{passConfirmationVisibility ? (
+										<VisibilityOutlinedIcon />
+									) : (
+										<VisibilityOffOutlinedIcon />
+									)}
+								</IconButton>
+							</InputAdornment>
 						)
 					}}
 					fullWidth
