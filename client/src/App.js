@@ -16,15 +16,15 @@ const App = () => {
 				<Route path="/" exact>
 					<HomePageScreen />
 				</Route>
-				<Route path="/signin" exact>
-					<AuthScreen value="signin" />
+
+				<Route path={[ '/signin', '/signup' ]} exact>
+					<AuthScreen />
 				</Route>
-				<Route path="/signup" exact>
-					<AuthScreen value="signup" />
-				</Route>
+
 				<Route path="/collection" exact>
 					<MyCollectionScreen />
 				</Route>
+
 				<Route path="/signout" exact>
 					<Redirect to="/" />
 				</Route>

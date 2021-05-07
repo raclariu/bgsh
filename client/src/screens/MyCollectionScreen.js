@@ -5,16 +5,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
 import Pagination from '@material-ui/lab/Pagination'
-import Typography from '@material-ui/core/Typography'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
-import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded'
-import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
-import GetCollectionBox from '../components/GetCollectionBox'
-import CollectionSearchBox from '../components/CollectionSearchBox'
-import CollectionGameSkeleton from '../components/skeletons/CollectionGameSkeleton'
+import CollectionGameCard from '../components/collection/CollectionGameCard'
+import CollectionFetchBox from '../components/collection/CollectionFetchBox'
+import CollectionSearchBox from '../components/collection/CollectionSearchBox'
+import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
 import { getCollectionFromDB } from '../actions/collectionActions'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection  : 'column',
 		alignItems     : 'center',
 		justifyContent : 'center',
+		height         : '300px',
 		'& img'        : {
 			margin : theme.spacing(2, 0, 2, 0),
 			height : '150px'
@@ -38,9 +35,6 @@ const useStyles = makeStyles((theme) => ({
 		'& p'          : {
 			margin : theme.spacing(2, 0, 2, 0)
 		}
-	},
-	buttonGroup   : {
-		maxWidth : '90%'
 	}
 }))
 
@@ -106,7 +100,7 @@ const MyCollectionScreen = () => {
 			) : (
 				<Grid container spacing={3} justify="center">
 					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
-						<GetCollectionBox />
+						<CollectionFetchBox />
 					</Grid>
 					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
 						<CollectionSearchBox />
@@ -120,31 +114,11 @@ const MyCollectionScreen = () => {
 				</Grid>
 			) : (
 				successCollDB && (
-					<Grid container className={classes.gridContainer} spacing={2} direction="row">
+					<Grid container className={classes.gridContainer} spacing={3} direction="row">
 						{dbCollection.map((game) => (
 							<Grid item key={game._id} xl={3} lg={3} md={4} sm={6} xs={12}>
 								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
-									<Paper className={classes.paper} variant="outlined">
-										<img
-											src={'../images/collection-placeholder-image.jpg' && game.thumbnail}
-											alt={game.title}
-										/>
-
-										<ButtonGroup className={classes.buttonGroup} color="primary" fullWidth>
-											<Button
-												startIcon={<ExitToAppRoundedIcon />}
-												href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-												target="_blank"
-											>
-												BGG
-											</Button>
-											<Button startIcon={<MonetizationOnOutlinedIcon />}>Sell</Button>
-										</ButtonGroup>
-
-										<Typography align="center" variant="body2">
-											{game.title}
-										</Typography>
-									</Paper>
+									<CollectionGameCard game={game} />
 								</LazyLoad>
 							</Grid>
 						))}

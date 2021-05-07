@@ -5,8 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Loader from './Loader'
-import { getCollectionFromBGG } from '../actions/collectionActions'
+import Loader from '../Loader'
+import { getCollectionFromBGG } from '../../actions/collectionActions'
 
 const useStyles = makeStyles((theme) => ({
 	button : {
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const GetCollectionBox = () => {
+const CollectionFetchBox = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -69,4 +69,4 @@ const GetCollectionBox = () => {
 	)
 }
 
-export default GetCollectionBox
+export default CollectionFetchBox
