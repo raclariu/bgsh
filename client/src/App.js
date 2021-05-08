@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
 import MyCollectionScreen from './screens/MyCollectionScreen'
+import SellGameScreen from './screens/SellGameScreen'
 
 const App = () => {
 	return (
@@ -23,6 +24,10 @@ const App = () => {
 
 				<Route path="/collection" exact>
 					<MyCollectionScreen />
+				</Route>
+
+				<Route path="/sell/:bggId" exact>
+					<SellGameScreen />
 				</Route>
 
 				<Route path="/signout" exact>

@@ -11,7 +11,7 @@ import CollectionGameCard from '../components/collection/CollectionGameCard'
 import CollectionFetchBox from '../components/collection/CollectionFetchBox'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
-import { getCollectionFromDB } from '../actions/collectionActions'
+import { dbGetCollection } from '../actions/gamesActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -40,17 +40,17 @@ const useStyles = makeStyles((theme) => ({
 
 const MyCollectionScreen = () => {
 	const classes = useStyles()
-	const dispatch = useDispatch()
 	const history = useHistory()
+	const dispatch = useDispatch()
 	const location = useLocation()
 
 	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 
-	const userCollectionDB = useSelector((state) => state.userCollectionDB)
-	const { loading: loadingCollDB, success: successCollDB, dbCollection, pagination } = userCollectionDB
+	const dbCollection = useSelector((state) => state.dbCollection)
+	const { loading: dbLoading, success: dbSuccess, collection, pagination } = dbCollection
 
-	const userCollectionBGG = useSelector((state) => state.userCollectionBGG)
-	const { loading: loadingCollBGG, reset: resetCollBGG } = userCollectionBGG
+	const bggCollection = useSelector((state) => state.bggCollection)
+	const { loading: bggLoading, reset: bggReset } = bggCollection
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
@@ -58,12 +58,13 @@ const MyCollectionScreen = () => {
 	useEffect(
 		() => {
 			if (userInfo) {
-				dispatch(getCollectionFromDB(searchKeyword, pageNumber))
+				console.log('disp ran')
+				dispatch(dbGetCollection(searchKeyword, pageNumber))
 			} else {
 				history.push('/signin')
 			}
 		},
-		[ history, userInfo, dispatch, resetCollBGG, searchKeyword, pageNumber ]
+		[ dispatch, history, userInfo, pageNumber, searchKeyword, bggReset ]
 	)
 
 	const onPageChange = (e, page) => {
@@ -108,14 +109,14 @@ const MyCollectionScreen = () => {
 				</Grid>
 			)}
 
-			{loadingCollDB || loadingCollBGG ? (
+			{dbLoading || bggLoading ? (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{renderSkeletons().map((skeleton) => skeleton)}
 				</Grid>
 			) : (
-				successCollDB && (
+				dbSuccess && (
 					<Grid container className={classes.gridContainer} spacing={3} direction="row">
-						{dbCollection.map((game) => (
+						{collection.map((game) => (
 							<Grid item key={game._id} xl={3} lg={3} md={4} sm={6} xs={12}>
 								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
 									<CollectionGameCard game={game} />
@@ -127,7 +128,7 @@ const MyCollectionScreen = () => {
 			)}
 
 			<Grid container justify="center">
-				{successCollDB && (
+				{dbSuccess && (
 					<Pagination
 						page={pagination.page}
 						onChange={(e, page) => onPageChange(e, page)}

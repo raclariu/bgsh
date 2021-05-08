@@ -2,13 +2,15 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
-import { getCollectionFromBGGReducer, getCollectionFromDBReducer } from './reducers/collectionReducers'
+import { bggGetCollectionReducer, bggGetGameDetailsReducer } from './reducers/bggReducers'
+import { dbGetCollectionReducer } from './reducers/gameReducers'
 
 const reducer = combineReducers({
-	userSignIn        : userSignInReducer,
-	userSignUp        : userSignUpReducer,
-	userCollectionBGG : getCollectionFromBGGReducer,
-	userCollectionDB  : getCollectionFromDBReducer
+	userSignIn     : userSignInReducer,
+	userSignUp     : userSignUpReducer,
+	bggCollection  : bggGetCollectionReducer,
+	bggGameDetails : bggGetGameDetailsReducer,
+	dbCollection   : dbGetCollectionReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

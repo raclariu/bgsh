@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Loader from '../Loader'
-import { getCollectionFromBGG } from '../../actions/collectionActions'
+import { bggGetCollection } from '../../actions/bggActions'
 
 const useStyles = makeStyles((theme) => ({
 	button : {
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CollectionFetchBox = () => {
-	const classes = useStyles()
+	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
 
@@ -24,14 +24,14 @@ const CollectionFetchBox = () => {
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
 
-	const userCollectionBGG = useSelector((state) => state.userCollectionBGG)
-	const { loading } = userCollectionBGG
+	const bggCollection = useSelector((state) => state.bggCollection)
+	const { loading } = bggCollection
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
 
 		if (userInfo) {
-			dispatch(getCollectionFromBGG(bggUsername))
+			dispatch(bggGetCollection(bggUsername))
 			history.push('/collection')
 		} else {
 			history.push('/signin')
@@ -53,7 +53,7 @@ const CollectionFetchBox = () => {
 			</Grid>
 			<Grid item>
 				<Button
-					className={classes.button}
+					className={cls.button}
 					onClick={submitToBGGHandler}
 					disabled={bggUsername.length < 4 || loading}
 					type="submit"

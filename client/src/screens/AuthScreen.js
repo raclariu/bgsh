@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
 
 const AuthScreen = () => {
 	const classes = useStyles()
-
 	const history = useHistory()
-	const { pathname } = useLocation()
+
+	const { location: { pathname } } = history
 
 	const [ selectedTab, setSelectedTab ] = useState(pathname.replace('/', ''))
 

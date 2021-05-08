@@ -17,7 +17,7 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 	}
 
 	try {
-		const { data } = await axios.get(`https://www.boardgamegeek.com/xmlapi2/collection`, {
+		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				own      : 1
@@ -110,4 +110,60 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	}
 })
 
-export { getCollectionFromBGG, getCollectionFromDB }
+// @desc    Get single game from BGG
+// @route   GET  /api/collections/:bggId
+// @access  Private route
+const getBoardgameFromBGG = asyncHandler(async (req, res) => {
+	const { bggId } = req.params
+
+	try {
+		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/thing', {
+			params : {
+				id       : bggId,
+				versions : 1,
+				stats    : 1
+			}
+		})
+
+		let { items: { item } } = await parseXML(data)
+		let bg = item[0]
+
+		res.status(200).json({
+			type               : bg.$.type,
+			bggId,
+			thumbnail          : bg.thumbnail[0],
+			image              : bg.image[0],
+			title              : bg.name[0].$.value,
+			year               : bg.yearpublished[0].$.value,
+			minPlayers         : +bg.minplayers[0].$.value,
+			maxPlayers         : +bg.maxplayers[0].$.value,
+			suggestedPlayers   : Number(
+				bg.poll[0].results.sort((a, b) => +b.result[0].$.numvotes - +a.result[0].$.numvotes)[0].$.numplayers
+			),
+			languageDependence : bg.poll[2].results[0].result.sort((a, b) => +b.$.numvotes - +a.$.numvotes)[0].$.value,
+			playingTime        : +bg.playingtime[0].$.value,
+			categories         : bg.link.filter((ctg) => ctg.$.type === 'boardgamecategory').map((ctg) => ctg.$.value),
+			mechanics          : bg.link.filter((mec) => mec.$.type === 'boardgamemechanic').map((mec) => mec.$.value),
+			versions           : bg.versions[0].item.map((v) => {
+				return {
+					title : v.name[0].$.value,
+					year  : v.yearpublished[0].$.value
+				}
+			}),
+			stats              : {
+				numRatings : +bg.statistics[0].ratings[0].usersrated[0].$.value,
+				avgRating  : +parseFloat(bg.statistics[0].ratings[0].average[0].$.value).toFixed(2),
+				rank       : +bg.statistics[0].ratings[0].ranks[0].rank[0].$.value
+			}
+		})
+	} catch (error) {
+		throw {
+			status : 'ERROR',
+			errors : {
+				message : 'Failed to update collection'
+			}
+		}
+	}
+})
+
+export { getCollectionFromBGG, getCollectionFromDB, getBoardgameFromBGG }
