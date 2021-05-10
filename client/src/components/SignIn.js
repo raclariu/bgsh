@@ -57,8 +57,8 @@ const SignIn = () => {
 			<form className={classes.root} noValidate autoComplete="off">
 				<TextField
 					className={classes.input}
-					error={error && error.errors.emailError ? true : false}
-					helperText={error ? error.errors.emailError : false}
+					error={error && error.emailError ? true : false}
+					helperText={error ? error.emailError : false}
 					onChange={(e) => setEmail(e.target.value)}
 					value={email}
 					variant="outlined"
@@ -73,8 +73,8 @@ const SignIn = () => {
 
 				<TextField
 					className={classes.input}
-					error={error && error.errors.passwordError ? true : false}
-					helperText={error ? error.errors.passwordError : false}
+					error={error && error.passwordError ? true : false}
+					helperText={error ? error.passwordError : false}
 					onChange={(e) => setPassword(e.target.value)}
 					value={password}
 					variant="outlined"

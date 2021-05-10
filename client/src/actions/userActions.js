@@ -28,11 +28,9 @@ export const signIn = (email, password) => async (dispatch) => {
 
 		localStorage.setItem('userInfo', JSON.stringify(data))
 	} catch (error) {
-		const { status, errors } = error.response.data
-
 		dispatch({
 			type    : USER_SIGNIN_FAIL,
-			payload : error.response && error.response.data ? { status, errors } : error.message
+			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
 		})
 	}
 }
@@ -65,11 +63,9 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 
 		localStorage.setItem('userInfo', JSON.stringify(data))
 	} catch (error) {
-		const { status, errors } = error.response.data
-
 		dispatch({
 			type    : USER_SIGNUP_FAIL,
-			payload : error.response && error.response.data ? { status, errors } : error.message
+			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
 		})
 	}
 }

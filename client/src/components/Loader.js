@@ -19,4 +19,9 @@ const Loader = ({ size, color }) => {
 	)
 }
 
+Loader.defaultProps = {
+	size  : 40,
+	color : 'primary'
+}
+
 export default Loader

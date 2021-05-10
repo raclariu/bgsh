@@ -3,14 +3,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { bggGetGameDetails } from '../actions/bggActions'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import { bggGetGameDetails } from '../actions/gameActions'
 
 const SellGameScreen = () => {
 	const dispatch = useDispatch()
 	const { bggId } = useParams()
 
 	const bggGameDetails = useSelector((state) => state.bggGameDetails)
-	const { loading, success, game } = bggGameDetails
+	const { loading, error, success, game } = bggGameDetails
 
 	useEffect(
 		() => {
@@ -21,6 +23,10 @@ const SellGameScreen = () => {
 
 	return (
 		<Fragment>
+			{loading && <Loader />}
+
+			{error && <Message>{error}</Message>}
+
 			{success && (
 				<form>
 					<TextField

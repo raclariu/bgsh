@@ -3,10 +3,10 @@ import {
 	BGG_COLLECTION_LIST_SUCCESS,
 	BGG_COLLECTION_LIST_FAIL,
 	BGG_COLLECTION_LIST_RESET,
-	BGG_GAME_DETAILS_REQUEST,
-	BGG_GAME_DETAILS_SUCCESS,
-	BGG_GAME_DETAILS_FAIL
-} from '../constants/bggConstants'
+	DB_COLLECTION_LIST_REQUEST,
+	DB_COLLECTION_LIST_SUCCESS,
+	DB_COLLECTION_LIST_FAIL
+} from '../constants/collectionConstants'
 
 export const bggGetCollectionReducer = (state = {}, action) => {
 	switch (action.type) {
@@ -24,17 +24,18 @@ export const bggGetCollectionReducer = (state = {}, action) => {
 	}
 }
 
-export const bggGetGameDetailsReducer = (state = {}, action) => {
+export const dbGetCollectionReducer = (state = {}, action) => {
 	switch (action.type) {
-		case BGG_GAME_DETAILS_REQUEST:
+		case DB_COLLECTION_LIST_REQUEST:
 			return { loading: true }
-		case BGG_GAME_DETAILS_SUCCESS:
+		case DB_COLLECTION_LIST_SUCCESS:
 			return {
-				loading : false,
-				success : true,
-				game    : action.payload
+				loading    : false,
+				success    : true,
+				collection : action.payload.collection,
+				pagination : action.payload.pagination
 			}
-		case BGG_GAME_DETAILS_FAIL:
+		case DB_COLLECTION_LIST_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

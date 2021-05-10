@@ -4,8 +4,9 @@ import morgan from 'morgan'
 import colors from 'colors'
 import connectDB from './db/dbConnect.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
-import bggRoutes from './routes/bggRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import collectionRoutes from './routes/collectionRoutes.js'
+import gameRoutes from './routes/gameRoutes.js'
 
 dotenv.config()
 
@@ -20,7 +21,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json())
 
 app.use('/api/users', userRoutes)
-app.use('/api/collections', bggRoutes)
+app.use('/api/collections', collectionRoutes)
+app.use('/api/games', gameRoutes)
 
 app.get('/', (req, res) => {
 	res.send('Api is running...')

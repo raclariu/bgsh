@@ -3,9 +3,9 @@ import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import { comparePasswords, hashPassword, generateToken } from '../helpers/helpers.js'
 
-// @desc    Sign in user & get token
-// @route   POST  /api/users/signin
-// @access  Public route
+// * @desc    Sign in user & get token
+// * @route   POST  /api/users/signin
+// * @access  Public route
 const userAuth = asyncHandler(async (req, res) => {
 	const { email, password } = req.body
 
@@ -36,11 +36,7 @@ const userAuth = asyncHandler(async (req, res) => {
 	if (emailError || passwordError) {
 		res.status(401)
 		throw {
-			status : 'ERROR',
-			errors : {
-				emailError,
-				passwordError
-			}
+			message : { emailError, passwordError }
 		}
 	} else {
 		res.status(200).json({
@@ -53,9 +49,9 @@ const userAuth = asyncHandler(async (req, res) => {
 	}
 })
 
-// @desc    Register user & get token
-// @route   POST  /api/users/signup
-// @access  Public route
+// * @desc    Register user & get token
+// * @route   POST  /api/users/signup
+// * @access  Public route
 const userRegister = asyncHandler(async (req, res) => {
 	const { email, username, password } = req.body
 
@@ -87,8 +83,7 @@ const userRegister = asyncHandler(async (req, res) => {
 	if (emailError || usernameError || passwordError || passwordConfirmationError) {
 		res.status(400)
 		throw {
-			status : 'ERROR',
-			errors : {
+			message : {
 				emailError,
 				usernameError,
 				passwordError,

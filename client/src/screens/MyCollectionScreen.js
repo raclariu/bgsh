@@ -11,7 +11,7 @@ import CollectionGameCard from '../components/collection/CollectionGameCard'
 import CollectionFetchBox from '../components/collection/CollectionFetchBox'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
-import { dbGetCollection } from '../actions/gamesActions'
+import { dbGetCollection } from '../actions/collectionActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -58,7 +58,6 @@ const MyCollectionScreen = () => {
 	useEffect(
 		() => {
 			if (userInfo) {
-				console.log('disp ran')
 				dispatch(dbGetCollection(searchKeyword, pageNumber))
 			} else {
 				history.push('/signin')
@@ -109,26 +108,26 @@ const MyCollectionScreen = () => {
 				</Grid>
 			)}
 
-			{dbLoading || bggLoading ? (
+			{(dbLoading || bggLoading) && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{renderSkeletons().map((skeleton) => skeleton)}
 				</Grid>
-			) : (
-				dbSuccess && (
-					<Grid container className={classes.gridContainer} spacing={3} direction="row">
-						{collection.map((game) => (
-							<Grid item key={game._id} xl={3} lg={3} md={4} sm={6} xs={12}>
-								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
-									<CollectionGameCard game={game} />
-								</LazyLoad>
-							</Grid>
-						))}
-					</Grid>
-				)
 			)}
 
-			<Grid container justify="center">
-				{dbSuccess && (
+			{dbSuccess && (
+				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+					{collection.map((game) => (
+						<Grid item key={game._id} xl={3} lg={3} md={4} sm={6} xs={12}>
+							<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
+								<CollectionGameCard game={game} />
+							</LazyLoad>
+						</Grid>
+					))}
+				</Grid>
+			)}
+
+			{dbSuccess && (
+				<Grid container justify="center">
 					<Pagination
 						page={pagination.page}
 						onChange={(e, page) => onPageChange(e, page)}
@@ -138,8 +137,8 @@ const MyCollectionScreen = () => {
 						variant="outlined"
 						shape="rounded"
 					/>
-				)}
-			</Grid>
+				</Grid>
+			)}
 		</div>
 	)
 }

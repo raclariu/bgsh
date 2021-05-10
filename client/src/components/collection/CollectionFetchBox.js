@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Loader from '../Loader'
-import { bggGetCollection } from '../../actions/bggActions'
+import { bggGetCollection } from '../../actions/collectionActions'
 
 const useStyles = makeStyles((theme) => ({
 	button : {
