@@ -37,7 +37,7 @@ const SignIn = () => {
 	useEffect(
 		() => {
 			if (userInfo) {
-				history.push('/collection')
+				history.push('/profile')
 			}
 		},
 		[ history, userInfo ]

@@ -25,17 +25,20 @@ const CollectionFetchBox = () => {
 	const { userInfo } = userSignIn
 
 	const bggCollection = useSelector((state) => state.bggCollection)
-	const { loading } = bggCollection
+	const { loading, success } = bggCollection
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
 
 		if (userInfo) {
 			dispatch(bggGetCollection(bggUsername))
-			history.push('/collection')
 		} else {
 			history.push('/signin')
 		}
+	}
+
+	if (success) {
+		history.push('/collection')
 	}
 
 	return (

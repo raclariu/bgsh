@@ -36,8 +36,8 @@ const AuthScreen = () => {
 					textColor="secondary"
 					onChange={handleChange}
 				>
-					<Tab value="signin" onClick={() => history.push('/signin')} label="Sign In" />
-					<Tab value="signup" onClick={() => history.push('/signup')} label="Sign Up" />
+					<Tab value="signin" onClick={() => history.replace('/signin')} label="Sign In" />
+					<Tab value="signup" onClick={() => history.replace('/signup')} label="Sign Up" />
 				</Tabs>
 
 				{selectedTab === 'signin' && <SignIn />}

@@ -5,7 +5,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
-import MyCollectionScreen from './screens/MyCollectionScreen'
+import ProfileScreen from './screens/ProfileScreen'
+import CollectionScreen from './screens/CollectionScreen'
 import SellGameScreen from './screens/SellGameScreen'
 
 const App = () => {
@@ -22,8 +23,12 @@ const App = () => {
 					<AuthScreen />
 				</Route>
 
+				<Route path="/profile" exact>
+					<ProfileScreen />
+				</Route>
+
 				<Route path="/collection" exact>
-					<MyCollectionScreen />
+					<CollectionScreen />
 				</Route>
 
 				<Route path="/sell/:bggId" exact>

@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid'
 import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
 import CollectionGameCard from '../components/collection/CollectionGameCard'
-import CollectionFetchBox from '../components/collection/CollectionFetchBox'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
 import { dbGetCollection } from '../actions/collectionActions'
@@ -38,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const MyCollectionScreen = () => {
+const CollectionScreen = () => {
 	const classes = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
@@ -50,7 +49,7 @@ const MyCollectionScreen = () => {
 	const { loading: dbLoading, success: dbSuccess, collection, pagination } = dbCollection
 
 	const bggCollection = useSelector((state) => state.bggCollection)
-	const { loading: bggLoading, reset: bggReset } = bggCollection
+	const { loading: bggLoading } = bggCollection
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
@@ -63,7 +62,7 @@ const MyCollectionScreen = () => {
 				history.push('/signin')
 			}
 		},
-		[ dispatch, history, userInfo, pageNumber, searchKeyword, bggReset ]
+		[ dispatch, history, userInfo, pageNumber, searchKeyword ]
 	)
 
 	const onPageChange = (e, page) => {
@@ -93,15 +92,12 @@ const MyCollectionScreen = () => {
 			{searchKeyword ? (
 				<div>
 					<CollectionSearchBox />
-					<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
+					<Button onClick={() => history.go(-1)} variant="outlined" color="primary" size="large">
 						Go Back
 					</Button>
 				</div>
 			) : (
 				<Grid container spacing={3} justify="center">
-					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
-						<CollectionFetchBox />
-					</Grid>
 					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
 						<CollectionSearchBox />
 					</Grid>
@@ -143,4 +139,4 @@ const MyCollectionScreen = () => {
 	)
 }
 
-export default MyCollectionScreen
+export default CollectionScreen

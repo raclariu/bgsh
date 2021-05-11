@@ -18,6 +18,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
 import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined'
 import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import { signOut } from '../actions/userActions'
 import pink from '@material-ui/core/colors/pink'
 
@@ -83,6 +84,13 @@ const Header = () => {
 									</ListItem>
 
 									<Divider />
+
+									<ListItem button component={RouterLink} to="/profile">
+										<ListItemIcon>
+											<PersonOutlineOutlinedIcon />
+										</ListItemIcon>
+										<ListItemText primary="Profile" />
+									</ListItem>
 
 									<ListItem button component={RouterLink} to="/collection">
 										<ListItemIcon>

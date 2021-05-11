@@ -17,7 +17,7 @@ export const bggGetCollectionReducer = (state = {}, action) => {
 		case BGG_COLLECTION_LIST_FAIL:
 			return { loading: false, error: action.payload }
 		case BGG_COLLECTION_LIST_RESET:
-			return { reset: true }
+			return {}
 
 		default:
 			return state
