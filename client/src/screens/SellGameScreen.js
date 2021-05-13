@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
-import FormGroup from '@material-ui/core/FormGroup'
+import Typography from '@material-ui/core/Typography'
+import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -13,16 +14,29 @@ import Switch from '@material-ui/core/Switch'
 import Checkbox from '@material-ui/core/Checkbox'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import Radio from '@material-ui/core/Radio'
-import Typography from '@material-ui/core/Typography'
-import Fade from '@material-ui/core/Fade'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import Chip from '@material-ui/core/Chip'
+import Divider from '@material-ui/core/Divider'
+import Fade from '@material-ui/core/Fade'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined'
+import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined'
 import { bggGetGameDetails } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
-	paper : {
-		padding : theme.spacing(4)
+	chipsBox : {
+		padding        : theme.spacing(1),
+		margin         : theme.spacing(1, 0, 4, 0),
+		display        : 'flex',
+		justifyContent : 'center',
+		flexWrap       : 'wrap',
+		'& > *'        : {
+			margin : theme.spacing(0.5)
+		}
+	},
+	section  : {
+		padding : theme.spacing(3, 3, 3, 3)
 	}
 }))
 
@@ -84,20 +98,6 @@ const SellGameScreen = () => {
 					<p>SuggestedPlayers: {game.suggestedPlayers}</p>
 					<p>Language Dependence: {game.languageDependence}</p>
 
-					<Paper className={cls.paper} elevation={5}>
-						{game.categories.map((ctg) => (
-							<div>
-								<p>{ctg}</p>
-							</div>
-						))}
-
-						{game.mechanics.map((mec) => (
-							<div>
-								<p>{mec}</p>
-							</div>
-						))}
-					</Paper>
-
 					<Autocomplete
 						id="version"
 						options={game.versions}
@@ -107,7 +107,7 @@ const SellGameScreen = () => {
 					/>
 
 					<Autocomplete
-						id="quality"
+						id="condition"
 						options={[
 							'New, in shrink',
 							'New, opened',
@@ -121,11 +121,11 @@ const SellGameScreen = () => {
 							'Heavily Damaged'
 						]}
 						style={{ width: 300 }}
-						renderInput={(params) => <TextField {...params} label="Quality" variant="outlined" />}
+						renderInput={(params) => <TextField {...params} label="Condition" variant="outlined" />}
 					/>
 
 					{/* Shipping Area */}
-					<Paper className={cls.paper} elevation={5}>
+					<Box className={cls.section}>
 						<FormControl required error={shipError}>
 							<FormLabel>Shipping method</FormLabel>
 
@@ -192,22 +192,45 @@ const SellGameScreen = () => {
 								<Fade in={shipPersonal}>
 									<Autocomplete
 										id="shipping"
-										options={[ 'Bucharest', 'Cluj-Napoca', 'Constanta', 'Dalga' ]}
+										filterSelectedOptions
+										multiple
+										options={[
+											'Bucuresti',
+											'Bucuresti S1',
+											'Bucuresti S2',
+											'Bucuresti S3',
+											'Bucuresti S4',
+											'Bucuresti S5',
+											'Bucuresti S6',
+											'Timisoara',
+											'Cluj-Napoca',
+											'Constanta',
+											'Dalga'
+										]}
 										style={{ width: 300 }}
 										renderInput={(params) => (
 											<TextField
 												{...params}
 												label="In what cities are you able to ship?"
-												variant="outlined"
+												variant="standard"
 											/>
 										)}
+										renderTags={(value, getTagProps) =>
+											value.map((option, index) => (
+												<Chip
+													variant="outlined"
+													label={option}
+													size="small"
+													{...getTagProps({ index })}
+												/>
+											))}
 									/>
 								</Fade>
 							)}
 
 							{shipError && <FormHelperText error>Select at least one shipping method</FormHelperText>}
 						</FormControl>
-					</Paper>
+					</Box>
 
 					<FormControlLabel
 						control={<Switch onChange={(e) => setIsSleeved(e.target.checked)} id="sleeved" />}
@@ -229,6 +252,30 @@ const SellGameScreen = () => {
 						rows={3}
 						multiline
 					/>
+
+					<Divider light />
+
+					<Box className={cls.chipsBox}>
+						{game.categories.map((ctg) => (
+							<Chip
+								icon={<CategoryOutlinedIcon />}
+								label={ctg}
+								variant="outlined"
+								color="secondary"
+								size="small"
+							/>
+						))}
+
+						{game.mechanics.map((mec) => (
+							<Chip
+								icon={<SettingsOutlinedIcon />}
+								label={mec}
+								variant="outlined"
+								color="primary"
+								size="small"
+							/>
+						))}
+					</Box>
 				</form>
 			)}
 		</Fragment>

@@ -36,7 +36,7 @@ const CollectionGameCard = ({ game }) => {
 				component="img"
 				height="150"
 				alt={game.title}
-				image={game.thumbnail}
+				image={game.thumbnail === '-' ? '/images/collection-placeholder-image.jpg' : game.thumbnail}
 				title={game.title}
 			/>
 

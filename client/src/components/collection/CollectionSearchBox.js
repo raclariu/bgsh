@@ -11,7 +11,7 @@ import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles((theme) => ({
 	paper : {
-		padding : '10px 8px 10px 16px'
+		padding : theme.spacing(1.2, 1, 1.2, 2)
 	}
 }))
 
