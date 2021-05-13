@@ -42,7 +42,7 @@ const CollectionFetchBox = () => {
 	}
 
 	return (
-		<form>
+		<form noValidate autoComplete="off">
 			<Grid item>
 				<TextField
 					onChange={(e) => setBggUsername(e.target.value)}

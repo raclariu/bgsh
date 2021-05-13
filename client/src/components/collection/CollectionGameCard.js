@@ -30,7 +30,7 @@ const CollectionGameCard = ({ game }) => {
 	const cls = useStyles()
 
 	return (
-		<Card elevation={3}>
+		<Card elevation={2}>
 			<CardMedia
 				className={cls.media}
 				component="img"

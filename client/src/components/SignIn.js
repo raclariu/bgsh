@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const SignIn = () => {
-	const classes = useStyles()
+	const cls = useStyles()
 	const history = useHistory()
 
 	const [ email, setEmail ] = useState('')
@@ -54,9 +54,9 @@ const SignIn = () => {
 
 	return (
 		<Fragment>
-			<form className={classes.root} noValidate autoComplete="off">
+			<form className={cls.root} noValidate autoComplete="off">
 				<TextField
-					className={classes.input}
+					className={cls.input}
 					error={error && error.emailError ? true : false}
 					helperText={error ? error.emailError : false}
 					onChange={(e) => setEmail(e.target.value)}
@@ -72,7 +72,7 @@ const SignIn = () => {
 				/>
 
 				<TextField
-					className={classes.input}
+					className={cls.input}
 					error={error && error.passwordError ? true : false}
 					helperText={error ? error.passwordError : false}
 					onChange={(e) => setPassword(e.target.value)}

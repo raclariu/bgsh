@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
+import React, { Fragment, useEffect } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
@@ -14,26 +14,12 @@ import { dbGetCollection } from '../actions/collectionActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
-		marginTop    : theme.spacing(8),
+		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
 	gridContainer : {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
-	},
-	paper         : {
-		display        : 'flex',
-		flexDirection  : 'column',
-		alignItems     : 'center',
-		justifyContent : 'center',
-		height         : '300px',
-		'& img'        : {
-			margin : theme.spacing(2, 0, 2, 0),
-			height : '150px'
-		},
-		'& p'          : {
-			margin : theme.spacing(2, 0, 2, 0)
-		}
 	}
 }))
 
@@ -66,10 +52,10 @@ const CollectionScreen = () => {
 	)
 
 	const onPageChange = (e, page) => {
-		window.scrollTo(100, 100)
+		window.scrollTo(75, 75)
 
 		if (searchKeyword) {
-			history.push(`/collection?search=${searchKeyword}&page=${page}`)
+			history.push(`/collection?search=${searchKeyword.trim()}&page=${page}`)
 		} else {
 			history.push(`/collection?page=${page}`)
 		}
@@ -89,19 +75,19 @@ const CollectionScreen = () => {
 
 	return (
 		<div className={classes.root}>
-			{searchKeyword ? (
-				<div>
+			{console.log('rendered')}
+			<Grid container spacing={3} justify="center">
+				<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
 					<CollectionSearchBox />
-					<Button onClick={() => history.go(-1)} variant="outlined" color="primary" size="large">
-						Go Back
-					</Button>
-				</div>
-			) : (
-				<Grid container spacing={3} justify="center">
-					<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
-						<CollectionSearchBox />
-					</Grid>
 				</Grid>
+			</Grid>
+
+			{searchKeyword && (
+				<Fragment>
+					<Button onClick={() => history.push('/collection')} variant="outlined" color="primary" size="large">
+						Back to Collection
+					</Button>
+				</Fragment>
 			)}
 
 			{(dbLoading || bggLoading) && (

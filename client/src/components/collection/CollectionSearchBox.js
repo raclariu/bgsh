@@ -2,66 +2,72 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
+import InputBase from '@material-ui/core/InputBase'
+import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import SearchIcon from '@material-ui/icons/Search'
+import ClearIcon from '@material-ui/icons/Clear'
 
 const useStyles = makeStyles((theme) => ({
-	button : {
-		marginTop : theme.spacing(1)
+	paper : {
+		padding : '10px 8px 10px 16px'
 	}
 }))
 
 const CollectionSearchBox = () => {
-	const classes = useStyles()
-
+	const cls = useStyles()
 	const history = useHistory()
+
+	const [ keyword, setKeyword ] = useState('')
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
-
-	const [ keyword, setKeyword ] = useState('')
 
 	const submitSearchHandler = (e) => {
 		e.preventDefault()
 
 		if (userInfo) {
-			history.push(`/collection?search=${keyword}&page=1`)
+			if (keyword.trim().length > 2) {
+				history.push(`/collection?search=${keyword.trim()}&page=1`)
+			}
 		} else {
 			history.push('/signin')
 		}
 	}
 
 	return (
-		<form>
-			<Grid item>
-				<TextField
-					onChange={(e) => setKeyword(e.target.value)}
-					value={keyword}
-					variant="outlined"
-					id="keyword"
-					name="keyword"
-					label="Search for a game"
-					type="search"
-					fullWidth
-				/>
-			</Grid>
-
-			<Grid item>
-				<Button
-					className={classes.button}
-					onClick={submitSearchHandler}
-					disabled={keyword.length < 3}
-					type="submit"
-					variant="contained"
-					color="secondary"
-					size="large"
-					fullWidth
-				>
-					Search
-				</Button>
-			</Grid>
-		</form>
+		<Paper
+			component="form"
+			className={cls.paper}
+			elevation={2}
+			onSubmit={submitSearchHandler}
+			noValidate
+			autoComplete="off"
+		>
+			<InputBase
+				onChange={(e) => setKeyword(e.target.value)}
+				value={keyword}
+				id="keyword"
+				name="keyword"
+				placeholder="Search Collection"
+				type="text"
+				endAdornment={
+					<InputAdornment position="end">
+						{keyword ? (
+							<IconButton onClick={() => setKeyword('')}>
+								<ClearIcon color="disabled" />
+							</IconButton>
+						) : (
+							<IconButton>
+								<SearchIcon color="disabled" />
+							</IconButton>
+						)}
+					</InputAdornment>
+				}
+				fullWidth
+			/>
+		</Paper>
 	)
 }
 
