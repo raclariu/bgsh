@@ -12,16 +12,13 @@ const collectionSchema = mongoose.Schema(
 			required : true
 		},
 		title     : {
-			type     : String,
-			required : true
+			type : String
 		},
 		year      : {
-			type     : Number,
-			required : true
+			type : Number
 		},
 		thumbnail : {
-			type     : String,
-			required : true
+			type : String
 		}
 	},
 	{

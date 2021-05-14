@@ -2,8 +2,6 @@ import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
@@ -18,10 +16,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Fade from '@material-ui/core/Fade'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined'
 import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { bggGetGameDetails } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
@@ -93,8 +91,14 @@ const SellGameScreen = () => {
 					<img src={game.thumbnail} alt={game.title} />
 					<p>Year: {game.year}</p>
 					<p>
-						Players: {game.minPlayers}-{game.maxPlayers}
+						Players:{' '}
+						{game.minPlayers !== game.maxPlayers ? (
+							`${game.minPlayers}-${game.maxPlayers}`
+						) : (
+							game.maxPlayers
+						)}
 					</p>
+					<p>Designer:{game.designers.map((designer) => designer)}</p>
 					<p>SuggestedPlayers: {game.suggestedPlayers}</p>
 					<p>Language Dependence: {game.languageDependence}</p>
 
@@ -237,7 +241,7 @@ const SellGameScreen = () => {
 						label="Sleeved?"
 					/>
 
-					<p>#ratings: {game.stats.numRatings}</p>
+					<p>#ratings: {game.stats.ratings}</p>
 					<p>avgRating: {game.stats.avgRating}</p>
 					<p>rank: {game.stats.rank}</p>
 
@@ -259,7 +263,7 @@ const SellGameScreen = () => {
 						{game.categories.map((ctg) => (
 							<Chip
 								icon={<CategoryOutlinedIcon />}
-								label={ctg}
+								label={ctg.name}
 								variant="outlined"
 								color="secondary"
 								size="small"
@@ -269,7 +273,7 @@ const SellGameScreen = () => {
 						{game.mechanics.map((mec) => (
 							<Chip
 								icon={<SettingsOutlinedIcon />}
-								label={mec}
+								label={mec.name}
 								variant="outlined"
 								color="primary"
 								size="small"

@@ -4,10 +4,20 @@ import bcrypt from 'bcryptjs'
 
 const parseXML = async (xml) => {
 	const promise = await new Promise((resolve, reject) => {
-		parseString(xml, { trim: true, emptyTag: '-' }, (error, result) => {
-			if (error) reject(error)
-			else resolve(result)
-		})
+		parseString(
+			xml,
+			{
+				trim          : true,
+				emptyTag      : null,
+				explicitRoot  : false,
+				explicitArray : false,
+				mergeAttrs    : true
+			},
+			(error, result) => {
+				if (error) reject(error)
+				else resolve(result)
+			}
+		)
 	})
 	return promise
 }

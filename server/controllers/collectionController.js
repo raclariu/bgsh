@@ -8,15 +8,15 @@ import Collection from '../models/collectionModel.js'
 // * @route   POST  /api/collections
 // * @access  Private route
 const getCollectionFromBGG = asyncHandler(async (req, res) => {
-	const { bggUsername } = req.body
-
-	const collectionExist = await Collection.findOne({ user: req.user._id })
-
-	if (collectionExist) {
-		await Collection.deleteMany({ user: req.user._id })
-	}
-
 	try {
+		const { bggUsername } = req.body
+
+		const collectionExist = await Collection.findOne({ user: req.user._id }).lean()
+
+		if (collectionExist) {
+			await Collection.deleteMany({ user: req.user._id })
+		}
+
 		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
@@ -24,20 +24,20 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			}
 		})
 
-		let { items: { item } } = await parseXML(data)
+		let { item: games } = await parseXML(data)
 
 		let bggCollection = []
 
-		for (let bg of item) {
-			const game = {
+		for (let game of games) {
+			const item = {
 				user      : req.user._id,
-				bggId     : bg.$.objectid,
-				title     : bg.originalname ? bg.originalname[0] : bg.name[0]._ || '-',
-				year      : +bg.yearpublished ? bg.yearpublished[0] : '-',
-				thumbnail : bg.thumbnail ? bg.thumbnail[0] : '-'
+				bggId     : game.objectid,
+				title     : game.originalname ? game.originalname : game.name._ || null,
+				year      : game.yearpublished ? +game.yearpublished : null,
+				thumbnail : game.thumbnail ? game.thumbnail : null
 			}
 
-			bggCollection.push(game)
+			bggCollection.push(item)
 		}
 
 		await Collection.insertMany(bggCollection)

@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
+import Grow from '@material-ui/core/Grow'
 
 const useStyles = makeStyles((theme) => ({
 	media       : {
@@ -30,35 +31,41 @@ const CollectionGameCard = ({ game }) => {
 	const cls = useStyles()
 
 	return (
-		<Card elevation={2}>
-			<CardMedia
-				className={cls.media}
-				component="img"
-				height="150"
-				alt={game.title}
-				image={game.thumbnail === '-' ? '/images/collection-placeholder-image.jpg' : game.thumbnail}
-				title={game.title}
-			/>
+		<Grow in>
+			<Card elevation={2}>
+				<CardMedia
+					className={cls.media}
+					component="img"
+					height="150"
+					alt={game.title}
+					image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
+					title={game.title}
+				/>
 
-			<Divider />
+				<Divider />
 
-			<CardContent className={cls.cardContent}>
-				<Typography className={cls.title} align="center" variant="body2" component="p">
-					{game.title} ({game.year})
-				</Typography>
-			</CardContent>
+				<CardContent className={cls.cardContent}>
+					<Typography className={cls.title} align="center" variant="body2" component="p">
+						{game.title} ({game.year})
+					</Typography>
+				</CardContent>
 
-			<CardActions>
-				<ButtonGroup size="small" color="primary" fullWidth>
-					<Button href={`https://boardgamegeek.com/boardgame/${game.bggId}`} target="_blank" rel="noopener">
-						BGG
-					</Button>
-					<Button component={RouterLink} to={`/sell/${game.bggId}`}>
-						Sell
-					</Button>
-				</ButtonGroup>
-			</CardActions>
-		</Card>
+				<CardActions>
+					<ButtonGroup size="small" color="primary" fullWidth>
+						<Button
+							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+							target="_blank"
+							rel="noopener"
+						>
+							BGG
+						</Button>
+						<Button component={RouterLink} to={`/sell/${game.bggId}`}>
+							Sell
+						</Button>
+					</ButtonGroup>
+				</CardActions>
+			</Card>
+		</Grow>
 	)
 }
 

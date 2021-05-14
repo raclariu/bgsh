@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
@@ -65,7 +65,7 @@ const CollectionScreen = () => {
 		let skeletonsArr = []
 		for (let i = 0; i < 24; i++) {
 			skeletonsArr.push(
-				<Grid key={i} item xl={3} lg={3} md={4} sm={6} xs={12}>
+				<Grid key={i} item xl={4} lg={4} md={4} sm={6} xs={12}>
 					<CollectionGameSkeleton />
 				</Grid>
 			)
@@ -75,7 +75,6 @@ const CollectionScreen = () => {
 
 	return (
 		<div className={classes.root}>
-			{console.log('rendered')}
 			<Grid container spacing={3} justify="center">
 				<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
 					<CollectionSearchBox />
@@ -84,7 +83,7 @@ const CollectionScreen = () => {
 
 			{searchKeyword && (
 				<Fragment>
-					<Button onClick={() => history.push('/collection')} variant="outlined" color="primary" size="large">
+					<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
 						Back to Collection
 					</Button>
 				</Fragment>
@@ -99,7 +98,7 @@ const CollectionScreen = () => {
 			{dbSuccess && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
-						<Grid item key={game._id} xl={3} lg={3} md={4} sm={6} xs={12}>
+						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
 								<CollectionGameCard game={game} />
 							</LazyLoad>

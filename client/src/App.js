@@ -14,7 +14,7 @@ const App = () => {
 		<BrowserRouter>
 			<Header />
 
-			<Container component="main">
+			<Container maxWidth="md" component="main">
 				<Route path="/" exact>
 					<HomePageScreen />
 				</Route>

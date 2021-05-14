@@ -32,7 +32,7 @@ const CollectionGameSkeleton = () => {
 	const cls = useStyles()
 
 	return (
-		<Paper className={cls.paper} elevation={3}>
+		<Paper className={cls.paper} elevation={2}>
 			<Skeleton animation="wave" className={cls.skMedia} variant="rect" width={160} height={150} />
 
 			<Divider animation="wave" className={cls.divider} />
