@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,7 @@ import LazyLoad from 'react-lazyload'
 import Grid from '@material-ui/core/Grid'
 import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
+import Chip from '@material-ui/core/Chip'
 import CollectionGameCard from '../components/collection/CollectionGameCard'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
@@ -28,6 +29,10 @@ const CollectionScreen = () => {
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
+
+	const [ saleList, setSaleList ] = useState([])
+
+	console.log(saleList)
 
 	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 
@@ -61,6 +66,15 @@ const CollectionScreen = () => {
 		}
 	}
 
+	const addToSaleList = (e, checkedGameId) => {
+		if (e.target.checked) {
+			const { bggId, title, year, _id } = collection.find((game) => game.bggId === checkedGameId)
+			setSaleList([ ...saleList, { bggId, title, year, _id } ])
+		} else {
+			setSaleList(saleList.filter((game) => game.bggId !== checkedGameId))
+		}
+	}
+
 	const renderSkeletons = () => {
 		let skeletonsArr = []
 		for (let i = 0; i < 24; i++) {
@@ -75,6 +89,7 @@ const CollectionScreen = () => {
 
 	return (
 		<div className={classes.root}>
+			{console.count('render')}
 			<Grid container spacing={3} justify="center">
 				<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
 					<CollectionSearchBox />
@@ -95,16 +110,35 @@ const CollectionScreen = () => {
 				</Grid>
 			)}
 
+			{saleList && (
+				<Fragment>
+					{saleList.map((game) => <Chip key={game._id} label={game.title} />)}
+					{saleList.length > 0 && (
+						<Button component={RouterLink} to={{ pathname: '/sell', state: saleList }}>
+							Sell
+						</Button>
+					)}
+				</Fragment>
+			)}
+
 			{dbSuccess && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
-					{collection.map((game) => (
-						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
-								<CollectionGameCard game={game} />
-							</LazyLoad>
-						</Grid>
-					))}
-				</Grid>
+				<Fragment>
+					<Grid container className={classes.gridContainer} spacing={3} direction="row">
+						{collection.map((game) => (
+							<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
+								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
+									<CollectionGameCard
+										game={game}
+										addToSaleList={addToSaleList}
+										id={game.bggId}
+										isChecked={saleList.some((obj) => obj.bggId === game.bggId)}
+										isDisabled={saleList.length > 4}
+									/>
+								</LazyLoad>
+							</Grid>
+						))}
+					</Grid>
+				</Fragment>
 			)}
 
 			{dbSuccess && (

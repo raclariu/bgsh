@@ -8,7 +8,7 @@ export const bggGetGameDetailsReducer = (state = {}, action) => {
 			return {
 				loading : false,
 				success : true,
-				game    : action.payload
+				games   : action.payload
 			}
 		case BGG_GAME_DETAILS_FAIL:
 			return { loading: false, error: action.payload }

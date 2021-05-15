@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 import Grow from '@material-ui/core/Grow'
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionGameCard = ({ game }) => {
+const CollectionGameCard = ({ game, addToSaleList, id, isChecked, isDisabled }) => {
 	const cls = useStyles()
 
 	return (
@@ -59,10 +61,22 @@ const CollectionGameCard = ({ game }) => {
 						>
 							BGG
 						</Button>
-						<Button component={RouterLink} to={`/sell/${game.bggId}`}>
+						<Button
+							component={RouterLink}
+							to={{
+								pathname : '/sell',
+								state    : [ { bggId: game.bggId, title: game.title, year: game.year, _id: game._id } ]
+							}}
+						>
 							Sell
 						</Button>
 					</ButtonGroup>
+
+					<FormControlLabel
+						control={<Checkbox checked={isChecked} onChange={(e) => addToSaleList(e, id)} />}
+						label="Sale List"
+						disabled={isDisabled}
+					/>
 				</CardActions>
 			</Card>
 		</Grow>

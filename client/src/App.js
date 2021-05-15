@@ -31,7 +31,7 @@ const App = () => {
 					<CollectionScreen />
 				</Route>
 
-				<Route path="/sell/:bggId" exact>
+				<Route path="/sell" exact>
 					<SellGameScreen />
 				</Route>
 
