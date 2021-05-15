@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Message from '../components/Message'
@@ -11,20 +11,26 @@ import { bggGetGameDetails } from '../actions/gameActions'
 
 const SellGameScreen = () => {
 	const dispatch = useDispatch()
+	const history = useHistory()
 	const location = useLocation()
 
 	const bggIds = location.state
 
-	console.log(location)
-
 	const bggGameDetails = useSelector((state) => state.bggGameDetails)
 	const { loading, error, success, games } = bggGameDetails
 
+	const userSignIn = useSelector((state) => state.userSignIn)
+	const { userInfo } = userSignIn
+
 	useEffect(
 		() => {
-			dispatch(bggGetGameDetails(bggIds.map((game) => game.bggId)))
+			if (userInfo) {
+				dispatch(bggGetGameDetails(bggIds.map((game) => game.bggId)))
+			} else {
+				history.push('/signin')
+			}
 		},
-		[ dispatch, bggIds ]
+		[ dispatch, bggIds, userInfo, history ]
 	)
 
 	return (

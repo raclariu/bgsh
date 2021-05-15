@@ -6,9 +6,9 @@ import { parseXML } from '../helpers/helpers.js'
 // * @route   POST  /api/games/bgg
 // * @access  Private route
 const getOneGameFromBGG = asyncHandler(async (req, res) => {
-	const { bggIds } = req.body
-
 	try {
+		const { bggIds } = req.body
+
 		let gamesArr = []
 
 		for (let id of bggIds) {
@@ -19,7 +19,9 @@ const getOneGameFromBGG = asyncHandler(async (req, res) => {
 					stats    : 1
 				}
 			})
+
 			let { item: game } = await parseXML(data)
+
 			gamesArr.push({
 				type               : game.type,
 				bggId              : game.id,

@@ -24,15 +24,14 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionScreen = () => {
+const CollectionScreen = ({ props }) => {
+	console.log(props)
 	const classes = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
 
 	const [ saleList, setSaleList ] = useState([])
-
-	console.log(saleList)
 
 	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 

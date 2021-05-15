@@ -25,6 +25,8 @@ const SignIn = () => {
 	const cls = useStyles()
 	const history = useHistory()
 
+	console.log(history)
+
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
