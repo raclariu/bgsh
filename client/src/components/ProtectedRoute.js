@@ -10,6 +10,7 @@ const ProtectedRoute = ({ children: component, ...rest }) => {
 		<Route
 			{...rest}
 			render={(props) => {
+				console.log('protRoute', { props })
 				if (userInfo) {
 					return component
 				} else {

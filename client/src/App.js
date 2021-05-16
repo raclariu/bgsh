@@ -28,17 +28,17 @@ const App = () => {
 					<ProfileScreen />
 				</ProtectedRoute>
 
-				<Route path="/collection" exact>
+				<ProtectedRoute path="/collection" exact>
 					<CollectionScreen />
-				</Route>
+				</ProtectedRoute>
 
-				<Route path="/sell" exact>
+				<ProtectedRoute path="/sell" exact>
 					<SellGameScreen />
-				</Route>
+				</ProtectedRoute>
 
-				<Route path="/signout" exact>
+				<ProtectedRoute path="/signout" exact>
 					<Redirect to="/" />
-				</Route>
+				</ProtectedRoute>
 			</Container>
 
 			<Footer />

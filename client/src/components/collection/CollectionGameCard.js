@@ -34,7 +34,7 @@ const CollectionGameCard = ({ game, addToSaleList, id, isChecked, isDisabled }) 
 
 	return (
 		<Grow in>
-			<Card elevation={2}>
+			<Card elevation={2} style={{ position: 'relative' }}>
 				<CardMedia
 					className={cls.media}
 					component="img"
@@ -73,8 +73,14 @@ const CollectionGameCard = ({ game, addToSaleList, id, isChecked, isDisabled }) 
 					</ButtonGroup>
 
 					<FormControlLabel
-						control={<Checkbox checked={isChecked} onChange={(e) => addToSaleList(e, id)} />}
-						label="Sale List"
+						style={{
+							position : 'absolute',
+							top      : '2px',
+							left     : '2px'
+						}}
+						control={<Checkbox size="small" onChange={(e) => addToSaleList(e, id)} />}
+						checked={isChecked}
+						labelPlacement="bottom"
 						disabled={isDisabled}
 					/>
 				</CardActions>

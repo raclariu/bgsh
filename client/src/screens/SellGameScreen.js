@@ -19,18 +19,12 @@ const SellGameScreen = () => {
 	const bggGameDetails = useSelector((state) => state.bggGameDetails)
 	const { loading, error, success, games } = bggGameDetails
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
-
 	useEffect(
 		() => {
-			if (userInfo) {
-				dispatch(bggGetGameDetails(bggIds.map((game) => game.bggId)))
-			} else {
-				history.push('/signin')
-			}
+			const mapped = bggIds.map((game) => game.bggId)
+			dispatch(bggGetGameDetails(mapped))
 		},
-		[ dispatch, bggIds, userInfo, history ]
+		[ dispatch, bggIds, history ]
 	)
 
 	return (
@@ -39,17 +33,18 @@ const SellGameScreen = () => {
 
 			{loading && <Loader />}
 
-			<Grid container>
-				{success &&
-					games.map((game) => (
+			{success && (
+				<Grid container>
+					{games.map((game) => (
 						<Grid item key={game.id} xl={12} lg={12} md={12} sm={12} xs={12}>
-							<Paper elevation={4}>
+							<Paper key={game.id} elevation={4}>
 								{game.title}
 								<img src={game.thumbnail} alt={game.bggId} />
 							</Paper>
 						</Grid>
 					))}
-			</Grid>
+				</Grid>
+			)}
 		</Fragment>
 	)
 }

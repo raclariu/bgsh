@@ -13,6 +13,16 @@ import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
 import { dbGetCollection } from '../actions/collectionActions'
 
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Avatar from '@material-ui/core/Avatar'
+import IconButton from '@material-ui/core/IconButton'
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
+
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -24,14 +34,15 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionScreen = ({ props }) => {
-	console.log(props)
+const CollectionScreen = () => {
 	const classes = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
 
 	const [ saleList, setSaleList ] = useState([])
+
+	console.log(saleList)
 
 	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 
@@ -41,21 +52,14 @@ const CollectionScreen = ({ props }) => {
 	const bggCollection = useSelector((state) => state.bggCollection)
 	const { loading: bggLoading } = bggCollection
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
-
 	useEffect(
 		() => {
-			if (userInfo) {
-				dispatch(dbGetCollection(searchKeyword, pageNumber))
-			} else {
-				history.push('/signin')
-			}
+			dispatch(dbGetCollection(searchKeyword, pageNumber))
 		},
-		[ dispatch, history, userInfo, pageNumber, searchKeyword ]
+		[ dispatch, history, pageNumber, searchKeyword ]
 	)
 
-	const onPageChange = (e, page) => {
+	const onPageChangeHandler = (e, page) => {
 		window.scrollTo(75, 75)
 
 		if (searchKeyword) {
@@ -65,16 +69,20 @@ const CollectionScreen = ({ props }) => {
 		}
 	}
 
-	const addToSaleList = (e, checkedGameId) => {
+	const addToSaleListHandler = (e, id) => {
 		if (e.target.checked) {
-			const { bggId, title, year, _id } = collection.find((game) => game.bggId === checkedGameId)
-			setSaleList([ ...saleList, { bggId, title, year, _id } ])
+			const { bggId, title, year, thumbnail, _id } = collection.find((game) => game.bggId === id)
+			setSaleList([ ...saleList, { bggId, title, year, thumbnail, _id } ])
 		} else {
-			setSaleList(saleList.filter((game) => game.bggId !== checkedGameId))
+			setSaleList(saleList.filter((game) => game.bggId !== id))
 		}
 	}
 
-	const renderSkeletons = () => {
+	const removeFromSaleListHandler = (id) => {
+		setSaleList(saleList.filter((game) => game.bggId !== id))
+	}
+
+	const renderSkeletonsHandler = () => {
 		let skeletonsArr = []
 		for (let i = 0; i < 24; i++) {
 			skeletonsArr.push(
@@ -105,19 +113,45 @@ const CollectionScreen = ({ props }) => {
 
 			{(dbLoading || bggLoading) && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
-					{renderSkeletons().map((skeleton) => skeleton)}
+					{renderSkeletonsHandler().map((skeleton) => skeleton)}
 				</Grid>
 			)}
 
 			{saleList && (
-				<Fragment>
-					{saleList.map((game) => <Chip key={game._id} label={game.title} />)}
+				<Grid container>
+					<ListSubheader>My Sale List</ListSubheader>
+					{saleList.map((game) => (
+						<Grid key={game._id} item xs={12} md={12}>
+							<List disablePadding dense={true}>
+								<ListItem divider>
+									<ListItemAvatar>
+										<Avatar variant="rounded" src={game.thumbnail} alt={game.title} />
+									</ListItemAvatar>
+									<ListItemText primary={`${game.title} (${game.year})`} />
+									<ListItemSecondaryAction>
+										<IconButton
+											edge="end"
+											color="secondary"
+											onClick={() => removeFromSaleListHandler(game.bggId)}
+										>
+											<DeleteOutlinedIcon />
+										</IconButton>
+									</ListItemSecondaryAction>
+								</ListItem>
+							</List>
+						</Grid>
+					))}
 					{saleList.length > 0 && (
-						<Button component={RouterLink} to={{ pathname: '/sell', state: saleList }}>
+						<Button
+							color="primary"
+							variant="outlined"
+							component={RouterLink}
+							to={{ pathname: '/sell', state: saleList }}
+						>
 							Sell
 						</Button>
 					)}
-				</Fragment>
+				</Grid>
 			)}
 
 			{dbSuccess && (
@@ -128,10 +162,18 @@ const CollectionScreen = ({ props }) => {
 								<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
 									<CollectionGameCard
 										game={game}
-										addToSaleList={addToSaleList}
+										addToSaleList={addToSaleListHandler}
 										id={game.bggId}
 										isChecked={saleList.some((obj) => obj.bggId === game.bggId)}
-										isDisabled={saleList.length > 4}
+										isDisabled={
+											saleList.length > 4 ? saleList.some((obj) => obj.bggId === game.bggId) ? (
+												false
+											) : (
+												true
+											) : (
+												false
+											)
+										}
 									/>
 								</LazyLoad>
 							</Grid>
@@ -144,7 +186,7 @@ const CollectionScreen = ({ props }) => {
 				<Grid container justify="center">
 					<Pagination
 						page={pagination.page}
-						onChange={(e, page) => onPageChange(e, page)}
+						onChange={(e, page) => onPageChangeHandler(e, page)}
 						count={pagination.totalPages}
 						size="large"
 						color="primary"
