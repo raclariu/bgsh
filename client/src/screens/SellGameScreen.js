@@ -7,8 +7,6 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { bggGetGameDetails } from '../actions/gameActions'
 
-// game arr ['169786','312484','167791']
-
 const SellGameScreen = () => {
 	const dispatch = useDispatch()
 	const history = useHistory()

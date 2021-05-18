@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { bggGetCollection } from '../../actions/collectionActions'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Loader from '../Loader'
+import { bggGetCollection } from '../../actions/collectionActions'
+import { SALE_LIST_RESET } from '../../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
 	button : {
@@ -20,29 +21,23 @@ const CollectionFetchBox = () => {
 
 	const [ bggUsername, setBggUsername ] = useState('')
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
-
 	const bggCollection = useSelector((state) => state.bggCollection)
 	const { loading, success } = bggCollection
 
 	useEffect(
 		() => {
 			if (success) {
+				dispatch({ type: SALE_LIST_RESET })
 				history.push('collection')
 			}
 		},
-		[ success, history ]
+		[ dispatch, success, history ]
 	)
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
 
-		if (userInfo) {
-			dispatch(bggGetCollection(bggUsername))
-		} else {
-			history.push('/signin')
-		}
+		dispatch(bggGetCollection(bggUsername))
 	}
 
 	return (

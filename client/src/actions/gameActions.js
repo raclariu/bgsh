@@ -1,5 +1,11 @@
 import axios from 'axios'
-import { BGG_GAME_DETAILS_REQUEST, BGG_GAME_DETAILS_SUCCESS, BGG_GAME_DETAILS_FAIL } from '../constants/gameConstants'
+import {
+	BGG_GAME_DETAILS_REQUEST,
+	BGG_GAME_DETAILS_SUCCESS,
+	BGG_GAME_DETAILS_FAIL,
+	SALE_LIST_ADD,
+	SALE_LIST_REMOVE
+} from '../constants/gameConstants'
 
 export const bggGetGameDetails = (bggIds) => async (dispatch, getState) => {
 	try {
@@ -25,4 +31,27 @@ export const bggGetGameDetails = (bggIds) => async (dispatch, getState) => {
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
+}
+
+export const addToSaleList = (data) => (dispatch, getState) => {
+	const { saleList } = getState()
+
+	localStorage.setItem('saleList', JSON.stringify([ ...saleList, data ]))
+
+	dispatch({
+		type    : SALE_LIST_ADD,
+		payload : data
+	})
+}
+
+export const removeFromSaleList = (id) => (dispatch, getState) => {
+	const { saleList } = getState()
+
+	const filtered = saleList.filter((el) => el.bggId !== id)
+	localStorage.setItem('saleList', JSON.stringify(filtered))
+
+	dispatch({
+		type    : SALE_LIST_REMOVE,
+		payload : filtered
+	})
 }

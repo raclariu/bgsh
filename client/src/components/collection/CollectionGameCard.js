@@ -1,17 +1,16 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link as RouterLink } from 'react-router-dom'
+import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import Grow from '@material-ui/core/Grow'
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 
 const useStyles = makeStyles((theme) => ({
 	media       : {
@@ -29,12 +28,12 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionGameCard = ({ game, addToSaleList, id, isChecked, isDisabled }) => {
+const CollectionGameCard = ({ game, saleListHandler, id, isChecked, isDisabled }) => {
 	const cls = useStyles()
 
 	return (
 		<Grow in>
-			<Card elevation={2} style={{ position: 'relative' }}>
+			<Card elevation={2}>
 				<CardMedia
 					className={cls.media}
 					component="img"
@@ -53,36 +52,26 @@ const CollectionGameCard = ({ game, addToSaleList, id, isChecked, isDisabled }) 
 				</CardContent>
 
 				<CardActions>
-					<ButtonGroup size="small" color="primary" fullWidth>
-						<Button
-							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-							target="_blank"
-							rel="noopener"
-						>
-							BGG
-						</Button>
-						<Button
-							component={RouterLink}
-							to={{
-								pathname : '/sell',
-								state    : [ { bggId: game.bggId, title: game.title, year: game.year, _id: game._id } ]
-							}}
-						>
-							Sell
-						</Button>
-					</ButtonGroup>
-
-					<FormControlLabel
-						style={{
-							position : 'absolute',
-							top      : '2px',
-							left     : '2px'
-						}}
-						control={<Checkbox size="small" onChange={(e) => addToSaleList(e, id)} />}
-						checked={isChecked}
-						labelPlacement="bottom"
-						disabled={isDisabled}
-					/>
+					<Grid container direction="row" justify="space-between" alignItems="center">
+						<Grid item>
+							<Button
+								size="small"
+								color="primary"
+								href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+								target="_blank"
+								rel="noopener"
+							>
+								BGG
+							</Button>
+						</Grid>
+						<Checkbox
+							checked={isChecked}
+							disabled={isDisabled}
+							onChange={(e) => saleListHandler(e, id)}
+							icon={<AddBoxOutlinedIcon />}
+							size="small"
+						/>
+					</Grid>
 				</CardActions>
 			</Card>
 		</Grow>
