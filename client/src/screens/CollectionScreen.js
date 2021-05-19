@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,7 @@ import LazyLoad from 'react-lazyload'
 import Grid from '@material-ui/core/Grid'
 import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
+import Box from '@material-ui/core/Box'
 import CollectionGameCard from '../components/collection/CollectionGameCard'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
@@ -94,6 +95,33 @@ const CollectionScreen = () => {
 				</Fragment>
 			)}
 
+			<Grid container>
+				<Box
+					display="flex"
+					height={60}
+					width="100%"
+					boxShadow={2}
+					borderRadius={4}
+					mt={4}
+					alignItems="center"
+					justifyContent="center"
+				>
+					{dbSuccess && (
+						<Grid item>
+							<Pagination
+								page={pagination.page}
+								onChange={(e, page) => onPageChangeHandler(e, page)}
+								count={pagination.totalPages}
+								size="large"
+								color="primary"
+								variant="outlined"
+								shape="rounded"
+							/>
+						</Grid>
+					)}
+				</Box>
+			</Grid>
+
 			{(dbLoading || bggLoading) && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{renderSkeletonsHandler().map((skeleton) => skeleton)}
@@ -126,7 +154,7 @@ const CollectionScreen = () => {
 				</Grid>
 			)}
 
-			{dbSuccess && (
+			{/* {dbSuccess && (
 				<Grid container justify="center">
 					<Pagination
 						page={pagination.page}
@@ -138,7 +166,7 @@ const CollectionScreen = () => {
 						shape="rounded"
 					/>
 				</Grid>
-			)}
+			)} */}
 		</div>
 	)
 }
