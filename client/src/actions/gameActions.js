@@ -1,15 +1,15 @@
 import axios from 'axios'
 import {
-	BGG_GAME_DETAILS_REQUEST,
-	BGG_GAME_DETAILS_SUCCESS,
-	BGG_GAME_DETAILS_FAIL,
+	BGG_GAMES_DETAILS_REQUEST,
+	BGG_GAMES_DETAILS_SUCCESS,
+	BGG_GAMES_DETAILS_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE
 } from '../constants/gameConstants'
 
-export const bggGetGameDetails = (bggIds) => async (dispatch, getState) => {
+export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
 	try {
-		dispatch({ type: BGG_GAME_DETAILS_REQUEST })
+		dispatch({ type: BGG_GAMES_DETAILS_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -22,12 +22,12 @@ export const bggGetGameDetails = (bggIds) => async (dispatch, getState) => {
 		const { data } = await axios.post('/api/games/bgg', { bggIds }, config)
 
 		dispatch({
-			type    : BGG_GAME_DETAILS_SUCCESS,
+			type    : BGG_GAMES_DETAILS_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : BGG_GAME_DETAILS_FAIL,
+			type    : BGG_GAMES_DETAILS_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

@@ -7,7 +7,7 @@ import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import CollectionScreen from './screens/CollectionScreen'
-import SellGameScreen from './screens/SellGameScreen'
+import SellGamesScreen from './screens/SellGamesScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 
 const App = () => {
@@ -33,7 +33,7 @@ const App = () => {
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/sell" exact>
-					<SellGameScreen />
+					<SellGamesScreen />
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/signout" exact>

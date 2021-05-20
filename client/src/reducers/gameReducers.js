@@ -1,23 +1,23 @@
 import {
-	BGG_GAME_DETAILS_REQUEST,
-	BGG_GAME_DETAILS_SUCCESS,
-	BGG_GAME_DETAILS_FAIL,
+	BGG_GAMES_DETAILS_REQUEST,
+	BGG_GAMES_DETAILS_SUCCESS,
+	BGG_GAMES_DETAILS_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
 	SALE_LIST_RESET
 } from '../constants/gameConstants'
 
-export const bggGetGameDetailsReducer = (state = {}, action) => {
+export const bggGetGamesDetailsReducer = (state = {}, action) => {
 	switch (action.type) {
-		case BGG_GAME_DETAILS_REQUEST:
+		case BGG_GAMES_DETAILS_REQUEST:
 			return { loading: true }
-		case BGG_GAME_DETAILS_SUCCESS:
+		case BGG_GAMES_DETAILS_SUCCESS:
 			return {
 				loading : false,
 				success : true,
 				games   : action.payload
 			}
-		case BGG_GAME_DETAILS_FAIL:
+		case BGG_GAMES_DETAILS_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

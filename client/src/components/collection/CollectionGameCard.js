@@ -2,9 +2,9 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
@@ -15,7 +15,8 @@ import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 const useStyles = makeStyles((theme) => ({
 	media       : {
 		margin    : theme.spacing(2, 0, 2, 0),
-		objectFit : 'contain'
+		objectFit : 'contain',
+		height    : '150px'
 	},
 	cardContent : {
 		padding : '0px'
@@ -37,7 +38,6 @@ const CollectionGameCard = ({ game, saleListHandler, id, isChecked, isDisabled }
 				<CardMedia
 					className={cls.media}
 					component="img"
-					height="150"
 					alt={game.title}
 					image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
 					title={game.title}

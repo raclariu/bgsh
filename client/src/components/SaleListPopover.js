@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Popover from '@material-ui/core/Popover'
@@ -120,7 +121,9 @@ const SaleListPopover = () => {
 						</Grid>
 						{saleList.length > 0 && (
 							<Grid item>
-								<Button color="primary">Sell</Button>
+								<Button color="primary" component={RouterLink} to="/sell">
+									Sell
+								</Button>
 							</Grid>
 						)}
 					</Grid>

@@ -3,15 +3,15 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer } from './reducers/collectionReducers'
-import { bggGetGameDetailsReducer, saleListReducer } from './reducers/gameReducers'
+import { bggGetGamesDetailsReducer, saleListReducer } from './reducers/gameReducers'
 
 const reducer = combineReducers({
-	userSignIn     : userSignInReducer,
-	userSignUp     : userSignUpReducer,
-	bggCollection  : bggGetCollectionReducer,
-	bggGameDetails : bggGetGameDetailsReducer,
-	dbCollection   : dbGetCollectionReducer,
-	saleList       : saleListReducer
+	userSignIn      : userSignInReducer,
+	userSignUp      : userSignUpReducer,
+	bggCollection   : bggGetCollectionReducer,
+	bggGamesDetails : bggGetGamesDetailsReducer,
+	dbCollection    : dbGetCollectionReducer,
+	saleList        : saleListReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -45,7 +45,7 @@ const CollectionScreen = () => {
 		() => {
 			dispatch(dbGetCollection(searchKeyword, pageNumber))
 		},
-		[ dispatch, history, pageNumber, searchKeyword ]
+		[ dispatch, pageNumber, searchKeyword ]
 	)
 
 	const onPageChangeHandler = (e, page) => {
@@ -98,13 +98,12 @@ const CollectionScreen = () => {
 			<Grid container>
 				<Box
 					display="flex"
-					height={60}
-					width="100%"
-					boxShadow={2}
-					borderRadius={4}
-					mt={4}
 					alignItems="center"
 					justifyContent="center"
+					height={60}
+					width="100%"
+					borderRadius={4}
+					mt={4}
 				>
 					{dbSuccess && (
 						<Grid item>
@@ -112,10 +111,7 @@ const CollectionScreen = () => {
 								page={pagination.page}
 								onChange={(e, page) => onPageChangeHandler(e, page)}
 								count={pagination.totalPages}
-								size="large"
 								color="primary"
-								variant="outlined"
-								shape="rounded"
 							/>
 						</Grid>
 					)}
@@ -153,20 +149,6 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
-
-			{/* {dbSuccess && (
-				<Grid container justify="center">
-					<Pagination
-						page={pagination.page}
-						onChange={(e, page) => onPageChangeHandler(e, page)}
-						count={pagination.totalPages}
-						size="large"
-						color="primary"
-						variant="outlined"
-						shape="rounded"
-					/>
-				</Grid>
-			)} */}
 		</div>
 	)
 }
