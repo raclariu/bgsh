@@ -6,12 +6,9 @@ import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
+import Divider from '@material-ui/core/Divider'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { bggGetGamesDetails } from '../actions/gameActions'
-
-import Box from '@material-ui/core/Box'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -23,22 +20,23 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import Radio from '@material-ui/core/Radio'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import Chip from '@material-ui/core/Chip'
+import FormGroup from '@material-ui/core/FormGroup'
 import Fade from '@material-ui/core/Fade'
+import { bggGetGamesDetails } from '../actions/gameActions'
+import Button from '@material-ui/core/Button'
 
 const useStyles = makeStyles((theme) => ({
-	media       : {
+	section      : {
+		marginTop    : theme.spacing(4),
+		marginBottom : theme.spacing(4)
+	},
+	media        : {
 		objectFit      : 'cover',
 		height         : '150px',
 		objectPosition : 'center 0%'
 	},
-	cardContent : {
-		padding : '0px'
-	},
-	title       : {
-		margin     : theme.spacing(2, 0, 1, 0),
-		padding    : theme.spacing(0, 2, 0, 2),
-		minHeight  : '40px',
-		fontWeight : '500'
+	autocomplete : {
+		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
@@ -47,14 +45,26 @@ const SellGameScreen = () => {
 	const dispatch = useDispatch()
 	const history = useHistory()
 
-	const [ isSleeved, setIsSleeved ] = useState(false)
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCourierPayer, setShipCourerPayer ] = useState('seller')
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
+	const [ shipCities, setShipCities ] = useState([])
+	const [ sellType, setSellType ] = useState('individual')
 
 	const saleList = useSelector((state) => state.saleList)
+
+	const [ values, setValues ] = useState(
+		saleList.map((el) => {
+			return {
+				bggId     : el.bggId,
+				isSleeved : false,
+				version   : null,
+				condition : null
+			}
+		})
+	)
 
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
 	const { loading, error, success, games } = bggGamesDetails
@@ -63,14 +73,55 @@ const SellGameScreen = () => {
 
 	useEffect(
 		() => {
-			const mapped = saleList.map((el) => el.bggId)
-			dispatch(bggGetGamesDetails(mapped))
+			const mapIds = saleList.map((el) => el.bggId)
+			dispatch(bggGetGamesDetails(mapIds))
 		},
 		[ dispatch, saleList ]
 	)
 
+	useEffect(
+		() => {
+			if (saleList.length !== values.length) {
+				const removedId = values.filter(
+					({ bggId: valId }) => !saleList.some(({ bggId: slId }) => valId === slId)
+				)[0].bggId
+				const newValues = [ ...values ].filter((el) => el.bggId !== removedId)
+				setValues(newValues)
+			}
+		},
+		[ saleList, values ]
+	)
+
+	const handleUncontrolled = (e, value, game, key) => {
+		const index = values.findIndex((el) => el.bggId === game.bggId)
+		const copy = [ ...values ]
+		copy[index] = { ...copy[index], [key]: value }
+		setValues(copy)
+	}
+
+	const handleCities = (e, cities) => {
+		setShipCities(cities)
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault()
+		console.log({
+			games,
+
+			shipPost,
+			shipCourier,
+			shipPersonal,
+			shipCourierPayer,
+			shipPostPayer,
+			shipCities       : shipPersonal ? shipCities : null,
+			sellType,
+
+			individualData   : values
+		})
+	}
+
 	return (
-		<Fragment>
+		<form onSubmit={handleSubmit}>
 			{error && <Message>{error}</Message>}
 			{saleList.length === 0 && <Message>Your sale list is empty</Message>}
 
@@ -78,10 +129,10 @@ const SellGameScreen = () => {
 
 			{success && (
 				<Fragment>
-					<Grid container spacing={3}>
+					<Grid container spacing={3} className={cls.section}>
 						{games.map((game) => (
-							<Grid item key={game.id} xl={4} lg={4} md={4} sm={6} xs={12}>
-								<Card key={game.id} elevation={4}>
+							<Grid item key={game.bggId} xl={6} lg={6} md={6} sm={12} xs={12}>
+								<Card elevation={4}>
 									<CardMedia
 										className={cls.media}
 										component="img"
@@ -91,18 +142,31 @@ const SellGameScreen = () => {
 									/>
 									<CardContent>
 										<Autocomplete
-											id="version"
+											className={cls.autocomplete}
+											value={values.find((el) => el.bggId === game.bggId).version}
+											getOptionSelected={(option, value) => option.title === value.title}
+											onChange={(e, selected) => handleUncontrolled(e, selected, game, 'version')}
 											options={game.versions}
 											getOptionLabel={(option) => `${option.title} (${option.year})`}
 											renderInput={(params) => (
-												<TextField {...params} label="Versions" variant="outlined" />
+												<TextField
+													{...params}
+													label="Versions"
+													variant="outlined"
+													size="small"
+													required
+												/>
 											)}
 										/>
 
 										<Autocomplete
-											id="condition"
+											className={cls.autocomplete}
+											value={values.find((el) => el.bggId === game.bggId).condition}
+											getOptionSelected={(option, value) => option === value}
+											onChange={(e, selected) =>
+												handleUncontrolled(e, selected, game, 'condition')}
 											options={[
-												'New, in shrink',
+												'New',
 												'New, opened',
 												'New, punched components',
 												'Very Good',
@@ -114,13 +178,22 @@ const SellGameScreen = () => {
 												'Heavily Damaged'
 											]}
 											renderInput={(params) => (
-												<TextField {...params} label="Condition" variant="outlined" />
+												<TextField
+													{...params}
+													label="Condition"
+													variant="outlined"
+													size="small"
+													required
+												/>
 											)}
 										/>
-
 										<FormControlLabel
 											control={
-												<Switch onChange={(e) => setIsSleeved(e.target.checked)} id="sleeved" />
+												<Switch
+													checked={values.find((el) => el.bggId === game.bggId).isSleeved}
+													onChange={(e) =>
+														handleUncontrolled(e, e.target.checked, game, 'isSleeved')}
+												/>
 											}
 											label="Sleeved?"
 										/>
@@ -129,116 +202,149 @@ const SellGameScreen = () => {
 							</Grid>
 						))}
 					</Grid>
-					{/* Shipping Area */}
-					<Box className={cls.section}>
-						<FormControl required error={shipError}>
-							<FormLabel>Shipping method</FormLabel>
 
-							{/* Post shipping */}
-							<FormControlLabel
-								control={
-									<Checkbox checked={shipPost} onChange={(e) => setShipPost(e.target.checked)} />
-								}
-								label="Romanian Post"
-							/>
-							{shipPost && (
-								<Fade in={shipPost}>
-									<FormControl required>
-										<FormLabel component="label">Post: Who will pay for shipping?</FormLabel>
-										<RadioGroup
-											row
-											value={shipPostPayer}
-											onChange={(e) => setShipPostPayer(e.target.value)}
-										>
-											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
-											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
-										</RadioGroup>
-									</FormControl>
-								</Fade>
-							)}
+					<Divider />
 
-							{/* Courier shipping */}
-							<FormControlLabel
-								control={
-									<Checkbox
-										checked={shipCourier}
-										onChange={(e) => setShipCourier(e.target.checked)}
-									/>
-								}
-								label="Courier"
-							/>
-							{shipCourier && (
-								<Fade in={shipCourier}>
-									<FormControl required>
-										<FormLabel>Courier: Who will pay for shipping?</FormLabel>
-										<RadioGroup
-											row
-											value={shipCourierPayer}
-											onChange={(e) => setShipCourerPayer(e.target.value)}
-										>
-											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
-											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
-										</RadioGroup>
-									</FormControl>
-								</Fade>
-							)}
-
-							{/* Personal delivery */}
-							<FormControlLabel
-								control={
-									<Checkbox
-										checked={shipPersonal}
-										onChange={(e) => setShipPersonal(e.target.checked)}
-									/>
-								}
-								label="Personal delivery"
-							/>
-							{shipPersonal && (
-								<Fade in={shipPersonal}>
-									<Autocomplete
-										id="shipping"
-										filterSelectedOptions
-										multiple
-										options={[
-											'Bucuresti',
-											'Bucuresti S1',
-											'Bucuresti S2',
-											'Bucuresti S3',
-											'Bucuresti S4',
-											'Bucuresti S5',
-											'Bucuresti S6',
-											'Timisoara',
-											'Cluj-Napoca',
-											'Constanta',
-											'Dalga'
-										]}
-										style={{ width: 300 }}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												label="In what cities are you able to ship?"
-												variant="standard"
+					<Grid container className={cls.section} direction="row">
+						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+							{/* Shipping Area */}
+							<FormControl required error={shipError} fullWidth>
+								{/* Post shipping */}
+								<FormLabel>Shipping method</FormLabel>
+								<FormGroup required>
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={shipPost}
+												onChange={(e) => setShipPost(e.target.checked)}
 											/>
-										)}
-										renderTags={(value, getTagProps) =>
-											value.map((option, index) => (
-												<Chip
-													variant="outlined"
-													label={option}
-													size="small"
-													{...getTagProps({ index })}
-												/>
-											))}
+										}
+										label="Romanian Post"
 									/>
-								</Fade>
-							)}
+									{shipPost && (
+										<Fade in={shipPost}>
+											<FormControl>
+												<FormLabel>Who pays shipping?</FormLabel>
+												<RadioGroup
+													row
+													value={shipPostPayer}
+													onChange={(e) => setShipPostPayer(e.target.value)}
+												>
+													<FormControlLabel
+														value="seller"
+														control={<Radio />}
+														label="Seller"
+													/>
+													<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
+												</RadioGroup>
+											</FormControl>
+										</Fade>
+									)}
 
-							{shipError && <FormHelperText error>Select at least one shipping method</FormHelperText>}
-						</FormControl>
-					</Box>
+									{/* Courier shipping */}
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={shipCourier}
+												onChange={(e) => setShipCourier(e.target.checked)}
+											/>
+										}
+										label="Courier"
+									/>
+									{shipCourier && (
+										<Fade in={shipCourier}>
+											<FormControl>
+												<FormLabel>Who pays shipping?</FormLabel>
+												<RadioGroup
+													row
+													value={shipCourierPayer}
+													onChange={(e) => setShipCourerPayer(e.target.value)}
+												>
+													<FormControlLabel
+														value="seller"
+														control={<Radio />}
+														label="Seller"
+													/>
+													<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
+												</RadioGroup>
+											</FormControl>
+										</Fade>
+									)}
+
+									{/* Personal delivery */}
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={shipPersonal}
+												onChange={(e) => setShipPersonal(e.target.checked)}
+											/>
+										}
+										label="Personal delivery"
+									/>
+									{shipPersonal && (
+										<Fade in={shipPersonal}>
+											<Autocomplete
+												onChange={(e, val) => handleCities(e, val)}
+												value={shipCities}
+												filterSelectedOptions
+												multiple
+												limitTags={2}
+												options={[
+													'Bucuresti',
+													'Bucuresti S1',
+													'Bucuresti S2',
+													'Bucuresti S3',
+													'Bucuresti S4',
+													'Bucuresti S5',
+													'Bucuresti S6',
+													'Timisoara',
+													'Cluj-Napoca',
+													'Constanta',
+													'Dalga'
+												]}
+												renderInput={(params) => (
+													<TextField
+														{...params}
+														label="Select Cities"
+														placeholder="Cities"
+														variant="outlined"
+														size="small"
+														required
+													/>
+												)}
+												renderTags={(value, getTagProps) =>
+													value.map((option, index) => (
+														<Chip size="small" label={option} {...getTagProps({ index })} />
+													))}
+											/>
+										</Fade>
+									)}
+
+									{shipError && (
+										<FormHelperText error>Select at least one shipping method</FormHelperText>
+									)}
+								</FormGroup>
+							</FormControl>
+						</Grid>
+						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+							<FormControl>
+								<FormLabel>Sell games individually or as a pack?</FormLabel>
+								<RadioGroup value={sellType} onChange={(e) => setSellType(e.target.value)}>
+									<FormControlLabel
+										value="individual"
+										control={<Radio />}
+										label="Each game individually"
+									/>
+									<FormControlLabel value="pack" control={<Radio />} label="Sell as a pack" />
+								</RadioGroup>
+							</FormControl>
+
+							<Button type="submit">SELL</Button>
+						</Grid>
+					</Grid>
 				</Fragment>
 			)}
-		</Fragment>
+		</form>
 	)
 }
 

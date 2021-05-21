@@ -121,7 +121,12 @@ const SaleListPopover = () => {
 						</Grid>
 						{saleList.length > 0 && (
 							<Grid item>
-								<Button color="primary" component={RouterLink} to="/sell">
+								<Button
+									color="primary"
+									component={RouterLink}
+									to="/sell"
+									onClick={(e) => setAnchorEl(null)}
+								>
 									Sell
 								</Button>
 							</Grid>
