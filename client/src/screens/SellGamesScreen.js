@@ -27,6 +27,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import citiesArr from '../constants/cities'
 import { bggGetGamesDetails } from '../actions/gameActions'
 import { removeFromSaleList } from '../actions/gameActions'
 
@@ -73,8 +74,6 @@ const SellGameScreen = () => {
 		})
 	)
 
-	console.log(values)
-
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
 	const { loading, error, success, games } = bggGamesDetails
 
@@ -108,18 +107,21 @@ const SellGameScreen = () => {
 		setValues(copy)
 	}
 
-	const handleCities = (e, cities) => {
-		setShipCities(cities)
-	}
-
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
 	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
+
+		const gamesCopy = [ ...games ]
+		for (let val of values) {
+			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
+			gamesCopy[index] = { ...gamesCopy[index], version: val.version, price: val.price }
+		}
+
 		console.log({
-			games,
+			gamesCopy,
 			shipPost,
 			shipCourier,
 			shipPersonal,
@@ -180,6 +182,7 @@ const SellGameScreen = () => {
 											renderInput={(params) => (
 												<TextField
 													{...params}
+													name={`version-${game.bggId}`}
 													label="Versions"
 													variant="outlined"
 													size="small"
@@ -206,6 +209,7 @@ const SellGameScreen = () => {
 											renderInput={(params) => (
 												<TextField
 													{...params}
+													name={`condition-${game.bggId}`}
 													label="Condition"
 													variant="outlined"
 													size="small"
@@ -247,9 +251,8 @@ const SellGameScreen = () => {
 														min : 0,
 														max : 10000
 													}}
-													variant="outlined"
-													id={`price-${game.bggId}`}
 													name={`price-${game.bggId}`}
+													variant="outlined"
 													label="Price"
 													type="number"
 													size="small"
@@ -345,38 +348,26 @@ const SellGameScreen = () => {
 									{shipPersonal && (
 										<Fade in={shipPersonal}>
 											<Autocomplete
-												onChange={(e, val) => handleCities(e, val)}
-												value={shipCities}
+												onChange={(e, cities) => setShipCities(cities)}
 												filterSelectedOptions
 												multiple
 												limitTags={2}
-												options={[
-													'Bucuresti',
-													'Bucuresti S1',
-													'Bucuresti S2',
-													'Bucuresti S3',
-													'Bucuresti S4',
-													'Bucuresti S5',
-													'Bucuresti S6',
-													'Timisoara',
-													'Cluj-Napoca',
-													'Constanta',
-													'Dalga'
-												]}
+												options={citiesArr}
+												renderTags={(value, getTagProps) =>
+													value.map((option, index) => (
+														<Chip size="small" label={option} {...getTagProps({ index })} />
+													))}
 												renderInput={(params) => (
 													<TextField
 														{...params}
 														label="Select Cities"
 														placeholder="Cities"
+														id="cities"
+														name="cities"
 														variant="outlined"
 														size="small"
-														required
 													/>
 												)}
-												renderTags={(value, getTagProps) =>
-													value.map((option, index) => (
-														<Chip size="small" label={option} {...getTagProps({ index })} />
-													))}
 											/>
 										</Fade>
 									)}
@@ -425,7 +416,7 @@ const SellGameScreen = () => {
 								</Grid>
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 									<Button type="submit" fullWidth variant="contained" color="primary">
-										Sell for {values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)} RON
+										Sell
 									</Button>
 								</Grid>
 							</Grid>
