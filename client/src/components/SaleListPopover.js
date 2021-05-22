@@ -15,7 +15,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList'
-import DeleteIcon from '@material-ui/icons/Delete'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import { removeFromSaleList } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
@@ -102,17 +102,18 @@ const SaleListPopover = () => {
 											secondary={game.year}
 											primaryTypographyProps={{
 												color   : 'primary',
-												variant : 'body2'
+												variant : 'subtitle2'
 											}}
-											secondaryTypographyProps={{ variant: 'caption' }}
+											secondaryTypographyProps={{
+												variant : 'caption'
+											}}
 										/>
 										<ListItemSecondaryAction>
 											<IconButton
 												edge="end"
-												color="secondary"
 												onClick={() => removeFromSaleListHandler(game.bggId)}
 											>
-												<DeleteIcon />
+												<HighlightOffIcon />
 											</IconButton>
 										</ListItemSecondaryAction>
 									</ListItem>

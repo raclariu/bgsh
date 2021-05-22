@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import Divider from '@material-ui/core/Divider'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import IconButton from '@material-ui/core/IconButton'
 import TextField from '@material-ui/core/TextField'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -20,10 +22,13 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import Radio from '@material-ui/core/Radio'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import Chip from '@material-ui/core/Chip'
+import InputAdornment from '@material-ui/core/InputAdornment'
 import FormGroup from '@material-ui/core/FormGroup'
 import Fade from '@material-ui/core/Fade'
-import { bggGetGamesDetails } from '../actions/gameActions'
 import Button from '@material-ui/core/Button'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import { bggGetGamesDetails } from '../actions/gameActions'
+import { removeFromSaleList } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	section      : {
@@ -52,6 +57,7 @@ const SellGameScreen = () => {
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
 	const [ shipCities, setShipCities ] = useState([])
 	const [ sellType, setSellType ] = useState('individual')
+	const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -61,10 +67,13 @@ const SellGameScreen = () => {
 				bggId     : el.bggId,
 				isSleeved : false,
 				version   : null,
-				condition : null
+				condition : null,
+				price     : ''
 			}
 		})
 	)
+
+	console.log(values)
 
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
 	const { loading, error, success, games } = bggGamesDetails
@@ -103,11 +112,14 @@ const SellGameScreen = () => {
 		setShipCities(cities)
 	}
 
+	const removeFromSaleListHandler = (id) => {
+		dispatch(removeFromSaleList(id))
+	}
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		console.log({
 			games,
-
 			shipPost,
 			shipCourier,
 			shipPersonal,
@@ -115,7 +127,8 @@ const SellGameScreen = () => {
 			shipPostPayer,
 			shipCities       : shipPersonal ? shipCities : null,
 			sellType,
-
+			extraInfoTxt,
+			price            : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0),
 			individualData   : values
 		})
 	}
@@ -131,8 +144,24 @@ const SellGameScreen = () => {
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
 						{games.map((game) => (
-							<Grid item key={game.bggId} xl={6} lg={6} md={6} sm={12} xs={12}>
+							<Grid item key={game.bggId} xl={6} lg={6} md={6} sm={6} xs={12}>
 								<Card elevation={4}>
+									<CardHeader
+										title={game.title}
+										subheader={game.year}
+										action={
+											<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
+												<HighlightOffIcon />
+											</IconButton>
+										}
+										titleTypographyProps={{
+											color   : 'primary',
+											variant : 'subtitle2'
+										}}
+										subheaderTypographyProps={{
+											variant : 'caption'
+										}}
+									/>
 									<CardMedia
 										className={cls.media}
 										component="img"
@@ -167,15 +196,12 @@ const SellGameScreen = () => {
 												handleUncontrolled(e, selected, game, 'condition')}
 											options={[
 												'New',
-												'New, opened',
-												'New, punched components',
+												'Opened, not played',
+												'Like new',
 												'Very Good',
 												'Good',
-												'Average',
-												'Poor',
-												'Very Poor',
-												'Damaged',
-												'Heavily Damaged'
+												'Acceptable',
+												'Poor'
 											]}
 											renderInput={(params) => (
 												<TextField
@@ -187,16 +213,51 @@ const SellGameScreen = () => {
 												/>
 											)}
 										/>
-										<FormControlLabel
-											control={
-												<Switch
-													checked={values.find((el) => el.bggId === game.bggId).isSleeved}
-													onChange={(e) =>
-														handleUncontrolled(e, e.target.checked, game, 'isSleeved')}
+										<Grid container>
+											<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
+												<FormControlLabel
+													control={
+														<Switch
+															checked={
+																values.find((el) => el.bggId === game.bggId).isSleeved
+															}
+															onChange={(e) =>
+																handleUncontrolled(
+																	e,
+																	e.target.checked,
+																	game,
+																	'isSleeved'
+																)}
+														/>
+													}
+													label="Sleeved?"
 												/>
-											}
-											label="Sleeved?"
-										/>
+											</Grid>
+											<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
+												<TextField
+													onChange={(e) =>
+														handleUncontrolled(e, e.target.value, game, 'price')}
+													value={values.find((el) => el.bggId === game.bggId).price}
+													InputProps={{
+														startAdornment : (
+															<InputAdornment position="start">RON</InputAdornment>
+														)
+													}}
+													inputProps={{
+														min : 0,
+														max : 10000
+													}}
+													variant="outlined"
+													id={`price-${game.bggId}`}
+													name={`price-${game.bggId}`}
+													label="Price"
+													type="number"
+													size="small"
+													fullWidth
+													required
+												/>
+											</Grid>
+										</Grid>
 									</CardContent>
 								</Card>
 							</Grid>
@@ -205,9 +266,9 @@ const SellGameScreen = () => {
 
 					<Divider />
 
+					{/* Shipping Area */}
 					<Grid container className={cls.section} direction="row">
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-							{/* Shipping Area */}
 							<FormControl required error={shipError} fullWidth>
 								{/* Post shipping */}
 								<FormLabel>Shipping method</FormLabel>
@@ -327,19 +388,47 @@ const SellGameScreen = () => {
 							</FormControl>
 						</Grid>
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-							<FormControl>
-								<FormLabel>Sell games individually or as a pack?</FormLabel>
-								<RadioGroup value={sellType} onChange={(e) => setSellType(e.target.value)}>
-									<FormControlLabel
-										value="individual"
-										control={<Radio />}
-										label="Each game individually"
+							<Grid container direction="column">
+								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+									<FormControl>
+										<FormLabel>Sell games individually or as a pack?</FormLabel>
+										<RadioGroup row value={sellType} onChange={(e) => setSellType(e.target.value)}>
+											<FormControlLabel
+												value="individual"
+												control={<Radio />}
+												label="Each game individually"
+											/>
+											<FormControlLabel value="pack" control={<Radio />} label="Sell as a pack" />
+										</RadioGroup>
+									</FormControl>
+								</Grid>
+								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+									<FormLabel>
+										Any other details you might want to add ({extraInfoTxt.length}/500)
+									</FormLabel>
+									<TextField
+										onChange={(e) => setExtraInfoTxt(e.target.value)}
+										value={extraInfoTxt}
+										inputProps={{
+											maxLength : 500
+										}}
+										variant="outlined"
+										id="extra-info-txt"
+										name="extra-info-txt"
+										type="text"
+										multiline
+										rows={3}
+										rowsMax={10}
+										size="small"
+										fullWidth
 									/>
-									<FormControlLabel value="pack" control={<Radio />} label="Sell as a pack" />
-								</RadioGroup>
-							</FormControl>
-
-							<Button type="submit">SELL</Button>
+								</Grid>
+								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
+									<Button type="submit" fullWidth variant="contained" color="primary">
+										Sell for {values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)} RON
+									</Button>
+								</Grid>
+							</Grid>
 						</Grid>
 					</Grid>
 				</Fragment>
