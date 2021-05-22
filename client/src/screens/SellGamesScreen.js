@@ -74,6 +74,8 @@ const SellGameScreen = () => {
 		})
 	)
 
+	console.log(shipCities)
+
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
 	const { loading, error, success, games } = bggGamesDetails
 
@@ -117,22 +119,43 @@ const SellGameScreen = () => {
 		const gamesCopy = [ ...games ]
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
-			gamesCopy[index] = { ...gamesCopy[index], version: val.version, price: val.price }
+			gamesCopy[index] = {
+				...gamesCopy[index],
+				version   : val.version,
+				price     : +val.price,
+				condition : val.condition,
+				isSleeved : val.isSleeved
+			}
 		}
 
-		console.log({
-			gamesCopy,
-			shipPost,
-			shipCourier,
-			shipPersonal,
-			shipCourierPayer,
-			shipPostPayer,
-			shipCities       : shipPersonal ? shipCities : null,
-			sellType,
-			extraInfoTxt,
-			price            : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0),
-			individualData   : values
-		})
+		if (sellType === 'pack') {
+			console.log({
+				games            : gamesCopy,
+				sellType,
+				shipPost,
+				shipPostPayer,
+				shipCourier,
+				shipCourierPayer,
+				shipPersonal,
+				shipCities,
+				extraInfoTxt,
+				totalPrice       : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)
+			})
+		}
+
+		if (sellType === 'individual') {
+			console.log({
+				games            : gamesCopy,
+				sellType,
+				shipPost,
+				shipPostPayer,
+				shipCourier,
+				shipCourierPayer,
+				shipPersonal,
+				shipCities,
+				extraInfoTxt
+			})
+		}
 	}
 
 	return (
@@ -340,7 +363,10 @@ const SellGameScreen = () => {
 										control={
 											<Checkbox
 												checked={shipPersonal}
-												onChange={(e) => setShipPersonal(e.target.checked)}
+												onChange={(e) => {
+													setShipPersonal(e.target.checked)
+													setShipCities([])
+												}}
 											/>
 										}
 										label="Personal delivery"
@@ -348,9 +374,10 @@ const SellGameScreen = () => {
 									{shipPersonal && (
 										<Fade in={shipPersonal}>
 											<Autocomplete
-												onChange={(e, cities) => setShipCities(cities)}
-												filterSelectedOptions
 												multiple
+												filterSelectedOptions
+												value={shipCities}
+												onChange={(e, cities) => setShipCities(cities)}
 												limitTags={2}
 												options={citiesArr}
 												renderTags={(value, getTagProps) =>
@@ -359,10 +386,15 @@ const SellGameScreen = () => {
 													))}
 												renderInput={(params) => (
 													<TextField
+														onChange={() => console.log(params)}
 														{...params}
+														required
+														inputProps={{
+															...params.inputProps,
+															required : shipCities.length === 0
+														}}
 														label="Select Cities"
 														placeholder="Cities"
-														id="cities"
 														name="cities"
 														variant="outlined"
 														size="small"
@@ -404,7 +436,6 @@ const SellGameScreen = () => {
 											maxLength : 500
 										}}
 										variant="outlined"
-										id="extra-info-txt"
 										name="extra-info-txt"
 										type="text"
 										multiline
