@@ -3,6 +3,7 @@ const router = express.Router()
 import { userAuth, userRegister } from '../controllers/userController.js'
 import {
 	validateEmail,
+	validateEmailDuplicate,
 	validatePassword,
 	validatePasswordConfirmation,
 	validateUsername
@@ -12,6 +13,6 @@ import {
 router.route('/signin').post([ validateEmail, validatePassword ], userAuth)
 router
 	.route('/signup')
-	.post([ validateEmail, validateUsername, validatePassword, validatePasswordConfirmation ], userRegister)
+	.post([ validateEmailDuplicate, validateUsername, validatePassword, validatePasswordConfirmation ], userRegister)
 
 export default router

@@ -1,11 +1,13 @@
 import axios from 'axios'
+import { validationResult } from 'express-validator'
+import Game from '../models/gameModel.js'
 import asyncHandler from 'express-async-handler'
 import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get single game from BGG
 // * @route   POST  /api/games/bgg
 // * @access  Private route
-const getOneGameFromBGG = asyncHandler(async (req, res) => {
+const getGamesFromBGG = asyncHandler(async (req, res) => {
 	try {
 		const { bggIds } = req.body
 
@@ -94,4 +96,68 @@ const getOneGameFromBGG = asyncHandler(async (req, res) => {
 	}
 })
 
-export { getOneGameFromBGG }
+// * @desc    Get single game from BGG
+// * @route   POST  /api/games/sell
+// * @access  Private route
+const sellGames = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		res.status(400)
+		throw {
+			message : validationErrors.errors.map((err) => err.msg)
+		}
+	}
+
+	const {
+		games,
+		sellType,
+		shipPost,
+		shipPostPayer,
+		shipCourier,
+		shipCourierPayer,
+		shipPersonal,
+		shipCities,
+		extraInfoTxt,
+		totalPrice
+	} = req.body
+
+	if (sellType === 'pack') {
+		await Game.create({
+			user             : req.user._id,
+			games,
+			sellType,
+			shipPost,
+			shipPostPayer,
+			shipCourier,
+			shipCourierPayer,
+			shipPersonal,
+			shipCities,
+			extraInfoTxt,
+			totalPrice
+		})
+	} else {
+		let sellList = []
+		for (let game of games) {
+			let data = {
+				user             : req.user._id,
+				games            : [ game ],
+				sellType,
+				shipPost,
+				shipPostPayer,
+				shipCourier,
+				shipCourierPayer,
+				shipPersonal,
+				shipCities,
+				extraInfoTxt,
+				totalPrice       : game.price
+			}
+			sellList.push(data)
+		}
+
+		await Game.insertMany(sellList)
+	}
+
+	res.status(200).json('ok')
+})
+
+export { getGamesFromBGG, sellGames }

@@ -4,7 +4,10 @@ import {
 	BGG_GAMES_DETAILS_SUCCESS,
 	BGG_GAMES_DETAILS_FAIL,
 	SALE_LIST_ADD,
-	SALE_LIST_REMOVE
+	SALE_LIST_REMOVE,
+	SELL_GAMES_REQUEST,
+	SELL_GAMES_SUCCESS,
+	SELL_GAMES_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -54,4 +57,29 @@ export const removeFromSaleList = (id) => (dispatch, getState) => {
 		type    : SALE_LIST_REMOVE,
 		payload : filtered
 	})
+}
+
+export const sellGames = (gamesData) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: SELL_GAMES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		await axios.post('/api/games/sell', gamesData, config)
+
+		dispatch({
+			type : SELL_GAMES_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : SELL_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
 }

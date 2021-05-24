@@ -17,7 +17,7 @@ const App = () => {
 
 			<Container maxWidth="md" component="main">
 				<Route path="/" exact>
-					<HomePageScreen />
+					<HomePageScreen test={1} />
 				</Route>
 
 				<Route path={[ '/signin', '/signup' ]} exact>

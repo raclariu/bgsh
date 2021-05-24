@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
 		display       : 'flex',
 		flexDirection : 'column',
 		alignItems    : 'center',
-		height        : '293px',
+		height        : '301px',
 		paddingBottom : '8px'
 	},
 	skMedia   : {

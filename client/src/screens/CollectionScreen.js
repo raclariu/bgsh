@@ -128,7 +128,7 @@ const CollectionScreen = () => {
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad height={200} offset={200} once placeholder={<CollectionGameSkeleton />}>
+							<LazyLoad offset={200} once placeholder={<CollectionGameSkeleton />}>
 								<CollectionGameCard
 									game={game}
 									saleListHandler={saleListHandler}

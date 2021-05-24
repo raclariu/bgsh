@@ -43,71 +43,61 @@ const SignIn = () => {
 		[ history, userInfo ]
 	)
 
+	const handleShowHidePass = () => {
+		setPassVisibility(!passVisibility)
+	}
+
 	const submitHandler = (e) => {
 		e.preventDefault()
 		dispatch(signIn(email, password))
 	}
 
-	const handleShowHidePass = () => {
-		setPassVisibility(!passVisibility)
-	}
-
 	return (
-		<Fragment>
-			<form className={cls.root} noValidate autoComplete="off">
-				<TextField
-					className={cls.input}
-					error={error && error.emailError ? true : false}
-					helperText={error ? error.emailError : false}
-					onChange={(e) => setEmail(e.target.value)}
-					value={email}
-					variant="outlined"
-					id="email"
-					name="email"
-					label="Email"
-					type="email"
-					fullWidth
-					autoFocus
-					required
-				/>
+		<form onSubmit={submitHandler} className={cls.root} autoComplete="off">
+			<TextField
+				className={cls.input}
+				error={error && error.emailError ? true : false}
+				helperText={error ? error.emailError : false}
+				onChange={(e) => setEmail(e.target.value)}
+				value={email}
+				variant="outlined"
+				id="email"
+				name="email"
+				label="Email"
+				type="email"
+				fullWidth
+				autoFocus
+				required={true}
+			/>
 
-				<TextField
-					className={cls.input}
-					error={error && error.passwordError ? true : false}
-					helperText={error ? error.passwordError : false}
-					onChange={(e) => setPassword(e.target.value)}
-					value={password}
-					variant="outlined"
-					id="password"
-					name="password"
-					label="Password"
-					type={passVisibility ? 'text' : 'password'}
-					InputProps={{
-						endAdornment : (
-							<InputAdornment position="end">
-								<IconButton onClick={handleShowHidePass}>
-									{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-								</IconButton>
-							</InputAdornment>
-						)
-					}}
-					fullWidth
-					required
-				/>
+			<TextField
+				className={cls.input}
+				error={error && error.passwordError ? true : false}
+				helperText={error ? error.passwordError : false}
+				onChange={(e) => setPassword(e.target.value)}
+				value={password}
+				variant="outlined"
+				id="password"
+				name="password"
+				label="Password"
+				type={passVisibility ? 'text' : 'password'}
+				InputProps={{
+					endAdornment : (
+						<InputAdornment position="end">
+							<IconButton onClick={handleShowHidePass}>
+								{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+							</IconButton>
+						</InputAdornment>
+					)
+				}}
+				fullWidth
+				required
+			/>
 
-				<Button
-					onClick={submitHandler}
-					type="submit"
-					variant="contained"
-					color="primary"
-					size="large"
-					disabled={loading}
-					fullWidth
-				>
-					{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
-				</Button>
-			</form>
-		</Fragment>
+			<Button type="submit" variant="contained" color="primary" size="large" disabled={loading} fullWidth>
+				{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
+			</Button>
+		</form>
 	)
 }
 

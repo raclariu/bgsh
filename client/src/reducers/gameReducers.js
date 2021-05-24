@@ -4,7 +4,10 @@ import {
 	BGG_GAMES_DETAILS_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
-	SALE_LIST_RESET
+	SALE_LIST_RESET,
+	SELL_GAMES_REQUEST,
+	SELL_GAMES_SUCCESS,
+	SELL_GAMES_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -34,8 +37,23 @@ export const saleListReducer = (state = [], action) => {
 			return action.payload
 
 		case SALE_LIST_RESET:
-			console.log('reseted')
 			return []
+
+		default:
+			return state
+	}
+}
+
+export const sellGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case SELL_GAMES_REQUEST:
+			return { loading: true }
+
+		case SELL_GAMES_SUCCESS:
+			return { loading: false, success: true }
+
+		case SELL_GAMES_FAIL:
+			return { loading: false, error: action.payload }
 
 		default:
 			return state

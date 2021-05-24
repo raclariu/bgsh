@@ -7,38 +7,21 @@ import { comparePasswords, hashPassword, generateToken } from '../helpers/helper
 // * @route   POST  /api/users/signin
 // * @access  Public route
 const userAuth = asyncHandler(async (req, res) => {
-	const { email, password } = req.body
-
-	let emailError = null
-	let passwordError = null
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
+		console.log(err)
 
-		emailError = err.email ? err.email.msg : null
-		passwordError = err.password ? err.password.msg : null
-	}
-
-	let user
-	if (!emailError) {
-		user = await User.findOne({ email })
-		if (user) {
-			const compared = await comparePasswords(password, user.password)
-			if (!compared) {
-				passwordError = passwordError ? passwordError : 'Incorrect password'
-			}
-		} else {
-			emailError = 'User with this email address does not exist'
-		}
-	}
-
-	if (emailError || passwordError) {
 		res.status(401)
 		throw {
-			message : { emailError, passwordError }
+			message : {
+				emailError    : err.email ? err.email.msg : null,
+				passwordError : err.password ? err.password.msg : null
+			}
 		}
 	} else {
+		const { email } = req.body
+		const user = await User.findOne({ email })
 		res.status(200).json({
 			_id      : user._id,
 			email    : user.email,
@@ -55,39 +38,17 @@ const userAuth = asyncHandler(async (req, res) => {
 const userRegister = asyncHandler(async (req, res) => {
 	const { email, username, password } = req.body
 
-	let emailError = null
-	let usernameError = null
-	let passwordError = null
-	let passwordConfirmationError = null
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
 
-		emailError = err.email ? err.email.msg : null
-		usernameError = err.username ? err.username.msg : null
-		passwordError = err.password ? err.password.msg : null
-		passwordConfirmationError = err.passwordConfirmation ? err.passwordConfirmation.msg : null
-	}
-
-	const userExists = await User.findOne({ email })
-	if (userExists) {
-		emailError = 'User with this email address already exists'
-	}
-
-	const usernameExists = await User.findOne({ username })
-	if (usernameExists) {
-		usernameError = 'Username already taken'
-	}
-
-	if (emailError || usernameError || passwordError || passwordConfirmationError) {
 		res.status(400)
 		throw {
 			message : {
-				emailError,
-				usernameError,
-				passwordError,
-				passwordConfirmationError
+				emailError                : err.email ? err.email.msg : null,
+				usernameError             : err.username ? err.username.msg : null,
+				passwordError             : err.password ? err.password.msg : null,
+				passwordConfirmationError : err.passwordConfirmation ? err.passwordConfirmation.msg : null
 			}
 		}
 	} else {

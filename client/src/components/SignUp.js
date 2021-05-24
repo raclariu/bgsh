@@ -49,11 +49,6 @@ const SignUp = () => {
 		[ history, userInfo ]
 	)
 
-	const submitHandler = (e) => {
-		e.preventDefault()
-		dispatch(signUp(email, username, password, passwordConfirmation))
-	}
-
 	const handleShowHidePass = () => {
 		setPassVisibility(!passVisibility)
 	}
@@ -62,9 +57,14 @@ const SignUp = () => {
 		setPassConfirmationVisibility(!passConfirmationVisibility)
 	}
 
+	const submitHandler = (e) => {
+		e.preventDefault()
+		dispatch(signUp(email, username, password, passwordConfirmation))
+	}
+
 	return (
 		<Fragment>
-			<form className={classes.root} noValidate autoComplete="off">
+			<form onSubmit={submitHandler} className={classes.root} autoComplete="off">
 				<TextField
 					className={classes.input}
 					error={error && error.emailError ? true : false}
@@ -148,15 +148,7 @@ const SignUp = () => {
 					required
 				/>
 
-				<Button
-					onClick={submitHandler}
-					variant="contained"
-					type="submit"
-					color="primary"
-					size="large"
-					disabled={loading}
-					fullWidth
-				>
+				<Button variant="contained" type="submit" color="primary" size="large" disabled={loading} fullWidth>
 					{loading ? <Loader size={26} color="inherit" /> : 'Sign up'}
 				</Button>
 			</form>

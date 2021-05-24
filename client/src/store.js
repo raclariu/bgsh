@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer } from './reducers/collectionReducers'
-import { bggGetGamesDetailsReducer, saleListReducer } from './reducers/gameReducers'
+import { bggGetGamesDetailsReducer, saleListReducer, sellGamesReducer } from './reducers/gameReducers'
 
 const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
@@ -11,7 +11,8 @@ const reducer = combineReducers({
 	bggCollection   : bggGetCollectionReducer,
 	bggGamesDetails : bggGetGamesDetailsReducer,
 	dbCollection    : dbGetCollectionReducer,
-	saleList        : saleListReducer
+	saleList        : saleListReducer,
+	sellGames       : sellGamesReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
