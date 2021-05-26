@@ -57,7 +57,7 @@ const SellGameScreen = () => {
 	const [ sellType, setSellType ] = useState('individual')
 	const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
 
-	const test = useRef(0)
+	const ms = useRef(0)
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -83,8 +83,8 @@ const SellGameScreen = () => {
 			const mapped = saleList.map((el) => el.bggId)
 			const timer = setTimeout(() => {
 				dispatch(bggGetGamesDetails(mapped))
-			}, test.current)
-			test.current = 750
+			}, ms.current)
+			ms.current = 750
 			return () => {
 				clearTimeout(timer)
 			}
@@ -100,7 +100,7 @@ const SellGameScreen = () => {
 	}
 
 	const removeFromSaleListHandler = (id) => {
-		test.current = 0
+		ms.current = 0
 		dispatch(removeFromSaleList(id))
 	}
 
