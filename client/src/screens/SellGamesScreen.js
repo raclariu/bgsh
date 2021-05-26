@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -24,7 +23,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import Chip from '@material-ui/core/Chip'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormGroup from '@material-ui/core/FormGroup'
-import Fade from '@material-ui/core/Fade'
 import Button from '@material-ui/core/Button'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import citiesArr from '../constants/cities'
@@ -49,16 +47,17 @@ const useStyles = makeStyles((theme) => ({
 const SellGameScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
-	const history = useHistory()
 
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
-	const [ shipPersonal, setShipPersonal ] = useState(false)
-	const [ shipCourierPayer, setShipCourierPayer ] = useState('buyer')
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
+	const [ shipCourierPayer, setShipCourierPayer ] = useState('seller')
+	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
 	const [ sellType, setSellType ] = useState('individual')
 	const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
+
+	const test = useRef(0)
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -81,23 +80,16 @@ const SellGameScreen = () => {
 
 	useEffect(
 		() => {
-			const mapIds = saleList.map((el) => el.bggId)
-			dispatch(bggGetGamesDetails(mapIds))
-		},
-		[ dispatch, saleList ]
-	)
-
-	useEffect(
-		() => {
-			if (saleList.length !== values.length) {
-				const removedId = values.filter(
-					({ bggId: valId }) => !saleList.some(({ bggId: slId }) => valId === slId)
-				)[0].bggId
-				const newValues = [ ...values ].filter((el) => el.bggId !== removedId)
-				setValues(newValues)
+			const mapped = saleList.map((el) => el.bggId)
+			const timer = setTimeout(() => {
+				dispatch(bggGetGamesDetails(mapped))
+			}, test.current)
+			test.current = 750
+			return () => {
+				clearTimeout(timer)
 			}
 		},
-		[ saleList, values ]
+		[ dispatch, saleList ]
 	)
 
 	const handleUncontrolled = (e, value, game, key) => {
@@ -108,6 +100,7 @@ const SellGameScreen = () => {
 	}
 
 	const removeFromSaleListHandler = (id) => {
+		test.current = 0
 		dispatch(removeFromSaleList(id))
 	}
 
@@ -117,12 +110,14 @@ const SellGameScreen = () => {
 		const gamesCopy = [ ...games ]
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
-			gamesCopy[index] = {
-				...gamesCopy[index],
-				version   : val.version,
-				price     : +val.price,
-				condition : val.condition,
-				isSleeved : val.isSleeved
+			if (index !== -1) {
+				gamesCopy[index] = {
+					...gamesCopy[index],
+					version   : val.version,
+					price     : +val.price,
+					condition : val.condition,
+					isSleeved : val.isSleeved
+				}
 			}
 		}
 
@@ -130,15 +125,15 @@ const SellGameScreen = () => {
 			games            : gamesCopy,
 			sellType,
 			shipPost,
-			shipPostPayer    : shipPost ? shipPostPayer : '',
+			shipPostPayer    : shipPost ? shipPostPayer : null,
 			shipCourier,
-			shipCourierPayer : shipCourier ? shipCourierPayer : '',
+			shipCourierPayer : shipCourier ? shipCourierPayer : null,
 			shipPersonal,
 			shipCities,
 			extraInfoTxt,
 			totalPrice       : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)
 		}
-		console.log(gamesData)
+		console.log({ values, gamesData, games, saleList })
 
 		dispatch(sellGames(gamesData))
 	}
@@ -155,7 +150,7 @@ const SellGameScreen = () => {
 					<Grid container spacing={3} className={cls.section}>
 						{games.map((game) => (
 							<Grid item key={game.bggId} xl={6} lg={6} md={6} sm={6} xs={12}>
-								<Card elevation={4}>
+								<Card elevation={2}>
 									<CardHeader
 										title={game.title}
 										subheader={game.year}
@@ -191,7 +186,8 @@ const SellGameScreen = () => {
 												<TextField
 													{...params}
 													name={`version-${game.bggId}`}
-													label="Versions"
+													label="Version"
+													placeholder="Select game version"
 													variant="outlined"
 													size="small"
 													required
@@ -220,6 +216,7 @@ const SellGameScreen = () => {
 													{...params}
 													name={`condition-${game.bggId}`}
 													label="Condition"
+													placeholder="Select condition"
 													variant="outlined"
 													size="small"
 													required
@@ -279,7 +276,7 @@ const SellGameScreen = () => {
 					<Divider />
 
 					{/* Shipping Area */}
-					<Grid container className={cls.section} direction="row">
+					<Grid container className={cls.section} direction="row" spacing={2}>
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
 							<FormControl required error={shipError} fullWidth>
 								{/* Post shipping */}
@@ -294,25 +291,18 @@ const SellGameScreen = () => {
 										}
 										label="Romanian Post"
 									/>
-									{shipPost && (
-										<Fade in={shipPost}>
-											<FormControl>
-												<FormLabel>Who pays shipping?</FormLabel>
-												<RadioGroup
-													row
-													value={shipPostPayer}
-													onChange={(e) => setShipPostPayer(e.target.value)}
-												>
-													<FormControlLabel
-														value="seller"
-														control={<Radio />}
-														label="Seller"
-													/>
-													<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
-												</RadioGroup>
-											</FormControl>
-										</Fade>
-									)}
+
+									<FormControl disabled={!shipPost}>
+										<FormLabel>Who pays shipping?</FormLabel>
+										<RadioGroup
+											row
+											value={shipPostPayer}
+											onChange={(e) => setShipPostPayer(e.target.value)}
+										>
+											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
+											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
+										</RadioGroup>
+									</FormControl>
 
 									{/* Courier shipping */}
 									<FormControlLabel
@@ -324,25 +314,17 @@ const SellGameScreen = () => {
 										}
 										label="Courier"
 									/>
-									{shipCourier && (
-										<Fade in={shipCourier}>
-											<FormControl>
-												<FormLabel>Who pays shipping?</FormLabel>
-												<RadioGroup
-													row
-													value={shipCourierPayer}
-													onChange={(e) => setShipCourierPayer(e.target.value)}
-												>
-													<FormControlLabel
-														value="seller"
-														control={<Radio />}
-														label="Seller"
-													/>
-													<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
-												</RadioGroup>
-											</FormControl>
-										</Fade>
-									)}
+									<FormControl disabled={!shipCourier}>
+										<FormLabel>Who pays shipping?</FormLabel>
+										<RadioGroup
+											row
+											value={shipCourierPayer}
+											onChange={(e) => setShipCourierPayer(e.target.value)}
+										>
+											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
+											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
+										</RadioGroup>
+									</FormControl>
 
 									{/* Personal delivery */}
 									<FormControlLabel
@@ -355,40 +337,37 @@ const SellGameScreen = () => {
 												}}
 											/>
 										}
-										label="Personal delivery"
+										label="Personal"
 									/>
-									{shipPersonal && (
-										<Fade in={shipPersonal}>
-											<Autocomplete
-												multiple
-												filterSelectedOptions
-												value={shipCities}
-												onChange={(e, cities) => setShipCities(cities)}
-												limitTags={2}
-												options={citiesArr}
-												renderTags={(value, getTagProps) =>
-													value.map((option, index) => (
-														<Chip size="small" label={option} {...getTagProps({ index })} />
-													))}
-												renderInput={(params) => (
-													<TextField
-														onChange={() => console.log(params)}
-														{...params}
-														required
-														inputProps={{
-															...params.inputProps,
-															required : shipCities.length === 0
-														}}
-														label="Select Cities"
-														placeholder="Cities"
-														name="cities"
-														variant="outlined"
-														size="small"
-													/>
-												)}
+
+									<Autocomplete
+										disabled={!shipPersonal}
+										multiple
+										filterSelectedOptions
+										value={shipCities}
+										onChange={(e, cities) => setShipCities(cities)}
+										limitTags={2}
+										options={citiesArr}
+										renderTags={(value, getTagProps) =>
+											value.map((option, index) => (
+												<Chip size="small" label={option} {...getTagProps({ index })} />
+											))}
+										renderInput={(params) => (
+											<TextField
+												{...params}
+												required
+												inputProps={{
+													...params.inputProps,
+													required : shipCities.length === 0
+												}}
+												label="Cities"
+												placeholder={shipCities.length > 0 ? 'Cities' : 'Select cities'}
+												name="cities"
+												variant="outlined"
+												size="small"
 											/>
-										</Fade>
-									)}
+										)}
+									/>
 
 									{shipError && (
 										<FormHelperText error>Select at least one shipping method</FormHelperText>
@@ -405,12 +384,13 @@ const SellGameScreen = () => {
 											<FormControlLabel
 												value="individual"
 												control={<Radio />}
-												label="Each game individually"
+												label="Individually"
 											/>
-											<FormControlLabel value="pack" control={<Radio />} label="Sell as a pack" />
+											<FormControlLabel value="pack" control={<Radio />} label="Pack" />
 										</RadioGroup>
 									</FormControl>
 								</Grid>
+
 								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 									<FormLabel>
 										Any other details you might want to add ({extraInfoTxt.length}/500)
@@ -432,7 +412,13 @@ const SellGameScreen = () => {
 									/>
 								</Grid>
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
-									<Button type="submit" fullWidth variant="contained" color="primary">
+									<Button
+										type="submit"
+										disabled={shipError}
+										variant="contained"
+										color="primary"
+										fullWidth
+									>
 										Sell
 									</Button>
 								</Grid>

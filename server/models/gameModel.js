@@ -9,31 +9,14 @@ const gameSchema = mongoose.Schema(
 		},
 		games            : [],
 		shipCities       : [],
-		sellType         : {
-			type     : String,
-			required : true
-		},
-		extraInfoTxt     : {
-			type : String
-		},
-		shipCourier      : {
-			type : Boolean
-		},
-		shipPost         : {
-			type : Boolean
-		},
-		shipPersonal     : {
-			type : Boolean
-		},
-		shipCourierPayer : {
-			type : String
-		},
-		shipPostPayer    : {
-			type : String
-		},
-		totalPrice       : {
-			type : Number
-		}
+		sellType         : String,
+		extraInfoTxt     : String,
+		shipCourier      : Boolean,
+		shipPost         : Boolean,
+		shipPersonal     : Boolean,
+		shipCourierPayer : mongoose.Schema.Types.Mixed,
+		shipPostPayer    : mongoose.Schema.Types.Mixed,
+		totalPrice       : Number
 	},
 	{
 		timestamps : true

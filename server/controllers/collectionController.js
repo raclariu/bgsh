@@ -20,6 +20,7 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
+				subtype  : 'boardgame',
 				own      : 1
 			}
 		})

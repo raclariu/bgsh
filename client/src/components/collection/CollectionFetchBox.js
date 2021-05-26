@@ -28,7 +28,7 @@ const CollectionFetchBox = () => {
 		() => {
 			if (success) {
 				dispatch({ type: SALE_LIST_RESET })
-				history.push('collection')
+				history.push('/collection')
 			}
 		},
 		[ dispatch, success, history ]

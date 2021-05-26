@@ -11,15 +11,9 @@ const collectionSchema = mongoose.Schema(
 			type     : String,
 			required : true
 		},
-		title     : {
-			type : String
-		},
-		year      : {
-			type : Number
-		},
-		thumbnail : {
-			type : String
-		}
+		title     : String,
+		year      : Number,
+		thumbnail : String
 	},
 	{
 		timestamps : true
