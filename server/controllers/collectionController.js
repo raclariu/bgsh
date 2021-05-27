@@ -85,7 +85,7 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 		const getCollection = await Collection.find({ user: req.user._id })
 			.limit(resultsPerPage)
 			.skip(resultsPerPage * (queryPage - 1))
-			.sort('createdAt')
+			.sort('title')
 			.lean()
 
 		const pagination = {

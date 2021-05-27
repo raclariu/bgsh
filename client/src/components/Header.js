@@ -62,7 +62,7 @@ const Header = () => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar position="static">
+			<AppBar elevation={1} position="static" color="transparent">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
 						BoardGames

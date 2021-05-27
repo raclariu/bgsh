@@ -2,13 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Loader from '../Loader'
+import Paper from '@material-ui/core/Paper'
+import InputBase from '@material-ui/core/InputBase'
+import IconButton from '@material-ui/core/IconButton'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
+import ClearIcon from '@material-ui/icons/Clear'
 import { bggGetCollection } from '../../actions/collectionActions'
 import { SALE_LIST_RESET } from '../../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
+	paper  : {
+		padding : theme.spacing(1.2, 1, 1.2, 2)
+	},
 	button : {
 		marginTop : theme.spacing(1)
 	}
@@ -37,32 +43,48 @@ const CollectionFetchBox = () => {
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
 
-		dispatch(bggGetCollection(bggUsername))
+		if (bggUsername.trim().length > 3) {
+			dispatch(bggGetCollection(bggUsername))
+		}
 	}
 
 	return (
-		<form noValidate autoComplete="off">
-			<TextField
+		<Paper
+			component="form"
+			className={cls.paper}
+			elevation={2}
+			onSubmit={submitToBGGHandler}
+			noValidate
+			autoComplete="off"
+		>
+			<InputBase
 				onChange={(e) => setBggUsername(e.target.value)}
 				value={bggUsername}
 				id="bggUsername"
 				name="bggUsername"
 				placeholder="Your BGG Username"
 				type="text"
-			/>
-
-			<Button
-				className={cls.button}
-				onClick={submitToBGGHandler}
-				disabled={bggUsername.length < 4 || loading}
-				type="submit"
-				variant="contained"
-				color="primary"
+				startAdornment={
+					<InputAdornment position="start">
+						{bggUsername.length > 3 ? (
+							<LibraryBooksOutlinedIcon />
+						) : (
+							<LibraryBooksOutlinedIcon color="disabled" />
+						)}
+					</InputAdornment>
+				}
+				endAdornment={
+					<InputAdornment position="end">
+						{bggUsername.length > 0 && (
+							<IconButton onClick={() => setBggUsername('')}>
+								<ClearIcon color="disabled" />
+							</IconButton>
+						)}
+					</InputAdornment>
+				}
 				fullWidth
-			>
-				{loading ? <Loader size={24} color="inherit" /> : 'Get Collection'}
-			</Button>
-		</form>
+			/>
+		</Paper>
 	)
 }
 

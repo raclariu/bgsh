@@ -44,15 +44,16 @@ const CollectionSearchBox = () => {
 				name="keyword"
 				placeholder="Search Collection"
 				type="text"
+				startAdornment={
+					<InputAdornment position="start">
+						{keyword.length > 2 ? <SearchIcon /> : <SearchIcon color="disabled" />}
+					</InputAdornment>
+				}
 				endAdornment={
 					<InputAdornment position="end">
-						{keyword ? (
+						{keyword.length > 0 && (
 							<IconButton onClick={() => setKeyword('')}>
 								<ClearIcon color="disabled" />
-							</IconButton>
-						) : (
-							<IconButton>
-								<SearchIcon color="disabled" />
 							</IconButton>
 						)}
 					</InputAdornment>
