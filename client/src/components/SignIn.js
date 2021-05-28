@@ -8,8 +8,8 @@ import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
 import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
-import { signIn } from '../actions/userActions'
 import Loader from './Loader'
+import { signIn } from '../actions/userActions'
 
 const useStyles = makeStyles((theme) => ({
 	root  : {
@@ -23,13 +23,12 @@ const useStyles = makeStyles((theme) => ({
 
 const SignIn = () => {
 	const cls = useStyles()
+	const dispatch = useDispatch()
 	const history = useHistory()
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
-
-	const dispatch = useDispatch()
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { loading, error, userInfo } = userSignIn

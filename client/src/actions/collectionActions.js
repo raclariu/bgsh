@@ -6,7 +6,10 @@ import {
 	BGG_COLLECTION_LIST_RESET,
 	DB_COLLECTION_LIST_REQUEST,
 	DB_COLLECTION_LIST_SUCCESS,
-	DB_COLLECTION_LIST_FAIL
+	DB_COLLECTION_LIST_FAIL,
+	WISHLIST_LIST_REQUEST,
+	WISHLIST_LIST_SUCCESS,
+	WISHLIST_LIST_FAIL
 } from '../constants/collectionConstants'
 
 export const bggGetCollection = (bggUsername) => async (dispatch, getState) => {
@@ -64,6 +67,32 @@ export const dbGetCollection = (searchKeyword, pageNumber) => async (dispatch, g
 	} catch (error) {
 		dispatch({
 			type    : DB_COLLECTION_LIST_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getWishlist = () => async (dispatch, getState) => {
+	try {
+		dispatch({ type: WISHLIST_LIST_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get('/api/collections/wishlist', config)
+
+		dispatch({
+			type    : WISHLIST_LIST_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : WISHLIST_LIST_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

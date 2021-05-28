@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
-import { bggGetCollectionReducer, dbGetCollectionReducer } from './reducers/collectionReducers'
+import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
 import { bggGetGamesDetailsReducer, saleListReducer, sellGamesReducer } from './reducers/gameReducers'
 
 const reducer = combineReducers({
@@ -11,6 +11,7 @@ const reducer = combineReducers({
 	bggCollection   : bggGetCollectionReducer,
 	bggGamesDetails : bggGetGamesDetailsReducer,
 	dbCollection    : dbGetCollectionReducer,
+	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer
 })
