@@ -13,6 +13,7 @@ import CollectionSearchBox from '../components/collection/CollectionSearchBox'
 import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
 import { dbGetCollection } from '../actions/collectionActions'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
+import { DB_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -44,6 +45,10 @@ const CollectionScreen = () => {
 	useEffect(
 		() => {
 			dispatch(dbGetCollection(searchKeyword, pageNumber))
+
+			return () => {
+				dispatch({ type: DB_COLLECTION_LIST_RESET })
+			}
 		},
 		[ dispatch, pageNumber, searchKeyword ]
 	)

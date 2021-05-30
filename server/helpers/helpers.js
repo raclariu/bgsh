@@ -28,7 +28,7 @@ const comparePasswords = async (enteredPassword, dbPassword) => {
 }
 
 const hashPassword = async (password) => {
-	return await bcrypt.hash(password, 10)
+	return await bcrypt.hash(password, 11)
 }
 
 const generateToken = (id) => {

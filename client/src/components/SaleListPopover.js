@@ -56,7 +56,7 @@ const SaleListPopover = () => {
 
 	return (
 		<div>
-			<IconButton className={cls.badge} onClick={handleClick} color="inherit">
+			<IconButton className={cls.badge} onClick={handleClick} color="primary">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListIcon />
 				</Badge>

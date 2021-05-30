@@ -14,11 +14,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import MenuIcon from '@material-ui/icons/Menu'
+import SaleListPopover from './SaleListPopover'
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
 import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined'
 import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
-import SaleListPopover from './SaleListPopover'
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined'
 import { signOut } from '../actions/userActions'
 import pink from '@material-ui/core/colors/pink'
 
@@ -98,6 +99,13 @@ const Header = () => {
 											<LibraryBooksOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="My Collection" />
+									</ListItem>
+
+									<ListItem button component={RouterLink} to="/wishlist">
+										<ListItemIcon>
+											<FavoriteBorderOutlinedIcon />
+										</ListItemIcon>
+										<ListItemText primary="My Wishlist" />
 									</ListItem>
 
 									<Divider />

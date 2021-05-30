@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -16,28 +16,30 @@ const ProfileScreen = () => {
 	const cls = useStyles()
 
 	return (
-		<Box mb={4} mt={4} height="100vh">
-			<Grid container spacing={3}>
-				<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-					<Box p={2} bgcolor="warning.light" borderRadius={4} boxShadow={2}>
-						<Typography variant="subtitle2" paragraph>
-							Import your BoardGameGeek collection
-						</Typography>
-						<CollectionFetchBox />
-						<Divider orientation="vertical" flexItem />
-					</Box>
+		<Fragment>
+			<Box mt={4}>
+				<Grid container spacing={3}>
+					<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+						<Box p={2} bgcolor="warning.light" borderRadius={4} boxShadow={2}>
+							<Typography variant="subtitle2" paragraph>
+								Import your BoardGameGeek collection
+							</Typography>
+							<CollectionFetchBox />
+							<Divider orientation="vertical" flexItem />
+						</Box>
+					</Grid>
+					<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+						<Box p={2} bgcolor="warning.light" borderRadius={4} boxShadow={2}>
+							<Typography variant="subtitle2" paragraph>
+								Import your BoardGameGeek collection
+							</Typography>
+							<CollectionFetchBox />
+							<Divider orientation="vertical" flexItem />
+						</Box>
+					</Grid>
 				</Grid>
-				<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-					<Box p={2} bgcolor="warning.light" borderRadius={4} boxShadow={2}>
-						<Typography variant="subtitle2" paragraph>
-							Import your BoardGameGeek collection
-						</Typography>
-						<CollectionFetchBox />
-						<Divider orientation="vertical" flexItem />
-					</Box>
-				</Grid>
-			</Grid>
-		</Box>
+			</Box>
+		</Fragment>
 	)
 }
 

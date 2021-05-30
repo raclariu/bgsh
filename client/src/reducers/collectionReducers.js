@@ -6,6 +6,7 @@ import {
 	DB_COLLECTION_LIST_REQUEST,
 	DB_COLLECTION_LIST_SUCCESS,
 	DB_COLLECTION_LIST_FAIL,
+	DB_COLLECTION_LIST_RESET,
 	WISHLIST_LIST_REQUEST,
 	WISHLIST_LIST_SUCCESS,
 	WISHLIST_LIST_FAIL
@@ -40,6 +41,9 @@ export const dbGetCollectionReducer = (state = {}, action) => {
 			}
 		case DB_COLLECTION_LIST_FAIL:
 			return { loading: false, error: action.payload }
+
+		case DB_COLLECTION_LIST_RESET:
+			return {}
 
 		default:
 			return state

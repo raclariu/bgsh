@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	autocomplete : {
 		margin : theme.spacing(2, 0, 2, 0)
+	},
+	error        : {
+		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
@@ -74,7 +77,10 @@ const SellGameScreen = () => {
 	)
 
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
-	const { loading, error, success, games } = bggGamesDetails
+	const { loading: detailsLoading, error: detailsError, success: detailsSuccess, games } = bggGamesDetails
+
+	const sell = useSelector((state) => state.sellGames)
+	const { loading: sellLoading, error: sellError, success: sellSuccess } = sell
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 
@@ -140,12 +146,17 @@ const SellGameScreen = () => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			{error && <Message>{error}</Message>}
-			{saleList.length === 0 && <Message>Your sale list is empty</Message>}
+			<div className={cls.error}>
+				{detailsError && <Message>{detailsError}</Message>}
 
-			{loading && <Loader />}
+				{sellError && <Message>{sellError.map((err) => <p>{err}</p>)}</Message>}
 
-			{success && (
+				{saleList.length === 0 && <Message>Your sale list is empty</Message>}
+			</div>
+
+			{detailsLoading && <Loader />}
+
+			{detailsSuccess && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
 						{games.map((game) => (
@@ -414,7 +425,7 @@ const SellGameScreen = () => {
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 									<Button
 										type="submit"
-										disabled={shipError}
+										// disabled={shipError}
 										variant="contained"
 										color="primary"
 										fullWidth
