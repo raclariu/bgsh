@@ -54,7 +54,7 @@ export const dbGetCollection = (searchKeyword, pageNumber) => async (dispatch, g
 			},
 			params  : {
 				search : searchKeyword ? searchKeyword.trim() : null,
-				page   : pageNumber
+				page   : +pageNumber ? +pageNumber : 1
 			}
 		}
 

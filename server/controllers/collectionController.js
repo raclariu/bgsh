@@ -13,10 +13,6 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 
 		const collectionExist = await Collection.findOne({ user: req.user._id }).select('_id').lean()
 
-		if (collectionExist) {
-			await Collection.deleteOne({ user: req.user._id })
-		}
-
 		// >> Owned
 		const { data: collData } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
 			params : {
@@ -71,6 +67,10 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			}
 		}
 
+		if (collectionExist) {
+			await Collection.deleteOne({ user: req.user._id })
+		}
+
 		const created = await Collection.create({
 			user          : req.user._id,
 			owned         : bggCollection.length > 0 ? bggCollection.sort((a, b) => (a.title > b.title ? 1 : -1)) : [],
@@ -93,7 +93,7 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/collections
 // ~ @access  Private route
 const getCollectionFromDB = asyncHandler(async (req, res) => {
-	const queryPage = Number(req.query.page)
+	const queryPage = +req.query.page
 	const resultsPerPage = 24
 	const searchKeyword = req.query.search
 

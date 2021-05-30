@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,9 +8,10 @@ import Grid from '@material-ui/core/Grid'
 import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
-import CollectionGameCard from '../components/collection/CollectionGameCard'
+import GameCard from '../components/GameCard'
 import CollectionSearchBox from '../components/collection/CollectionSearchBox'
-import CollectionGameSkeleton from '../components/collection/CollectionGameSkeleton'
+import GameCardSkeleton from '../components/GameCardSkeleton'
+import Message from '../components/Message'
 import { dbGetCollection } from '../actions/collectionActions'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { DB_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
@@ -35,7 +36,7 @@ const CollectionScreen = () => {
 	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
 
 	const dbCollection = useSelector((state) => state.dbCollection)
-	const { loading: dbLoading, success: dbSuccess, collection, pagination } = dbCollection
+	const { loading: dbLoading, error: dbError, success: dbSuccess, collection, pagination } = dbCollection
 
 	const bggCollection = useSelector((state) => state.bggCollection)
 	const { loading: bggLoading } = bggCollection
@@ -72,12 +73,12 @@ const CollectionScreen = () => {
 		}
 	}
 
-	const renderSkeletonsHandler = () => {
+	const renderSkeletons = () => {
 		let skeletonsArr = []
 		for (let i = 0; i < 24; i++) {
 			skeletonsArr.push(
 				<Grid key={i} item xl={4} lg={4} md={4} sm={6} xs={12}>
-					<CollectionGameSkeleton />
+					<GameCardSkeleton />
 				</Grid>
 			)
 		}
@@ -99,6 +100,8 @@ const CollectionScreen = () => {
 					</Button>
 				</Fragment>
 			)}
+
+			{dbError && <Message>{dbError}</Message>}
 
 			<Grid container>
 				<Box
@@ -125,7 +128,7 @@ const CollectionScreen = () => {
 
 			{(dbLoading || bggLoading) && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
-					{renderSkeletonsHandler().map((skeleton) => skeleton)}
+					{renderSkeletons().map((skeleton) => skeleton)}
 				</Grid>
 			)}
 
@@ -133,11 +136,10 @@ const CollectionScreen = () => {
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad offset={200} once placeholder={<CollectionGameSkeleton />}>
-								<CollectionGameCard
+							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+								<GameCard
 									game={game}
 									saleListHandler={saleListHandler}
-									id={game.bggId}
 									isChecked={saleList.some((el) => el.bggId === game.bggId)}
 									isDisabled={
 										saleList.length > 4 ? saleList.some((el) => el.bggId === game.bggId) ? (

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
@@ -13,6 +14,9 @@ import Grow from '@material-ui/core/Grow'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 
 const useStyles = makeStyles((theme) => ({
+	root        : {
+		height : '300px'
+	},
 	media       : {
 		margin    : theme.spacing(2, 0, 2, 0),
 		objectFit : 'contain',
@@ -29,12 +33,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionGameCard = ({ game, saleListHandler, id, isChecked, isDisabled }) => {
+const CollectionGameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 	const cls = useStyles()
+	const location = useLocation()
 
 	return (
 		<Grow in>
-			<Card elevation={2}>
+			<Card elevation={2} className={cls.root}>
 				<CardMedia
 					className={cls.media}
 					component="img"
@@ -64,13 +69,25 @@ const CollectionGameCard = ({ game, saleListHandler, id, isChecked, isDisabled }
 								BGG
 							</Button>
 						</Grid>
-						<Checkbox
-							checked={isChecked}
-							disabled={isDisabled}
-							onChange={(e) => saleListHandler(e, id)}
-							icon={<AddBoxOutlinedIcon />}
-							size="small"
-						/>
+						{location.pathname === '/collection' ? (
+							<Checkbox
+								checked={isChecked}
+								disabled={isDisabled}
+								onChange={(e) => saleListHandler(e, game.bggId)}
+								icon={<AddBoxOutlinedIcon />}
+								size="small"
+							/>
+						) : (
+							<Button
+								size="small"
+								color="primary"
+								// href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+								target="_blank"
+								rel="noopener"
+							>
+								Search
+							</Button>
+						)}
 					</Grid>
 				</CardActions>
 			</Card>

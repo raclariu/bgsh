@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
 		display       : 'flex',
 		flexDirection : 'column',
 		alignItems    : 'center',
-		height        : '301px',
+		height        : '300px',
 		paddingBottom : '8px'
 	},
 	skMedia   : {
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	skButtons : {
 		width        : '95%',
 		marginTop    : 'auto',
+		marginBottom : theme.spacing(1),
 		borderRadius : '4px'
 	}
 }))
@@ -39,7 +40,7 @@ const CollectionGameSkeleton = () => {
 
 			<Skeleton animation="wave" className={cls.skTitle} variant="text" width={200} />
 
-			<Skeleton animation="wave" className={cls.skButtons} variant="rect" height={30} />
+			<Skeleton animation="wave" className={cls.skButtons} variant="rect" height={15} />
 		</Paper>
 	)
 }
