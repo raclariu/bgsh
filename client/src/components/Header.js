@@ -4,6 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
@@ -63,7 +64,7 @@ const Header = () => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar elevation={1} position="static" color="transparent">
+			<AppBar elevation={0} position="static" color="transparent">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
 						BoardGames
@@ -76,16 +77,18 @@ const Header = () => {
 							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
 								<MenuIcon />
 							</IconButton>
-							<Drawer anchor="right" open={isOpen} onClick={() => setIsOpen(!isOpen)}>
-								<List className={classes.list}>
+							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
+								<Box boxShadow={2} height={100} p={2} bgcolor="warning.main">
+									Hey {userInfo.username}
+								</Box>
+								<List disablePadding className={classes.list} onClick={() => setIsOpen(!isOpen)}>
+									<Divider />
 									<ListItem button component={RouterLink} to="/">
 										<ListItemIcon>
 											<HomeOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="Home" />
 									</ListItem>
-
-									<Divider />
 
 									<ListItem button component={RouterLink} to="/profile">
 										<ListItemIcon>
@@ -101,14 +104,12 @@ const Header = () => {
 										<ListItemText primary="My Collection" />
 									</ListItem>
 
-									<ListItem button component={RouterLink} to="/wishlist">
+									<ListItem divider button component={RouterLink} to="/wishlist">
 										<ListItemIcon>
 											<FavoriteBorderOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="My Wishlist" />
 									</ListItem>
-
-									<Divider />
 
 									<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
 										<ListItemIcon>

@@ -11,8 +11,6 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 	try {
 		const { bggUsername } = req.body
 
-		const collectionExist = await Collection.findOne({ user: req.user._id }).select('_id').lean()
-
 		// >> Owned
 		const { data: collData } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
 			params : {
@@ -25,7 +23,6 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 		let parsedOwned = await parseXML(collData)
 
 		let bggCollection = []
-
 		if (parsedOwned.totalitems !== '0') {
 			for (let game of parsedOwned.item) {
 				const item = {
@@ -50,9 +47,8 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 		})
 
 		let parsedWishlist = await parseXML(wishlistData)
-
+		//~ daca wishlistul e 1, nu mai este array si nu pot face for of pt ca este obiect -> explicit array la helper
 		let bggWishlist = []
-
 		if (parsedWishlist.totalitems !== '0') {
 			for (let game of parsedWishlist.item) {
 				const item = {
@@ -67,6 +63,8 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			}
 		}
 
+		// Check if collection for this user exists and delete it to add the new one
+		const collectionExist = await Collection.findOne({ user: req.user._id }).select('_id').lean()
 		if (collectionExist) {
 			await Collection.deleteOne({ user: req.user._id })
 		}
@@ -97,6 +95,21 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 	const searchKeyword = req.query.search
 
+	const findCollection = await Collection.findOne({ user: req.user._id }).select('totalOwned').lean()
+	if (!findCollection) {
+		res.status(404)
+		throw {
+			message : 'Collection not found. Add your BGG username in your profile to retrieve your collection'
+		}
+	}
+
+	if (findCollection.totalOwned === 0) {
+		res.status(404)
+		throw {
+			message : 'Collection is empty'
+		}
+	}
+
 	if (searchKeyword) {
 		const { owned } = await Collection.findOne({ user: req.user._id }).select('owned').lean()
 
@@ -117,17 +130,10 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 		})
 	} else {
 		const { owned, totalOwned } = await Collection.findOne({ user: req.user._id })
-			.select('-wishlist')
+			.select('owned')
 			.where('owned')
 			.slice([ resultsPerPage * (queryPage - 1), resultsPerPage ])
 			.lean()
-
-		if (totalOwned === 0) {
-			res.status(404)
-			throw {
-				message : 'Collection is empty'
-			}
-		}
 
 		// >> Owned.length means current page > total pages
 		if (owned.length === 0) {
@@ -155,16 +161,24 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/collections/wishlist
 // ~ @access  Private route
 const getWishlistFromDB = asyncHandler(async (req, res) => {
-	const { wishlist, totalWishlist } = await Collection.findOne({ user: req.user._id }).select('-owned').lean()
+	const findWishlist = await Collection.findOne({ user: req.user._id }).select('wishlist totalWishlist').lean()
 
-	if (totalWishlist === 0) {
+	if (!findWishlist) {
+		res.status(404)
+		throw {
+			message : 'Wishlist not found. Add your BGG username in your profile to retrieve your wishlist'
+		}
+	}
+
+	if (findWishlist.totalWishlist === 0) {
 		res.status(404)
 		throw {
 			message : 'Wishlist is empty'
 		}
-	} else {
-		res.status(200).json(wishlist)
 	}
+
+	const { wishlist } = findWishlist
+	res.status(200).json(wishlist)
 })
 
 export { getCollectionFromBGG, getCollectionFromDB, getWishlistFromDB }

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -94,37 +94,12 @@ const CollectionScreen = () => {
 			</Grid>
 
 			{searchKeyword && (
-				<Fragment>
-					<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
-						Back to Collection
-					</Button>
-				</Fragment>
+				<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
+					Back to Collection
+				</Button>
 			)}
 
 			{dbError && <Message>{dbError}</Message>}
-
-			<Grid container>
-				<Box
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-					height={60}
-					width="100%"
-					borderRadius={4}
-					mt={4}
-				>
-					{dbSuccess && (
-						<Grid item>
-							<Pagination
-								page={pagination.page}
-								onChange={(e, page) => onPageChangeHandler(e, page)}
-								count={pagination.totalPages}
-								color="primary"
-							/>
-						</Grid>
-					)}
-				</Box>
-			</Grid>
 
 			{(dbLoading || bggLoading) && (
 				<Grid container className={classes.gridContainer} spacing={3} direction="row">
@@ -156,6 +131,29 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
+
+			<Grid container>
+				<Box
+					display="flex"
+					alignItems="center"
+					justifyContent="center"
+					height={60}
+					width="100%"
+					borderRadius={4}
+					mt={4}
+				>
+					{dbSuccess && (
+						<Grid item>
+							<Pagination
+								page={pagination.page}
+								onChange={(e, page) => onPageChangeHandler(e, page)}
+								count={pagination.totalPages}
+								color="primary"
+							/>
+						</Grid>
+					)}
+				</Box>
+			</Grid>
 		</div>
 	)
 }
