@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Popover from '@material-ui/core/Popover'
+import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
 import IconButton from '@material-ui/core/IconButton'
@@ -17,6 +18,7 @@ import Avatar from '@material-ui/core/Avatar'
 import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import { removeFromSaleList } from '../actions/gameActions'
+import { saleListLimit } from '../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
 	badge     : {
@@ -27,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	subheader : {
 		margin : theme.spacing(2, 0, 2, 0)
+	},
+	btnGroup  : {
+		display        : 'flex',
+		alignItems     : 'center',
+		justifyContent : 'center',
+		marginBottom   : theme.spacing(2)
 	}
 }))
 
@@ -83,18 +91,42 @@ const SaleListPopover = () => {
 							<List disablePadding>
 								<Typography
 									className={cls.subheader}
-									variant="subtitle2"
 									align="center"
+									variant="subtitle2"
 									color="textSecondary"
 								>
-									Sale List ({saleList.length}/5)
+									Sale List ({saleList.length}/{saleListLimit})
 								</Typography>
+
+								{saleList.length === 0 && (
+									<Fragment>
+										<Typography gutterBottom align="center" variant="body2" color="textSecondary">
+											To add games go to
+										</Typography>
+										<ButtonGroup className={cls.btnGroup} size="small" color="primary">
+											<Button
+												component={RouterLink}
+												to="/profile"
+												onClick={(e) => setAnchorEl(null)}
+											>
+												Profile
+											</Button>
+											<Button
+												component={RouterLink}
+												to="/collection"
+												onClick={(e) => setAnchorEl(null)}
+											>
+												Collection
+											</Button>
+										</ButtonGroup>
+									</Fragment>
+								)}
 
 								{saleList.map((game) => (
 									<ListItem divider key={game.bggId}>
 										<ListItemAvatar>
 											<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
-												{game.title[0]}
+												{game.title[0] + game.title[1]}
 											</Avatar>
 										</ListItemAvatar>
 										<ListItemText

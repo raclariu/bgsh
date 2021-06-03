@@ -20,16 +20,29 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			}
 		})
 
+		// If there is only one game in collection, parser returns object instead of array, that's why the if/else is needed
 		let parsedOwned = await parseXML(collData)
 
 		let bggCollection = []
 		if (parsedOwned.totalitems !== '0') {
-			for (let game of parsedOwned.item) {
+			if (Array.isArray(parsedOwned.item)) {
+				for (let game of parsedOwned.item) {
+					const item = {
+						bggId     : game.objectid,
+						title     : game.originalname ? game.originalname : game.name._ || null,
+						year      : game.yearpublished ? +game.yearpublished : null,
+						thumbnail : game.thumbnail ? game.thumbnail : null
+					}
+
+					bggCollection.push(item)
+				}
+			} else {
+				const { objectid, name, originalname, yearpublished, thumbnail } = parsedOwned.item
 				const item = {
-					bggId     : game.objectid,
-					title     : game.originalname ? game.originalname : game.name._ || null,
-					year      : game.yearpublished ? +game.yearpublished : null,
-					thumbnail : game.thumbnail ? game.thumbnail : null
+					bggId     : objectid,
+					title     : originalname ? originalname : name._ || null,
+					year      : yearpublished ? +yearpublished : null,
+					thumbnail : thumbnail ? thumbnail : null
 				}
 
 				bggCollection.push(item)
@@ -46,17 +59,31 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			}
 		})
 
+		// If there is only one game in wishlist, parser returns object instead of array, that's why the if/else is needed
 		let parsedWishlist = await parseXML(wishlistData)
-		//~ daca wishlistul e 1, nu mai este array si nu pot face for of pt ca este obiect -> explicit array la helper
+
 		let bggWishlist = []
 		if (parsedWishlist.totalitems !== '0') {
-			for (let game of parsedWishlist.item) {
+			if (parsedWishlist.totalitems !== '1') {
+				for (let game of parsedWishlist.item) {
+					const item = {
+						bggId     : game.objectid,
+						title     : game.name ? game.name._ : null,
+						year      : game.yearpublished ? +game.yearpublished : null,
+						thumbnail : game.thumbnail ? game.thumbnail : null,
+						priority  : +game.status.wishlistpriority
+					}
+
+					bggWishlist.push(item)
+				}
+			} else {
+				const { objectid, name, yearpublished, thumbnail, status } = parsedWishlist.item
 				const item = {
-					bggId     : game.objectid,
-					title     : game.name ? game.name._ : null,
-					year      : game.yearpublished ? +game.yearpublished : null,
-					thumbnail : game.thumbnail ? game.thumbnail : null,
-					priority  : +game.status.wishlistpriority
+					bggId     : objectid,
+					title     : name ? name._ : null,
+					year      : yearpublished ? +yearpublished : null,
+					thumbnail : thumbnail ? thumbnail : null,
+					priority  : +status.wishlistpriority
 				}
 
 				bggWishlist.push(item)
@@ -96,6 +123,7 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const searchKeyword = req.query.search
 
 	const findCollection = await Collection.findOne({ user: req.user._id }).select('totalOwned').lean()
+
 	if (!findCollection) {
 		res.status(404)
 		throw {
@@ -161,7 +189,11 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/collections/wishlist
 // ~ @access  Private route
 const getWishlistFromDB = asyncHandler(async (req, res) => {
-	const findWishlist = await Collection.findOne({ user: req.user._id }).select('wishlist totalWishlist').lean()
+	const queryPage = +req.query.page
+	const resultsPerPage = 24
+	const searchKeyword = req.query.search
+
+	const findWishlist = await Collection.findOne({ user: req.user._id }).select('totalWishlist').lean()
 
 	if (!findWishlist) {
 		res.status(404)
@@ -177,8 +209,51 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const { wishlist } = findWishlist
-	res.status(200).json(wishlist)
+	if (searchKeyword) {
+		const { wishlist } = await Collection.findOne({ user: req.user._id }).select('wishlist').lean()
+
+		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.3 })
+
+		const results = fuse.search(searchKeyword).map((game) => game.item)
+
+		const pagination = {
+			page       : queryPage,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			wishlist   : results.slice((queryPage - 1) * resultsPerPage, queryPage * resultsPerPage),
+			pagination
+		})
+	} else {
+		const { wishlist, totalWishlist } = await Collection.findOne({ user: req.user._id })
+			.select('wishlist')
+			.where('wishlist')
+			.slice([ resultsPerPage * (queryPage - 1), resultsPerPage ])
+			.lean()
+
+		// >> Owned.length means current page > total pages
+		if (wishlist.length === 0) {
+			res.status(404)
+			throw {
+				message : 'Page not found'
+			}
+		} else {
+			const pagination = {
+				page         : queryPage,
+				totalPages   : Math.ceil(totalWishlist / resultsPerPage),
+				totalItems   : totalWishlist,
+				itemsPerPage : resultsPerPage
+			}
+
+			res.status(200).json({
+				wishlist,
+				pagination
+			})
+		}
+	}
 })
 
 export { getCollectionFromBGG, getCollectionFromDB, getWishlistFromDB }

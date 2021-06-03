@@ -26,8 +26,8 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Button from '@material-ui/core/Button'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import citiesArr from '../constants/cities'
-import { bggGetGamesDetails } from '../actions/gameActions'
-import { removeFromSaleList, sellGames } from '../actions/gameActions'
+import { bggGetGamesDetails, removeFromSaleList, sellGames } from '../actions/gameActions'
+import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
 	section      : {
@@ -92,6 +92,7 @@ const SellGameScreen = () => {
 			}, ms.current)
 			ms.current = 750
 			return () => {
+				dispatch({ type: BGG_GAMES_DETAILS_RESET })
 				clearTimeout(timer)
 			}
 		},
@@ -151,7 +152,7 @@ const SellGameScreen = () => {
 
 				{sellError && <Message>{sellError.map((err) => <p>{err}</p>)}</Message>}
 
-				{saleList.length === 0 && <Message>Your sale list is empty</Message>}
+				{saleList.length === 0 && <Message severity="warning">Your sale list is empty</Message>}
 			</div>
 
 			{detailsLoading && <Loader />}
@@ -181,7 +182,7 @@ const SellGameScreen = () => {
 									<CardMedia
 										className={cls.media}
 										component="img"
-										image={game.image ? game.image : '/images/collCardPlaceholder.jpg'}
+										image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
 										alt={game.title}
 										title={game.title}
 									/>

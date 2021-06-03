@@ -72,7 +72,7 @@ export const dbGetCollection = (searchKeyword, pageNumber) => async (dispatch, g
 	}
 }
 
-export const getWishlist = () => async (dispatch, getState) => {
+export const getWishlist = (searchKeyword, pageNumber) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: WISHLIST_LIST_REQUEST })
 
@@ -81,6 +81,10 @@ export const getWishlist = () => async (dispatch, getState) => {
 		const config = {
 			headers : {
 				Authorization : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				search : searchKeyword ? searchKeyword.trim() : null,
+				page   : +pageNumber ? +pageNumber : 1
 			}
 		}
 

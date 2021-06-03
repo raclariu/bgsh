@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 		margin : theme.spacing(4, 0, 0, 0)
 	},
 	input : {
-		minHeight : '95px'
+		minHeight : '90px'
 	}
 }))
 

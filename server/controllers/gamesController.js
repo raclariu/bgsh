@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { validationResult } from 'express-validator'
-import Game from '../models/gameModel.js'
+import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
+import Game from '../models/gameModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
-// * @desc    Get single game from BGG
+// * @desc    Get games from BGG by ID
 // * @route   POST  /api/games/bgg
 // * @access  Private route
 const getGamesFromBGG = asyncHandler(async (req, res) => {
@@ -24,8 +25,8 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 
 			let { item: game } = await parseXML(data)
 
-			gamesArr.push({
-				type               : game.type,
+			const item = {
+				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
 				bggId              : game.id,
 				thumbnail          : game.thumbnail || null,
 				image              : game.image || null,
@@ -39,17 +40,19 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 				minPlayers         : +game.minplayers.value,
 				maxPlayers         : +game.maxplayers.value,
 				suggestedPlayers   :
-					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes !== 0
-						? +game.poll
-								.find((obj) => obj.name === 'suggested_numplayers')
-								.results.sort(
-									(a, b) =>
-										+b.result.find((obj) => obj.value === 'Best').numvotes -
-										+a.result.find((obj) => obj.value === 'Best').numvotes
-								)[0].numplayers
+					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes > 15
+						? Array.isArray(game.poll.find((obj) => obj.name === 'suggested_numplayers').results)
+							? game.poll
+									.find((obj) => obj.name === 'suggested_numplayers')
+									.results.sort(
+										(a, b) =>
+											+b.result.find((obj) => obj.value === 'Best').numvotes -
+											+a.result.find((obj) => obj.value === 'Best').numvotes
+									)[0].numplayers
+							: null
 						: null,
 				languageDependence : game.poll
-					? +game.poll.find((obj) => obj.name === 'language_dependence').totalvotes > 0
+					? +game.poll.find((obj) => obj.name === 'language_dependence').totalvotes > 10
 						? game.poll
 								.find((obj) => obj.name === 'language_dependence')
 								.results.result.sort((a, b) => +b.numvotes - +a.numvotes)[0].value
@@ -83,7 +86,9 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 					weight : +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2),
 					votes  : +game.statistics.ratings.numweights.value
 				}
-			})
+			}
+
+			gamesArr.push(item)
 		}
 
 		res.status(200).json(gamesArr)
@@ -96,7 +101,45 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 	}
 })
 
-// * @desc    Get single game from BGG
+// * @desc    Search BGG for games
+// * @route   POST  /api/games/bgg/search
+// * @access  Private route
+const bggSearchGame = asyncHandler(async (req, res) => {
+	const { keyword } = req.body
+
+	const { data } = await axios.get('https://api.geekdo.com/xmlapi2/search', {
+		params : {
+			query : keyword.split(' ').join('+'),
+			type  : 'boardgame,boardgameexpansion'
+		}
+	})
+
+	let parsedSearch = await parseXML(data)
+
+	if (parsedSearch.total === '0') {
+		res.status(404)
+		throw {
+			message : 'No games found'
+		}
+	}
+
+	const ensureArray = Array.isArray(parsedSearch.item) ? parsedSearch.item : [ parsedSearch.item ]
+
+	const gamesArr = []
+	for (let game of ensureArray) {
+		const item = {
+			bggId     : game.id,
+			title     : game.name.value,
+			year      : game.yearpublished ? +game.yearpublished.value : '-',
+			thumbnail : null
+		}
+		gamesArr.push(item)
+	}
+
+	res.status(200).json(gamesArr)
+})
+
+// * @desc    Put up games for sale
 // * @route   POST  /api/games/sell
 // * @access  Private route
 const sellGames = asyncHandler(async (req, res) => {
@@ -123,7 +166,7 @@ const sellGames = asyncHandler(async (req, res) => {
 
 	if (sellType === 'pack') {
 		await Game.create({
-			user             : req.user._id,
+			seller           : req.user._id,
 			games,
 			sellType,
 			shipPost,
@@ -139,7 +182,7 @@ const sellGames = asyncHandler(async (req, res) => {
 		let sellList = []
 		for (let game of games) {
 			let data = {
-				user             : req.user._id,
+				seller           : req.user._id,
 				games            : [ game ],
 				sellType,
 				shipPost,
@@ -160,4 +203,35 @@ const sellGames = asyncHandler(async (req, res) => {
 	res.status(200).json('ok')
 })
 
-export { getGamesFromBGG, sellGames }
+// ~ @desc    Get games that are up for sale
+// ~ @route   GET /api/games/
+// ~ @access  Private route
+const getGamesForSale = asyncHandler(async (req, res) => {
+	const forSale = await Game.find({}).limit(24).populate('seller', 'username _id').lean()
+
+	const gamesArr = []
+	for (let game of forSale) {
+		const item = {
+			_id              : game._id,
+			data             : game.games,
+			seller           : {
+				_id      : game.seller._id,
+				username : game.seller.username
+			},
+			sellType         : game.sellType,
+			extraInfoTxt     : game.extraInfoTxt,
+			shipPost         : game.shipPost,
+			shipPostPayer    : game.shipPostPayer,
+			shipCourier      : game.shipCourier,
+			shipCourierPayer : game.shipCourierPayer,
+			shipPersonal     : game.shipPersonal,
+			shipCities       : game.shipCities
+		}
+
+		gamesArr.push(item)
+	}
+
+	res.status(200).json(gamesArr)
+})
+
+export { getGamesFromBGG, sellGames, bggSearchGame, getGamesForSale }

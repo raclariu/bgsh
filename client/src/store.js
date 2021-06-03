@@ -3,14 +3,22 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
-import { bggGetGamesDetailsReducer, saleListReducer, sellGamesReducer } from './reducers/gameReducers'
+import {
+	bggGetGamesDetailsReducer,
+	saleListReducer,
+	bggSearchGamesReducer,
+	sellGamesReducer,
+	getGamesForSaleReducer
+} from './reducers/gameReducers'
 
 const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
 	userSignUp      : userSignUpReducer,
 	bggCollection   : bggGetCollectionReducer,
-	bggGamesDetails : bggGetGamesDetailsReducer,
 	dbCollection    : dbGetCollectionReducer,
+	bggGamesDetails : bggGetGamesDetailsReducer,
+	bggSearchGames  : bggSearchGamesReducer,
+	gamesForSale    : getGamesForSaleReducer,
 	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer

@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
-import { comparePasswords, hashPassword, generateToken } from '../helpers/helpers.js'
+import { hashPassword, generateToken } from '../helpers/helpers.js'
 
 // * @desc    Sign in user & get token
 // * @route   POST  /api/users/signin
@@ -10,7 +10,6 @@ const userAuth = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
-		console.log(err)
 
 		res.status(401)
 		throw {

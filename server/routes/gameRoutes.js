@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router()
-import { getGamesFromBGG, sellGames } from '../controllers/gamesController.js'
+import { getGamesFromBGG, sellGames, bggSearchGame, getGamesForSale } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
 import {
 	validateSellType,
@@ -13,7 +13,9 @@ import {
 	validateShipCities
 } from '../validators/sellGameValidator.js'
 
+router.route('/').get(protect, getGamesForSale)
 router.route('/bgg').post(protect, getGamesFromBGG)
+router.route('/bgg/search').post(protect, bggSearchGame)
 router
 	.route('/sell')
 	.post(

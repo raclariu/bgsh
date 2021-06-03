@@ -7,7 +7,14 @@ import {
 	SALE_LIST_REMOVE,
 	SELL_GAMES_REQUEST,
 	SELL_GAMES_SUCCESS,
-	SELL_GAMES_FAIL
+	SELL_GAMES_FAIL,
+	BGG_GAMES_SEARCH_REQUEST,
+	BGG_GAMES_SEARCH_SUCCESS,
+	BGG_GAMES_SEARCH_FAIL,
+	saleListLimit,
+	FOR_SALE_GAMES_REQUEST,
+	FOR_SALE_GAMES_SUCCESS,
+	FOR_SALE_GAMES_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -39,6 +46,10 @@ export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
 export const addToSaleList = (data) => (dispatch, getState) => {
 	const { saleList } = getState()
 
+	if (saleList.length === saleListLimit) {
+		return
+	}
+
 	localStorage.setItem('saleList', JSON.stringify([ ...saleList, data ]))
 
 	dispatch({
@@ -57,6 +68,32 @@ export const removeFromSaleList = (id) => (dispatch, getState) => {
 		type    : SALE_LIST_REMOVE,
 		payload : filtered
 	})
+}
+
+export const bggSearchGames = (keyword) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: BGG_GAMES_SEARCH_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.post('/api/games/bgg/search', { keyword }, config)
+
+		dispatch({
+			type    : BGG_GAMES_SEARCH_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : BGG_GAMES_SEARCH_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
 }
 
 export const sellGames = (gamesData) => async (dispatch, getState) => {
@@ -79,6 +116,32 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : SELL_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getGamesForSale = () => async (dispatch, getState) => {
+	try {
+		dispatch({ type: FOR_SALE_GAMES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get('/api/games/', config)
+
+		dispatch({
+			type    : FOR_SALE_GAMES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : FOR_SALE_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

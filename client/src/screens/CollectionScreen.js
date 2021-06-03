@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,12 +9,13 @@ import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import GameCard from '../components/GameCard'
-import CollectionSearchBox from '../components/collection/CollectionSearchBox'
+import SearchBox from '../components/SearchBox'
 import GameCardSkeleton from '../components/GameCardSkeleton'
 import Message from '../components/Message'
 import { dbGetCollection } from '../actions/collectionActions'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { DB_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
+import { saleListLimit } from '../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -24,11 +25,14 @@ const useStyles = makeStyles((theme) => ({
 	gridContainer : {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
+	},
+	error         : {
+		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 const CollectionScreen = () => {
-	const classes = useStyles()
+	const cls = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
@@ -51,14 +55,14 @@ const CollectionScreen = () => {
 				dispatch({ type: DB_COLLECTION_LIST_RESET })
 			}
 		},
-		[ dispatch, pageNumber, searchKeyword ]
+		[ dispatch, searchKeyword, pageNumber ]
 	)
 
 	const onPageChangeHandler = (e, page) => {
 		window.scrollTo(75, 75)
 
 		if (searchKeyword) {
-			history.push(`/collection?search=${searchKeyword.trim()}&page=${page}`)
+			history.push(`/collection?search=${searchKeyword}&page=${page}`)
 		} else {
 			history.push(`/collection?page=${page}`)
 		}
@@ -86,29 +90,37 @@ const CollectionScreen = () => {
 	}
 
 	return (
-		<div className={classes.root}>
+		<div className={cls.root}>
 			<Grid container spacing={3} justify="center">
 				<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
-					<CollectionSearchBox />
+					<SearchBox />
 				</Grid>
 			</Grid>
 
 			{searchKeyword && (
-				<Button component={RouterLink} to="/collection" variant="outlined" color="primary" size="large">
-					Back to Collection
-				</Button>
+				<Grid container spacing={3} justify="center" alignItems="center">
+					<Grid item xl={5} lg={4} md={4} sm={6} xs={12}>
+						<Button component={RouterLink} to="/collection" color="primary" size="large">
+							Back to Collection
+						</Button>
+					</Grid>
+				</Grid>
 			)}
 
-			{dbError && <Message>{dbError}</Message>}
+			{dbError && (
+				<div className={cls.error}>
+					<Message>{dbError}</Message>
+				</div>
+			)}
 
 			{(dbLoading || bggLoading) && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{renderSkeletons().map((skeleton) => skeleton)}
 				</Grid>
 			)}
 
 			{dbSuccess && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -117,7 +129,9 @@ const CollectionScreen = () => {
 									saleListHandler={saleListHandler}
 									isChecked={saleList.some((el) => el.bggId === game.bggId)}
 									isDisabled={
-										saleList.length > 4 ? saleList.some((el) => el.bggId === game.bggId) ? (
+										saleList.length === saleListLimit ? saleList.some(
+											(el) => el.bggId === game.bggId
+										) ? (
 											false
 										) : (
 											true
@@ -143,14 +157,18 @@ const CollectionScreen = () => {
 					mt={4}
 				>
 					{dbSuccess && (
-						<Grid item>
-							<Pagination
-								page={pagination.page}
-								onChange={(e, page) => onPageChangeHandler(e, page)}
-								count={pagination.totalPages}
-								color="primary"
-							/>
-						</Grid>
+						<div>
+							{pagination.totalPages > 1 && (
+								<Grid item>
+									<Pagination
+										page={pagination.page}
+										onChange={(e, page) => onPageChangeHandler(e, page)}
+										count={pagination.totalPages}
+										color="primary"
+									/>
+								</Grid>
+							)}
+						</div>
 					)}
 				</Box>
 			</Grid>

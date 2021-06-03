@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const CollectionGameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
+const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 	const cls = useStyles()
 	const location = useLocation()
 
@@ -95,4 +95,4 @@ const CollectionGameCard = ({ game, saleListHandler, isChecked, isDisabled }) =>
 	)
 }
 
-export default CollectionGameCard
+export default GameCard
