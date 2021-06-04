@@ -96,7 +96,7 @@ export const getGamesForSaleReducer = (state = {}, action) => {
 			return { loading: true }
 
 		case FOR_SALE_GAMES_SUCCESS:
-			return { loading: false, success: true, games: action.payload }
+			return { loading: false, success: true, saleData: action.payload }
 
 		case FOR_SALE_GAMES_FAIL:
 			return { loading: false, error: action.payload }

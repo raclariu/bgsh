@@ -209,29 +209,13 @@ const sellGames = asyncHandler(async (req, res) => {
 const getGamesForSale = asyncHandler(async (req, res) => {
 	const forSale = await Game.find({}).limit(24).populate('seller', 'username _id').lean()
 
-	const gamesArr = []
-	for (let game of forSale) {
-		const item = {
-			_id              : game._id,
-			data             : game.games,
-			seller           : {
-				_id      : game.seller._id,
-				username : game.seller.username
-			},
-			sellType         : game.sellType,
-			extraInfoTxt     : game.extraInfoTxt,
-			shipPost         : game.shipPost,
-			shipPostPayer    : game.shipPostPayer,
-			shipCourier      : game.shipCourier,
-			shipCourierPayer : game.shipCourierPayer,
-			shipPersonal     : game.shipPersonal,
-			shipCities       : game.shipCities
-		}
+	const fuse = new Fuse(forSale, { keys: [ 'games.title' ], threshold: 0.3 })
 
-		gamesArr.push(item)
-	}
+	const results = fuse.search('gloom')
 
-	res.status(200).json(gamesArr)
+	res.json(forSale)
+
+	//res.status(200).json(gamesArr)
 })
 
 export { getGamesFromBGG, sellGames, bggSearchGame, getGamesForSale }

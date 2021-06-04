@@ -1,13 +1,24 @@
 import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
 import { getGamesForSale } from '../actions/gameActions'
+import SingleSellGameCard from '../components/SingleSellGameCard'
+
+const useStyles = makeStyles((theme) => ({
+	root : {
+		marginTop    : theme.spacing(4),
+		marginBottom : theme.spacing(4)
+	}
+}))
 
 const GamesScreen = () => {
+	const cls = useStyles()
 	const dispatch = useDispatch()
 
 	const gamesForSale = useSelector((state) => state.gamesForSale)
-	const { loading, error, success, games } = gamesForSale
+	const { loading, error, success, saleData } = gamesForSale
 
 	useEffect(
 		() => {
@@ -17,26 +28,17 @@ const GamesScreen = () => {
 	)
 
 	return (
-		<div>
+		<Grid container spacing={3} className={cls.root}>
 			{success &&
-				games.map((game) => (
-					<div key={game._id}>
-						{game.sellType === 'individual' ? (
-							<div>
-								<p>
-									{game.data[0].title} {game.data.year}
-								</p>
-								<p>Type:{game.data[0].type}</p>
-								<p>Price:{game.data[0].price} RON</p>
-								<p>
-									Version:{game.data[0].version.title} {game.data[0].version.year}
-								</p>
-								<p>Condition:{game.data[0].condition}</p>
-								<img src={game.data[0].thumbnail} alt={game._id} />
-							</div>
+				saleData.map((data) => (
+					<Fragment>
+						{data.sellType === 'individual' ? (
+							<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+								<SingleSellGameCard data={data} />
+							</Grid>
 						) : (
 							<Paper elevation={5}>
-								{game.data.map((obj) => (
+								{data.games.map((obj) => (
 									<Fragment>
 										<p>Pack</p>
 										<p>
@@ -48,14 +50,14 @@ const GamesScreen = () => {
 											Version:{obj.version.title} {obj.version.year}
 										</p>
 										<p>Condition:{obj.condition}</p>
-										<img src={obj.thumbnail} alt={game._id} />
+										<img src={obj.thumbnail} alt={obj.title} />
 									</Fragment>
 								))}
 							</Paper>
 						)}
-					</div>
+					</Fragment>
 				))}
-		</div>
+		</Grid>
 	)
 }
 
