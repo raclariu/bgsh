@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-import { getGamesForSale } from '../actions/gameActions'
+import { getGames } from '../actions/gameActions'
 import SingleSellGameCard from '../components/SingleSellGameCard'
 
 const useStyles = makeStyles((theme) => ({
@@ -17,12 +17,12 @@ const GamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
-	const gamesForSale = useSelector((state) => state.gamesForSale)
-	const { loading, error, success, saleData } = gamesForSale
+	const gamesIndex = useSelector((state) => state.gamesIndex)
+	const { loading, error, success, saleData } = gamesIndex
 
 	useEffect(
 		() => {
-			dispatch(getGamesForSale())
+			dispatch(getGames())
 		},
 		[ dispatch ]
 	)

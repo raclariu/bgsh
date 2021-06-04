@@ -105,38 +105,46 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 // * @route   POST  /api/games/bgg/search
 // * @access  Private route
 const bggSearchGame = asyncHandler(async (req, res) => {
-	const { keyword } = req.body
+	try {
+		const { keyword } = req.body
 
-	const { data } = await axios.get('https://api.geekdo.com/xmlapi2/search', {
-		params : {
-			query : keyword.split(' ').join('+'),
-			type  : 'boardgame,boardgameexpansion'
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/search', {
+			params : {
+				query : keyword.split(' ').join('+'),
+				type  : 'boardgame,boardgameexpansion'
+			}
+		})
+
+		let parsedSearch = await parseXML(data)
+
+		if (parsedSearch.total === '0') {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
 		}
-	})
 
-	let parsedSearch = await parseXML(data)
+		const ensureArray = Array.isArray(parsedSearch.item) ? parsedSearch.item : [ parsedSearch.item ]
 
-	if (parsedSearch.total === '0') {
-		res.status(404)
+		const gamesArr = []
+		for (let game of ensureArray) {
+			const item = {
+				bggId     : game.id,
+				title     : game.name.value,
+				year      : game.yearpublished ? +game.yearpublished.value : '-',
+				thumbnail : null
+			}
+			gamesArr.push(item)
+		}
+
+		res.status(200).json(gamesArr)
+	} catch (error) {
+		res.status(503)
 		throw {
-			message : 'No games found'
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
 		}
 	}
-
-	const ensureArray = Array.isArray(parsedSearch.item) ? parsedSearch.item : [ parsedSearch.item ]
-
-	const gamesArr = []
-	for (let game of ensureArray) {
-		const item = {
-			bggId     : game.id,
-			title     : game.name.value,
-			year      : game.yearpublished ? +game.yearpublished.value : '-',
-			thumbnail : null
-		}
-		gamesArr.push(item)
-	}
-
-	res.status(200).json(gamesArr)
 })
 
 // * @desc    Put up games for sale
@@ -206,16 +214,32 @@ const sellGames = asyncHandler(async (req, res) => {
 // ~ @desc    Get games that are up for sale
 // ~ @route   GET /api/games/
 // ~ @access  Private route
-const getGamesForSale = asyncHandler(async (req, res) => {
-	const forSale = await Game.find({}).limit(24).populate('seller', 'username _id').lean()
+const getGames = asyncHandler(async (req, res) => {
+	const saleData = await Game.find({}).limit(24).populate('seller', 'username _id').lean()
 
-	const fuse = new Fuse(forSale, { keys: [ 'games.title' ], threshold: 0.3 })
+	// const fuse = new Fuse(saleData, { keys: [ 'games.title' ], threshold: 0.3 })
+	// const results = fuse.search('gloom')
 
-	const results = fuse.search('gloom')
-
-	res.json(forSale)
+	res.status(200).json(saleData)
 
 	//res.status(200).json(gamesArr)
 })
 
-export { getGamesFromBGG, sellGames, bggSearchGame, getGamesForSale }
+// ~ @desc    Get single up for sale game
+// ~ @route   GET /api/games/:altId
+// ~ @access  Private route
+const getSingleGame = asyncHandler(async (req, res) => {
+	const { altId } = req.params
+	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
+
+	if (!saleData) {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+
+	res.status(200).json(saleData)
+})
+
+export { getGamesFromBGG, sellGames, bggSearchGame, getGames, getSingleGame }

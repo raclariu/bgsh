@@ -11,10 +11,13 @@ import {
 	BGG_GAMES_SEARCH_REQUEST,
 	BGG_GAMES_SEARCH_SUCCESS,
 	BGG_GAMES_SEARCH_FAIL,
-	saleListLimit,
-	FOR_SALE_GAMES_REQUEST,
-	FOR_SALE_GAMES_SUCCESS,
-	FOR_SALE_GAMES_FAIL
+	GAMES_INDEX_REQUEST,
+	GAMES_INDEX_SUCCESS,
+	GAMES_INDEX_FAIL,
+	FOR_SALE_SINGLE_GAME_REQUEST,
+	FOR_SALE_SINGLE_GAME_SUCCESS,
+	FOR_SALE_SINGLE_GAME_FAIL,
+	saleListLimit
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -121,9 +124,9 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	}
 }
 
-export const getGamesForSale = () => async (dispatch, getState) => {
+export const getGames = () => async (dispatch, getState) => {
 	try {
-		dispatch({ type: FOR_SALE_GAMES_REQUEST })
+		dispatch({ type: GAMES_INDEX_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -136,12 +139,38 @@ export const getGamesForSale = () => async (dispatch, getState) => {
 		const { data } = await axios.get('/api/games/', config)
 
 		dispatch({
-			type    : FOR_SALE_GAMES_SUCCESS,
+			type    : GAMES_INDEX_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : FOR_SALE_GAMES_FAIL,
+			type    : GAMES_INDEX_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getSingleGame = (altId) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: FOR_SALE_SINGLE_GAME_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get(`/api/games/${altId}`, config)
+
+		dispatch({
+			type    : FOR_SALE_SINGLE_GAME_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : FOR_SALE_SINGLE_GAME_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

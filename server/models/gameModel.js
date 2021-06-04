@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { genNanoId } from '../helpers/helpers.js'
 
 const gameSchema = mongoose.Schema(
 	{
@@ -6,6 +7,10 @@ const gameSchema = mongoose.Schema(
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
+		},
+		altId            : {
+			type    : String,
+			default : () => genNanoId(8)
 		},
 		games            : [],
 		shipCities       : [],

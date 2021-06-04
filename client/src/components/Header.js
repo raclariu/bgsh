@@ -21,6 +21,7 @@ import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined'
 import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined'
+import SportsEsportsOutlinedIcon from '@material-ui/icons/SportsEsportsOutlined'
 import { signOut } from '../actions/userActions'
 import pink from '@material-ui/core/colors/pink'
 
@@ -88,6 +89,13 @@ const Header = () => {
 											<HomeOutlinedIcon />
 										</ListItemIcon>
 										<ListItemText primary="Home" />
+									</ListItem>
+
+									<ListItem button component={RouterLink} to="/games">
+										<ListItemIcon>
+											<SportsEsportsOutlinedIcon />
+										</ListItemIcon>
+										<ListItemText primary="Board Games" />
 									</ListItem>
 
 									<ListItem button component={RouterLink} to="/profile">

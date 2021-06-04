@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SellGameScreen = () => {
+const SellGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
@@ -443,4 +443,4 @@ const SellGameScreen = () => {
 	)
 }
 
-export default SellGameScreen
+export default SellGamesScreen

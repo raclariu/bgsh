@@ -8,7 +8,8 @@ import {
 	saleListReducer,
 	bggSearchGamesReducer,
 	sellGamesReducer,
-	getGamesForSaleReducer
+	getGamesReducer,
+	getSingleGameReducer
 } from './reducers/gameReducers'
 
 const reducer = combineReducers({
@@ -18,7 +19,8 @@ const reducer = combineReducers({
 	dbCollection    : dbGetCollectionReducer,
 	bggGamesDetails : bggGetGamesDetailsReducer,
 	bggSearchGames  : bggSearchGamesReducer,
-	gamesForSale    : getGamesForSaleReducer,
+	gamesIndex      : getGamesReducer,
+	gameForSale     : getSingleGameReducer,
 	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer

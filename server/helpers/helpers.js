@@ -1,7 +1,13 @@
 import axios from 'axios'
+import bcrypt from 'bcryptjs'
 import { parseString } from 'xml2js'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
+import { customAlphabet } from 'nanoid/non-secure'
+
+const genNanoId = (length) => {
+	const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', length)
+	return nanoid()
+}
 
 const parseXML = async (xml) => {
 	const promise = await new Promise((resolve, reject) => {
@@ -37,4 +43,4 @@ const generateToken = (id) => {
 	})
 }
 
-export { parseXML, comparePasswords, hashPassword, generateToken }
+export { parseXML, comparePasswords, hashPassword, generateToken, genNanoId }

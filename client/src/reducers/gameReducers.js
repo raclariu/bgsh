@@ -13,9 +13,13 @@ import {
 	BGG_GAMES_SEARCH_SUCCESS,
 	BGG_GAMES_SEARCH_FAIL,
 	BGG_GAMES_SEARCH_RESET,
-	FOR_SALE_GAMES_REQUEST,
-	FOR_SALE_GAMES_SUCCESS,
-	FOR_SALE_GAMES_FAIL
+	GAMES_INDEX_REQUEST,
+	GAMES_INDEX_SUCCESS,
+	GAMES_INDEX_FAIL,
+	FOR_SALE_SINGLE_GAME_REQUEST,
+	FOR_SALE_SINGLE_GAME_SUCCESS,
+	FOR_SALE_SINGLE_GAME_FAIL,
+	FOR_SALE_SINGLE_GAME_RESET
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -90,16 +94,35 @@ export const sellGamesReducer = (state = {}, action) => {
 	}
 }
 
-export const getGamesForSaleReducer = (state = {}, action) => {
+export const getGamesReducer = (state = {}, action) => {
 	switch (action.type) {
-		case FOR_SALE_GAMES_REQUEST:
+		case GAMES_INDEX_REQUEST:
 			return { loading: true }
 
-		case FOR_SALE_GAMES_SUCCESS:
+		case GAMES_INDEX_SUCCESS:
 			return { loading: false, success: true, saleData: action.payload }
 
-		case FOR_SALE_GAMES_FAIL:
+		case GAMES_INDEX_FAIL:
 			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const getSingleGameReducer = (state = {}, action) => {
+	switch (action.type) {
+		case FOR_SALE_SINGLE_GAME_REQUEST:
+			return { loading: true }
+
+		case FOR_SALE_SINGLE_GAME_SUCCESS:
+			return { loading: false, success: true, saleData: action.payload }
+
+		case FOR_SALE_SINGLE_GAME_FAIL:
+			return { loading: false, error: action.payload }
+
+		case FOR_SALE_SINGLE_GAME_RESET:
+			return {}
 
 		default:
 			return state

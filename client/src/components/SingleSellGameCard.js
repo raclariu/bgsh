@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -16,24 +17,6 @@ import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 const useStyles = makeStyles((theme) => ({
-	// root        : {
-	// 	height : '300px'
-	// },
-	// media       : {
-	// 	margin    : theme.spacing(2, 0, 2, 0),
-	// 	objectFit : 'contain',
-	// 	height    : '150px'
-	// },
-	// cardContent : {
-	// 	padding : '0px'
-	// },
-	// title       : {
-	// 	margin     : theme.spacing(2, 0, 1, 0),
-	// 	padding    : theme.spacing(0, 2, 0, 2),
-	// 	minHeight  : '40px',
-	// 	fontWeight : '500'
-	// }
-
 	avatar : {
 		backgroundColor : '#3f51b5'
 	},
@@ -46,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 const SingleSellGameCard = ({ data }) => {
 	const cls = useStyles()
+	const history = useHistory()
+
 	console.log(data)
 	return (
 		<Card>
@@ -61,7 +46,6 @@ const SingleSellGameCard = ({ data }) => {
 					<Avatar variant="rounded" className={cls.avatar}>
 						{data.seller.username.substring(0, 2).toUpperCase()}
 					</Avatar>
-					//<img src={data.games[0].thumbnail} alt={data.games[0].title} />
 				}
 				action={
 					<IconButton aria-label="settings">
@@ -89,6 +73,11 @@ const SingleSellGameCard = ({ data }) => {
 				</p>
 				<p>Condition:{data.games[0].condition}</p>
 			</CardContent>
+			<CardActions>
+				<Button component={RouterLink} to={{ pathname: `/games/${data.altId}` }}>
+					See details
+				</Button>
+			</CardActions>
 		</Card>
 	)
 }

@@ -11,6 +11,7 @@ import SellGamesScreen from './screens/SellGamesScreen'
 import WishlistScreen from './screens/WishlistScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 import GamesScreen from './screens/GamesScreen'
+import SingleGameScreen from './screens/SingleGameScreen'
 
 const App = () => {
 	return (
@@ -32,6 +33,10 @@ const App = () => {
 
 				<ProtectedRoute path="/games" exact>
 					<GamesScreen />
+				</ProtectedRoute>
+
+				<ProtectedRoute path="/games/:altId" exact>
+					<SingleGameScreen />
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/collection" exact>
