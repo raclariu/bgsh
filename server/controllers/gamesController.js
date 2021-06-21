@@ -59,7 +59,11 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 						: 'Not enough votes'
 					: null,
 				playTime           :
-					+game.playingtime.value === 0 ? null : `${game.minplaytime.value}-${game.maxplaytime.value}`,
+					+game.playingtime.value === 0
+						? null
+						: game.minplaytime.value === game.maxplaytime.value
+							? game.maxplaytime.value
+							: `${game.minplaytime.value} - ${game.maxplaytime.value}`,
 				minAge             : +game.minage.value === 0 ? null : +game.minage.value,
 				categories         : game.link.filter((link) => link.type === 'boardgamecategory').map((ctg) => {
 					return { id: +ctg.id, name: ctg.value }
@@ -80,10 +84,13 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
 					rank      : Array.isArray(game.statistics.ratings.ranks.rank)
 						? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
-						: 'Not ranked'
+						: 'N/A'
 				},
 				complexity         : {
-					weight : +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2),
+					weight :
+						+game.statistics.ratings.numweights.value > 0
+							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
+							: 'N/A',
 					votes  : +game.statistics.ratings.numweights.value
 				}
 			}

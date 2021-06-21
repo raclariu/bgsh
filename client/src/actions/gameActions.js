@@ -53,6 +53,10 @@ export const addToSaleList = (data) => (dispatch, getState) => {
 		return
 	}
 
+	if (saleList.find((el) => el.bggId === data.bggId)) {
+		return
+	}
+
 	localStorage.setItem('saleList', JSON.stringify([ ...saleList, data ]))
 
 	dispatch({

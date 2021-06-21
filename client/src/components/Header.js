@@ -16,12 +16,12 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import MenuIcon from '@material-ui/icons/Menu'
 import SaleListPopover from './SaleListPopover'
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined'
-import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined'
-import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined'
-import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined'
-import SportsEsportsOutlinedIcon from '@material-ui/icons/SportsEsportsOutlined'
+import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
+import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
+import PersonOutlineTwoToneIcon from '@material-ui/icons/PersonOutlineTwoTone'
+import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
+import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
+import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
 import { signOut } from '../actions/userActions'
 import pink from '@material-ui/core/colors/pink'
 
@@ -82,50 +82,52 @@ const Header = () => {
 								<Box boxShadow={2} height={100} p={2} bgcolor="warning.main">
 									Hey {userInfo.username}
 								</Box>
-								<List disablePadding className={classes.list} onClick={() => setIsOpen(!isOpen)}>
-									<Divider />
-									<ListItem button component={RouterLink} to="/">
-										<ListItemIcon>
-											<HomeOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="Home" />
-									</ListItem>
+								<Box p={2}>
+									<List disablePadding className={classes.list} onClick={() => setIsOpen(!isOpen)}>
+										<Divider />
+										<ListItem button component={RouterLink} to="/">
+											<ListItemIcon>
+												<HomeTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="Home" />
+										</ListItem>
 
-									<ListItem button component={RouterLink} to="/games">
-										<ListItemIcon>
-											<SportsEsportsOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="Board Games" />
-									</ListItem>
+										<ListItem button component={RouterLink} to="/games">
+											<ListItemIcon>
+												<DashboardTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="Board Games" />
+										</ListItem>
 
-									<ListItem button component={RouterLink} to="/profile">
-										<ListItemIcon>
-											<PersonOutlineOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="Profile" />
-									</ListItem>
+										<ListItem button component={RouterLink} to="/profile">
+											<ListItemIcon>
+												<PersonOutlineTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="Profile" />
+										</ListItem>
 
-									<ListItem button component={RouterLink} to="/collection">
-										<ListItemIcon>
-											<LibraryBooksOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="My Collection" />
-									</ListItem>
+										<ListItem button component={RouterLink} to="/collection">
+											<ListItemIcon>
+												<LibraryBooksTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="My Collection" />
+										</ListItem>
 
-									<ListItem divider button component={RouterLink} to="/wishlist">
-										<ListItemIcon>
-											<FavoriteBorderOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="My Wishlist" />
-									</ListItem>
+										<ListItem divider button component={RouterLink} to="/wishlist">
+											<ListItemIcon>
+												<FavoriteTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="My Wishlist" />
+										</ListItem>
 
-									<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
-										<ListItemIcon>
-											<MeetingRoomOutlinedIcon />
-										</ListItemIcon>
-										<ListItemText primary="Sign Out" />
-									</ListItem>
-								</List>
+										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
+											<ListItemIcon>
+												<MeetingRoomTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="Sign Out" />
+										</ListItem>
+									</List>
+								</Box>
 							</Drawer>
 						</Fragment>
 					) : (
@@ -141,7 +143,7 @@ const Header = () => {
 								<List className={classes.list}>
 									<ListItem button component={RouterLink} to="/">
 										<ListItemIcon>
-											<HomeOutlinedIcon />
+											<HomeTwoToneIcon />
 										</ListItemIcon>
 										<ListItemText primary="Home" />
 									</ListItem>

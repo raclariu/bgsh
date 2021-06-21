@@ -99,7 +99,7 @@ const SellGamesScreen = () => {
 		[ dispatch, saleList ]
 	)
 
-	const handleUncontrolled = (e, value, game, key) => {
+	const handleGameInfo = (e, value, game, key) => {
 		const index = values.findIndex((el) => el.bggId === game.bggId)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
@@ -191,7 +191,7 @@ const SellGamesScreen = () => {
 											className={cls.autocomplete}
 											value={values.find((el) => el.bggId === game.bggId).version}
 											getOptionSelected={(option, value) => option.title === value.title}
-											onChange={(e, selected) => handleUncontrolled(e, selected, game, 'version')}
+											onChange={(e, selected) => handleGameInfo(e, selected, game, 'version')}
 											options={game.versions}
 											getOptionLabel={(option) => `${option.title} (${option.year})`}
 											renderInput={(params) => (
@@ -211,8 +211,7 @@ const SellGamesScreen = () => {
 											className={cls.autocomplete}
 											value={values.find((el) => el.bggId === game.bggId).condition}
 											getOptionSelected={(option, value) => option === value}
-											onChange={(e, selected) =>
-												handleUncontrolled(e, selected, game, 'condition')}
+											onChange={(e, selected) => handleGameInfo(e, selected, game, 'condition')}
 											//if options change, don't forget to also change the arr on the server validator
 											options={[
 												'New',
@@ -244,12 +243,7 @@ const SellGamesScreen = () => {
 																values.find((el) => el.bggId === game.bggId).isSleeved
 															}
 															onChange={(e) =>
-																handleUncontrolled(
-																	e,
-																	e.target.checked,
-																	game,
-																	'isSleeved'
-																)}
+																handleGameInfo(e, e.target.checked, game, 'isSleeved')}
 														/>
 													}
 													label="Sleeved?"
@@ -257,8 +251,7 @@ const SellGamesScreen = () => {
 											</Grid>
 											<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 												<TextField
-													onChange={(e) =>
-														handleUncontrolled(e, e.target.value, game, 'price')}
+													onChange={(e) => handleGameInfo(e, e.target.value, game, 'price')}
 													value={values.find((el) => el.bggId === game.bggId).price}
 													InputProps={{
 														startAdornment : (

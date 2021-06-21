@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
+import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -16,6 +17,7 @@ import SingleGameScreen from './screens/SingleGameScreen'
 const App = () => {
 	return (
 		<BrowserRouter>
+			<CssBaseline />
 			<Header />
 
 			<Container maxWidth="md" component="main">
