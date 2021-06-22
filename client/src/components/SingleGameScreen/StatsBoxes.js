@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import approx from 'approximate-number'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
@@ -17,8 +18,8 @@ const defaultBox = {
 	color          : '#fff'
 }
 
-const StatsBoxes = ({ data }) => {
-	const handleRatingBgColor = (stats) => {
+const StatsBoxes = ({ complexity, stats }) => {
+	const handleRatingBgColor = () => {
 		const { ratings, avgRating } = stats
 		if (ratings > 30) {
 			if (avgRating >= 9) {
@@ -39,7 +40,7 @@ const StatsBoxes = ({ data }) => {
 		}
 	}
 
-	const handleComplexityBgColor = (complexity) => {
+	const handleComplexityBgColor = () => {
 		if (complexity.votes > 10) {
 			if (complexity.weight > 3.01) {
 				return '#f06524'
@@ -54,31 +55,31 @@ const StatsBoxes = ({ data }) => {
 	return (
 		<Fragment>
 			<Grid item>
-				<Box bgcolor={handleRatingBgColor(data.stats)} {...defaultBox}>
-					{data.stats.avgRating}
+				<Box bgcolor={handleRatingBgColor()} {...defaultBox}>
+					{stats.avgRating}
 					<Box fontSize={11} color="grey.200">
-						{data.stats.ratings} ratings
+						{approx(stats.ratings)} ratings
 					</Box>
 				</Box>
 			</Grid>
 			<Grid item>
-				<Box bgcolor={data.stats.rank <= 100 ? '#D9C836' : '#666e75'} {...defaultBox}>
-					{data.stats.rank}
+				<Box bgcolor={stats.rank <= 100 ? '#D9C836' : '#666e75'} {...defaultBox}>
+					{stats.rank}
 					<Box fontSize={11} color="grey.200">
 						rank
 					</Box>
 				</Box>
 			</Grid>
 			<Grid item>
-				<Box bgcolor={handleComplexityBgColor(data.complexity)} {...defaultBox}>
-					{data.complexity.weight}
-					{data.complexity.weight === 'N/A' ? (
+				<Box bgcolor={handleComplexityBgColor()} {...defaultBox}>
+					{complexity.weight}
+					{complexity.weight === 'N/A' ? (
 						<Box fontSize={11} color="grey.200">
 							weight
 						</Box>
 					) : (
 						<Box fontSize={11} color="grey.200">
-							{data.complexity.votes} votes
+							{approx(complexity.votes)} votes
 						</Box>
 					)}
 				</Box>

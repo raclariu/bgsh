@@ -1,40 +1,35 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles((theme) => ({
-	title    : {
-		fontSize                       : theme.typography.h4.fontSize,
-		[theme.breakpoints.down('sm')]: {
-			fontSize : theme.typography.h5.fontSize
-		}
-	},
-	subtitle : {
+	root : {
 		display                        : 'flex',
-		justifyContent                 : 'flex-end',
-		fontStyle                      : 'italic',
-		color                          : theme.palette.common.white,
+		flexDirection                  : 'column',
+		justifyContent                 : 'center',
+		alignItems                     : 'center',
+		width                          : '100%',
+		marginBottom                   : theme.spacing(1),
 		[theme.breakpoints.down('sm')]: {
-			alignItems     : 'center',
-			justifyContent : 'center'
+			marginTop    : theme.spacing(1),
+			marginBottom : theme.spacing(1)
 		}
 	}
 }))
 
-const TitleBox = ({ data }) => {
+const TitleBox = ({ title, year, type }) => {
 	const cls = useStyles()
 
 	return (
-		<Box display="flex" flexDirection="column" my={1}>
-			<Box className={cls.title}>{data.title}</Box>
-			<Box className={cls.subtitle}>
-				<Typography variant="caption">
-					<Box>{data.type}</Box>
-				</Typography>
-				<Typography variant="caption">
-					<Box ml={2}>{data.year}</Box>
-				</Typography>
+		<Box className={cls.root}>
+			<Box fontSize={30}>{title}</Box>
+			<Box display="flex" justifyContent="center" alignItems="center">
+				<Box fontStyle="italic" fontSize={12} color="grey.600" component="span">
+					{type}
+				</Box>
+				<Box fontStyle="italic" ml={2} fontSize={12} color="grey.600" component="span">
+					{year}
+				</Box>
 			</Box>
 		</Box>
 	)
