@@ -1,18 +1,12 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Chips from '../components/SingleGameScreen/Chips'
-
-import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
-import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
-import PersonPinCircleTwoToneIcon from '@material-ui/icons/PersonPinCircleTwoTone'
 
 import TitleBox from '../components/SingleGameScreen/TitleBox'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
@@ -26,7 +20,7 @@ import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 const useStyles = makeStyles((theme) => ({
 	root                 : {
 		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
+		marginBottom : theme.spacing(8)
 	},
 	chipsBox             : {
 		display        : 'flex',
@@ -165,7 +159,7 @@ const SingleGameScreen = () => {
 							sm={12}
 							xs={12}
 						>
-							<Grid item container justify="center">
+							<Grid item>
 								<TitleBox
 									title={data.games[0].title}
 									year={data.games[0].year}
@@ -179,7 +173,7 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							{/* Desginers and language dependence */}
-							<Grid item container className={cls.desLangTextContainer}>
+							<Grid item className={cls.desLangTextContainer}>
 								<DesLangText data={data.games[0]} />
 							</Grid>
 
@@ -194,6 +188,66 @@ const SingleGameScreen = () => {
 					{/* Chips */}
 					<Box className={cls.chipsBox}>
 						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
+					</Box>
+				</Fragment>
+			)}
+
+			{success && (
+				<Fragment>
+					<Grid container direction="row" className={cls.mainGrid}>
+						{/* Thumbnail */}
+						<Grid item container xl={4} lg={4} md={4} sm={12} xs={12} justify="center">
+							<Box className={cls.thumbnailContainer} borderRadius={4} boxShadow={2}>
+								<img
+									className={cls.thumbnail}
+									src={saleData.games[0].thumbnail}
+									alt={saleData.games[0].title}
+								/>
+							</Box>
+						</Grid>
+
+						{/* Right side */}
+						<Grid
+							item
+							container
+							direction="column"
+							justify="center"
+							alignItems="center"
+							xl={8}
+							lg={8}
+							md={8}
+							sm={12}
+							xs={12}
+						>
+							<Grid item container justify="center">
+								<TitleBox
+									title={saleData.games[0].title}
+									year={saleData.games[0].year}
+									type={saleData.games[0].type}
+								/>
+							</Grid>
+
+							{/* Stats boxes */}
+							<Grid item container justify="center" spacing={2}>
+								<StatsBoxes complexity={saleData.games[0].complexity} stats={saleData.games[0].stats} />
+							</Grid>
+
+							{/* Desginers and language dependence */}
+							<Grid item container className={cls.desLangTextContainer}>
+								<DesLangText data={saleData.games[0]} />
+							</Grid>
+
+							{/* Game info */}
+							<Grid item container className={cls.infoBoxesContainer} justify="center" spacing={2}>
+								<InfoBoxes data={saleData.games[0]} />
+							</Grid>
+						</Grid>
+					</Grid>
+
+					<Divider />
+					{/* Chips */}
+					<Box className={cls.chipsBox}>
+						<Chips categories={saleData.games[0].categories} mechanics={saleData.games[0].mechanics} />
 					</Box>
 				</Fragment>
 			)}

@@ -15,7 +15,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
-import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList'
+import FeaturedPlayListTwoToneIcon from '@material-ui/icons/FeaturedPlayListTwoTone'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import { removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
@@ -66,7 +66,7 @@ const SaleListPopover = () => {
 		<div>
 			<IconButton className={cls.badge} onClick={handleClick} color="primary">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
-					<FeaturedPlayListIcon />
+					<FeaturedPlayListTwoToneIcon />
 				</Badge>
 			</IconButton>
 

@@ -8,7 +8,8 @@ import BggSearchGamesBox from '../components/BggSearchGamesBox'
 
 const useStyles = makeStyles((theme) => ({
 	root : {
-		margin : theme.spacing(4, 0, 4, 0)
+		marginTop    : theme.spacing(4),
+		marginBottom : theme.spacing(8)
 	}
 }))
 

@@ -12,9 +12,9 @@ const defaultBox = {
 	textAlign      : 'center',
 	borderRadius   : 4,
 	boxShadow      : 2,
-	height         : 60,
-	width          : 100,
-	fontSize       : 18,
+	height         : 70,
+	width          : 110,
+	fontSize       : 20,
 	color          : '#fff'
 }
 
@@ -56,14 +56,14 @@ const StatsBoxes = ({ complexity, stats }) => {
 		<Fragment>
 			<Grid item>
 				<Box bgcolor={handleRatingBgColor()} {...defaultBox}>
-					{stats.avgRating}
+					{approx(stats.avgRating)}
 					<Box fontSize={11} color="grey.200">
 						{approx(stats.ratings)} ratings
 					</Box>
 				</Box>
 			</Grid>
 			<Grid item>
-				<Box bgcolor={stats.rank <= 100 ? '#D9C836' : '#666e75'} {...defaultBox}>
+				<Box bgcolor={stats.rank <= 100 ? '#d4b215' : '#666e75'} {...defaultBox}>
 					{stats.rank}
 					<Box fontSize={11} color="grey.200">
 						rank
@@ -72,7 +72,7 @@ const StatsBoxes = ({ complexity, stats }) => {
 			</Grid>
 			<Grid item>
 				<Box bgcolor={handleComplexityBgColor()} {...defaultBox}>
-					{complexity.weight}
+					{(Math.round(complexity.weight * 100) / 100).toFixed(2)}
 					{complexity.weight === 'N/A' ? (
 						<Box fontSize={11} color="grey.200">
 							weight

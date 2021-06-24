@@ -7,10 +7,11 @@ import LazyLoad from 'react-lazyload'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
-import Pagination from '@material-ui/lab/Pagination'
 import Message from '../components/Message'
+import Paginate from '../components/Paginate'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
+import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/GameCardSkeleton'
 import { getWishlist } from '../actions/collectionActions'
 import { WISHLIST_LIST_RESET } from '../constants/collectionConstants'
@@ -50,16 +51,6 @@ const WishlistSection = () => {
 		[ dispatch, searchKeyword, pageNumber ]
 	)
 
-	const onPageChangeHandler = (e, page) => {
-		window.scrollTo(75, 75)
-
-		if (searchKeyword) {
-			history.push(`/wishlist?search=${searchKeyword}&page=${page}`)
-		} else {
-			history.push(`/wishlist?page=${page}`)
-		}
-	}
-
 	const renderSkeletons = () => {
 		let skeletonsArr = []
 		for (let i = 0; i < 24; i++) {
@@ -74,17 +65,16 @@ const WishlistSection = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container spacing={3} justify="center">
-				<Grid item xl={5} lg={4} md={4} sm={6} xs={11}>
-					<SearchBox />
+			<Grid container justify="center">
+				{searchKeyword && (
+					<Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
+						<BackButton />
+					</Grid>
+				)}
+				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
+					<SearchBox placeholder="Search wishlist" />
 				</Grid>
 			</Grid>
-
-			{searchKeyword && (
-				<Button component={RouterLink} to="/wishlist" variant="outlined" color="primary" size="large">
-					Back to Wishlist
-				</Button>
-			)}
 
 			{error && (
 				<div className={cls.error}>
@@ -97,6 +87,7 @@ const WishlistSection = () => {
 					{renderSkeletons().map((skeleton) => skeleton)}
 				</Grid>
 			)}
+
 			{success && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{wishlist.map((game) => (
@@ -108,32 +99,21 @@ const WishlistSection = () => {
 					))}
 				</Grid>
 			)}
-			<Grid container>
-				<Box
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-					height={60}
-					width="100%"
-					borderRadius={4}
-					mt={4}
-				>
-					{success && (
-						<div>
-							{pagination.totalPages > 1 && (
-								<Grid item>
-									<Pagination
-										page={pagination.page}
-										onChange={(e, page) => onPageChangeHandler(e, page)}
-										count={pagination.totalPages}
-										color="primary"
-									/>
-								</Grid>
-							)}
-						</div>
-					)}
-				</Box>
-			</Grid>
+
+			{success &&
+				(pagination.totalPages > 1 && (
+					<Box
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+						height={60}
+						width="100%"
+						borderRadius={4}
+						mt={4}
+					>
+						<Paginate pagination={pagination} searchKeyword={searchKeyword} />
+					</Box>
+				))}
 		</div>
 	)
 }

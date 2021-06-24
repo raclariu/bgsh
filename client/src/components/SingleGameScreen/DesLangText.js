@@ -6,7 +6,14 @@ import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 
 const useStyles = makeStyles((theme) => ({
-	mr : {
+	root : {
+		display        : 'flex',
+		flexDirection  : 'column',
+		alignItems     : 'center',
+		justifyContent : 'center',
+		width          : '100%'
+	},
+	mr   : {
 		marginRight : theme.spacing(0.5)
 	}
 }))
@@ -15,7 +22,7 @@ const DesLangText = ({ data }) => {
 	const cls = useStyles()
 
 	return (
-		<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="100%">
+		<Box className={cls.root}>
 			<Box display="flex">
 				<FaceTwoToneIcon className={cls.mr} fontSize="small" color="primary" />
 				<Typography variant="caption">{data.designers.join(', ')}</Typography>

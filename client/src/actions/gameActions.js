@@ -128,7 +128,7 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	}
 }
 
-export const getGames = () => async (dispatch, getState) => {
+export const getGames = (searchKeyword, pageNumber) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAMES_INDEX_REQUEST })
 
@@ -137,10 +137,14 @@ export const getGames = () => async (dispatch, getState) => {
 		const config = {
 			headers : {
 				Authorization : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				search : searchKeyword ? searchKeyword.trim() : null,
+				page   : +pageNumber ? +pageNumber : 1
 			}
 		}
 
-		const { data } = await axios.get('/api/games/', config)
+		const { data } = await axios.get('/api/games', config)
 
 		dispatch({
 			type    : GAMES_INDEX_SUCCESS,

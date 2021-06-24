@@ -9,7 +9,8 @@ import SignUp from '../components/SignUp'
 
 const useStyles = makeStyles((theme) => ({
 	gridContainer : {
-		margin : theme.spacing(4, 0, 4, 0)
+		marginTop    : theme.spacing(4),
+		marginBottom : theme.spacing(8)
 	}
 }))
 

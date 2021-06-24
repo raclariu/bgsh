@@ -32,7 +32,7 @@ import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
 const useStyles = makeStyles((theme) => ({
 	section      : {
 		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
+		marginBottom : theme.spacing(8)
 	},
 	media        : {
 		objectFit      : 'cover',

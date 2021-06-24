@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { useHistory, Link as RouterLink } from 'react-router-dom'
-import Grid from '@material-ui/core/Grid'
+import { Link as RouterLink } from 'react-router-dom'
+import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -10,50 +10,46 @@ import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
-import Checkbox from '@material-ui/core/Checkbox'
-import Grow from '@material-ui/core/Grow'
-import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 
 const useStyles = makeStyles((theme) => ({
 	avatar : {
 		backgroundColor : '#3f51b5'
 	},
+	header : {
+		backgroundColor : 'lightgrey'
+	},
 	media  : {
 		objectFit      : 'cover',
 		height         : '150px',
-		objectPosition : 'center 0%'
+		objectPosition : 'center 10%'
+		//padding   : theme.spacing(1)
+		//backgroundColor : 'lightgrey'
 	}
 }))
 
 const SingleSellGameCard = ({ data }) => {
 	const cls = useStyles()
-	const history = useHistory()
 
-	console.log(data)
 	return (
 		<Card>
+			{console.count('render')}
 			<CardHeader
+				title={data.games[0].title}
 				titleTypographyProps={{
-					variant : 'button',
-					color   : 'secondary'
+					variant : 'subtitle2'
 				}}
+				subheader={`added on ${data.createdAt.substring(0, 10)} by ${data.seller.username} `}
 				subheaderTypographyProps={{
 					variant : 'caption'
 				}}
-				avatar={
-					<Avatar variant="rounded" className={cls.avatar}>
-						{data.seller.username.substring(0, 2).toUpperCase()}
-					</Avatar>
-				}
 				action={
-					<IconButton aria-label="settings">
+					<IconButton>
 						<MoreVertIcon />
 					</IconButton>
 				}
-				title={data.games[0].title}
-				subheader={`Sold by ${data.seller.username}`}
 			/>
 			<CardMedia
 				className={cls.media}
@@ -63,20 +59,38 @@ const SingleSellGameCard = ({ data }) => {
 				title={data.games[0].title}
 			/>
 			<CardContent>
-				<p>
-					{data.games[0].title} {data.games[0].year}
-				</p>
-				<p>Type:{data.games[0].type}</p>
-				<p>Price:{data.games[0].price} RON</p>
-				<p>
-					Version:{data.games[0].version.title} {data.games[0].version.year}
-				</p>
-				<p>Condition:{data.games[0].condition}</p>
+				<Typography component="div">
+					{/* <Box textAlign="center" fontWeight="fontWeightMedium">
+						{data.games[0].title}
+					</Box> */}
+
+					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+						<Box display="flex" justifyContent="center" alignItems="center" fontSize={12}>
+							{data.games[0].condition}
+						</Box>
+						<Box display="flex" justifyContent="center" alignItems="center" fontSize={12}>
+							{data.games[0].version.title}
+						</Box>
+					</Box>
+				</Typography>
 			</CardContent>
+			<Divider />
 			<CardActions>
-				<Button component={RouterLink} to={{ pathname: `/games/${data.altId}` }}>
-					See details
-				</Button>
+				<Box display="flex" justifyContent="center" width="100%">
+					<Box display="flex" justifyContent="space-between" alignItems="center" width="90%">
+						<Button
+							component={RouterLink}
+							color="primary"
+							size="small"
+							to={{ pathname: `/games/${data.altId}` }}
+						>
+							See More
+						</Button>
+						<Box fontSize={15} fontWeight="bold" color="secondary.main">
+							{data.games[0].price} RON
+						</Box>
+					</Box>
+				</Box>
 			</CardActions>
 		</Card>
 	)

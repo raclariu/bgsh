@@ -100,7 +100,12 @@ export const getGamesReducer = (state = {}, action) => {
 			return { loading: true }
 
 		case GAMES_INDEX_SUCCESS:
-			return { loading: false, success: true, saleData: action.payload }
+			return {
+				loading: false,
+				success: true,
+				saleData: action.payload.saleData,
+				pagination: action.payload.pagination
+			}
 
 		case GAMES_INDEX_FAIL:
 			return { loading: false, error: action.payload }

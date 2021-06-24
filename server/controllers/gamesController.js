@@ -14,17 +14,18 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 
 		let gamesArr = []
 
-		for (let id of bggIds) {
-			const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/thing', {
-				params : {
-					id,
-					versions : 1,
-					stats    : 1
-				}
-			})
+		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/thing', {
+			params : {
+				id       : bggIds.join(','),
+				versions : 1,
+				stats    : 1
+			}
+		})
 
-			let { item: game } = await parseXML(data)
+		let { item } = await parseXML(data)
+		const ensureArray = Array.isArray(item) ? item : [ item ]
 
+		for (let game of ensureArray) {
 			const item = {
 				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
 				bggId              : game.id,
@@ -222,14 +223,45 @@ const sellGames = asyncHandler(async (req, res) => {
 // ~ @route   GET /api/games/
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
-	const saleData = await Game.find({}).limit(24).populate('seller', 'username _id').lean()
+	const queryPage = +req.query.page
+	const resultsPerPage = 24
+	const searchKeyword = req.query.search
 
-	// const fuse = new Fuse(saleData, { keys: [ 'games.title' ], threshold: 0.3 })
-	// const results = fuse.search('gloom')
+	if (searchKeyword) {
+		const saleData = await Game.find({}).populate('seller', 'username _id').lean()
 
-	res.status(200).json(saleData)
+		const fuse = new Fuse(saleData, { keys: [ 'games.title' ], threshold: 0.3 })
+		const results = fuse.search(searchKeyword).map((game) => game.item)
 
-	//res.status(200).json(gamesArr)
+		const pagination = {
+			page       : queryPage,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			saleData   : results.slice((queryPage - 1) * resultsPerPage, queryPage * resultsPerPage),
+			pagination
+		})
+	} else {
+		const count = await Game.countDocuments({})
+
+		const saleData = await Game.find({})
+			.skip(resultsPerPage * (queryPage - 1))
+			.limit(resultsPerPage)
+			.populate('seller', 'username _id')
+			.lean()
+
+		const pagination = {
+			page         : queryPage,
+			totalPages   : Math.ceil(count / resultsPerPage),
+			totalItems   : count,
+			itemsPerPage : resultsPerPage
+		}
+
+		res.status(200).json({ saleData, pagination })
+	}
 })
 
 // ~ @desc    Get single up for sale game

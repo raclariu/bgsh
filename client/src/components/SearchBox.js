@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SearchBox = () => {
+const SearchBox = ({ placeholder }) => {
 	const cls = useStyles()
 	const history = useHistory()
 	const location = useLocation()
@@ -43,11 +43,11 @@ const SearchBox = () => {
 				value={keyword}
 				id="keyword"
 				name="keyword"
-				placeholder="Search Collection"
+				placeholder={placeholder}
 				type="text"
 				startAdornment={
 					<InputAdornment position="start">
-						{keyword.length > 2 ? <SearchIcon /> : <SearchIcon color="disabled" />}
+						{keyword.trim().length > 2 ? <SearchIcon /> : <SearchIcon color="disabled" />}
 					</InputAdornment>
 				}
 				endAdornment={

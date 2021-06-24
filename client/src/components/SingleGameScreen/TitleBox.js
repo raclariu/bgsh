@@ -21,13 +21,20 @@ const TitleBox = ({ title, year, type }) => {
 	const cls = useStyles()
 
 	return (
-		<Box className={cls.root}>
-			<Box fontSize={30}>{title}</Box>
+		<Box className={cls.root} textAlign="center">
+			<Box fontSize={25}>{title}</Box>
 			<Box display="flex" justifyContent="center" alignItems="center">
-				<Box fontStyle="italic" fontSize={12} color="grey.600" component="span">
+				<Box fontStyle="italic" fontSize={12} color="grey.600" component="span" letterSpacing="0.03333em">
 					{type}
 				</Box>
-				<Box fontStyle="italic" ml={2} fontSize={12} color="grey.600" component="span">
+				<Box
+					fontStyle="italic"
+					ml={2}
+					fontSize={12}
+					color="grey.600"
+					component="span"
+					letterSpacing="0.03333em"
+				>
 					{year}
 				</Box>
 			</Box>
