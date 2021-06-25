@@ -6,8 +6,6 @@ const Paginate = ({ pagination, searchKeyword }) => {
 	const history = useHistory()
 	const location = useLocation()
 
-	console.log('paginate', pagination, location)
-
 	const onPageChangeHandler = (e, page) => {
 		window.scrollTo(75, 75)
 

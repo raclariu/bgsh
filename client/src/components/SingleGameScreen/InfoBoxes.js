@@ -4,15 +4,13 @@ import Box from '@material-ui/core/Box'
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone'
 import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone'
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone'
-import SupervisorAccountTwoToneIcon from '@material-ui/icons/SupervisorAccountTwoTone'
+import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
 
 const defaultBox = {
 	display        : 'flex',
 	flexDirection  : 'column',
 	alignItems     : 'center',
 	justifyContent : 'center',
-	height         : '100%',
-	width          : '100%',
 	boxShadow      : 2,
 	p              : 1,
 	borderRadius   : 4
@@ -31,16 +29,7 @@ const InfoBoxes = ({ data }) => {
 					</Box>
 				</Box>
 			</Grid>
-			<Grid item xs={6} sm={3}>
-				<Box {...defaultBox}>
-					<Box>
-						<AccessTimeTwoToneIcon fontSize="small" color="primary" />
-					</Box>
-					<Box fontSize={12} textAlign="center">
-						{data.playTime} min.
-					</Box>
-				</Box>
-			</Grid>
+
 			<Grid item xs={6} sm={3}>
 				<Box {...defaultBox}>
 					<Box>
@@ -51,13 +40,25 @@ const InfoBoxes = ({ data }) => {
 					</Box>
 				</Box>
 			</Grid>
+
 			<Grid item xs={6} sm={3}>
 				<Box {...defaultBox}>
 					<Box>
-						<SupervisorAccountTwoToneIcon fontSize="small" color="primary" />
+						<AccessTimeTwoToneIcon fontSize="small" color="primary" />
 					</Box>
 					<Box fontSize={12} textAlign="center">
-						{data.minAge}
+						{data.playTime ? `${data.playTime} min.` : 'N/A'}
+					</Box>
+				</Box>
+			</Grid>
+
+			<Grid item xs={6} sm={3}>
+				<Box {...defaultBox}>
+					<Box>
+						<ChildCareTwoToneIcon fontSize="small" color="primary" />
+					</Box>
+					<Box fontSize={12} textAlign="center">
+						{data.minAge ? `${data.minAge}` : 'N/A'}
 					</Box>
 				</Box>
 			</Grid>

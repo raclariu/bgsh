@@ -101,7 +101,7 @@ const SaleListPopover = () => {
 								{saleList.length === 0 && (
 									<Fragment>
 										<Typography gutterBottom align="center" variant="body2" color="textSecondary">
-											To add games go to
+											To add games visit your
 										</Typography>
 										<ButtonGroup className={cls.btnGroup} size="small" color="primary">
 											<Button

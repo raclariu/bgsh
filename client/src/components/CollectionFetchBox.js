@@ -67,7 +67,13 @@ const CollectionFetchBox = () => {
 				/>
 
 				<div className={cls.button}>
-					<Button type="submit" size="small" variant="outlined" disabled={loading} color="primary">
+					<Button
+						type="submit"
+						size="small"
+						variant="outlined"
+						disabled={loading || bggUsername.trim().length < 4}
+						color="primary"
+					>
 						Import
 					</Button>
 				</div>

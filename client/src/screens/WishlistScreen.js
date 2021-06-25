@@ -65,12 +65,16 @@ const WishlistSection = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center">
-				{searchKeyword && (
-					<Grid item xl={1} lg={1} md={1} sm={1} xs={1}>
+			{searchKeyword && (
+				<Grid container>
+					<Box display="flex" alignItems="center" width="100%">
 						<BackButton />
-					</Grid>
-				)}
+						{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					</Box>
+				</Grid>
+			)}
+
+			<Grid container justify="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
 					<SearchBox placeholder="Search wishlist" />
 				</Grid>

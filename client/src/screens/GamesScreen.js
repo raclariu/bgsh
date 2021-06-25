@@ -3,11 +3,11 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
-import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import SingleSellGameCard from '../components/SingleSellGameCard'
 import SearchBox from '../components/SearchBox'
+import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import { getGames } from '../actions/gameActions'
 
@@ -46,11 +46,18 @@ const GamesScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center">
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
+			<Grid container justify="center" spacing={2}>
+				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search games" />
 				</Grid>
 			</Grid>
+
+			{searchKeyword && (
+				<Box display="flex" alignItems="center" width="100%">
+					<BackButton />
+					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+				</Box>
+			)}
 
 			<Grid container spacing={3} className={cls.gridContainer}>
 				{success &&

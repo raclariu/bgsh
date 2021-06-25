@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
+import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/GameCardSkeleton'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
@@ -80,20 +81,17 @@ const CollectionScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center">
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
+			<Grid container justify="center" spacing={2}>
+				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search collection" />
 				</Grid>
 			</Grid>
 
 			{searchKeyword && (
-				<Grid container spacing={3} justify="center" alignItems="center">
-					<Grid item xl={5} lg={4} md={4} sm={6} xs={12}>
-						<Button component={RouterLink} to="/collection" color="primary" size="large">
-							Back to Collection
-						</Button>
-					</Grid>
-				</Grid>
+				<Box display="flex" alignItems="center" width="100%">
+					<BackButton />
+					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+				</Box>
 			)}
 
 			{dbError && (

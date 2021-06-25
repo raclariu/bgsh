@@ -62,6 +62,7 @@ const BggSearchGamesBox = () => {
 
 	const resetHandler = () => {
 		setOptions([])
+		dispatch({ type: BGG_GAMES_SEARCH_RESET })
 		setSelectedOption(null)
 	}
 
@@ -104,9 +105,13 @@ const BggSearchGamesBox = () => {
 				)}
 			/>
 
-			<ButtonGroup className={cls.btnGroup} size="small" color="primary">
-				<Button onClick={resetHandler}>Reset</Button>
-				<Button onClick={submitHandler}>Add to sale list</Button>
+			<ButtonGroup className={cls.btnGroup} size="small">
+				<Button onClick={resetHandler} disabled={options.length === 0} color="secondary">
+					Reset
+				</Button>
+				<Button onClick={submitHandler} disabled={!selectedOption} color="primary">
+					Add to sale list
+				</Button>
 			</ButtonGroup>
 		</Fragment>
 	)

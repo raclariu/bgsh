@@ -70,35 +70,10 @@ const useStyles = makeStyles((theme) => ({
 		width                          : '90%',
 		[theme.breakpoints.down('sm')]: {
 			width : '80%'
-		}
-	},
-	buttonsContainer     : {
-		height                         : '60%',
-		display                        : 'flex',
-		flexDirection                  : 'column',
-		alignItems                     : 'center',
-		justifyContent                 : 'flex-end',
-		[theme.breakpoints.down('sm')]: {
-			flexDirection  : 'row',
-			justifyContent : 'center',
-			marginTop      : theme.spacing(2)
-		}
-	},
-	button               : {
-		width                          : '75%',
-		[theme.breakpoints.down('sm')]: {
-			width : '20%'
 		},
 		[theme.breakpoints.down('xs')]: {
-			width : '30%'
+			width : '75%'
 		}
-	},
-	shippingBox          : {
-		display        : 'flex',
-		flexDirection  : 'column',
-		width          : '25%',
-		justifyContent : 'center',
-		alignItems     : 'center'
 	}
 }))
 
@@ -188,66 +163,6 @@ const SingleGameScreen = () => {
 					{/* Chips */}
 					<Box className={cls.chipsBox}>
 						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
-					</Box>
-				</Fragment>
-			)}
-
-			{success && (
-				<Fragment>
-					<Grid container direction="row" className={cls.mainGrid}>
-						{/* Thumbnail */}
-						<Grid item container xl={4} lg={4} md={4} sm={12} xs={12} justify="center">
-							<Box className={cls.thumbnailContainer} borderRadius={4} boxShadow={2}>
-								<img
-									className={cls.thumbnail}
-									src={saleData.games[0].thumbnail}
-									alt={saleData.games[0].title}
-								/>
-							</Box>
-						</Grid>
-
-						{/* Right side */}
-						<Grid
-							item
-							container
-							direction="column"
-							justify="center"
-							alignItems="center"
-							xl={8}
-							lg={8}
-							md={8}
-							sm={12}
-							xs={12}
-						>
-							<Grid item container justify="center">
-								<TitleBox
-									title={saleData.games[0].title}
-									year={saleData.games[0].year}
-									type={saleData.games[0].type}
-								/>
-							</Grid>
-
-							{/* Stats boxes */}
-							<Grid item container justify="center" spacing={2}>
-								<StatsBoxes complexity={saleData.games[0].complexity} stats={saleData.games[0].stats} />
-							</Grid>
-
-							{/* Desginers and language dependence */}
-							<Grid item container className={cls.desLangTextContainer}>
-								<DesLangText data={saleData.games[0]} />
-							</Grid>
-
-							{/* Game info */}
-							<Grid item container className={cls.infoBoxesContainer} justify="center" spacing={2}>
-								<InfoBoxes data={saleData.games[0]} />
-							</Grid>
-						</Grid>
-					</Grid>
-
-					<Divider />
-					{/* Chips */}
-					<Box className={cls.chipsBox}>
-						<Chips categories={saleData.games[0].categories} mechanics={saleData.games[0].mechanics} />
 					</Box>
 				</Fragment>
 			)}
