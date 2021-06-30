@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
+import { useLocation, useHistory, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
@@ -35,9 +35,10 @@ const useStyles = makeStyles((theme) => ({
 const CollectionScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
+	const history = useHistory()
 	const location = useLocation()
 
-	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
+	const { search, page = 1 } = queryString.parse(location.search)
 
 	const dbCollection = useSelector((state) => state.dbCollection)
 	const { loading: dbLoading, error: dbError, success: dbSuccess, collection, pagination } = dbCollection
@@ -49,14 +50,31 @@ const CollectionScreen = () => {
 
 	useEffect(
 		() => {
-			dispatch(dbGetCollection(searchKeyword, pageNumber))
+			dispatch(dbGetCollection(search, page))
 
 			return () => {
 				dispatch({ type: DB_COLLECTION_LIST_RESET })
 			}
 		},
-		[ dispatch, searchKeyword, pageNumber ]
+		[ dispatch, search, page ]
 	)
+
+	const handleFilters = (filter, type) => {
+		console.log(filter, type)
+
+		const options = { sort: false, skipEmptyString: true, skipNull: true }
+		let query
+
+		if (type === 'search') {
+			query = queryString.stringify({ search: filter, page: 1 }, options)
+		}
+
+		if (type === 'page') {
+			query = queryString.stringify({ search, page: filter }, options)
+		}
+
+		history.push(`${location.pathname}?${query}`)
+	}
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
@@ -83,11 +101,11 @@ const CollectionScreen = () => {
 		<div className={cls.root}>
 			<Grid container justify="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search collection" />
+					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 
-			{searchKeyword && (
+			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
 					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
@@ -144,7 +162,7 @@ const CollectionScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} searchKeyword={searchKeyword} />
+						<Paginate pagination={pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

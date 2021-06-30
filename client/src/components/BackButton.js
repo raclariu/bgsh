@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton'
 import KeyboardBackspaceTwoToneIcon from '@material-ui/icons/KeyboardBackspaceTwoTone'
 
 const BackButton = () => {
-	const location = useLocation()
+	const history = useHistory()
 
 	return (
 		<Fragment>
-			<IconButton component={RouterLink} to={location.pathname}>
+			<IconButton onClick={() => history.goBack()}>
 				<KeyboardBackspaceTwoToneIcon color="primary" />
 			</IconButton>
 		</Fragment>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
@@ -14,10 +13,8 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SearchBox = ({ placeholder }) => {
+const SearchBox = ({ placeholder, handleFilters }) => {
 	const cls = useStyles()
-	const history = useHistory()
-	const location = useLocation()
 
 	const [ keyword, setKeyword ] = useState('')
 
@@ -25,7 +22,7 @@ const SearchBox = ({ placeholder }) => {
 		e.preventDefault()
 
 		if (keyword.trim().length > 2) {
-			history.push(`${location.pathname}?search=${keyword.trim()}&page=1`)
+			handleFilters(keyword, 'search')
 		}
 	}
 

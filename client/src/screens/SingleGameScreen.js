@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouteMatch } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 import Box from '@material-ui/core/Box'
@@ -80,8 +80,8 @@ const useStyles = makeStyles((theme) => ({
 const SingleGameScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
-	const match = useRouteMatch()
-	const { params: { altId } } = match
+	const params = useParams()
+	const { altId } = params
 
 	let data = useSelector((state) => {
 		return state.gamesIndex.saleData ? state.gamesIndex.saleData.find((game) => game.altId === altId) : null

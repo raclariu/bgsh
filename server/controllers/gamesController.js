@@ -43,7 +43,7 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 				suggestedPlayers   :
 					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes > 15
 						? Array.isArray(game.poll.find((obj) => obj.name === 'suggested_numplayers').results)
-							? game.poll
+							? +game.poll
 									.find((obj) => obj.name === 'suggested_numplayers')
 									.results.sort(
 										(a, b) =>
@@ -223,38 +223,56 @@ const sellGames = asyncHandler(async (req, res) => {
 // ~ @route   GET /api/games/
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
-	const queryPage = +req.query.page
+	const page = +req.query.page
 	const resultsPerPage = 24
-	const searchKeyword = req.query.search
+	const search = req.query.search
+	const sort = req.query.sort
 
-	if (searchKeyword) {
-		const saleData = await Game.find({}).populate('seller', 'username _id').lean()
+	const checkSort = () => {
+		if (sort === 'new') {
+			return { createdAt: 'desc' }
+		} else if (sort === 'old') {
+			return { createdAt: 'asc' }
+		} else if (sort === 'price-low') {
+			return { totalPrice: 'asc' }
+		} else if (sort === 'price-high') {
+			return { totalPrice: 'desc' }
+		} else if (sort === 'rank') {
+			return { 'games.stats.rank': 'asc' }
+		} else if (sort === 'year') {
+			return { 'games.year': 'asc' }
+		}
+	}
+
+	if (search) {
+		const saleData = await Game.find({}).populate('seller', 'username _id').sort(checkSort()).lean()
 
 		const fuse = new Fuse(saleData, { keys: [ 'games.title' ], threshold: 0.3 })
-		const results = fuse.search(searchKeyword).map((game) => game.item)
+		const results = fuse.search(search).map((game) => game.item)
 
 		const pagination = {
-			page       : queryPage,
+			page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
 			totalItems : results.length,
 			perPage    : resultsPerPage
 		}
 
 		res.status(200).json({
-			saleData   : results.slice((queryPage - 1) * resultsPerPage, queryPage * resultsPerPage),
+			saleData   : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
 	} else {
 		const count = await Game.countDocuments({})
 
 		const saleData = await Game.find({})
-			.skip(resultsPerPage * (queryPage - 1))
+			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('seller', 'username _id')
+			.sort(checkSort())
 			.lean()
 
 		const pagination = {
-			page         : queryPage,
+			page,
 			totalPages   : Math.ceil(count / resultsPerPage),
 			totalItems   : count,
 			itemsPerPage : resultsPerPage

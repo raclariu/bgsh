@@ -128,7 +128,7 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	}
 }
 
-export const getGames = (searchKeyword, pageNumber) => async (dispatch, getState) => {
+export const getGames = (search, page, sort) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAMES_INDEX_REQUEST })
 
@@ -139,8 +139,9 @@ export const getGames = (searchKeyword, pageNumber) => async (dispatch, getState
 				Authorization : `Bearer ${userInfo.token}`
 			},
 			params  : {
-				search : searchKeyword ? searchKeyword.trim() : null,
-				page   : +pageNumber ? +pageNumber : 1
+				search : search ? search.trim() : null,
+				page   : +page ? +page : 1,
+				sort   : sort ? sort : 'new'
 			}
 		}
 
