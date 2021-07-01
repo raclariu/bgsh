@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
-import SingleSellGameCard from '../components/SingleSellGameCard'
+import GamesIndexCard from '../components/GameIndexCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import SortFilterSelect from '../components/Filters/SortFilterSelect'
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const GamesScreen = () => {
+const GamesIndexScreen = () => {
 	const cls = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
@@ -42,11 +42,9 @@ const GamesScreen = () => {
 	)
 
 	const handleFilters = (filter, type) => {
-		console.log(filter, type)
-
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
-		let query
 
+		let query
 		if (type === 'search') {
 			query = queryString.stringify({ search: filter, sort, page: 1 }, options)
 		}
@@ -82,7 +80,7 @@ const GamesScreen = () => {
 					saleData.map((data) => (
 						<Fragment key={data._id}>
 							<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
-								<SingleSellGameCard data={data} />
+								<GamesIndexCard data={data} />
 							</Grid>
 						</Fragment>
 					))}
@@ -105,4 +103,4 @@ const GamesScreen = () => {
 	)
 }
 
-export default GamesScreen
+export default GamesIndexScreen

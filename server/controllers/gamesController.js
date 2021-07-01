@@ -224,31 +224,29 @@ const sellGames = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
-	const resultsPerPage = 24
 	const search = req.query.search
 	const sort = req.query.sort
-
-	const checkSort = () => {
-		if (sort === 'new') {
-			return { createdAt: 'desc' }
-		} else if (sort === 'old') {
-			return { createdAt: 'asc' }
-		} else if (sort === 'price-low') {
-			return { totalPrice: 'asc' }
-		} else if (sort === 'price-high') {
-			return { totalPrice: 'desc' }
-		} else if (sort === 'rank') {
-			return { 'games.stats.rank': 'asc' }
-		} else if (sort === 'year') {
-			return { 'games.year': 'asc' }
-		}
-	}
+	const resultsPerPage = 24
 
 	if (search) {
-		const saleData = await Game.find({}).populate('seller', 'username _id').sort(checkSort()).lean()
+		const saleData = await Game.find({}).populate('seller', 'username _id').lean()
 
-		const fuse = new Fuse(saleData, { keys: [ 'games.title' ], threshold: 0.3 })
-		const results = fuse.search(search).map((game) => game.item)
+		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3 })
+		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
+			if (sort === 'new') {
+				return b.createdAt - a.createdAt
+			} else if (sort === 'old') {
+				return a.createdAt - b.createdAt
+			} else if (sort === 'price-low') {
+				return a.totalPrice - b.totalPrice
+			} else if (sort === 'price-high') {
+				return b.totalPrice - a.totalPrice
+			} else if (sort === 'rank') {
+				return a.games[0].stats.rank - b.games[0].stats.rank
+			} else if (sort === 'year') {
+				return a.games[0].year - b.games[0].year
+			}
+		})
 
 		const pagination = {
 			page,
@@ -262,6 +260,22 @@ const getGames = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
+		const checkSort = () => {
+			if (sort === 'new') {
+				return { createdAt: 'desc' }
+			} else if (sort === 'old') {
+				return { createdAt: 'asc' }
+			} else if (sort === 'price-low') {
+				return { totalPrice: 'asc' }
+			} else if (sort === 'price-high') {
+				return { totalPrice: 'desc' }
+			} else if (sort === 'rank') {
+				return { 'games.stats.rank': 'asc' }
+			} else if (sort === 'year') {
+				return { 'games.year': 'asc' }
+			}
+		}
+
 		const count = await Game.countDocuments({})
 
 		const saleData = await Game.find({})

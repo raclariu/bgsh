@@ -17,28 +17,49 @@ import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTon
 import ArrowRightIcon from '@material-ui/icons/ArrowRight'
 
 const useStyles = makeStyles((theme) => ({
-	root    : {
+	root     : {
 		position : 'relative'
 	},
-	media   : {
+	media    : {
 		objectFit      : 'cover',
-		height         : '175px',
+		height         : '160px',
 		objectPosition : 'center 10%',
 		width          : '75%'
 	},
-	overlay : {
+	overlay  : {
 		position        : 'absolute',
-		top             : '2.5%',
+		top             : '10px',
 		right           : '2.5%',
 		color           : 'black',
 		backgroundColor : 'white',
 		width           : '20%',
+		height          : '40px',
 		textAlign       : 'center'
 	},
-	content : {
+	overlay2 : {
+		position        : 'absolute',
+		top             : '60px',
+		right           : '2.5%',
+		color           : 'black',
+		backgroundColor : 'white',
+		width           : '20%',
+		height          : '40px',
+		textAlign       : 'center'
+	},
+	overlay3 : {
+		position        : 'absolute',
+		top             : '110px',
+		right           : '2.5%',
+		color           : 'black',
+		backgroundColor : 'white',
+		width           : '20%',
+		height          : '40px',
+		textAlign       : 'center'
+	},
+	content  : {
 		padding : 0
 	},
-	avatar  : {
+	avatar   : {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
@@ -61,6 +82,12 @@ const SingleSellGameCard = ({ data }) => {
 			</Box>
 			<Box p={1} className={cls.overlay} boxShadow={2} borderRadius={4}>
 				{data.games[0].stats.avgRating}
+			</Box>
+			<Box p={1} className={cls.overlay2} boxShadow={2} borderRadius={4}>
+				{data.games[0].stats.rank}
+			</Box>
+			<Box p={1} className={cls.overlay3} boxShadow={2} borderRadius={4}>
+				{data.games[0].price} RON
 			</Box>
 			<CardContent className={cls.content}>
 				<Typography component="div">

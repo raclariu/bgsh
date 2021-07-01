@@ -60,11 +60,9 @@ const CollectionScreen = () => {
 	)
 
 	const handleFilters = (filter, type) => {
-		console.log(filter, type)
-
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
-		let query
 
+		let query
 		if (type === 'search') {
 			query = queryString.stringify({ search: filter, page: 1 }, options)
 		}

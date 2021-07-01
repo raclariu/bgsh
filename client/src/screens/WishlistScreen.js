@@ -35,20 +35,35 @@ const WishlistSection = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 
-	const { search: searchKeyword = '', page: pageNumber = 1 } = queryString.parse(location.search)
+	const { search, page = 1 } = queryString.parse(location.search)
 
 	const { loading, success, error, wishlist, pagination } = useSelector((state) => state.wishlist)
 
 	useEffect(
 		() => {
-			dispatch(getWishlist(searchKeyword, pageNumber))
+			dispatch(getWishlist(search, page))
 
 			return () => {
 				dispatch({ type: WISHLIST_LIST_RESET })
 			}
 		},
-		[ dispatch, searchKeyword, pageNumber ]
+		[ dispatch, search, page ]
 	)
+
+	const handleFilters = (filter, type) => {
+		const options = { sort: false, skipEmptyString: true, skipNull: true }
+
+		let query
+		if (type === 'search') {
+			query = queryString.stringify({ search: filter, page: 1 }, options)
+		}
+
+		if (type === 'page') {
+			query = queryString.stringify({ search, page: filter }, options)
+		}
+
+		history.push(`${location.pathname}?${query}`)
+	}
 
 	const renderSkeletons = () => {
 		let skeletonsArr = []
@@ -64,7 +79,7 @@ const WishlistSection = () => {
 
 	return (
 		<div className={cls.root}>
-			{searchKeyword && (
+			{search && (
 				<Grid container>
 					<Box display="flex" alignItems="center" width="100%">
 						<BackButton />
@@ -75,7 +90,7 @@ const WishlistSection = () => {
 
 			<Grid container justify="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
-					<SearchBox placeholder="Search wishlist" />
+					<SearchBox placeholder="Search wishlist" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 
@@ -114,7 +129,7 @@ const WishlistSection = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} searchKeyword={searchKeyword} />
+						<Paginate pagination={pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

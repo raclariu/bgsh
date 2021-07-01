@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
@@ -69,7 +69,7 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 								BGG
 							</Button>
 						</Grid>
-						{location.pathname === '/collection' ? (
+						{location.pathname === '/collection' && (
 							<Checkbox
 								checked={isChecked}
 								disabled={isDisabled}
@@ -77,13 +77,13 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 								icon={<AddBoxOutlinedIcon />}
 								size="small"
 							/>
-						) : (
+						)}
+						{location.pathname === '/wishlist' && (
 							<Button
 								size="small"
 								color="primary"
-								// href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-								target="_blank"
-								rel="noopener"
+								component={RouterLink}
+								to={`/games?search=${game.title.toLowerCase()}`}
 							>
 								Search
 							</Button>

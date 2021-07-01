@@ -37,12 +37,12 @@ const SortFilterSelect = ({ handleFilters }) => {
 				value={queryString.parse(location.search).sort || 'new'}
 				onChange={(e) => handleFilters(e.target.value, 'sort')}
 			>
-				<MenuItem value="new">Newest</MenuItem>
-				<MenuItem value="old">Oldest</MenuItem>
+				<MenuItem value="new">Added Newest</MenuItem>
+				<MenuItem value="old">Added Oldest</MenuItem>
 				<MenuItem value="price-low">Lowest Price</MenuItem>
 				<MenuItem value="price-high">Highest Price</MenuItem>
 				<MenuItem value="rank">Rank</MenuItem>
-				<MenuItem value="year">Release year</MenuItem>
+				<MenuItem value="year">Release Year</MenuItem>
 			</Select>
 		</FormControl>
 	)
