@@ -42,7 +42,7 @@ const StatsBoxes = ({ complexity, stats }) => {
 
 	const handleComplexityBgColor = () => {
 		if (complexity.votes > 10) {
-			if (complexity.weight > 3.01) {
+			if (complexity.weight > 3.0) {
 				return '#f06524'
 			} else if (complexity.weight > 0) {
 				return '#3ec781'
