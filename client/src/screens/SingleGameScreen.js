@@ -134,6 +134,7 @@ const SingleGameScreen = () => {
 							sm={12}
 							xs={12}
 						>
+							{/* Title */}
 							<Grid item>
 								<TitleBox
 									title={data.games[0].title}
@@ -143,8 +144,12 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							{/* Stats boxes */}
-							<Grid item container justify="center" spacing={2}>
-								<StatsBoxes complexity={data.games[0].complexity} stats={data.games[0].stats} />
+							<Grid item container justify="center">
+								<StatsBoxes
+									variant="full"
+									complexity={data.games[0].complexity}
+									stats={data.games[0].stats}
+								/>
 							</Grid>
 
 							{/* Desginers and language dependence */}

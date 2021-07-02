@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { formatDistance, parseISO } from 'date-fns'
@@ -8,47 +8,51 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
-import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
-import ArrowRightIcon from '@material-ui/icons/ArrowRight'
-import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
 const useStyles = makeStyles((theme) => ({
-	media   : {
+	root        : {
+		position : 'relative'
+	},
+	media       : {
 		objectFit : 'contain',
 		height    : '180px'
-		//objectPosition : 'center 10%'
-		//width          : '75%'
 	},
-	// overlayChip : {
-	// 	position        : 'absolute',
-	// 	top             : '8px',
-	// 	left            : '2px',
-	// 	backgroundColor : theme.palette.primary.main,
-	// 	color           : '#fff'
-	// 	// backgroundColor : 'white',
-	// 	// width    : '20%',
-	// 	// height   : '40px'
-	// 	//textAlign       : 'center'
-	// },
-	content : {
+	overlayChip : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '4px'
+	},
+	content     : {
 		padding   : 0,
 		marginTop : theme.spacing(1)
 	},
-	avatar  : {
+	title       : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden'
+	},
+	avatar      : {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
 	}
 }))
 
-const GameIndexCard = ({ data }) => {
+const GameIndexCardPack = ({ data }) => {
 	const cls = useStyles()
+
+	const [ index, setIndex ] = useState(0)
 
 	const handleRatingBgColor = (stats) => {
 		const { ratings, avgRating } = stats
@@ -83,60 +87,56 @@ const GameIndexCard = ({ data }) => {
 		}
 	}
 
+	const handleIndex = (type) => {
+		if (type === 'minus') {
+			if (index > 0) {
+				setIndex(index - 1)
+			}
+			// else {
+			// 	setIndex(data.games.length - 1)
+			// }
+		}
+		if (type === 'plus') {
+			if (data.games.length > index + 1) {
+				setIndex(index + 1)
+			}
+			// } else if (data.games.length === index + 1) {
+			// 	setIndex(0)
+			// }
+		}
+	}
+
 	return (
 		<Card className={cls.root}>
 			<Box bgcolor="grey.300" py={1}>
 				<CardMedia
 					className={cls.media}
 					component="img"
-					image={data.games[0].thumbnail ? data.games[0].thumbnail : '/images/collCardPlaceholder.jpg'}
-					alt={data.games[0].title}
-					title={data.games[0].title}
+					image={
+						data.games[index].thumbnail ? data.games[index].thumbnail : '/images/collCardPlaceholder.jpg'
+					}
+					alt={data.games[index].title}
+					title={data.games[index].title}
 				/>
+
 				<Typography component="div" variant="caption">
-					<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1}>
-						<Box
-							color="#fff"
-							p={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={handleRatingBgColor(data.games[0].stats)}
-						>
-							{data.games[0].stats.avgRating}
-						</Box>
-
-						<Box
-							color="#fff"
-							p={1}
-							ml={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={data.games[0].stats.rank <= 100 ? '#d4b215' : '#666e75'}
-						>
-							{data.games[0].stats.rank}
-						</Box>
-
-						<Box
-							color="#fff"
-							p={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							ml={1}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={handleComplexityBgColor(data.games[0].complexity)}
-						>
-							{data.games[0].complexity.weight}
-						</Box>
+					<Box mt={1}>
+						<StatsBoxes
+							variant="mini"
+							complexity={data.games[index].complexity}
+							stats={data.games[index].stats}
+						/>
 					</Box>
 				</Typography>
+
+				{data.sellType === 'pack' && (
+					<Chip
+						size="small"
+						color="secondary"
+						className={cls.overlayChip}
+						label={`${data.games.length} pack`}
+					/>
+				)}
 			</Box>
 
 			<CardContent className={cls.content}>
@@ -144,14 +144,20 @@ const GameIndexCard = ({ data }) => {
 					<Box
 						textAlign="center"
 						display="flex"
-						justifyContent="center"
+						justifyContent="space-between"
 						alignItems="center"
 						fontWeight="fontWeightMedium"
-						fontSize={15}
+						fontSize={14}
 						minHeight={50}
 						m={1}
 					>
-						{data.games[0].title}
+						<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
+							<ArrowBackIcon fontSize="small" />
+						</IconButton>
+						<Box className={cls.title}>{data.games[index].title}</Box>
+						<IconButton disabled={data.games.length === index + 1} onClick={() => handleIndex('plus')}>
+							<ArrowForwardIcon fontSize="small" />
+						</IconButton>
 					</Box>
 
 					<Divider />
@@ -161,7 +167,7 @@ const GameIndexCard = ({ data }) => {
 							<Chip
 								size="small"
 								variant="outlined"
-								label={`${data.games[0].type} • ${data.games[0].condition}`}
+								label={`${data.games[index].type} • ${data.games[index].condition}`}
 							/>
 						</Box>
 
@@ -169,11 +175,11 @@ const GameIndexCard = ({ data }) => {
 							<Chip
 								size="small"
 								variant="outlined"
-								label={`${data.games[0].version.title} • ${data.games[0].version.year}`}
+								label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
 							/>
 						</Box>
 						<Box fontWeight="fontWeightMedium" mt={0.5}>
-							<Chip color="primary" label={`${data.totalPrice} RON`} />
+							<Chip color="primary" label={`${data.totalPrice} RON / ${data.games.length} games`} />
 						</Box>
 					</Box>
 				</Typography>
@@ -209,4 +215,4 @@ const GameIndexCard = ({ data }) => {
 	)
 }
 
-export default GameIndexCard
+export default GameIndexCardPack

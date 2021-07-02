@@ -26,6 +26,7 @@ const TitleBox = ({ title, year, type }) => {
 				<Box fontStyle="italic" fontSize={12} color="grey.600" component="span" letterSpacing="0.03333em">
 					{type}
 				</Box>
+
 				<Box
 					fontStyle="italic"
 					ml={2}

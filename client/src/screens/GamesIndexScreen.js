@@ -6,6 +6,7 @@ import queryString from 'query-string'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import GamesIndexCard from '../components/GameIndexCard'
+import GamesIndexCardPack from '../components/GameIndexCardPack'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import SortFilterSelect from '../components/Filters/SortFilterSelect'
@@ -77,13 +78,22 @@ const GamesIndexScreen = () => {
 
 			<Grid container spacing={3} className={cls.gridContainer}>
 				{success &&
-					saleData.map((data) => (
-						<Fragment key={data._id}>
-							<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
-								<GamesIndexCard data={data} />
-							</Grid>
-						</Fragment>
-					))}
+					saleData.map(
+						(data) =>
+							data.sellType === 'individual' ? (
+								<Fragment key={data._id}>
+									<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
+										<GamesIndexCard data={data} />
+									</Grid>
+								</Fragment>
+							) : (
+								<Fragment key={data._id}>
+									<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
+										<GamesIndexCardPack data={data} />
+									</Grid>
+								</Fragment>
+							)
+					)}
 			</Grid>
 
 			{success && (
