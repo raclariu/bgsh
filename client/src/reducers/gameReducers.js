@@ -19,7 +19,17 @@ import {
 	FOR_SALE_SINGLE_GAME_REQUEST,
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
-	FOR_SALE_SINGLE_GAME_RESET
+	FOR_SALE_SINGLE_GAME_RESET,
+	SAVE_GAME_REQUEST,
+	SAVE_GAME_SUCCESS,
+	SAVE_GAME_FAIL,
+	SAVED_GAMES_REQUEST,
+	SAVED_GAMES_SUCCESS,
+	SAVED_GAMES_FAIL,
+	SAVED_GAMES_RESET,
+	SAVED_GAMES_SINGLE_REQUEST,
+	SAVED_GAMES_SINGLE_SUCCESS,
+	SAVED_GAMES_SINGLE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -127,6 +137,50 @@ export const getSingleGameReducer = (state = {}, action) => {
 			return { loading: false, error: action.payload }
 
 		case FOR_SALE_SINGLE_GAME_RESET:
+			return {}
+
+		default:
+			return state
+	}
+}
+
+export const savedGameStatusReducer = (state = {}, action) => {
+	switch (action.type) {
+		case SAVE_GAME_REQUEST:
+			return { loading: true }
+
+		case SAVE_GAME_SUCCESS:
+			return { loading: false, success: true, isSaved: action.payload }
+
+		case SAVE_GAME_FAIL:
+			return { loading: false, error: action.payload }
+
+		case SAVED_GAMES_SINGLE_REQUEST:
+			return { loading: true }
+
+		case SAVED_GAMES_SINGLE_SUCCESS:
+			return { loading: false, success: true, isSaved: action.payload }
+
+		case SAVED_GAMES_SINGLE_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const savedGamesListReducer = (state = {}, action) => {
+	switch (action.type) {
+		case SAVED_GAMES_REQUEST:
+			return { loading: true }
+
+		case SAVED_GAMES_SUCCESS:
+			return { loading: false, success: true, list: action.payload }
+
+		case SAVED_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		case SAVED_GAMES_RESET:
 			return {}
 
 		default:

@@ -15,7 +15,8 @@ const collectionSchema = mongoose.Schema(
 				},
 				title     : String,
 				year      : Number,
-				thumbnail : String
+				thumbnail : String,
+				added     : Date
 			}
 		],
 		wishlist      : [
@@ -27,7 +28,8 @@ const collectionSchema = mongoose.Schema(
 				title     : String,
 				year      : Number,
 				thumbnail : String,
-				priority  : Number
+				priority  : Number,
+				added     : Date
 			}
 		],
 		totalOwned    : Number,

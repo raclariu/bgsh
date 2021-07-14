@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
+import User from '../models/userModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get games from BGG by ID
@@ -83,9 +84,12 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 				stats              : {
 					ratings   : +game.statistics.ratings.usersrated.value,
 					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
-					rank      : Array.isArray(game.statistics.ratings.ranks.rank)
-						? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
-						: 'N/A'
+					rank      :
+						game.type === 'boardgame'
+							? Array.isArray(game.statistics.ratings.ranks.rank)
+								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
+								: 'N/A'
+							: 'N/A'
 				},
 				complexity         : {
 					weight :
@@ -225,26 +229,26 @@ const sellGames = asyncHandler(async (req, res) => {
 const getGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
-	const sort = req.query.sort
+	const sortBy = req.query.sort
 	const resultsPerPage = 24
 
 	if (search) {
 		const saleData = await Game.find({}).populate('seller', 'username _id').lean()
 
-		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3 })
+		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
-			if (sort === 'new') {
+			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt
-			} else if (sort === 'old') {
+			} else if (sortBy === 'old') {
 				return a.createdAt - b.createdAt
-			} else if (sort === 'price-low') {
+			} else if (sortBy === 'price-low') {
 				return a.totalPrice - b.totalPrice
-			} else if (sort === 'price-high') {
+			} else if (sortBy === 'price-high') {
 				return b.totalPrice - a.totalPrice
-			} else if (sort === 'rank') {
+			} else if (sortBy === 'rank') {
 				return a.games[0].stats.rank - b.games[0].stats.rank
-			} else if (sort === 'year') {
-				return a.games[0].year - b.games[0].year
+			} else if (sortBy === 'year') {
+				return b.games[0].year - a.games[0].year
 			}
 		})
 
@@ -261,18 +265,18 @@ const getGames = asyncHandler(async (req, res) => {
 		})
 	} else {
 		const checkSort = () => {
-			if (sort === 'new') {
+			if (sortBy === 'new') {
 				return { createdAt: 'desc' }
-			} else if (sort === 'old') {
+			} else if (sortBy === 'old') {
 				return { createdAt: 'asc' }
-			} else if (sort === 'price-low') {
+			} else if (sortBy === 'price-low') {
 				return { totalPrice: 'asc' }
-			} else if (sort === 'price-high') {
+			} else if (sortBy === 'price-high') {
 				return { totalPrice: 'desc' }
-			} else if (sort === 'rank') {
+			} else if (sortBy === 'rank') {
 				return { 'games.stats.rank': 'asc' }
-			} else if (sort === 'year') {
-				return { 'games.year': 'asc' }
+			} else if (sortBy === 'year') {
+				return { 'games.year': 'desc' }
 			}
 		}
 
@@ -313,4 +317,88 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	res.status(200).json(saleData)
 })
 
-export { getGamesFromBGG, sellGames, bggSearchGame, getGames, getSingleGame }
+// * @desc    Save game
+// * @route   POST  /api/games/saved
+// * @access  Private route
+const saveGame = asyncHandler(async (req, res) => {
+	const { altId } = req.body
+	const saleData = await Game.findOne({ altId }).select('_id').lean()
+
+	if (!saleData) {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+
+	const user = await User.findOne({ _id: req.user._id }).select('savedGames').lean()
+
+	if (!user) {
+		res.status(404)
+		throw {
+			message : 'User not found'
+		}
+	}
+
+	if (user.savedGames.map((id) => id.toString()).indexOf(saleData._id.toString()) === -1) {
+		user.savedGames.push(saleData._id)
+		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
+		res.status(200).json(true)
+	} else {
+		const filtered = user.savedGames.filter((id) => id.toString() !== saleData._id.toString())
+		await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
+		res.status(200).json(false)
+	}
+})
+
+// ~ @desc    Get one saved games
+// ~ @route   GET /api/games/saved/:altId
+// ~ @access  Private route
+const getSingleSavedGame = asyncHandler(async (req, res) => {
+	const altId = req.params.altId
+
+	const user = await User.findOne({ _id: req.user._id })
+		.select('savedGames -_id')
+		.populate({ path: 'savedGames', match: { altId: altId }, select: 'altId -_id' })
+		.lean()
+
+	if (!user) {
+		res.status(404)
+		throw {
+			message : 'User not found'
+		}
+	}
+
+	if (user.savedGames.length > 0) {
+		res.status(200).json(true)
+	} else {
+		res.status(200).json(false)
+	}
+})
+
+// ~ @desc    Get saved games
+// ~ @route   GET /api/games/saved
+// ~ @access  Private route
+const getSavedGames = asyncHandler(async (req, res) => {
+	const user = await User.findOne({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
+
+	if (!user) {
+		res.status(404)
+		throw {
+			message : 'User not found'
+		}
+	}
+
+	res.status(200).json(user.savedGames)
+})
+
+export {
+	getGamesFromBGG,
+	sellGames,
+	bggSearchGame,
+	getGames,
+	getSingleGame,
+	saveGame,
+	getSavedGames,
+	getSingleSavedGame
+}

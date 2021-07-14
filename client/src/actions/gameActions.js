@@ -17,7 +17,16 @@ import {
 	FOR_SALE_SINGLE_GAME_REQUEST,
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
-	saleListLimit
+	saleListLimit,
+	SAVE_GAME_REQUEST,
+	SAVE_GAME_SUCCESS,
+	SAVE_GAME_FAIL,
+	SAVED_GAMES_REQUEST,
+	SAVED_GAMES_SUCCESS,
+	SAVED_GAMES_FAIL,
+	SAVED_GAMES_SINGLE_REQUEST,
+	SAVED_GAMES_SINGLE_SUCCESS,
+	SAVED_GAMES_SINGLE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -180,6 +189,84 @@ export const getSingleGame = (altId) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : FOR_SALE_SINGLE_GAME_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const saveGame = (altId) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: SAVE_GAME_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.post('/api/games/saved', { altId }, config)
+
+		dispatch({
+			type    : SAVE_GAME_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : SAVE_GAME_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getSingleSavedGame = (altId) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: SAVED_GAMES_SINGLE_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get(`/api/games/saved/${altId}`, config)
+
+		dispatch({
+			type    : SAVED_GAMES_SINGLE_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : SAVED_GAMES_SINGLE_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getSavedGames = () => async (dispatch, getState) => {
+	try {
+		dispatch({ type: SAVED_GAMES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get('/api/games/saved', config)
+
+		dispatch({
+			type    : SAVED_GAMES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : SAVED_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

@@ -23,15 +23,17 @@ const DesLangText = ({ data }) => {
 
 	return (
 		<Box className={cls.root}>
-			<Box display="flex">
-				<FaceTwoToneIcon className={cls.mr} fontSize="small" color="primary" />
-				<Typography variant="caption">{data.designers.join(', ')}</Typography>
-			</Box>
+			<Typography variant="caption">
+				<Box display="flex">
+					<FaceTwoToneIcon className={cls.mr} fontSize="small" color="primary" />
+					<Box>{data.designers.length > 0 ? data.designers.join(', ') : 'N/A'}</Box>
+				</Box>
 
-			<Box display="flex">
-				<PublicTwoToneIcon className={cls.mr} fontSize="small" color="primary" />
-				<Typography variant="caption">{data.languageDependence}</Typography>
-			</Box>
+				<Box display="flex">
+					<PublicTwoToneIcon className={cls.mr} fontSize="small" color="primary" />
+					<Box>{data.languageDependence}</Box>
+				</Box>
+			</Typography>
 		</Box>
 	)
 }

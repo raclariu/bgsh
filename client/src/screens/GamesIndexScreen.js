@@ -1,17 +1,18 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import LazyLoad from 'react-lazyload'
 import queryString from 'query-string'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import GamesIndexCard from '../components/GameIndexCard'
-import GamesIndexCardPack from '../components/GameIndexCardPack'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import SortFilterSelect from '../components/Filters/SortFilterSelect'
 import Paginate from '../components/Paginate'
-import { getGames } from '../actions/gameActions'
+import GameIndexCardSkeletons from '../components/GameIndexCardSkeletons'
+import { getGames, getSavedGames } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -76,24 +77,21 @@ const GamesIndexScreen = () => {
 				<SortFilterSelect handleFilters={handleFilters} />
 			</Box>
 
+			{loading && (
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+					<GameIndexCardSkeletons num={24} />
+				</Grid>
+			)}
+
 			<Grid container spacing={3} className={cls.gridContainer}>
 				{success &&
-					saleData.map(
-						(data) =>
-							data.sellType === 'individual' ? (
-								<Fragment key={data._id}>
-									<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
-										<GamesIndexCard data={data} />
-									</Grid>
-								</Fragment>
-							) : (
-								<Fragment key={data._id}>
-									<Grid item xl={4} lg={4} md={4} sm={6} xs={12}>
-										<GamesIndexCardPack data={data} />
-									</Grid>
-								</Fragment>
-							)
-					)}
+					saleData.map((data) => (
+						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
+							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeletons num={1} />}>
+								<GamesIndexCard data={data} />
+							</LazyLoad>
+						</Grid>
+					))}
 			</Grid>
 
 			{success && (

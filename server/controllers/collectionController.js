@@ -1,8 +1,8 @@
 import axios from 'axios'
 import asyncHandler from 'express-async-handler'
-import { parseXML } from '../helpers/helpers.js'
 import Fuse from 'fuse.js'
 import Collection from '../models/collectionModel.js'
+import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get collection from BGG and add to DB
 // * @route   POST  /api/collections
@@ -16,7 +16,8 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',
-				own      : 1
+				own      : 1,
+				wishlist : 0
 			}
 		})
 
@@ -31,18 +32,27 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 						bggId     : game.objectid,
 						title     : game.originalname ? game.originalname : game.name._ || null,
 						year      : game.yearpublished ? +game.yearpublished : null,
-						thumbnail : game.thumbnail ? game.thumbnail : null
+						thumbnail : game.thumbnail ? game.thumbnail : null,
+						added     : game.status.lastmodified
 					}
 
 					bggCollection.push(item)
 				}
 			} else {
-				const { objectid, name, originalname, yearpublished, thumbnail } = parsedOwned.item
+				const {
+					objectid,
+					name,
+					originalname,
+					yearpublished,
+					thumbnail,
+					status        : { lastmodified }
+				} = parsedOwned.item
 				const item = {
 					bggId     : objectid,
 					title     : originalname ? originalname : name._ || null,
 					year      : yearpublished ? +yearpublished : null,
-					thumbnail : thumbnail ? thumbnail : null
+					thumbnail : thumbnail ? thumbnail : null,
+					added     : lastmodified
 				}
 
 				bggCollection.push(item)
@@ -71,19 +81,27 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 						title     : game.name ? game.name._ : null,
 						year      : game.yearpublished ? +game.yearpublished : null,
 						thumbnail : game.thumbnail ? game.thumbnail : null,
-						priority  : +game.status.wishlistpriority
+						priority  : +game.status.wishlistpriority,
+						added     : game.status.lastmodified
 					}
 
 					bggWishlist.push(item)
 				}
 			} else {
-				const { objectid, name, yearpublished, thumbnail, status } = parsedWishlist.item
+				const {
+					objectid,
+					name,
+					yearpublished,
+					thumbnail,
+					status        : { lastmodified, wishlistpriority }
+				} = parsedWishlist.item
 				const item = {
 					bggId     : objectid,
 					title     : name ? name._ : null,
 					year      : yearpublished ? +yearpublished : null,
 					thumbnail : thumbnail ? thumbnail : null,
-					priority  : +status.wishlistpriority
+					priority  : +wishlistpriority,
+					added     : lastmodified
 				}
 
 				bggWishlist.push(item)
@@ -141,7 +159,7 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	if (searchKeyword) {
 		const { owned } = await Collection.findOne({ user: req.user._id }).select('owned').lean()
 
-		const fuse = new Fuse(owned, { keys: [ 'title' ], threshold: 0.3 })
+		const fuse = new Fuse(owned, { keys: [ 'title' ], threshold: 0.3, distance: 200 })
 
 		const results = fuse.search(searchKeyword).map((game) => game.item)
 
@@ -212,7 +230,7 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 	if (searchKeyword) {
 		const { wishlist } = await Collection.findOne({ user: req.user._id }).select('wishlist').lean()
 
-		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.3 })
+		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.4 })
 
 		const results = fuse.search(searchKeyword).map((game) => game.item)
 

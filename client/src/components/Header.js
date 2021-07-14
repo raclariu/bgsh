@@ -22,6 +22,7 @@ import PersonOutlineTwoToneIcon from '@material-ui/icons/PersonOutlineTwoTone'
 import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
+import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import { signOut } from '../actions/userActions'
 import pink from '@material-ui/core/colors/pink'
 
@@ -113,11 +114,18 @@ const Header = () => {
 											<ListItemText primary="My Collection" />
 										</ListItem>
 
-										<ListItem divider button component={RouterLink} to="/wishlist">
+										<ListItem button component={RouterLink} to="/wishlist">
 											<ListItemIcon>
 												<FavoriteTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="My Wishlist" />
+										</ListItem>
+
+										<ListItem divider button component={RouterLink} to="/saved">
+											<ListItemIcon>
+												<BookmarkTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="My Saved Games" />
 										</ListItem>
 
 										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>

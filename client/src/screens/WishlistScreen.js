@@ -11,7 +11,7 @@ import Paginate from '../components/Paginate'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import GameCardSkeleton from '../components/GameCardSkeleton'
+import GameCardSkeletons from '../components/GameCardSkeletons'
 import { getWishlist } from '../actions/collectionActions'
 import { WISHLIST_LIST_RESET } from '../constants/collectionConstants'
 
@@ -65,18 +65,6 @@ const WishlistSection = () => {
 		history.push(`${location.pathname}?${query}`)
 	}
 
-	const renderSkeletons = () => {
-		let skeletonsArr = []
-		for (let i = 0; i < 24; i++) {
-			skeletonsArr.push(
-				<Grid key={i} item xl={4} lg={4} md={4} sm={6} xs={12}>
-					<GameCardSkeleton />
-				</Grid>
-			)
-		}
-		return skeletonsArr
-	}
-
 	return (
 		<div className={cls.root}>
 			{search && (
@@ -102,7 +90,7 @@ const WishlistSection = () => {
 
 			{loading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{renderSkeletons().map((skeleton) => skeleton)}
+					<GameCardSkeletons num={24} />
 				</Grid>
 			)}
 
@@ -110,7 +98,7 @@ const WishlistSection = () => {
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{wishlist.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
 								<GameCard game={game} />
 							</LazyLoad>
 						</Grid>

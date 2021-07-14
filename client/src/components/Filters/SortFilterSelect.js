@@ -21,7 +21,7 @@ const SortFilterSelect = ({ handleFilters }) => {
 
 	return (
 		<FormControl className={cls.formControl}>
-			<InputLabel>Sort</InputLabel>
+			<InputLabel>Sort by</InputLabel>
 			<Select
 				MenuProps={{
 					anchorOrigin       : {
@@ -42,7 +42,7 @@ const SortFilterSelect = ({ handleFilters }) => {
 				<MenuItem value="price-low">Lowest Price</MenuItem>
 				<MenuItem value="price-high">Highest Price</MenuItem>
 				<MenuItem value="rank">Rank</MenuItem>
-				<MenuItem value="year">Release Year</MenuItem>
+				<MenuItem value="year">Release Newest</MenuItem>
 			</Select>
 		</FormControl>
 	)

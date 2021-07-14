@@ -3,7 +3,7 @@ import Pagination from '@material-ui/lab/Pagination'
 
 const Paginate = ({ pagination, handleFilters }) => {
 	const onPageChangeHandler = (e, page) => {
-		window.scrollTo(75, 75)
+		window.scrollTo(0, 0)
 		handleFilters(page, 'page')
 	}
 

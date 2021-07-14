@@ -10,7 +10,6 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import Checkbox from '@material-ui/core/Checkbox'
-import Grow from '@material-ui/core/Grow'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 
 const useStyles = makeStyles((theme) => ({
@@ -38,60 +37,58 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 	const location = useLocation()
 
 	return (
-		<Grow in>
-			<Card elevation={2} className={cls.root}>
-				<CardMedia
-					className={cls.media}
-					component="img"
-					alt={game.title}
-					image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
-					title={game.title}
-				/>
+		<Card elevation={2} className={cls.root}>
+			<CardMedia
+				className={cls.media}
+				component="img"
+				alt={game.title}
+				image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
+				title={game.title}
+			/>
 
-				<Divider />
+			<Divider />
 
-				<CardContent className={cls.cardContent}>
-					<Typography className={cls.title} align="center" variant="body2" component="p">
-						{game.title} ({game.year})
-					</Typography>
-				</CardContent>
+			<CardContent className={cls.cardContent}>
+				<Typography className={cls.title} align="center" variant="body2" component="p">
+					{game.title} ({game.year})
+				</Typography>
+			</CardContent>
 
-				<CardActions>
-					<Grid container direction="row" justify="space-between" alignItems="center">
-						<Grid item>
-							<Button
-								size="small"
-								color="primary"
-								href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-								target="_blank"
-								rel="noopener"
-							>
-								BGG
-							</Button>
-						</Grid>
-						{location.pathname === '/collection' && (
-							<Checkbox
-								checked={isChecked}
-								disabled={isDisabled}
-								onChange={(e) => saleListHandler(e, game.bggId)}
-								icon={<AddBoxOutlinedIcon />}
-								size="small"
-							/>
-						)}
-						{location.pathname === '/wishlist' && (
-							<Button
-								size="small"
-								color="primary"
-								component={RouterLink}
-								to={`/games?search=${game.title.toLowerCase()}`}
-							>
-								Search
-							</Button>
-						)}
+			<CardActions>
+				<Grid container direction="row" justify="space-between" alignItems="center">
+					<Grid item>
+						<Button
+							size="small"
+							color="primary"
+							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+							target="_blank"
+							rel="noopener"
+						>
+							BGG
+						</Button>
 					</Grid>
-				</CardActions>
-			</Card>
-		</Grow>
+					{location.pathname === '/collection' && (
+						<Checkbox
+							checked={isChecked}
+							disabled={isDisabled}
+							onChange={(e) => saleListHandler(e, game.bggId)}
+							icon={<AddBoxOutlinedIcon />}
+							size="small"
+						/>
+					)}
+					{location.pathname === '/wishlist' && (
+						<Button
+							size="small"
+							color="primary"
+							component={RouterLink}
+							to={`/games?search=${game.title.toLowerCase()}`}
+						>
+							Search
+						</Button>
+					)}
+				</Grid>
+			</CardActions>
+		</Card>
 	)
 }
 

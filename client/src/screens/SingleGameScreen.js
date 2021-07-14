@@ -2,18 +2,32 @@ import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { formatDistance, parseISO } from 'date-fns'
 
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
+import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
-import Chips from '../components/SingleGameScreen/Chips'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
 
-import TitleBox from '../components/SingleGameScreen/TitleBox'
+import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
+import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
+import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone'
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded'
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded'
+import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone'
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
+import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
+
+import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import DesLangText from '../components/SingleGameScreen/DesLangText'
 import InfoBoxes from '../components/SingleGameScreen/InfoBoxes'
+import SaveGameButton from '../components/SaveGameButton'
 
-import { getSingleGame } from '../actions/gameActions'
+import { getSingleGame, getSingleSavedGame } from '../actions/gameActions'
 
 import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 
@@ -26,17 +40,10 @@ const useStyles = makeStyles((theme) => ({
 		display        : 'flex',
 		justifyContent : 'center',
 		flexWrap       : 'wrap',
-		padding        : theme.spacing(1),
-		margin         : theme.spacing(1, 0, 4, 0),
+		margin         : theme.spacing(1, 0, 1, 0),
 		'& > *'        : {
 			margin : theme.spacing(0.5)
 		}
-	},
-	titleContainer       : {
-		display        : 'flex',
-		justifyContent : 'center',
-		flexWrap       : 'wrap',
-		padding        : theme.spacing(0, 2, 0, 2)
 	},
 	mainGrid             : {
 		marginTop    : theme.spacing(2),
@@ -48,14 +55,14 @@ const useStyles = makeStyles((theme) => ({
 		alignItems                     : 'center',
 		height                         : '100%',
 		width                          : '100%',
-		backgroundColor                : 'rgba(1,1,1,0.1)',
 		[theme.breakpoints.down('sm')]: {
-			height : '250px'
+			height       : '250px',
+			marginBottom : theme.spacing(1)
 		}
 	},
 	thumbnail            : {
 		objectFit                      : 'contain',
-		height                         : '80%',
+		height                         : '90%',
 		width                          : 'auto',
 		overflow                       : 'auto',
 		[theme.breakpoints.down('sm')]: {
@@ -88,7 +95,7 @@ const SingleGameScreen = () => {
 	})
 
 	const gameForSale = useSelector((state) => state.gameForSale)
-	const { loading, success, error, saleData } = gameForSale
+	const { loading: loadingGame, success: successGame, error: errorGame, saleData } = gameForSale
 
 	console.log(data)
 
@@ -97,6 +104,8 @@ const SingleGameScreen = () => {
 			if (!data) {
 				dispatch(getSingleGame(altId))
 			}
+
+			dispatch(getSingleSavedGame(altId))
 
 			return () => {
 				dispatch({ type: FOR_SALE_SINGLE_GAME_RESET })
@@ -122,6 +131,7 @@ const SingleGameScreen = () => {
 						</Grid>
 
 						{/* Right side */}
+
 						<Grid
 							item
 							container
@@ -136,15 +146,26 @@ const SingleGameScreen = () => {
 						>
 							{/* Title */}
 							<Grid item>
-								<TitleBox
-									title={data.games[0].title}
-									year={data.games[0].year}
-									type={data.games[0].type}
-								/>
+								<Box fontSize={25} textAlign="center">
+									{data.games[0].title}
+								</Box>
+							</Grid>
+
+							{/* Subtitle */}
+							<Grid item>
+								<Typography component="span">
+									<Box
+										fontSize={12}
+										mb={1}
+										fontStyle="italic"
+										color="grey.600"
+										textAlign="center"
+									>{`${data.games[0].type} • ${data.games[0].year}`}</Box>
+								</Typography>
 							</Grid>
 
 							{/* Stats boxes */}
-							<Grid item container justify="center">
+							<Grid item container justify="center" spacing={2}>
 								<StatsBoxes
 									variant="full"
 									complexity={data.games[0].complexity}
@@ -164,11 +185,125 @@ const SingleGameScreen = () => {
 						</Grid>
 					</Grid>
 
-					<Divider />
+					<Divider light />
+
 					{/* Chips */}
 					<Box className={cls.chipsBox}>
 						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
 					</Box>
+
+					<Divider light />
+
+					<Grid item container justify="center" alignItems="center">
+						<Box>{data.totalPrice} RON</Box>
+						<IconButton color="primary">
+							<MailTwoToneIcon fontSize="small" />
+						</IconButton>
+						<SaveGameButton altId={altId} />
+					</Grid>
+
+					{/* Shipping */}
+					<Grid container>
+						<Grid item container xs={12} direction="column">
+							<Box p={1} my={2}>
+								<Typography component="div">
+									{data.shipPost ? (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<MarkunreadMailboxTwoToneIcon color="primary" />
+											<Box
+												fontSize={16}
+												textAlign="center"
+												mt={1}
+											>{`Shipping by post is available, paid by ${data.shipPostPayer}`}</Box>
+										</Box>
+									) : (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<CancelRoundedIcon fontSize="small" color="error" />
+											<Box fontSize={16} textAlign="center" mt={1}>
+												Shipping by post is not available
+											</Box>
+										</Box>
+									)}
+
+									{data.shipCourier ? (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<LocalShippingTwoToneIcon color="primary" />
+											<Box
+												fontSize={16}
+												textAlign="center"
+												mt={1}
+											>{`Shipping by courier is available, paid by ${data.shipCourierPayer}`}</Box>
+										</Box>
+									) : (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<CancelRoundedIcon color="error" />
+											<Box fontSize={16} textAlign="center" mt={1}>
+												Shipping by courier is not available
+											</Box>
+										</Box>
+									)}
+
+									{data.shipPersonal ? (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<LocalLibraryTwoToneIcon color="primary" />
+											<Box fontSize={16} textAlign="center" mt={1}>
+												Personal shipping is available in
+											</Box>
+											<Box className={cls.chipsBox}>
+												{data.shipCities.map((city, index) => (
+													<Chip
+														key={index}
+														icon={<RoomTwoToneIcon />}
+														size="small"
+														color="primary"
+														variant="outlined"
+														label={city}
+													/>
+												))}
+											</Box>
+										</Box>
+									) : (
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="center"
+											alignItems="center"
+										>
+											<CancelRoundedIcon color="error" />
+											<Box fontSize={16} textAlign="center" mt={1}>
+												No personal shipping
+											</Box>
+										</Box>
+									)}
+								</Typography>
+							</Box>
+						</Grid>
+					</Grid>
 				</Fragment>
 			)}
 		</div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { formatDistance, parseISO } from 'date-fns'
@@ -8,150 +8,125 @@ import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
+
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
-import ArrowRightIcon from '@material-ui/icons/ArrowRight'
-import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
 const useStyles = makeStyles((theme) => ({
-	media   : {
+	root        : {
+		position : 'relative'
+	},
+	media       : {
 		objectFit : 'contain',
 		height    : '180px'
-		//objectPosition : 'center 10%'
-		//width          : '75%'
 	},
-	// overlayChip : {
-	// 	position        : 'absolute',
-	// 	top             : '8px',
-	// 	left            : '2px',
-	// 	backgroundColor : theme.palette.primary.main,
-	// 	color           : '#fff'
-	// 	// backgroundColor : 'white',
-	// 	// width    : '20%',
-	// 	// height   : '40px'
-	// 	//textAlign       : 'center'
-	// },
-	content : {
+	overlayChip : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '4px'
+	},
+	content     : {
 		padding   : 0,
 		marginTop : theme.spacing(1)
 	},
-	avatar  : {
+	title       : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden'
+	},
+	avatar      : {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
 	}
 }))
 
-const GameIndexCard = ({ data }) => {
+const GameIndexCardPack = ({ data }) => {
 	const cls = useStyles()
 
-	const handleRatingBgColor = (stats) => {
-		const { ratings, avgRating } = stats
-		if (ratings > 30) {
-			if (avgRating >= 9) {
-				return '#186b40'
-			} else if (avgRating >= 8) {
-				return '#1d804c'
-			} else if (avgRating >= 7) {
-				return '#1978b3'
-			} else if (avgRating >= 5) {
-				return '#5369a2'
-			} else if (avgRating >= 4) {
-				return '#d71925'
-			} else {
-				return '#666e75'
-			}
-		} else {
-			return '#666e75'
-		}
-	}
+	const [ index, setIndex ] = useState(0)
 
-	const handleComplexityBgColor = (complexity) => {
-		if (complexity.votes > 10) {
-			if (complexity.weight > 3.01) {
-				return '#f06524'
-			} else if (complexity.weight > 0) {
-				return '#3ec781'
+	const handleIndex = (type) => {
+		if (type === 'minus') {
+			if (index > 0) {
+				setIndex(index - 1)
 			}
-		} else {
-			return '#666e75'
+		}
+		if (type === 'plus') {
+			if (data.games.length > index + 1) {
+				setIndex(index + 1)
+			}
 		}
 	}
 
 	return (
-		<Card className={cls.root}>
-			<Box bgcolor="grey.300" py={1}>
+		<Card className={cls.root} elevation={2}>
+			<Box py={1}>
 				<CardMedia
 					className={cls.media}
 					component="img"
-					image={data.games[0].thumbnail ? data.games[0].thumbnail : '/images/collCardPlaceholder.jpg'}
-					alt={data.games[0].title}
-					title={data.games[0].title}
+					image={
+						data.games[index].thumbnail ? data.games[index].thumbnail : '/images/collCardPlaceholder.jpg'
+					}
+					alt={data.games[index].title}
+					title={data.games[index].title}
 				/>
-				<Typography component="div" variant="caption">
-					<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1}>
-						<Box
-							color="#fff"
-							p={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={handleRatingBgColor(data.games[0].stats)}
-						>
-							{data.games[0].stats.avgRating}
-						</Box>
 
-						<Box
-							color="#fff"
-							p={1}
-							ml={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={data.games[0].stats.rank <= 100 ? '#d4b215' : '#666e75'}
-						>
-							{data.games[0].stats.rank}
-						</Box>
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1}>
+					<StatsBoxes
+						variant="mini"
+						complexity={data.games[index].complexity}
+						stats={data.games[index].stats}
+					/>
+				</Box>
 
-						<Box
-							color="#fff"
-							p={1}
-							textAlign="center"
-							fontWeight="fontWeightMedium"
-							minWidth={45}
-							ml={1}
-							boxShadow={2}
-							borderRadius={4}
-							bgcolor={handleComplexityBgColor(data.games[0].complexity)}
-						>
-							{data.games[0].complexity.weight}
-						</Box>
-					</Box>
-				</Typography>
+				{data.sellType === 'pack' && (
+					<Chip
+						size="small"
+						color="secondary"
+						className={cls.overlayChip}
+						label={`${data.games.length} pack`}
+					/>
+				)}
 			</Box>
+
+			<Divider />
 
 			<CardContent className={cls.content}>
 				<Typography component="div">
 					<Box
 						textAlign="center"
 						display="flex"
-						justifyContent="center"
+						justifyContent="space-between"
 						alignItems="center"
 						fontWeight="fontWeightMedium"
-						fontSize={15}
+						fontSize={14}
 						minHeight={50}
 						m={1}
 					>
-						{data.games[0].title}
+						{data.sellType === 'pack' ? (
+							<Fragment>
+								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
+									<ArrowBackIcon fontSize="small" />
+								</IconButton>
+								<Box className={cls.title}>{data.games[index].title}</Box>
+								<IconButton
+									disabled={data.games.length === index + 1}
+									onClick={() => handleIndex('plus')}
+								>
+									<ArrowForwardIcon fontSize="small" />
+								</IconButton>
+							</Fragment>
+						) : (
+							<Box width="100%">{data.games[index].title}</Box>
+						)}
 					</Box>
 
 					<Divider />
@@ -161,7 +136,7 @@ const GameIndexCard = ({ data }) => {
 							<Chip
 								size="small"
 								variant="outlined"
-								label={`${data.games[0].type} • ${data.games[0].condition}`}
+								label={`${data.games[index].type} • ${data.games[index].condition}`}
 							/>
 						</Box>
 
@@ -169,7 +144,7 @@ const GameIndexCard = ({ data }) => {
 							<Chip
 								size="small"
 								variant="outlined"
-								label={`${data.games[0].version.title} • ${data.games[0].version.year}`}
+								label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
 							/>
 						</Box>
 						<Box fontWeight="fontWeightMedium" mt={0.5}>
@@ -198,10 +173,6 @@ const GameIndexCard = ({ data }) => {
 						<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
 							<CenterFocusWeakTwoToneIcon fontSize="small" />
 						</IconButton>
-
-						<IconButton color="secondary">
-							<BookmarkTwoToneIcon fontSize="small" />
-						</IconButton>
 					</Box>
 				</Box>
 			</CardActions>
@@ -209,4 +180,4 @@ const GameIndexCard = ({ data }) => {
 	)
 }
 
-export default GameIndexCard
+export default GameIndexCardPack

@@ -9,7 +9,9 @@ import {
 	bggSearchGamesReducer,
 	sellGamesReducer,
 	getGamesReducer,
-	getSingleGameReducer
+	getSingleGameReducer,
+	savedGameStatusReducer,
+	savedGamesListReducer
 } from './reducers/gameReducers'
 
 const reducer = combineReducers({
@@ -23,7 +25,9 @@ const reducer = combineReducers({
 	gameForSale     : getSingleGameReducer,
 	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
-	sellGames       : sellGamesReducer
+	sellGames       : sellGamesReducer,
+	savedGameStatus : savedGameStatusReducer,
+	savedGamesList  : savedGamesListReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
