@@ -29,7 +29,10 @@ import {
 	SAVED_GAMES_RESET,
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
-	SAVED_GAMES_SINGLE_FAIL
+	SAVED_GAMES_SINGLE_FAIL,
+	USER_GAMES_SALE_REQUEST,
+	USER_GAMES_SALE_SUCCESS,
+	USER_GAMES_SALE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -125,6 +128,27 @@ export const getGamesReducer = (state = {}, action) => {
 	}
 }
 
+export const getUserGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case USER_GAMES_SALE_REQUEST:
+			return { loading: true }
+
+		case USER_GAMES_SALE_SUCCESS:
+			return {
+				loading    : false,
+				success    : true,
+				forSale    : action.payload.forSale,
+				pagination : action.payload.pagination
+			}
+
+		case USER_GAMES_SALE_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
 export const getSingleGameReducer = (state = {}, action) => {
 	switch (action.type) {
 		case FOR_SALE_SINGLE_GAME_REQUEST:
@@ -175,7 +199,7 @@ export const savedGamesListReducer = (state = {}, action) => {
 			return { loading: true }
 
 		case SAVED_GAMES_SUCCESS:
-			return { loading: false, success: true, list: action.payload }
+			return { loading: false, success: true, list: action.payload.list, pagination: action.payload.pagination }
 
 		case SAVED_GAMES_FAIL:
 			return { loading: false, error: action.payload }

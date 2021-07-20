@@ -199,7 +199,7 @@ const SingleGameScreen = () => {
 						<IconButton color="primary">
 							<MailTwoToneIcon fontSize="small" />
 						</IconButton>
-						<SaveGameButton altId={altId} />
+						<SaveGameButton altId={altId} sellerId={data.seller._id} />
 					</Grid>
 
 					{/* Shipping */}

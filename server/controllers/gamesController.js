@@ -233,7 +233,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	if (search) {
-		const saleData = await Game.find({}).populate('seller', 'username _id').lean()
+		const saleData = await Game.find({ isSold: false, isActive: true }).populate('seller', 'username _id').lean()
 
 		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
@@ -282,7 +282,7 @@ const getGames = asyncHandler(async (req, res) => {
 
 		const count = await Game.countDocuments({})
 
-		const saleData = await Game.find({})
+		const saleData = await Game.find({ isSold: false, isActive: true })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('seller', 'username _id')
@@ -297,6 +297,65 @@ const getGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({ saleData, pagination })
+	}
+})
+
+// ~ @desc    Get all games up for sale for one single user
+// ~ @route   GET /api/games/user/:id/sale
+// ~ @access  Private route
+const getUserSaleGames = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	const page = +req.query.page
+	const search = req.query.search
+	const resultsPerPage = 24
+
+	const allUserGames = await Game.find({ seller: id, isSold: false }).lean()
+
+	if (allUserGames.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No games found'
+		}
+	}
+
+	if (search) {
+		const fuse = new Fuse(allUserGames, {
+			keys      : [ 'games.title', 'games.designers' ],
+			threshold : 0.3,
+			distance  : 200
+		})
+
+		const results = fuse.search(search).map((game) => game.item)
+
+		const pagination = {
+			page       : page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			forSale    : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const games = await Game.find({ seller: id, isSold: false })
+			.skip(resultsPerPage * (page - 1))
+			.limit(resultsPerPage)
+			.sort({ createdAt: -1 })
+			.lean()
+
+		const pagination = {
+			page         : page,
+			totalPages   : Math.ceil(allUserGames.length / resultsPerPage),
+			totalItems   : allUserGames.length,
+			itemsPerPage : resultsPerPage
+		}
+
+		res.status(200).json({
+			forSale    : games,
+			pagination
+		})
 	}
 })
 
@@ -341,7 +400,7 @@ const saveGame = asyncHandler(async (req, res) => {
 	}
 
 	if (user.savedGames.map((id) => id.toString()).indexOf(saleData._id.toString()) === -1) {
-		user.savedGames.push(saleData._id)
+		user.savedGames.unshift(saleData._id)
 		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
 		res.status(200).json(true)
 	} else {
@@ -380,6 +439,10 @@ const getSingleSavedGame = asyncHandler(async (req, res) => {
 // ~ @route   GET /api/games/saved
 // ~ @access  Private route
 const getSavedGames = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const search = req.query.search
+	const resultsPerPage = 24
+
 	const user = await User.findOne({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
 
 	if (!user) {
@@ -389,7 +452,55 @@ const getSavedGames = asyncHandler(async (req, res) => {
 		}
 	}
 
-	res.status(200).json(user.savedGames)
+	if (user.savedGames.length === 0) {
+		res.status(404)
+		throw {
+			message : 'Your saved games list is empty'
+		}
+	}
+
+	if (search) {
+		const fuse = new Fuse(user.savedGames, {
+			keys      : [ 'games.title', 'games.designers' ],
+			threshold : 0.3,
+			distance  : 200
+		})
+
+		const results = fuse.search(search).map((game) => game.item)
+
+		const pagination = {
+			page       : page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			list       : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const { savedGames } = await User.findOne({ _id: req.user._id }).select('savedGames').populate({
+			path    : 'savedGames',
+			options : {
+				limit : resultsPerPage,
+				sort  : { createdAt: -1 },
+				skip  : resultsPerPage * (page - 1)
+			}
+		})
+
+		const pagination = {
+			page         : page,
+			totalPages   : Math.ceil(user.savedGames.length / resultsPerPage),
+			totalItems   : user.savedGames.length,
+			itemsPerPage : resultsPerPage
+		}
+
+		res.status(200).json({
+			list       : savedGames,
+			pagination
+		})
+	}
 })
 
 export {
@@ -400,5 +511,6 @@ export {
 	getSingleGame,
 	saveGame,
 	getSavedGames,
-	getSingleSavedGame
+	getSingleSavedGame,
+	getUserSaleGames
 }

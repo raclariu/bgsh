@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const WishlistSection = () => {
+const WishlistScreen = () => {
 	const cls = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
@@ -124,4 +124,4 @@ const WishlistSection = () => {
 	)
 }
 
-export default WishlistSection
+export default WishlistScreen

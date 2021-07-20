@@ -1,6 +1,6 @@
 import { check } from 'express-validator'
 
-const validateExtraInfoTxt = check('extraInfoTxt')
+const validateExtraInfoTxt = check('games.*.extraInfoTxt')
 	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('500 maximum characters')

@@ -8,14 +8,15 @@ import Loader from '../components/Loader'
 
 import { saveGame } from '../actions/gameActions'
 
-const SaveGameButton = ({ altId }) => {
+const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
 
 	const savedGameStatus = useSelector((state) => state.savedGameStatus)
 	const { loading, success, error, isSaved } = savedGameStatus
 
-	const saveGameHandler = (altId) => {
-		console.log(altId)
+	const userId = useSelector((state) => state.userSignIn.userInfo._id)
+
+	const saveGameHandler = () => {
 		dispatch(saveGame(altId))
 	}
 
@@ -35,7 +36,7 @@ const SaveGameButton = ({ altId }) => {
 				</IconButton>
 			)}
 			{success && (
-				<IconButton onClick={() => saveGameHandler(altId)} color="secondary">
+				<IconButton disabled={sellerId === userId} onClick={saveGameHandler} color="secondary">
 					{renderButtonHandler()}
 				</IconButton>
 			)}

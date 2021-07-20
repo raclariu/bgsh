@@ -5,6 +5,7 @@ import {
 	sellGames,
 	bggSearchGame,
 	getGames,
+	getUserSaleGames,
 	getSingleGame,
 	saveGame,
 	getSavedGames,
@@ -23,6 +24,7 @@ import {
 } from '../validators/sellGameValidator.js'
 
 router.route('/').get(protect, getGames)
+router.route('/user/:id/sale').get(protect, getUserSaleGames)
 router.route('/saved').get(protect, getSavedGames).post(protect, saveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/:altId').get(protect, getSingleGame)

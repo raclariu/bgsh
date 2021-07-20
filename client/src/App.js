@@ -14,6 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import GamesIndexScreen from './screens/GamesIndexScreen'
 import SingleGameScreen from './screens/SingleGameScreen'
 import SavedGamesScreen from './screens/SavedGamesScreen'
+import MyGamesSaleScreen from './screens/MyGamesSaleScreen'
 
 const App = () => {
 	return (
@@ -56,6 +57,10 @@ const App = () => {
 
 				<ProtectedRoute path="/saved" exact>
 					<SavedGamesScreen />
+				</ProtectedRoute>
+
+				<ProtectedRoute path="/my-games/sale" exact>
+					<MyGamesSaleScreen />
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/signout" exact>

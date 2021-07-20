@@ -11,7 +11,8 @@ import {
 	getGamesReducer,
 	getSingleGameReducer,
 	savedGameStatusReducer,
-	savedGamesListReducer
+	savedGamesListReducer,
+	getUserGamesReducer
 } from './reducers/gameReducers'
 
 const reducer = combineReducers({
@@ -23,6 +24,7 @@ const reducer = combineReducers({
 	bggSearchGames  : bggSearchGamesReducer,
 	gamesIndex      : getGamesReducer,
 	gameForSale     : getSingleGameReducer,
+	userGames       : getUserGamesReducer,
 	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer,

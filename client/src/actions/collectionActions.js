@@ -25,7 +25,7 @@ export const bggGetCollection = (bggUsername) => async (dispatch, getState) => {
 			}
 		}
 
-		await axios.post('/api/collections/', { bggUsername }, config)
+		await axios.post('/api/collections', { bggUsername }, config)
 
 		dispatch({
 			type : BGG_COLLECTION_LIST_SUCCESS

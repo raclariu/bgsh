@@ -230,7 +230,7 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 	if (searchKeyword) {
 		const { wishlist } = await Collection.findOne({ user: req.user._id }).select('wishlist').lean()
 
-		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.4 })
+		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.3, distance: 200 })
 
 		const results = fuse.search(searchKeyword).map((game) => game.item)
 

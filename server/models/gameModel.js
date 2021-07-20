@@ -21,7 +21,15 @@ const gameSchema = mongoose.Schema(
 		shipPersonal     : Boolean,
 		shipCourierPayer : mongoose.Schema.Types.Mixed,
 		shipPostPayer    : mongoose.Schema.Types.Mixed,
-		totalPrice       : Number
+		totalPrice       : Number,
+		isActive         : {
+			type    : Boolean,
+			default : true
+		},
+		isSold           : {
+			type    : Boolean,
+			default : false
+		}
 	},
 	{
 		timestamps : true

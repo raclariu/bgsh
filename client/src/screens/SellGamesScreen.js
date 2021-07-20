@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
 		objectPosition : 'center 0%'
 	},
 	autocomplete : {
+		marginTop : theme.spacing(2)
+	},
+	extraInfo    : {
 		margin : theme.spacing(2, 0, 2, 0)
 	},
 	error        : {
@@ -58,7 +61,7 @@ const SellGamesScreen = () => {
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
 	const [ sellType, setSellType ] = useState('individual')
-	const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
+	// const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
 
 	const ms = useRef(0)
 
@@ -71,6 +74,7 @@ const SellGamesScreen = () => {
 				isSleeved : false,
 				version   : null,
 				condition : null,
+				extraInfo : '',
 				price     : ''
 			}
 		})
@@ -123,6 +127,7 @@ const SellGamesScreen = () => {
 					version   : val.version,
 					price     : +val.price,
 					condition : val.condition,
+					extraInfo : val.extraInfo,
 					isSleeved : val.isSleeved
 				}
 			}
@@ -136,8 +141,8 @@ const SellGamesScreen = () => {
 			shipCourier,
 			shipCourierPayer : shipCourier ? shipCourierPayer : null,
 			shipPersonal,
+			// extraInfoTxt,
 			shipCities,
-			extraInfoTxt,
 			totalPrice       : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)
 		}
 		console.log({ values, gamesData, games, saleList })
@@ -188,7 +193,6 @@ const SellGamesScreen = () => {
 									/>
 									<CardContent>
 										<Autocomplete
-											className={cls.autocomplete}
 											value={values.find((el) => el.bggId === game.bggId).version}
 											getOptionSelected={(option, value) => option.title === value.title}
 											onChange={(e, selected) => handleGameInfo(e, selected, game, 'version')}
@@ -234,6 +238,25 @@ const SellGamesScreen = () => {
 												/>
 											)}
 										/>
+
+										<TextField
+											className={cls.extraInfo}
+											onChange={(e) => handleGameInfo(e, e.target.value, game, 'extraInfo')}
+											value={values.find((el) => el.bggId === game.bggId).extraInfo}
+											inputProps={{
+												maxLength   : 500,
+												placeholder : 'Any other info goes in here (500 characters limit)'
+											}}
+											variant="outlined"
+											name="extra-info-txt"
+											type="text"
+											multiline
+											rows={3}
+											rowsMax={10}
+											size="small"
+											fullWidth
+										/>
+
 										<Grid container>
 											<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 												<FormControlLabel
@@ -396,7 +419,7 @@ const SellGamesScreen = () => {
 									</FormControl>
 								</Grid>
 
-								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+								{/* <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 									<FormLabel>
 										Any other details you might want to add ({extraInfoTxt.length}/500)
 									</FormLabel>
@@ -415,7 +438,7 @@ const SellGamesScreen = () => {
 										size="small"
 										fullWidth
 									/>
-								</Grid>
+								</Grid> */}
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 									<Button
 										type="submit"

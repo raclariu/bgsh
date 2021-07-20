@@ -26,7 +26,10 @@ import {
 	SAVED_GAMES_FAIL,
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
-	SAVED_GAMES_SINGLE_FAIL
+	SAVED_GAMES_SINGLE_FAIL,
+	USER_GAMES_SALE_REQUEST,
+	USER_GAMES_SALE_SUCCESS,
+	USER_GAMES_SALE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -168,6 +171,36 @@ export const getGames = (search, page, sort) => async (dispatch, getState) => {
 	}
 }
 
+export const getUserSaleGames = (id, search, page) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: USER_GAMES_SALE_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				search : search ? search.trim() : null,
+				page   : +page ? +page : 1
+			}
+		}
+
+		const { data } = await axios.get(`/api/games/user/${id}/sale`, config)
+
+		dispatch({
+			type    : USER_GAMES_SALE_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : USER_GAMES_SALE_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
 export const getSingleGame = (altId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: FOR_SALE_SINGLE_GAME_REQUEST })
@@ -194,7 +227,7 @@ export const getSingleGame = (altId) => async (dispatch, getState) => {
 	}
 }
 
-export const saveGame = (altId) => async (dispatch, getState) => {
+export const saveGame = (altId, sellerId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: SAVE_GAME_REQUEST })
 
@@ -246,7 +279,7 @@ export const getSingleSavedGame = (altId) => async (dispatch, getState) => {
 	}
 }
 
-export const getSavedGames = () => async (dispatch, getState) => {
+export const getSavedGames = (searchKeyword, pageNumber) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: SAVED_GAMES_REQUEST })
 
@@ -255,6 +288,10 @@ export const getSavedGames = () => async (dispatch, getState) => {
 		const config = {
 			headers : {
 				Authorization : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				search : searchKeyword ? searchKeyword.trim() : null,
+				page   : +pageNumber ? +pageNumber : 1
 			}
 		}
 
