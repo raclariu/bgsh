@@ -19,16 +19,12 @@ const gameSchema = mongoose.Schema(
 		shipCourier      : Boolean,
 		shipPost         : Boolean,
 		shipPersonal     : Boolean,
-		shipCourierPayer : mongoose.Schema.Types.Mixed,
-		shipPostPayer    : mongoose.Schema.Types.Mixed,
+		shipCourierPayer : String,
+		shipPostPayer    : String,
 		totalPrice       : Number,
 		isActive         : {
 			type    : Boolean,
 			default : true
-		},
-		isSold           : {
-			type    : Boolean,
-			default : false
 		}
 	},
 	{

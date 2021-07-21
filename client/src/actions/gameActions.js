@@ -171,7 +171,7 @@ export const getGames = (search, page, sort) => async (dispatch, getState) => {
 	}
 }
 
-export const getUserSaleGames = (id, search, page) => async (dispatch, getState) => {
+export const getUserSaleGames = (search, page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: USER_GAMES_SALE_REQUEST })
 
@@ -187,7 +187,7 @@ export const getUserSaleGames = (id, search, page) => async (dispatch, getState)
 			}
 		}
 
-		const { data } = await axios.get(`/api/games/user/${id}/sale`, config)
+		const { data } = await axios.get(`/api/games/user/${userInfo._id}/sale`, config)
 
 		dispatch({
 			type    : USER_GAMES_SALE_SUCCESS,

@@ -14,6 +14,7 @@ import {
 	savedGamesListReducer,
 	getUserGamesReducer
 } from './reducers/gameReducers'
+import { addToHistoryReducer, getSoldGamesHistoryReducer } from './reducers/historyReducers'
 
 const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
@@ -29,7 +30,9 @@ const reducer = combineReducers({
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer,
 	savedGameStatus : savedGameStatusReducer,
-	savedGamesList  : savedGamesListReducer
+	savedGamesList  : savedGamesListReducer,
+	addToHistory    : addToHistoryReducer,
+	soldHistory     : getSoldGamesHistoryReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

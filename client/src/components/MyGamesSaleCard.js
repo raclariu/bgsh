@@ -1,4 +1,6 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
+import { useLocation, useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import Box from '@material-ui/core/Box'
@@ -18,10 +20,15 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+
+import Loader from '../components/Loader'
+
+import { addGamesToHistory } from '../actions/historyActions'
 
 const useStyles = makeStyles((theme) => ({
 	root        : {
@@ -50,15 +57,44 @@ const useStyles = makeStyles((theme) => ({
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
+	},
+	input       : {
+		minHeight                      : '70px',
+		width                          : '50%',
+		[theme.breakpoints.down('xs')]: {
+			width : '90%'
+		}
+	},
+	button      : {
+		width                          : '50%',
+		[theme.breakpoints.down('xs')]: {
+			width : '90%'
+		}
 	}
 }))
 
 const MyGamesSaleCard = ({ data }) => {
 	const cls = useStyles()
+	const dispatch = useDispatch()
+	const history = useHistory()
+	const location = useLocation()
 
 	const [ index, setIndex ] = useState(0)
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ buyerUsername, setBuyerUsername ] = useState('')
+	const [ finalPrice, setFinalPrice ] = useState(data.totalPrice)
+
+	const { loading, success, error } = useSelector((state) => state.addToHistory)
+
+	// useEffect(
+	// 	() => {
+	// 		if (success) {
+	// 			setOpenDialog(false)
+	// 			history.push('/collection')
+	// 		}
+	// 	},
+	// 	[ history, location, success ]
+	// )
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -81,8 +117,9 @@ const MyGamesSaleCard = ({ data }) => {
 		setOpenDialog(false)
 	}
 
-	const handleSubmit = (e) => {
-		console.log(buyerUsername)
+	const submitHandler = (e) => {
+		e.preventDefault()
+		dispatch(addGamesToHistory(data.games, buyerUsername, finalPrice, data._id))
 	}
 
 	return (
@@ -153,36 +190,64 @@ const MyGamesSaleCard = ({ data }) => {
 				</ButtonGroup>
 				<Dialog open={openDialog} onClose={handleDialogClose} maxWidth="md">
 					<DialogTitle disableTypography>
-						<Typography variant="h6">
-							For history purposes, type the username of the person who bought this game
+						<Typography variant="h6" align="center">
+							For history purposes, type the buyers username and final price
 						</Typography>
-						<Typography variant="body2" color="textSecondary">
-							You may leave the field blank if you do not wish to use this feature
+						<Typography variant="body2" color="textSecondary" align="center">
+							Leave the fields blank if you want to skip this feature
 						</Typography>
 					</DialogTitle>
 
 					<DialogContent>
-						<Box display="flex" justifyContent="center" alignItems="center">
-							<TextField
-								cls={cls.textfield}
-								//error={error && error.emailError ? true : false}
-								//helperText={error ? error.emailError : false}
-								onChange={(e) => setBuyerUsername(e.target.value)}
-								value={buyerUsername}
-								variant="outlined"
-								id="username"
-								name="username"
-								label="Username"
-								type="text"
-								size="small"
-								autoFocus
-							/>
-							<Box ml={1}>
-								<Button variant="contained" color="primary" onClick={handleSubmit}>
-									Sell
+						<form onSubmit={submitHandler} autoComplete="off">
+							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+								<TextField
+									className={cls.input}
+									error={error && error.usernameError ? true : false}
+									helperText={error ? error.usernameError : false}
+									onChange={(e) => setBuyerUsername(e.target.value)}
+									value={buyerUsername}
+									inputProps={{
+										maxLength : 20
+									}}
+									variant="outlined"
+									id="username"
+									name="username"
+									label="Username"
+									type="text"
+									size="small"
+									autoFocus
+								/>
+
+								<TextField
+									className={cls.input}
+									onChange={(e) => setFinalPrice(e.target.value)}
+									value={finalPrice}
+									InputProps={{
+										startAdornment : <InputAdornment position="start">RON</InputAdornment>
+									}}
+									inputProps={{
+										min : 0,
+										max : 10000
+									}}
+									variant="outlined"
+									name="price"
+									label="Final Price"
+									type="number"
+									size="small"
+								/>
+
+								<Button
+									className={cls.button}
+									disabled={loading}
+									type="submit"
+									variant="contained"
+									color="primary"
+								>
+									{loading ? <Loader color="inherit" size={24} /> : 'Sell'}
 								</Button>
 							</Box>
-						</Box>
+						</form>
 					</DialogContent>
 				</Dialog>
 			</CardActions>

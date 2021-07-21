@@ -36,7 +36,8 @@ const SaveGameButton = ({ altId, sellerId }) => {
 				</IconButton>
 			)}
 			{success && (
-				<IconButton disabled={sellerId === userId} onClick={saveGameHandler} color="secondary">
+				// disabled={sellerId === userId}
+				<IconButton onClick={saveGameHandler} color="secondary">
 					{renderButtonHandler()}
 				</IconButton>
 			)}

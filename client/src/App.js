@@ -15,6 +15,7 @@ import GamesIndexScreen from './screens/GamesIndexScreen'
 import SingleGameScreen from './screens/SingleGameScreen'
 import SavedGamesScreen from './screens/SavedGamesScreen'
 import MyGamesSaleScreen from './screens/MyGamesSaleScreen'
+import HistorySoldGamesScreen from './screens/HistorySoldGamesScreen'
 
 const App = () => {
 	return (
@@ -61,6 +62,10 @@ const App = () => {
 
 				<ProtectedRoute path="/my-games/sale" exact>
 					<MyGamesSaleScreen />
+				</ProtectedRoute>
+
+				<ProtectedRoute path="/my-games/history/sold" exact>
+					<HistorySoldGamesScreen />
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/signout" exact>

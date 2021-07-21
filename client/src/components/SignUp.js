@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
 	const classes = useStyles()
+	const dispatch = useDispatch()
 	const history = useHistory()
 
 	const [ email, setEmail ] = useState('')
@@ -31,8 +32,6 @@ const SignUp = () => {
 	const [ passwordConfirmation, setPasswordConfirmation ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
 	const [ passConfirmationVisibility, setPassConfirmationVisibility ] = useState(false)
-
-	const dispatch = useDispatch()
 
 	const userSignUp = useSelector((state) => state.userSignUp)
 	const { loading, error } = userSignUp

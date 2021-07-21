@@ -20,7 +20,7 @@ const userAuth = asyncHandler(async (req, res) => {
 		}
 	} else {
 		const { email } = req.body
-		const user = await User.findOne({ email })
+		const user = await User.findOne({ email }).select('_id email username isAdmin token')
 		res.status(200).json({
 			_id      : user._id,
 			email    : user.email,

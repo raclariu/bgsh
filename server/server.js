@@ -7,6 +7,7 @@ import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 import userRoutes from './routes/userRoutes.js'
 import collectionRoutes from './routes/collectionRoutes.js'
 import gameRoutes from './routes/gameRoutes.js'
+import historyRoutes from './routes/historyRoutes.js'
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ app.use(express.json())
 app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes)
 app.use('/api/games', gameRoutes)
+app.use('/api/history', historyRoutes)
 
 app.get('/', (req, res) => {
 	res.send('Api is running...')

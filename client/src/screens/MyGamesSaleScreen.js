@@ -33,16 +33,14 @@ const MyGamesSaleScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { _id } = useSelector((state) => state.userSignIn.userInfo)
-
 	const userGamesForSale = useSelector((state) => state.userGames)
 	const { loading, error, success, pagination, forSale } = userGamesForSale
 
 	useEffect(
 		() => {
-			dispatch(getUserSaleGames(_id, search, page))
+			dispatch(getUserSaleGames(search, page))
 		},
-		[ dispatch, _id, search, page ]
+		[ dispatch, search, page ]
 	)
 
 	const handleFilters = (filter, type) => {

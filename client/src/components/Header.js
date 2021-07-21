@@ -128,11 +128,18 @@ const Header = () => {
 											<ListItemText primary="My Saved Games" />
 										</ListItem>
 
-										<ListItem divider button component={RouterLink} to="/my-games/sale">
+										<ListItem button component={RouterLink} to="/my-games/sale">
 											<ListItemIcon>
 												<BookmarkTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Active sales" />
+										</ListItem>
+
+										<ListItem divider button component={RouterLink} to="/my-games/history/sold">
+											<ListItemIcon>
+												<BookmarkTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="History Sold" />
 										</ListItem>
 
 										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>

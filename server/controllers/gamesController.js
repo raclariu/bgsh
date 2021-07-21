@@ -233,7 +233,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	if (search) {
-		const saleData = await Game.find({ isSold: false, isActive: true }).populate('seller', 'username _id').lean()
+		const saleData = await Game.find({ isActive: true }).populate('seller', 'username _id').lean()
 
 		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
@@ -282,7 +282,7 @@ const getGames = asyncHandler(async (req, res) => {
 
 		const count = await Game.countDocuments({})
 
-		const saleData = await Game.find({ isSold: false, isActive: true })
+		const saleData = await Game.find({ isActive: true })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('seller', 'username _id')
@@ -309,7 +309,7 @@ const getUserSaleGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 24
 
-	const allUserGames = await Game.find({ seller: id, isSold: false }).lean()
+	const allUserGames = await Game.find({ seller: id }).lean()
 
 	if (allUserGames.length === 0) {
 		res.status(404)
@@ -339,7 +339,7 @@ const getUserSaleGames = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
-		const games = await Game.find({ seller: id, isSold: false })
+		const games = await Game.find({ seller: id })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })

@@ -12,7 +12,7 @@ const validateEmail = check('email')
 	.withMessage('Invalid email address')
 	.bail()
 	.custom(async (email) => {
-		const userExists = await User.findOne({ email })
+		const userExists = await User.findOne({ email }).select('_id').lean()
 		if (!userExists) {
 			throw new Error('User with this email address does not exist')
 		} else {
@@ -30,7 +30,7 @@ const validateEmailDuplicate = check('email')
 	.withMessage('Invalid email address')
 	.bail()
 	.custom(async (email) => {
-		const userExists = await User.findOne({ email })
+		const userExists = await User.findOne({ email }).select('_id').lean()
 		if (userExists) {
 			throw new Error('User with this email address already exists')
 		} else {
@@ -48,7 +48,7 @@ const validatePassword = check('password')
 	.bail()
 	.custom(async (password, { req }) => {
 		const { email } = req.body
-		const userExists = await User.findOne({ email })
+		const userExists = await User.findOne({ email }).select('password').lean()
 		if (userExists) {
 			const correctPw = await comparePasswords(password, userExists.password)
 			if (!correctPw) {
@@ -84,7 +84,7 @@ const validateUsername = check('username')
 	.withMessage('Username can only contain letters and numbers')
 	.bail()
 	.custom(async (username) => {
-		const usernameExists = await User.findOne({ username })
+		const usernameExists = await User.findOne({ username }).select('_id').lean()
 		if (usernameExists) {
 			throw new Error(`Username '${username}' already taken`)
 		} else {
