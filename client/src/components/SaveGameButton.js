@@ -4,9 +4,9 @@ import IconButton from '@material-ui/core/IconButton'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
 
-import Loader from '../components/Loader'
+import Loader from './Loader'
 
-import { saveGame } from '../actions/gameActions'
+import { switchSaveGame } from '../actions/gameActions'
 
 const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
@@ -17,7 +17,7 @@ const SaveGameButton = ({ altId, sellerId }) => {
 	const userId = useSelector((state) => state.userSignIn.userInfo._id)
 
 	const saveGameHandler = () => {
-		dispatch(saveGame(altId))
+		dispatch(switchSaveGame(altId))
 	}
 
 	const renderButtonHandler = () => {

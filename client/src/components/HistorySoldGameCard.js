@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import { format, formatDistance, parseISO } from 'date-fns'
 import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -11,7 +12,9 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 
+import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
@@ -30,8 +33,12 @@ const useStyles = makeStyles((theme) => ({
 		left     : '4px'
 	},
 	content     : {
-		padding   : 0,
-		marginTop : theme.spacing(1)
+		padding        : 0,
+		'&:last-child' : {
+			paddingBottom : 0
+		},
+		marginTop      : theme.spacing(1),
+		marginBottom   : theme.spacing(1)
 	},
 	title       : {
 		display         : '-webkit-box',
@@ -122,11 +129,24 @@ const HistorySoldGameCard = ({ data }) => {
 					</Box>
 					<Divider />
 					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-						<Box textAlign="center" fontWeight="fontWeightMedium" fontSize={14} m={1}>
-							Buyer: {data.buyer ? data.buyer : 'unknown'}
+						<Box textAlign="center" fontSize={12} mt={1}>
+							Buyer: {data.buyer ? data.buyer : 'N/A'}
 						</Box>
-						<Box textAlign="center" fontWeight="fontWeightMedium" fontSize={14} m={1}>
-							Price: {data.finalPrice ? data.finalPrice : 'unknown'}
+						<Box textAlign="center" fontSize={12}>
+							RON {data.finalPrice ? data.finalPrice : 'N/A'}
+						</Box>
+						<Box display="flex" alignItems="center">
+							<Tooltip
+								disableFocusListener
+								title={format(parseISO(data.createdAt), 'iiii i MMMM y, H:mm', {
+									weekStartsOn : 1
+								})}
+							>
+								<EventAvailableOutlinedIcon fontSize="small" />
+							</Tooltip>
+							<Box textAlign="center" fontSize={12} ml={0.5}>
+								sold {formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
+							</Box>
 						</Box>
 					</Box>
 				</Typography>

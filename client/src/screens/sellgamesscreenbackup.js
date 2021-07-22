@@ -92,9 +92,7 @@ const SellGamesScreen = () => {
 		() => {
 			const mapped = saleList.map((el) => el.bggId)
 			const timer = setTimeout(() => {
-				if (mapped.length > 0) {
-					dispatch(bggGetGamesDetails(mapped))
-				}
+				dispatch(bggGetGamesDetails(mapped))
 			}, ms.current)
 			ms.current = 750
 			return () => {

@@ -220,7 +220,7 @@ const sellGames = asyncHandler(async (req, res) => {
 		await Game.insertMany(sellList)
 	}
 
-	res.status(200).json('ok')
+	res.status(204).end()
 })
 
 // ~ @desc    Get games that are up for sale
@@ -379,7 +379,7 @@ const getSingleGame = asyncHandler(async (req, res) => {
 // * @desc    Save game
 // * @route   POST  /api/games/saved
 // * @access  Private route
-const saveGame = asyncHandler(async (req, res) => {
+const switchSaveGame = asyncHandler(async (req, res) => {
 	const { altId } = req.body
 	const saleData = await Game.findOne({ altId }).select('_id').lean()
 
@@ -402,11 +402,11 @@ const saveGame = asyncHandler(async (req, res) => {
 	if (user.savedGames.map((id) => id.toString()).indexOf(saleData._id.toString()) === -1) {
 		user.savedGames.unshift(saleData._id)
 		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
-		res.status(200).json(true)
+		res.status(200).send(true)
 	} else {
 		const filtered = user.savedGames.filter((id) => id.toString() !== saleData._id.toString())
 		await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
-		res.status(200).json(false)
+		res.status(200).send(false)
 	}
 })
 
@@ -429,9 +429,9 @@ const getSingleSavedGame = asyncHandler(async (req, res) => {
 	}
 
 	if (user.savedGames.length > 0) {
-		res.status(200).json(true)
+		res.status(200).send(true)
 	} else {
-		res.status(200).json(false)
+		res.status(200).send(false)
 	}
 })
 
@@ -441,7 +441,7 @@ const getSingleSavedGame = asyncHandler(async (req, res) => {
 const getSavedGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
-	const resultsPerPage = 24
+	const resultsPerPage = 3
 
 	const user = await User.findOne({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
 
@@ -503,14 +503,25 @@ const getSavedGames = asyncHandler(async (req, res) => {
 	}
 })
 
+// ! @desc    Delete one game
+// ! @route   DELETE /api/games/delete/:id
+// ! @access  Private route
+const deleteGame = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	await Game.findOneAndDelete({ _id: id })
+
+	res.status(204).end()
+})
+
 export {
 	getGamesFromBGG,
 	sellGames,
 	bggSearchGame,
 	getGames,
 	getSingleGame,
-	saveGame,
+	switchSaveGame,
 	getSavedGames,
 	getSingleSavedGame,
-	getUserSaleGames
+	getUserSaleGames,
+	deleteGame
 }

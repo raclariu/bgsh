@@ -7,9 +7,10 @@ import {
 	getGames,
 	getUserSaleGames,
 	getSingleGame,
-	saveGame,
+	switchSaveGame,
 	getSavedGames,
-	getSingleSavedGame
+	getSingleSavedGame,
+	deleteGame
 } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
 import {
@@ -24,8 +25,9 @@ import {
 } from '../validators/sellGameValidator.js'
 
 router.route('/').get(protect, getGames)
+router.route('/delete/:id').delete(protect, deleteGame)
 router.route('/user/:id/sale').get(protect, getUserSaleGames)
-router.route('/saved').get(protect, getSavedGames).post(protect, saveGame)
+router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)

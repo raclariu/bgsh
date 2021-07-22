@@ -18,9 +18,9 @@ import {
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
 	saleListLimit,
-	SAVE_GAME_REQUEST,
-	SAVE_GAME_SUCCESS,
-	SAVE_GAME_FAIL,
+	SAVE_GAME_SWITCH_REQUEST,
+	SAVE_GAME_SWITCH_SUCCESS,
+	SAVE_GAME_SWITCH_FAIL,
 	SAVED_GAMES_REQUEST,
 	SAVED_GAMES_SUCCESS,
 	SAVED_GAMES_FAIL,
@@ -29,7 +29,10 @@ import {
 	SAVED_GAMES_SINGLE_FAIL,
 	USER_GAMES_SALE_REQUEST,
 	USER_GAMES_SALE_SUCCESS,
-	USER_GAMES_SALE_FAIL
+	USER_GAMES_SALE_FAIL,
+	GAME_DELETE_REQUEST,
+	GAME_DELETE_SUCCESS,
+	GAME_DELETE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -227,9 +230,9 @@ export const getSingleGame = (altId) => async (dispatch, getState) => {
 	}
 }
 
-export const saveGame = (altId, sellerId) => async (dispatch, getState) => {
+export const switchSaveGame = (altId) => async (dispatch, getState) => {
 	try {
-		dispatch({ type: SAVE_GAME_REQUEST })
+		dispatch({ type: SAVE_GAME_SWITCH_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -242,12 +245,12 @@ export const saveGame = (altId, sellerId) => async (dispatch, getState) => {
 		const { data } = await axios.post('/api/games/saved', { altId }, config)
 
 		dispatch({
-			type    : SAVE_GAME_SUCCESS,
+			type    : SAVE_GAME_SWITCH_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : SAVE_GAME_FAIL,
+			type    : SAVE_GAME_SWITCH_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
@@ -304,6 +307,32 @@ export const getSavedGames = (searchKeyword, pageNumber) => async (dispatch, get
 	} catch (error) {
 		dispatch({
 			type    : SAVED_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const deleteGame = (id) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: GAME_DELETE_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.delete(`/api/games/delete/${id}`, config)
+
+		dispatch({
+			type    : GAME_DELETE_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : GAME_DELETE_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

@@ -17,7 +17,7 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
 
-		res.status(401)
+		res.status(400)
 		throw {
 			message : {
 				usernameError : err.username ? err.username.msg : null

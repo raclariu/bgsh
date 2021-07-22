@@ -23,12 +23,16 @@ import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
+import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 import Loader from '../components/Loader'
 
 import { addGamesToHistory } from '../actions/historyActions'
+import { deleteGame } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	root        : {
@@ -117,6 +121,10 @@ const MyGamesSaleCard = ({ data }) => {
 		setOpenDialog(false)
 	}
 
+	const deleteGameHandler = () => {
+		dispatch(deleteGame(data._id))
+	}
+
 	const submitHandler = (e) => {
 		e.preventDefault()
 		dispatch(addGamesToHistory(data.games, buyerUsername, finalPrice, data._id))
@@ -184,10 +192,18 @@ const MyGamesSaleCard = ({ data }) => {
 			<Divider />
 
 			<CardActions>
-				<ButtonGroup size="small">
-					<Button>Reactivate</Button>
-					<Button onClick={handleDialogOpen}>Sold</Button>
-				</ButtonGroup>
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%">
+					<IconButton color="primary">
+						<RefreshIcon />
+					</IconButton>
+					<IconButton onClick={handleDialogOpen} color="primary">
+						<MonetizationOnOutlinedIcon />
+					</IconButton>
+					<IconButton onClick={deleteGameHandler} color="secondary">
+						<DeleteOutlinedIcon />
+					</IconButton>
+				</Box>
+
 				<Dialog open={openDialog} onClose={handleDialogClose} maxWidth="md">
 					<DialogTitle disableTypography>
 						<Typography variant="h6" align="center">
