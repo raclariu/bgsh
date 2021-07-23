@@ -77,7 +77,7 @@ const SavedGameCard = ({ data }) => {
 					title={data.games[index].title}
 				/>
 
-				{data.sellType === 'pack' && (
+				{data.type === 'pack' && (
 					<Chip
 						size="small"
 						color="secondary"
@@ -101,7 +101,7 @@ const SavedGameCard = ({ data }) => {
 						minHeight={50}
 						m={1}
 					>
-						{data.sellType === 'pack' ? (
+						{data.type === 'pack' ? (
 							<Fragment>
 								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 									<ArrowBackIcon fontSize="small" />

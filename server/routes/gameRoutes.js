@@ -3,6 +3,7 @@ const router = express.Router()
 import {
 	getGamesFromBGG,
 	sellGames,
+	tradeGames,
 	bggSearchGame,
 	getGames,
 	getUserSaleGames,
@@ -14,7 +15,7 @@ import {
 } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
 import {
-	validateSellType,
+	validateType,
 	validateGameVersion,
 	validateGameCondition,
 	validateIsSleeved,
@@ -32,12 +33,13 @@ router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
+router.route('/trade').post(protect, tradeGames)
 router
 	.route('/sell')
 	.post(
 		[
 			protect,
-			validateSellType,
+			validateType,
 			validateGameVersion,
 			validateGameCondition,
 			validateIsSleeved,

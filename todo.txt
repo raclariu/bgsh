@@ -1,0 +1,1 @@
+lazy loading la restul de pagini care folosesc Card

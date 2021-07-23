@@ -87,7 +87,7 @@ const GameIndexCardPack = ({ data }) => {
 					/>
 				</Box>
 
-				{data.sellType === 'pack' && (
+				{data.type === 'pack' && (
 					<Chip
 						size="small"
 						color="secondary"
@@ -111,7 +111,7 @@ const GameIndexCardPack = ({ data }) => {
 						minHeight={50}
 						m={1}
 					>
-						{data.sellType === 'pack' ? (
+						{data.type === 'pack' ? (
 							<Fragment>
 								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 									<ArrowBackIcon fontSize="small" />

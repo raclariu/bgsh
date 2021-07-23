@@ -9,6 +9,7 @@ import AuthScreen from './screens/AuthScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import CollectionScreen from './screens/CollectionScreen'
 import SellGamesScreen from './screens/SellGamesScreen'
+import TradeGamesScreen from './screens/TradeGamesScreen'
 import WishlistScreen from './screens/WishlistScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 import GamesIndexScreen from './screens/GamesIndexScreen'
@@ -54,6 +55,10 @@ const App = () => {
 
 				<ProtectedRoute path="/sell" exact>
 					<SellGamesScreen />
+				</ProtectedRoute>
+
+				<ProtectedRoute path="/trade" exact>
+					<TradeGamesScreen />
 				</ProtectedRoute>
 
 				<ProtectedRoute path="/saved" exact>

@@ -26,7 +26,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import Button from '@material-ui/core/Button'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import citiesArr from '../constants/cities'
-import { bggGetGamesDetails, removeFromSaleList, sellGames } from '../actions/gameActions'
+import { bggGetGamesDetails, removeFromSaleList, tradeGames } from '../actions/gameActions'
 import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
 
 const useStyles = makeStyles((theme) => ({
@@ -50,18 +50,15 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SellGamesScreen = () => {
+const TradeGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
-	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
-	const [ shipCourierPayer, setShipCourierPayer ] = useState('seller')
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
-	const [ sellType, setSellType ] = useState('individual')
-	// const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
+	const [ type, setType ] = useState('individual')
 
 	const ms = useRef(0)
 
@@ -74,8 +71,7 @@ const SellGamesScreen = () => {
 				isSleeved : false,
 				version   : null,
 				condition : null,
-				extraInfo : '',
-				price     : ''
+				extraInfo : ''
 			}
 		})
 	)
@@ -92,7 +88,9 @@ const SellGamesScreen = () => {
 		() => {
 			const mapped = saleList.map((el) => el.bggId)
 			const timer = setTimeout(() => {
-				dispatch(bggGetGamesDetails(mapped))
+				if (mapped.length > 0) {
+					dispatch(bggGetGamesDetails(mapped))
+				}
 			}, ms.current)
 			ms.current = 750
 			return () => {
@@ -125,7 +123,6 @@ const SellGamesScreen = () => {
 				gamesCopy[index] = {
 					...gamesCopy[index],
 					version   : val.version,
-					price     : +val.price,
 					condition : val.condition,
 					extraInfo : val.extraInfo,
 					isSleeved : val.isSleeved
@@ -134,20 +131,16 @@ const SellGamesScreen = () => {
 		}
 
 		const gamesData = {
-			games            : gamesCopy,
-			sellType,
+			games        : gamesCopy,
+			type,
 			shipPost,
-			shipPostPayer    : shipPost ? shipPostPayer : null,
 			shipCourier,
-			shipCourierPayer : shipCourier ? shipCourierPayer : null,
 			shipPersonal,
-			// extraInfoTxt,
-			shipCities,
-			totalPrice       : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)
+			shipCities
 		}
 		console.log({ values, gamesData, games, saleList })
 
-		dispatch(sellGames(gamesData))
+		dispatch(tradeGames(gamesData))
 	}
 
 	return (
@@ -157,7 +150,7 @@ const SellGamesScreen = () => {
 
 				{sellError && <Message>{sellError.map((err) => <p>{err}</p>)}</Message>}
 
-				{saleList.length === 0 && <Message severity="warning">Your sale list is empty</Message>}
+				{saleList.length === 0 && <Message severity="warning">Your sell list is empty</Message>}
 			</div>
 
 			{detailsLoading && <Loader />}
@@ -272,28 +265,6 @@ const SellGamesScreen = () => {
 													label="Sleeved?"
 												/>
 											</Grid>
-											<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
-												<TextField
-													onChange={(e) => handleGameInfo(e, e.target.value, game, 'price')}
-													value={values.find((el) => el.bggId === game.bggId).price}
-													InputProps={{
-														startAdornment : (
-															<InputAdornment position="start">RON</InputAdornment>
-														)
-													}}
-													inputProps={{
-														min : 0,
-														max : 10000
-													}}
-													name={`price-${game.bggId}`}
-													variant="outlined"
-													label="Price"
-													type="number"
-													size="small"
-													fullWidth
-													required
-												/>
-											</Grid>
 										</Grid>
 									</CardContent>
 								</Card>
@@ -308,7 +279,7 @@ const SellGamesScreen = () => {
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
 							<FormControl required error={shipError} fullWidth>
 								{/* Post shipping */}
-								<FormLabel>Shipping method</FormLabel>
+								<FormLabel>Preffered shipping method</FormLabel>
 								<FormGroup>
 									<FormControlLabel
 										control={
@@ -320,7 +291,7 @@ const SellGamesScreen = () => {
 										label="Romanian Post"
 									/>
 
-									<FormControl disabled={!shipPost}>
+									{/* <FormControl disabled={!shipPost}>
 										<FormLabel>Who pays shipping?</FormLabel>
 										<RadioGroup
 											row
@@ -330,7 +301,7 @@ const SellGamesScreen = () => {
 											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
 											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
 										</RadioGroup>
-									</FormControl>
+									</FormControl> */}
 
 									{/* Courier shipping */}
 									<FormControlLabel
@@ -342,7 +313,7 @@ const SellGamesScreen = () => {
 										}
 										label="Courier"
 									/>
-									<FormControl disabled={!shipCourier}>
+									{/* <FormControl disabled={!shipCourier}>
 										<FormLabel>Who pays shipping?</FormLabel>
 										<RadioGroup
 											row
@@ -352,7 +323,7 @@ const SellGamesScreen = () => {
 											<FormControlLabel value="seller" control={<Radio />} label="Seller" />
 											<FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
 										</RadioGroup>
-									</FormControl>
+									</FormControl> */}
 
 									{/* Personal delivery */}
 									<FormControlLabel
@@ -398,7 +369,9 @@ const SellGamesScreen = () => {
 									/>
 
 									{shipError && (
-										<FormHelperText error>Select at least one shipping method</FormHelperText>
+										<FormHelperText error>
+											Select at least one preffered shipping method
+										</FormHelperText>
 									)}
 								</FormGroup>
 							</FormControl>
@@ -407,8 +380,8 @@ const SellGamesScreen = () => {
 							<Grid container direction="column">
 								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 									<FormControl>
-										<FormLabel>Sell games individually or as a pack?</FormLabel>
-										<RadioGroup row value={sellType} onChange={(e) => setSellType(e.target.value)}>
+										<FormLabel>Trade games individually or as a pack?</FormLabel>
+										<RadioGroup row value={type} onChange={(e) => setType(e.target.value)}>
 											<FormControlLabel
 												value="individual"
 												control={<Radio />}
@@ -419,26 +392,6 @@ const SellGamesScreen = () => {
 									</FormControl>
 								</Grid>
 
-								{/* <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-									<FormLabel>
-										Any other details you might want to add ({extraInfoTxt.length}/500)
-									</FormLabel>
-									<TextField
-										onChange={(e) => setExtraInfoTxt(e.target.value)}
-										value={extraInfoTxt}
-										inputProps={{
-											maxLength : 500
-										}}
-										variant="outlined"
-										name="extra-info-txt"
-										type="text"
-										multiline
-										rows={3}
-										rowsMax={10}
-										size="small"
-										fullWidth
-									/>
-								</Grid> */}
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 									<Button
 										type="submit"
@@ -447,7 +400,7 @@ const SellGamesScreen = () => {
 										color="primary"
 										fullWidth
 									>
-										Sell
+										Trade
 									</Button>
 								</Grid>
 							</Grid>
@@ -459,4 +412,4 @@ const SellGamesScreen = () => {
 	)
 }
 
-export default SellGamesScreen
+export default TradeGamesScreen

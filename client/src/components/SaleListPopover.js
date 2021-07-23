@@ -7,6 +7,7 @@ import Popover from '@material-ui/core/Popover'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
+import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import List from '@material-ui/core/List'
@@ -154,14 +155,16 @@ const SaleListPopover = () => {
 						</Grid>
 						{saleList.length > 0 && (
 							<Grid item>
-								<Button
-									color="primary"
-									component={RouterLink}
-									to="/sell"
-									onClick={(e) => setAnchorEl(null)}
-								>
-									Sell
-								</Button>
+								<Box m={1}>
+									<ButtonGroup color="primary">
+										<Button component={RouterLink} to="/trade" onClick={(e) => setAnchorEl(null)}>
+											Trade
+										</Button>
+										<Button component={RouterLink} to="/sell" onClick={(e) => setAnchorEl(null)}>
+											Sell
+										</Button>
+									</ButtonGroup>
+								</Box>
 							</Grid>
 						)}
 					</Grid>

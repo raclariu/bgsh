@@ -104,7 +104,7 @@ const HistorySoldGames = () => {
 			{success && (
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{soldList.map((data) => (
-						<Grid item xs={12} sm={6} md={4}>
+						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<HistorySoldGameCard data={data} />
 						</Grid>
 					))}

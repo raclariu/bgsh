@@ -9,6 +9,9 @@ import {
 	SELL_GAMES_REQUEST,
 	SELL_GAMES_SUCCESS,
 	SELL_GAMES_FAIL,
+	TRADE_GAMES_REQUEST,
+	TRADE_GAMES_SUCCESS,
+	TRADE_GAMES_FAIL,
 	BGG_GAMES_SEARCH_REQUEST,
 	BGG_GAMES_SEARCH_SUCCESS,
 	BGG_GAMES_SEARCH_FAIL,
@@ -103,6 +106,22 @@ export const sellGamesReducer = (state = {}, action) => {
 			return { loading: false, success: true }
 
 		case SELL_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const tradeGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case TRADE_GAMES_REQUEST:
+			return { loading: true }
+
+		case TRADE_GAMES_SUCCESS:
+			return { loading: false, success: true }
+
+		case TRADE_GAMES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

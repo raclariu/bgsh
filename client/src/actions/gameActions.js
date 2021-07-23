@@ -8,6 +8,9 @@ import {
 	SELL_GAMES_REQUEST,
 	SELL_GAMES_SUCCESS,
 	SELL_GAMES_FAIL,
+	TRADE_GAMES_REQUEST,
+	TRADE_GAMES_SUCCESS,
+	TRADE_GAMES_FAIL,
 	BGG_GAMES_SEARCH_REQUEST,
 	BGG_GAMES_SEARCH_SUCCESS,
 	BGG_GAMES_SEARCH_FAIL,
@@ -138,6 +141,31 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : SELL_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const tradeGames = (gamesData) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: TRADE_GAMES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		await axios.post('/api/games/trade', gamesData, config)
+
+		dispatch({
+			type : TRADE_GAMES_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : TRADE_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

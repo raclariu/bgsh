@@ -60,8 +60,7 @@ const SellGamesScreen = () => {
 	const [ shipCourierPayer, setShipCourierPayer ] = useState('seller')
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
-	const [ sellType, setSellType ] = useState('individual')
-	// const [ extraInfoTxt, setExtraInfoTxt ] = useState('')
+	const [ type, setType ] = useState('individual')
 
 	const ms = useRef(0)
 
@@ -137,13 +136,12 @@ const SellGamesScreen = () => {
 
 		const gamesData = {
 			games            : gamesCopy,
-			sellType,
+			type,
 			shipPost,
 			shipPostPayer    : shipPost ? shipPostPayer : null,
 			shipCourier,
 			shipCourierPayer : shipCourier ? shipCourierPayer : null,
 			shipPersonal,
-			// extraInfoTxt,
 			shipCities,
 			totalPrice       : values.map((el) => +el.price).reduce((acc, cv) => acc + cv, 0)
 		}
@@ -410,7 +408,7 @@ const SellGamesScreen = () => {
 								<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
 									<FormControl>
 										<FormLabel>Sell games individually or as a pack?</FormLabel>
-										<RadioGroup row value={sellType} onChange={(e) => setSellType(e.target.value)}>
+										<RadioGroup row value={type} onChange={(e) => setType(e.target.value)}>
 											<FormControlLabel
 												value="individual"
 												control={<Radio />}
@@ -421,26 +419,6 @@ const SellGamesScreen = () => {
 									</FormControl>
 								</Grid>
 
-								{/* <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-									<FormLabel>
-										Any other details you might want to add ({extraInfoTxt.length}/500)
-									</FormLabel>
-									<TextField
-										onChange={(e) => setExtraInfoTxt(e.target.value)}
-										value={extraInfoTxt}
-										inputProps={{
-											maxLength : 500
-										}}
-										variant="outlined"
-										name="extra-info-txt"
-										type="text"
-										multiline
-										rows={3}
-										rowsMax={10}
-										size="small"
-										fullWidth
-									/>
-								</Grid> */}
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
 									<Button
 										type="submit"

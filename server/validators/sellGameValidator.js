@@ -8,7 +8,7 @@ const validateExtraInfoTxt = check('games.*.extraInfoTxt')
 	.isString()
 	.withMessage('Can only contain letters and numbers')
 
-const validateSellType = check('sellType')
+const validateType = check('type')
 	.trim()
 	.isIn([ 'individual', 'pack' ])
 	.withMessage('You can only sell games individually or as a pack')
@@ -89,7 +89,7 @@ const validateShipCities = check('shipCities').custom((data, { req }) => {
 })
 
 export {
-	validateSellType,
+	validateType,
 	validateGameVersion,
 	validateGameCondition,
 	validateIsSleeved,

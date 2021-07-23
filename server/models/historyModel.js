@@ -9,7 +9,7 @@ const historySchema = mongoose.Schema(
 			ref      : 'User'
 		},
 		buyer      : String,
-		games      : [],
+		games      : [ Object ],
 		finalPrice : Number
 	},
 	{

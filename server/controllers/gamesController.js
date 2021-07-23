@@ -173,51 +173,97 @@ const sellGames = asyncHandler(async (req, res) => {
 
 	const {
 		games,
-		sellType,
+		type,
 		shipPost,
 		shipPostPayer,
 		shipCourier,
 		shipCourierPayer,
 		shipPersonal,
 		shipCities,
-		extraInfoTxt,
 		totalPrice
 	} = req.body
 
-	if (sellType === 'pack') {
+	if (type === 'pack') {
 		await Game.create({
+			mode             : 'trade',
 			seller           : req.user._id,
 			games,
-			sellType,
+			type,
 			shipPost,
 			shipPostPayer,
 			shipCourier,
 			shipCourierPayer,
 			shipPersonal,
 			shipCities,
-			extraInfoTxt,
 			totalPrice
 		})
 	} else {
 		let sellList = []
 		for (let game of games) {
 			let data = {
+				mode             : 'sell',
 				seller           : req.user._id,
 				games            : [ game ],
-				sellType,
+				type,
 				shipPost,
 				shipPostPayer,
 				shipCourier,
 				shipCourierPayer,
 				shipPersonal,
 				shipCities,
-				extraInfoTxt,
 				totalPrice       : game.price
 			}
 			sellList.push(data)
 		}
 
 		await Game.insertMany(sellList)
+	}
+
+	res.status(204).end()
+})
+
+// * @desc    Put up games for trade
+// * @route   POST  /api/games/trade
+// * @access  Private route
+const tradeGames = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		res.status(400)
+		throw {
+			message : validationErrors.errors.map((err) => err.msg)
+		}
+	}
+
+	const { games, type, shipPost, shipCourier, shipPersonal, shipCities } = req.body
+
+	if (type === 'pack') {
+		await Game.create({
+			mode         : 'trade',
+			seller       : req.user._id,
+			games,
+			type,
+			shipPost,
+			shipCourier,
+			shipPersonal,
+			shipCities
+		})
+	} else {
+		let tradeList = []
+		for (let game of games) {
+			let data = {
+				mode         : 'trade',
+				seller       : req.user._id,
+				games        : [ game ],
+				type,
+				shipPost,
+				shipCourier,
+				shipPersonal,
+				shipCities
+			}
+			tradeList.push(data)
+		}
+
+		await Game.insertMany(tradeList)
 	}
 
 	res.status(204).end()
@@ -364,7 +410,7 @@ const getUserSaleGames = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
+	const saleData = await Game.findOne({ altId, isActive: true }).populate('seller', 'username _id').lean()
 
 	if (!saleData) {
 		res.status(404)
@@ -516,6 +562,7 @@ const deleteGame = asyncHandler(async (req, res) => {
 export {
 	getGamesFromBGG,
 	sellGames,
+	tradeGames,
 	bggSearchGame,
 	getGames,
 	getSingleGame,
