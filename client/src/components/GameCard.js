@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
+import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
@@ -25,10 +26,11 @@ const useStyles = makeStyles((theme) => ({
 		padding : '0px'
 	},
 	title       : {
-		margin     : theme.spacing(2, 0, 1, 0),
-		padding    : theme.spacing(0, 2, 0, 2),
-		minHeight  : '40px',
-		fontWeight : '500'
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden',
+		width           : '100%'
 	}
 }))
 
@@ -49,10 +51,25 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 			<Divider />
 
 			<CardContent className={cls.cardContent}>
-				<Typography className={cls.title} align="center" variant="body2" component="p">
-					{game.title} ({game.year})
+				<Typography component="div">
+					<Box
+						textAlign="center"
+						display="flex"
+						justifyContent="space-between"
+						alignItems="center"
+						fontWeight="fontWeightMedium"
+						fontSize={14}
+						minHeight={50}
+						m={1}
+					>
+						<Box className={cls.title}>
+							{game.title} ({game.year})
+						</Box>
+					</Box>
 				</Typography>
 			</CardContent>
+
+			<Divider />
 
 			<CardActions>
 				<Grid container direction="row" justify="space-between" alignItems="center">

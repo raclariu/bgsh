@@ -20,7 +20,6 @@ import {
 	FOR_SALE_SINGLE_GAME_REQUEST,
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
-	saleListLimit,
 	SAVE_GAME_SWITCH_REQUEST,
 	SAVE_GAME_SWITCH_SUCCESS,
 	SAVE_GAME_SWITCH_FAIL,
@@ -30,12 +29,13 @@ import {
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
 	SAVED_GAMES_SINGLE_FAIL,
-	USER_GAMES_SALE_REQUEST,
-	USER_GAMES_SALE_SUCCESS,
-	USER_GAMES_SALE_FAIL,
+	USER_ACTIVE_GAMES_REQUEST,
+	USER_ACTIVE_GAMES_SUCCESS,
+	USER_ACTIVE_GAMES_FAIL,
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
-	GAME_DELETE_FAIL
+	GAME_DELETE_FAIL,
+	saleListLimit
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -202,9 +202,9 @@ export const getGames = (search, page, sort) => async (dispatch, getState) => {
 	}
 }
 
-export const getUserSaleGames = (search, page) => async (dispatch, getState) => {
+export const getUserActiveGames = (search, page) => async (dispatch, getState) => {
 	try {
-		dispatch({ type: USER_GAMES_SALE_REQUEST })
+		dispatch({ type: USER_ACTIVE_GAMES_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -218,15 +218,15 @@ export const getUserSaleGames = (search, page) => async (dispatch, getState) => 
 			}
 		}
 
-		const { data } = await axios.get(`/api/games/user/${userInfo._id}/sale`, config)
+		const { data } = await axios.get(`/api/games/user/${userInfo._id}`, config)
 
 		dispatch({
-			type    : USER_GAMES_SALE_SUCCESS,
+			type    : USER_ACTIVE_GAMES_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : USER_GAMES_SALE_FAIL,
+			type    : USER_ACTIVE_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

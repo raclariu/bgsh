@@ -6,13 +6,14 @@ import queryString from 'query-string'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 
-import MyGamesSaleCard from '../components/MyGamesSaleCard'
+import ActiveGameCard from '../components/ActiveGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
-import { getUserSaleGames } from '../actions/gameActions'
+import { HISTORY_ADD_RESET } from '../constants/historyConstants'
+import { getUserActiveGames } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const MyGamesSaleScreen = () => {
+const MyActiveGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -33,14 +34,17 @@ const MyGamesSaleScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const userGamesForSale = useSelector((state) => state.userGames)
-	const { loading, error, success, pagination, forSale } = userGamesForSale
+	const userGames = useSelector((state) => state.userActiveGames)
+	const { loading, error, success, pagination, activeGames } = userGames
+
+	const { success: successAdd } = useSelector((state) => state.addToHistory)
+	const { success: successDelete } = useSelector((state) => state.deleteGame)
 
 	useEffect(
 		() => {
-			dispatch(getUserSaleGames(search, page))
+			dispatch(getUserActiveGames(search, page))
 		},
-		[ dispatch, search, page ]
+		[ dispatch, search, page, successAdd, successDelete ]
 	)
 
 	const handleFilters = (filter, type) => {
@@ -87,9 +91,9 @@ const MyGamesSaleScreen = () => {
 
 			{success && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{forSale.map((data) => (
+					{activeGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
-							<MyGamesSaleCard data={data} />
+							<ActiveGameCard data={data} />
 						</Grid>
 					))}
 				</Grid>
@@ -113,4 +117,4 @@ const MyGamesSaleScreen = () => {
 	)
 }
 
-export default MyGamesSaleScreen
+export default MyActiveGamesScreen

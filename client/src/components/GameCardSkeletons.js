@@ -38,14 +38,18 @@ const GameCardSkeletons = ({ num }) => {
 		for (let i = 0; i < num; i++) {
 			skeletonsArr.push(
 				<Grid key={i} item xl={4} lg={4} md={4} sm={6} xs={12}>
-					<Box className={cls.box} boxShadow={2}>
+					<Box className={cls.box} boxShadow={2} borderRadius={4}>
 						<Skeleton animation="wave" className={cls.skMedia} variant="rect" width={160} height={150} />
 
 						<Divider animation="wave" className={cls.divider} />
 
-						<Skeleton animation="wave" className={cls.skTitle} variant="text" width={200} />
+						<Box minHeight="50px" m={1}>
+							<Skeleton animation="wave" className={cls.skTitle} variant="text" width={200} />
+						</Box>
 
-						<Skeleton animation="wave" className={cls.skButtons} variant="rect" height={15} />
+						<Divider animation="wave" className={cls.divider} />
+
+						<Skeleton animation="wave" className={cls.skButtons} variant="text" />
 					</Box>
 				</Grid>
 			)

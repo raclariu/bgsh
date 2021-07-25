@@ -121,7 +121,12 @@ const SingleGameScreen = () => {
 					<Grid container direction="row" className={cls.mainGrid}>
 						{/* Thumbnail */}
 						<Grid item container xl={4} lg={4} md={4} sm={12} xs={12} justify="center">
-							<Box className={cls.thumbnailContainer} borderRadius={4} boxShadow={2}>
+							<Box
+								bgcolor="background.paper"
+								className={cls.thumbnailContainer}
+								borderRadius={4}
+								boxShadow={2}
+							>
 								<img
 									className={cls.thumbnail}
 									src={data.games[0].thumbnail}

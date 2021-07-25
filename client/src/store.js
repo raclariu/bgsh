@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { userSignInReducer, userSignUpReducer } from './reducers/userReducers'
+import { userSignInReducer, userSignUpReducer, setThemeReducer } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
 import {
 	bggGetGamesDetailsReducer,
@@ -13,21 +13,26 @@ import {
 	getSingleGameReducer,
 	savedGameStatusReducer,
 	savedGamesListReducer,
-	getUserGamesReducer,
+	getUserActiveGamesReducer,
 	deleteGameReducer
 } from './reducers/gameReducers'
-import { addToHistoryReducer, getSoldGamesHistoryReducer } from './reducers/historyReducers'
+import {
+	addToHistoryReducer,
+	getSoldGamesHistoryReducer,
+	getTradedGamesHistoryReducer
+} from './reducers/historyReducers'
 
 const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
 	userSignUp      : userSignUpReducer,
+	userPreferences : setThemeReducer,
 	bggCollection   : bggGetCollectionReducer,
 	dbCollection    : dbGetCollectionReducer,
 	bggGamesDetails : bggGetGamesDetailsReducer,
 	bggSearchGames  : bggSearchGamesReducer,
 	gamesIndex      : getGamesReducer,
 	gameForSale     : getSingleGameReducer,
-	userGames       : getUserGamesReducer,
+	userActiveGames : getUserActiveGamesReducer,
 	wishlist        : getWishlistReducer,
 	saleList        : saleListReducer,
 	sellGames       : sellGamesReducer,
@@ -36,15 +41,20 @@ const reducer = combineReducers({
 	savedGamesList  : savedGamesListReducer,
 	addToHistory    : addToHistoryReducer,
 	soldHistory     : getSoldGamesHistoryReducer,
+	tradedHistory   : getTradedGamesHistoryReducer,
 	deleteGame      : deleteGameReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
 const saleListFromStorage = localStorage.getItem('saleList') ? JSON.parse(localStorage.getItem('saleList')) : []
+const currentThemeFromStorage = localStorage.getItem('currentTheme')
+	? JSON.parse(localStorage.getItem('currentTheme'))
+	: 'light'
 
 const initialState = {
-	userSignIn : { userInfo: userInfoFromStorage },
-	saleList   : saleListFromStorage
+	userSignIn      : { userInfo: userInfoFromStorage },
+	saleList        : saleListFromStorage,
+	userPreferences : { theme: currentThemeFromStorage }
 }
 
 const middleware = [ thunk ]

@@ -6,7 +6,7 @@ import {
 	tradeGames,
 	bggSearchGame,
 	getGames,
-	getUserSaleGames,
+	getUserActiveGames,
 	getSingleGame,
 	switchSaveGame,
 	getSavedGames,
@@ -27,7 +27,7 @@ import {
 
 router.route('/').get(protect, getGames)
 router.route('/delete/:id').delete(protect, deleteGame)
-router.route('/user/:id/sale').get(protect, getUserSaleGames)
+router.route('/user/:id').get(protect, getUserActiveGames)
 router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/:altId').get(protect, getSingleGame)

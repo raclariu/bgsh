@@ -3,6 +3,7 @@ import { genNanoId } from '../helpers/helpers.js'
 
 const historySchema = mongoose.Schema(
 	{
+		mode       : String,
 		seller     : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,

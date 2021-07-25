@@ -96,19 +96,16 @@ const CollectionScreen = () => {
 					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
 				</Box>
 			)}
-
 			{dbError && (
 				<div className={cls.error}>
 					<Message>{dbError}</Message>
 				</div>
 			)}
-
 			{dbLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					<GameCardSkeletons num={24} />
 				</Grid>
 			)}
-
 			{dbSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
@@ -135,7 +132,6 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
-
 			{dbSuccess &&
 				(pagination.totalPages > 1 && (
 					<Box

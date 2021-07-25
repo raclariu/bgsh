@@ -109,7 +109,7 @@ const BggSearchGamesBox = () => {
 				<Button onClick={resetHandler} disabled={options.length === 0} color="secondary">
 					Reset
 				</Button>
-				<Button onClick={submitHandler} disabled={!selectedOption} color="primary">
+				<Button onClick={submitHandler} disabled={!selectedOption} color="secondary">
 					Add to sale list
 				</Button>
 			</ButtonGroup>

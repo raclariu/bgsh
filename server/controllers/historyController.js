@@ -5,13 +5,13 @@ import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import History from '../models/historyModel.js'
 
-// * @desc    Add game(s) to history as a result of user selling
+// * @desc    Add game(s) to history as a result of user selling or trading
 // * @route   POST  /api/history/add
 // * @access  Private route
 const addGamesToHistory = asyncHandler(async (req, res) => {
-	const { games, username, price, gameId } = req.body
+	const { games, username, price, gameId, mode } = req.body
 
-	console.log(games, username, price, gameId)
+	console.log(games, username, price, gameId, mode)
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
@@ -26,6 +26,7 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 	}
 
 	const history = await History.create({
+		mode,
 		seller     : req.user._id,
 		buyer      : username ? username : null,
 		games,
@@ -43,7 +44,7 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all games sold by the user
+// ~ @desc    Get all user sold games history
 // ~ @route   GET  /api/history/sold
 // ~ @access  Private route
 const getSoldGamesHistory = asyncHandler(async (req, res) => {
@@ -51,7 +52,7 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 24
 
-	const completeList = await History.find({ seller: req.user._id }).sort({ createdAt: -1 }).lean()
+	const completeList = await History.find({ seller: req.user._id, mode: 'sell' }).sort({ createdAt: -1 }).lean()
 
 	if (search) {
 		const fuse = new Fuse(completeList, {
@@ -74,7 +75,7 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
-		const soldList = await History.find({ seller: req.user._id })
+		const soldList = await History.find({ seller: req.user._id, mode: 'sell' })
 			.sort({ createdAt: -1 })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
@@ -94,4 +95,55 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 	}
 })
 
-export { addGamesToHistory, getSoldGamesHistory }
+// ~ @desc    Get all user traded games history
+// ~ @route   GET  /api/history/traded
+// ~ @access  Private route
+const getTradedGamesHistory = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const search = req.query.search
+	const resultsPerPage = 24
+
+	const completeList = await History.find({ seller: req.user._id, mode: 'trade' }).sort({ createdAt: -1 }).lean()
+
+	if (search) {
+		const fuse = new Fuse(completeList, {
+			keys      : [ 'games.title' ],
+			threshold : 0.3,
+			distance  : 200
+		})
+
+		const results = fuse.search(search).map((game) => game.item)
+
+		const pagination = {
+			page       : page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			tradedList : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const tradedList = await History.find({ seller: req.user._id, mode: 'trade' })
+			.sort({ createdAt: -1 })
+			.skip(resultsPerPage * (page - 1))
+			.limit(resultsPerPage)
+			.lean()
+
+		const pagination = {
+			page         : page,
+			totalPages   : Math.ceil(completeList.length / resultsPerPage),
+			totalItems   : completeList.length,
+			itemsPerPage : resultsPerPage
+		}
+
+		res.status(200).json({
+			tradedList,
+			pagination
+		})
+	}
+})
+
+export { addGamesToHistory, getSoldGamesHistory, getTradedGamesHistory }

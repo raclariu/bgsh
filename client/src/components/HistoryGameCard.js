@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const HistorySoldGameCard = ({ data }) => {
+const HistoryGameCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
@@ -108,7 +108,7 @@ const HistorySoldGameCard = ({ data }) => {
 						minHeight={50}
 						m={1}
 					>
-						{data.games.length > 1 ? (
+						{data.type === 'pack' ? (
 							<Fragment>
 								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 									<ArrowBackIcon fontSize="small" />
@@ -129,12 +129,23 @@ const HistorySoldGameCard = ({ data }) => {
 					</Box>
 					<Divider />
 					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-						<Box textAlign="center" fontSize={12} mt={1}>
-							Buyer: {data.buyer ? data.buyer : 'N/A'}
-						</Box>
-						<Box textAlign="center" fontSize={12}>
-							RON {data.finalPrice ? data.finalPrice : 'N/A'}
-						</Box>
+						{data.mode === 'sell' && (
+							<Box textAlign="center" fontSize={12} mt={1}>
+								Bought by: {data.buyer ? data.buyer : 'N/A'}
+							</Box>
+						)}
+						{data.mode === 'trade' && (
+							<Box textAlign="center" fontSize={12} mt={1}>
+								Traded to: {data.buyer ? data.buyer : 'N/A'}
+							</Box>
+						)}
+
+						{data.mode === 'sell' && (
+							<Box textAlign="center" fontSize={12}>
+								RON {data.finalPrice ? data.finalPrice : 'N/A'}
+							</Box>
+						)}
+
 						<Box display="flex" alignItems="center">
 							<Tooltip
 								disableFocusListener
@@ -145,7 +156,7 @@ const HistorySoldGameCard = ({ data }) => {
 								<EventAvailableOutlinedIcon fontSize="small" />
 							</Tooltip>
 							<Box textAlign="center" fontSize={12} ml={0.5}>
-								sold {formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
+								{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
 							</Box>
 						</Box>
 					</Box>
@@ -155,4 +166,4 @@ const HistorySoldGameCard = ({ data }) => {
 	)
 }
 
-export default HistorySoldGameCard
+export default HistoryGameCard

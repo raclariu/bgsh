@@ -5,7 +5,8 @@ import {
 	USER_SIGNOUT,
 	USER_SIGNUP_REQUEST,
 	USER_SIGNUP_SUCCESS,
-	USER_SIGNUP_FAIL
+	USER_SIGNUP_FAIL,
+	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
 export const userSignInReducer = (state = {}, action) => {
@@ -32,6 +33,16 @@ export const userSignUpReducer = (state = {}, action) => {
 			return { loading: false, success: true, userInfo: action.payload }
 		case USER_SIGNUP_FAIL:
 			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const setThemeReducer = (state = {}, action) => {
+	switch (action.type) {
+		case USER_PREFERENCES_SET_THEME:
+			return { theme: action.payload }
 
 		default:
 			return state

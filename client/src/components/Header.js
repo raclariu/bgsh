@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -23,8 +23,9 @@ import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
-import { signOut } from '../actions/userActions'
+import Theme from './Theme'
 import pink from '@material-ui/core/colors/pink'
+import { signOut } from '../actions/userActions'
 
 const useStyles = makeStyles((theme) => ({
 	root     : {
@@ -48,14 +49,24 @@ const useStyles = makeStyles((theme) => ({
 		width           : theme.spacing(4),
 		height          : theme.spacing(4)
 	}
+	// selected : {
+	// 	'&.Mui-selected' : {
+	// 		// consoleackgroundColor : theme.palette.background.default,
+	// 		color      : theme.palette.primary.light,
+	// 		fontWeight : '500'
+	// 	}
+	// }
 }))
 
 const Header = () => {
 	const classes = useStyles()
+	const dispatch = useDispatch()
+	const { pathname } = useLocation()
+	const location = useLocation()
+	console.log(location)
+	// console.log(pathname.split('/'))
 
 	const [ isOpen, setIsOpen ] = useState(false)
-
-	const dispatch = useDispatch()
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
@@ -75,6 +86,7 @@ const Header = () => {
 					{userInfo ? (
 						<Fragment>
 							<SaleListPopover />
+							<Theme />
 
 							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
 								<MenuIcon />
@@ -83,63 +95,112 @@ const Header = () => {
 								<Box boxShadow={2} height={100} p={2} bgcolor="warning.main">
 									Hey {userInfo.username}
 								</Box>
-								<Box p={2}>
+								<Box>
 									<List disablePadding className={classes.list} onClick={() => setIsOpen(!isOpen)}>
 										<Divider />
-										<ListItem button component={RouterLink} to="/">
+
+										<ListItem selected={pathname === '/'} button component={RouterLink} to="/">
 											<ListItemIcon>
 												<HomeTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Home" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/games">
+										<ListItem
+											selected={pathname === '/games'}
+											button
+											component={RouterLink}
+											to="/games"
+										>
 											<ListItemIcon>
 												<DashboardTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Board Games" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/profile">
+										<ListItem
+											selected={pathname === '/profile'}
+											button
+											component={RouterLink}
+											to="/profile"
+										>
 											<ListItemIcon>
 												<PersonOutlineTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Profile" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/collection">
+										<ListItem
+											selected={pathname === '/collection'}
+											button
+											component={RouterLink}
+											to="/collection"
+										>
 											<ListItemIcon>
 												<LibraryBooksTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="My Collection" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/wishlist">
+										<ListItem
+											selected={pathname === '/wishlist'}
+											button
+											component={RouterLink}
+											to="/wishlist"
+										>
 											<ListItemIcon>
 												<FavoriteTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="My Wishlist" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/saved">
+										<ListItem
+											selected={pathname === '/saved'}
+											button
+											component={RouterLink}
+											to="/saved"
+										>
 											<ListItemIcon>
 												<BookmarkTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="My Saved Games" />
 										</ListItem>
 
-										<ListItem button component={RouterLink} to="/my-games/sale">
+										<ListItem
+											selected={pathname === '/my-games'}
+											button
+											component={RouterLink}
+											to="/my-games"
+										>
 											<ListItemIcon>
 												<BookmarkTwoToneIcon />
 											</ListItemIcon>
-											<ListItemText primary="Active sales" />
+											<ListItemText primary="Active" />
 										</ListItem>
 
-										<ListItem divider button component={RouterLink} to="/my-games/history/sold">
+										<ListItem
+											selected={pathname === '/my-games/history/sold'}
+											button
+											component={RouterLink}
+											to="/my-games/history/sold"
+										>
 											<ListItemIcon>
 												<BookmarkTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="History Sold" />
+										</ListItem>
+
+										<ListItem
+											selected={pathname === '/my-games/history/'}
+											divider
+											button
+											component={RouterLink}
+											to="/my-games/history/traded"
+										>
+											<ListItemIcon>
+												<BookmarkTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="History Trades" />
 										</ListItem>
 
 										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>

@@ -14,7 +14,7 @@ import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
 import Message from '../components/Message'
 
-import { getSoldGamesHistory } from '../actions/historyActions'
+import { getTradedGamesHistory } from '../actions/historyActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const HistorySoldGamesScreen = () => {
+const HistorySoldGames = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -49,12 +49,12 @@ const HistorySoldGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const soldHistory = useSelector((state) => state.soldHistory)
-	const { loading, success, error, soldList, pagination } = soldHistory
+	const tradedHistory = useSelector((state) => state.tradedHistory)
+	const { loading, success, error, tradedList, pagination } = tradedHistory
 
 	useEffect(
 		() => {
-			dispatch(getSoldGamesHistory(page, search))
+			dispatch(getTradedGamesHistory(page, search))
 		},
 		[ dispatch, page, search ]
 	)
@@ -103,7 +103,7 @@ const HistorySoldGamesScreen = () => {
 
 			{success && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{soldList.map((data) => (
+					{tradedList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<HistoryGameCard data={data} />
 						</Grid>
@@ -129,4 +129,4 @@ const HistorySoldGamesScreen = () => {
 	)
 }
 
-export default HistorySoldGamesScreen
+export default HistorySoldGames

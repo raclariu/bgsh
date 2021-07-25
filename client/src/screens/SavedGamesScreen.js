@@ -108,7 +108,7 @@ const SavedGamesScreen = () => {
 			{success && (
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{list.map((data) => (
-						<Grid item xs={12} sm={6} md={4}>
+						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<SavedGameCard data={data} />
 						</Grid>
 					))}

@@ -14,7 +14,7 @@ const Paginate = ({ pagination, handleFilters }) => {
 					page={pagination.page}
 					onChange={(e, page) => onPageChangeHandler(e, page)}
 					count={pagination.totalPages}
-					color="primary"
+					color="secondary"
 				/>
 			)}
 		</div>

@@ -166,7 +166,7 @@ const TradeGamesScreen = () => {
 										subheader={game.year}
 										action={
 											<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
-												<HighlightOffIcon />
+												<HighlightOffIcon color="error" />
 											</IconButton>
 										}
 										titleTypographyProps={{

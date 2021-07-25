@@ -185,7 +185,7 @@ const sellGames = asyncHandler(async (req, res) => {
 
 	if (type === 'pack') {
 		await Game.create({
-			mode             : 'trade',
+			mode             : 'sell',
 			seller           : req.user._id,
 			games,
 			type,
@@ -279,7 +279,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	if (search) {
-		const saleData = await Game.find({ isActive: true }).populate('seller', 'username _id').lean()
+		const saleData = await Game.find({ isActive: true, mode: 'sell' }).populate('seller', 'username _id').lean()
 
 		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
@@ -328,7 +328,7 @@ const getGames = asyncHandler(async (req, res) => {
 
 		const count = await Game.countDocuments({})
 
-		const saleData = await Game.find({ isActive: true })
+		const saleData = await Game.find({ isActive: true, mode: 'sell' })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('seller', 'username _id')
@@ -347,9 +347,9 @@ const getGames = asyncHandler(async (req, res) => {
 })
 
 // ~ @desc    Get all games up for sale for one single user
-// ~ @route   GET /api/games/user/:id/sale
+// ~ @route   GET /api/games/user/:id
 // ~ @access  Private route
-const getUserSaleGames = asyncHandler(async (req, res) => {
+const getUserActiveGames = asyncHandler(async (req, res) => {
 	const { id } = req.params
 	const page = +req.query.page
 	const search = req.query.search
@@ -381,7 +381,7 @@ const getUserSaleGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({
-			forSale    : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			activeGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
 	} else {
@@ -399,7 +399,7 @@ const getUserSaleGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({
-			forSale    : games,
+			activeGames : games,
 			pagination
 		})
 	}
@@ -554,7 +554,14 @@ const getSavedGames = asyncHandler(async (req, res) => {
 // ! @access  Private route
 const deleteGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
-	await Game.findOneAndDelete({ _id: id })
+	const game = await Game.findOneAndDelete({ _id: id })
+
+	if (!game) {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
 
 	res.status(204).end()
 })
@@ -569,6 +576,6 @@ export {
 	switchSaveGame,
 	getSavedGames,
 	getSingleSavedGame,
-	getUserSaleGames,
+	getUserActiveGames,
 	deleteGame
 }

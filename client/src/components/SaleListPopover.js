@@ -146,7 +146,7 @@ const SaleListPopover = () => {
 												edge="end"
 												onClick={() => removeFromSaleListHandler(game.bggId)}
 											>
-												<HighlightOffIcon />
+												<HighlightOffIcon color="error" />
 											</IconButton>
 										</ListItemSecondaryAction>
 									</ListItem>

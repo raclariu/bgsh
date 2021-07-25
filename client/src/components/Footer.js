@@ -4,6 +4,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
 
+const useStyles = makeStyles((theme) => ({
+	footer : {
+		padding         : theme.spacing(3, 2),
+		marginTop       : 'auto',
+		backgroundColor :
+			theme.palette.type === 'light' ? theme.palette.background.paper : theme.palette.background.paper
+	}
+}))
+
 function Copyright() {
 	return (
 		<Typography variant="body2" color="textSecondary">
@@ -16,14 +25,6 @@ function Copyright() {
 		</Typography>
 	)
 }
-
-const useStyles = makeStyles((theme) => ({
-	footer : {
-		padding         : theme.spacing(3, 2),
-		marginTop       : 'auto',
-		backgroundColor : theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800]
-	}
-}))
 
 export default function StickyFooter() {
 	const classes = useStyles()

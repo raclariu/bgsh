@@ -13,7 +13,8 @@ const defaultBox = {
 	justifyContent : 'center',
 	boxShadow      : 2,
 	p              : 1,
-	borderRadius   : 4
+	borderRadius   : 4,
+	bgcolor        : 'background.paper'
 }
 
 const InfoBoxes = ({ data }) => {

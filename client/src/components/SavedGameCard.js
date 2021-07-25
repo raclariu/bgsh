@@ -106,7 +106,9 @@ const SavedGameCard = ({ data }) => {
 								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 									<ArrowBackIcon fontSize="small" />
 								</IconButton>
-								<Box className={cls.title}>{data.games[index].title}</Box>
+								<Box className={cls.title}>
+									{data.games[index].title} ({data.games[index].year})
+								</Box>
 								<IconButton
 									disabled={data.games.length === index + 1}
 									onClick={() => handleIndex('plus')}
@@ -116,7 +118,7 @@ const SavedGameCard = ({ data }) => {
 							</Fragment>
 						) : (
 							<Box width="100%" className={cls.title}>
-								{data.games[index].title}
+								{data.games[index].title} ({data.games[index].year})
 							</Box>
 						)}
 					</Box>

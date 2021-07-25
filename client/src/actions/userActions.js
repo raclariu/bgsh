@@ -6,7 +6,8 @@ import {
 	USER_SIGNOUT,
 	USER_SIGNUP_REQUEST,
 	USER_SIGNUP_SUCCESS,
-	USER_SIGNUP_FAIL
+	USER_SIGNUP_FAIL,
+	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
 export const signIn = (email, password) => async (dispatch) => {
@@ -74,4 +75,10 @@ export const signOut = () => async (dispatch) => {
 	localStorage.removeItem('userInfo')
 
 	dispatch({ type: USER_SIGNOUT })
+}
+
+export const setCurrentTheme = (theme) => async (dispatch) => {
+	localStorage.setItem('currentTheme', JSON.stringify(theme))
+
+	dispatch({ type: USER_PREFERENCES_SET_THEME, payload: theme })
 }

@@ -173,7 +173,7 @@ const SellGamesScreen = () => {
 										subheader={game.year}
 										action={
 											<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
-												<HighlightOffIcon />
+												<HighlightOffIcon color="error" />
 											</IconButton>
 										}
 										titleTypographyProps={{
@@ -414,7 +414,12 @@ const SellGamesScreen = () => {
 												control={<Radio />}
 												label="Individually"
 											/>
-											<FormControlLabel value="pack" control={<Radio />} label="Pack" />
+											<FormControlLabel
+												disabled={games.length === 1}
+												value="pack"
+												control={<Radio />}
+												label="Pack"
+											/>
 										</RadioGroup>
 									</FormControl>
 								</Grid>

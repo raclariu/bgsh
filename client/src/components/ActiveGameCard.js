@@ -24,52 +24,61 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
+import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
+import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import RefreshIcon from '@material-ui/icons/Refresh'
 
-import Loader from '../components/Loader'
+import Loader from './Loader'
 
+import { HISTORY_ADD_RESET } from '../constants/historyConstants'
 import { addGamesToHistory } from '../actions/historyActions'
 import { deleteGame } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
-	root        : {
+	root          : {
 		position : 'relative'
 	},
-	media       : {
+	media         : {
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	overlayChip : {
+	overlayTop    : {
 		position : 'absolute',
 		top      : '8px',
 		left     : '4px'
 	},
-	content     : {
+	overlayBottom : {
+		position : 'absolute',
+		top      : '36px',
+		left     : '4px'
+	},
+	content       : {
 		padding   : 0,
 		marginTop : theme.spacing(1)
 	},
-	title       : {
+	title         : {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden'
+		overflow        : 'hidden',
+		width           : '100%'
 	},
-	avatar      : {
+	avatar        : {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
 	},
-	input       : {
+	input         : {
 		minHeight                      : '70px',
 		width                          : '50%',
 		[theme.breakpoints.down('xs')]: {
 			width : '90%'
 		}
 	},
-	button      : {
+	button        : {
 		width                          : '50%',
 		[theme.breakpoints.down('xs')]: {
 			width : '90%'
@@ -77,28 +86,22 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const MyGamesSaleCard = ({ data }) => {
+const ActiveGameCard = ({ data }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
 
 	const [ index, setIndex ] = useState(0)
-	const [ openDialog, setOpenDialog ] = useState(false)
+	const [ addDialog, setAddDialog ] = useState(false)
+	const [ deleteDialog, setDeleteDialog ] = useState(false)
 	const [ buyerUsername, setBuyerUsername ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState(data.totalPrice)
 
 	const { loading, success, error } = useSelector((state) => state.addToHistory)
-
-	// useEffect(
-	// 	() => {
-	// 		if (success) {
-	// 			setOpenDialog(false)
-	// 			history.push('/collection')
-	// 		}
-	// 	},
-	// 	[ history, location, success ]
-	// )
+	const { loading: loadingDelete, success: successDelete, error: errorDelete } = useSelector(
+		(state) => state.deleteGame
+	)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -113,12 +116,20 @@ const MyGamesSaleCard = ({ data }) => {
 		}
 	}
 
-	const handleDialogOpen = () => {
-		setOpenDialog(true)
+	const handleAddDialogOpen = () => {
+		setAddDialog(true)
 	}
 
-	const handleDialogClose = () => {
-		setOpenDialog(false)
+	const handleAddDialogClose = () => {
+		setAddDialog(false)
+	}
+
+	const handleDeleteDialogOpen = () => {
+		setDeleteDialog(true)
+	}
+
+	const handleDeleteDialogClose = () => {
+		setDeleteDialog(false)
 	}
 
 	const deleteGameHandler = () => {
@@ -127,7 +138,8 @@ const MyGamesSaleCard = ({ data }) => {
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		dispatch(addGamesToHistory(data.games, buyerUsername, finalPrice, data._id))
+
+		dispatch(addGamesToHistory(data.games, buyerUsername.trim().toLowerCase(), finalPrice, data._id, data.mode))
 	}
 
 	return (
@@ -144,12 +156,40 @@ const MyGamesSaleCard = ({ data }) => {
 				/>
 
 				{data.type === 'pack' && (
-					<Chip
-						size="small"
-						color="secondary"
-						className={cls.overlayChip}
-						label={`${data.games.length} pack`}
-					/>
+					<Fragment>
+						<Chip
+							size="small"
+							color="secondary"
+							className={cls.overlayTop}
+							label={`${data.games.length} pack`}
+						/>
+
+						{data.mode === 'sell' && (
+							<Box className={cls.overlayBottom}>
+								<MonetizationOnOutlinedIcon color="secondary" />
+							</Box>
+						)}
+
+						{data.mode === 'trade' && (
+							<Box className={cls.overlayBottom}>
+								<SwapHorizontalCircleOutlinedIcon color="secondary" />
+							</Box>
+						)}
+					</Fragment>
+				)}
+
+				{data.type === 'individual' &&
+				data.mode === 'sell' && (
+					<Box className={cls.overlayTop}>
+						<MonetizationOnOutlinedIcon color="secondary" />
+					</Box>
+				)}
+
+				{data.type === 'individual' &&
+				data.mode === 'trade' && (
+					<Box className={cls.overlayTop}>
+						<SwapHorizontalCircleOutlinedIcon color="secondary" />
+					</Box>
 				)}
 			</Box>
 
@@ -172,7 +212,9 @@ const MyGamesSaleCard = ({ data }) => {
 								<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 									<ArrowBackIcon fontSize="small" />
 								</IconButton>
-								<Box className={cls.title}>{data.games[index].title}</Box>
+								<Box className={cls.title}>
+									{data.games[index].title} ({data.games[index].year})
+								</Box>
 								<IconButton
 									disabled={data.games.length === index + 1}
 									onClick={() => handleIndex('plus')}
@@ -181,8 +223,8 @@ const MyGamesSaleCard = ({ data }) => {
 								</IconButton>
 							</Fragment>
 						) : (
-							<Box width="100%" className={cls.title}>
-								{data.games[index].title}
+							<Box className={cls.title}>
+								{data.games[index].title} ({data.games[index].year})
 							</Box>
 						)}
 					</Box>
@@ -196,15 +238,36 @@ const MyGamesSaleCard = ({ data }) => {
 					<IconButton color="primary">
 						<RefreshIcon />
 					</IconButton>
-					<IconButton onClick={handleDialogOpen} color="primary">
-						<MonetizationOnOutlinedIcon />
+					<IconButton onClick={handleAddDialogOpen} color="primary">
+						<CheckCircleOutlineOutlinedIcon />
 					</IconButton>
-					<IconButton onClick={deleteGameHandler} color="secondary">
-						<DeleteOutlinedIcon />
+					<IconButton onClick={handleDeleteDialogOpen} color="secondary">
+						<DeleteOutlinedIcon color="error" />
 					</IconButton>
 				</Box>
 
-				<Dialog open={openDialog} onClose={handleDialogClose} maxWidth="md">
+				{/* Dialog for deletion */}
+				<Dialog fullWidth open={deleteDialog} onClose={handleDeleteDialogClose} maxWidth="xs">
+					<DialogTitle disableTypography>
+						<Typography variant="h6" align="center">
+							Are you sure?
+						</Typography>
+					</DialogTitle>
+
+					<DialogContent>
+						<Box display="flex" justifyContent="center" alignItems="center">
+							<ButtonGroup color="primary">
+								<Button disabled={loadingDelete} onClick={deleteGameHandler}>
+									{loadingDelete ? <Loader color="inherit" size={24} /> : 'Yes'}
+								</Button>
+								<Button onClick={handleDeleteDialogClose}>Go back</Button>
+							</ButtonGroup>
+						</Box>
+					</DialogContent>
+				</Dialog>
+
+				{/* Dialog for adding to history */}
+				<Dialog open={addDialog} onClose={handleAddDialogClose} maxWidth="md">
 					<DialogTitle disableTypography>
 						<Typography variant="h6" align="center">
 							For history purposes, type the buyers username and final price
@@ -271,4 +334,4 @@ const MyGamesSaleCard = ({ data }) => {
 	)
 }
 
-export default MyGamesSaleCard
+export default ActiveGameCard

@@ -1,7 +1,12 @@
 import React from 'react'
+import './App.css'
+import { useSelector } from 'react-redux'
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
+import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
+
+import { light, dark } from './themePalette'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import HomePageScreen from './screens/HomePageScreen'
@@ -15,71 +20,80 @@ import ProtectedRoute from './components/ProtectedRoute'
 import GamesIndexScreen from './screens/GamesIndexScreen'
 import SingleGameScreen from './screens/SingleGameScreen'
 import SavedGamesScreen from './screens/SavedGamesScreen'
-import MyGamesSaleScreen from './screens/MyGamesSaleScreen'
+import MyActiveGamesScreen from './screens/MyActiveGamesScreen'
 import HistorySoldGamesScreen from './screens/HistorySoldGamesScreen'
+import HistoryTradedGamesScreen from './screens/HistoryTradedGamesScreen'
 
 const App = () => {
+	const theme = useSelector((state) => state.userPreferences.theme)
+
 	return (
-		<BrowserRouter>
-			<CssBaseline />
-			<Header />
+		<ThemeProvider theme={theme === 'light' ? light : dark}>
+			<BrowserRouter>
+				<CssBaseline />
+				<Header />
 
-			<Container maxWidth="md" component="main">
-				<Route path="/" exact>
-					<HomePageScreen test={1} />
-				</Route>
+				<Container maxWidth="md" component="main">
+					<Route path="/" exact>
+						<HomePageScreen test={1} />
+					</Route>
 
-				<Route path={[ '/signin', '/signup' ]} exact>
-					<AuthScreen />
-				</Route>
+					<Route path={[ '/signin', '/signup' ]} exact>
+						<AuthScreen />
+					</Route>
 
-				<ProtectedRoute path="/profile" exact>
-					<ProfileScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/profile" exact>
+						<ProfileScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/games" exact>
-					<GamesIndexScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/games" exact>
+						<GamesIndexScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/games/:altId" exact>
-					<SingleGameScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/games/:altId" exact>
+						<SingleGameScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/collection" exact>
-					<CollectionScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/collection" exact>
+						<CollectionScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/wishlist" exact>
-					<WishlistScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/wishlist" exact>
+						<WishlistScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/sell" exact>
-					<SellGamesScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/sell" exact>
+						<SellGamesScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/trade" exact>
-					<TradeGamesScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/trade" exact>
+						<TradeGamesScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/saved" exact>
-					<SavedGamesScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/saved" exact>
+						<SavedGamesScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/my-games/sale" exact>
-					<MyGamesSaleScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/my-games" exact>
+						<MyActiveGamesScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/my-games/history/sold" exact>
-					<HistorySoldGamesScreen />
-				</ProtectedRoute>
+					<ProtectedRoute path="/my-games/history/sold" exact>
+						<HistorySoldGamesScreen />
+					</ProtectedRoute>
 
-				<ProtectedRoute path="/signout" exact>
-					<Redirect to="/" />
-				</ProtectedRoute>
-			</Container>
+					<ProtectedRoute path="/my-games/history/traded" exact>
+						<HistoryTradedGamesScreen />
+					</ProtectedRoute>
 
-			<Footer />
-		</BrowserRouter>
+					<ProtectedRoute path="/signout" exact>
+						<Redirect to="/" />
+					</ProtectedRoute>
+				</Container>
+
+				<Footer />
+			</BrowserRouter>
+		</ThemeProvider>
 	)
 }
 

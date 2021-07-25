@@ -33,9 +33,9 @@ import {
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
 	SAVED_GAMES_SINGLE_FAIL,
-	USER_GAMES_SALE_REQUEST,
-	USER_GAMES_SALE_SUCCESS,
-	USER_GAMES_SALE_FAIL,
+	USER_ACTIVE_GAMES_REQUEST,
+	USER_ACTIVE_GAMES_SUCCESS,
+	USER_ACTIVE_GAMES_FAIL,
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
 	GAME_DELETE_FAIL
@@ -150,20 +150,20 @@ export const getGamesReducer = (state = {}, action) => {
 	}
 }
 
-export const getUserGamesReducer = (state = {}, action) => {
+export const getUserActiveGamesReducer = (state = {}, action) => {
 	switch (action.type) {
-		case USER_GAMES_SALE_REQUEST:
+		case USER_ACTIVE_GAMES_REQUEST:
 			return { loading: true }
 
-		case USER_GAMES_SALE_SUCCESS:
+		case USER_ACTIVE_GAMES_SUCCESS:
 			return {
-				loading    : false,
-				success    : true,
-				forSale    : action.payload.forSale,
-				pagination : action.payload.pagination
+				loading     : false,
+				success     : true,
+				activeGames : action.payload.activeGames,
+				pagination  : action.payload.pagination
 			}
 
-		case USER_GAMES_SALE_FAIL:
+		case USER_ACTIVE_GAMES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:
