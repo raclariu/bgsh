@@ -10,17 +10,32 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
+import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
 import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
-
+import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import RefreshIcon from '@material-ui/icons/Refresh'
 
-import ActiveAddHistoryButton from './ActiveAddHistoryButton'
+import Loader from './Loader'
+
+import { HISTORY_ADD_RESET } from '../constants/historyConstants'
+import { addGamesToHistory } from '../actions/historyActions'
+import { deleteGame } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -73,8 +88,20 @@ const useStyles = makeStyles((theme) => ({
 
 const ActiveGameCard = ({ data }) => {
 	const cls = useStyles()
+	const dispatch = useDispatch()
+	const history = useHistory()
+	const location = useLocation()
 
 	const [ index, setIndex ] = useState(0)
+	const [ addDialog, setAddDialog ] = useState(false)
+	const [ deleteDialog, setDeleteDialog ] = useState(false)
+	const [ buyerUsername, setBuyerUsername ] = useState('')
+	const [ finalPrice, setFinalPrice ] = useState(data.totalPrice)
+
+	const { loading, success, error } = useSelector((state) => state.addToHistory)
+	const { loading: loadingDelete, success: successDelete, error: errorDelete } = useSelector(
+		(state) => state.deleteGame
+	)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -87,6 +114,32 @@ const ActiveGameCard = ({ data }) => {
 				setIndex(index + 1)
 			}
 		}
+	}
+
+	const handleAddDialogOpen = () => {
+		setAddDialog(true)
+	}
+
+	const handleAddDialogClose = () => {
+		setAddDialog(false)
+	}
+
+	const handleDeleteDialogOpen = () => {
+		setDeleteDialog(true)
+	}
+
+	const handleDeleteDialogClose = () => {
+		setDeleteDialog(false)
+	}
+
+	const deleteGameHandler = () => {
+		dispatch(deleteGame(data._id))
+	}
+
+	const submitHandler = (e) => {
+		e.preventDefault()
+
+		dispatch(addGamesToHistory(data.games, buyerUsername.trim().toLowerCase(), finalPrice, data._id))
 	}
 
 	return (
@@ -185,15 +238,97 @@ const ActiveGameCard = ({ data }) => {
 					<IconButton color="primary">
 						<RefreshIcon />
 					</IconButton>
-					<ActiveAddHistoryButton
-						games={data.games}
-						totalPrice={data.totalPrice}
-						gameId={data._id}
-						mode={data.mode}
-						show="add"
-					/>
-					<ActiveAddHistoryButton gameId={data._id} show="delete" />
+					<IconButton onClick={handleAddDialogOpen} color="primary">
+						<CheckCircleOutlineOutlinedIcon />
+					</IconButton>
+					<IconButton onClick={handleDeleteDialogOpen} color="secondary">
+						<DeleteOutlinedIcon color="error" />
+					</IconButton>
 				</Box>
+
+				{/* Dialog for deletion */}
+				<Dialog fullWidth open={deleteDialog} onClose={handleDeleteDialogClose} maxWidth="xs">
+					<DialogTitle disableTypography>
+						<Typography variant="h6" align="center">
+							Are you sure?
+						</Typography>
+					</DialogTitle>
+
+					<DialogContent>
+						<Box display="flex" justifyContent="center" alignItems="center">
+							<ButtonGroup color="primary">
+								<Button disabled={loadingDelete} onClick={deleteGameHandler}>
+									{loadingDelete ? <Loader color="inherit" size={24} /> : 'Yes'}
+								</Button>
+								<Button onClick={handleDeleteDialogClose}>Go back</Button>
+							</ButtonGroup>
+						</Box>
+					</DialogContent>
+				</Dialog>
+
+				{/* Dialog for adding to history */}
+				<Dialog open={addDialog} onClose={handleAddDialogClose} maxWidth="md">
+					<DialogTitle disableTypography>
+						<Typography variant="h6" align="center">
+							For history purposes, type the buyers username and final price
+						</Typography>
+						<Typography variant="body2" color="textSecondary" align="center">
+							Leave the fields blank if you want to skip this feature
+						</Typography>
+					</DialogTitle>
+
+					<DialogContent>
+						<form onSubmit={submitHandler} autoComplete="off">
+							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+								<TextField
+									className={cls.input}
+									error={error && error.usernameError ? true : false}
+									helperText={error ? error.usernameError : false}
+									onChange={(e) => setBuyerUsername(e.target.value)}
+									value={buyerUsername}
+									inputProps={{
+										maxLength : 20
+									}}
+									variant="outlined"
+									id="username"
+									name="username"
+									label="Username"
+									type="text"
+									size="small"
+									autoFocus
+								/>
+
+								<TextField
+									className={cls.input}
+									onChange={(e) => setFinalPrice(e.target.value)}
+									value={finalPrice}
+									InputProps={{
+										startAdornment : <InputAdornment position="start">RON</InputAdornment>
+									}}
+									inputProps={{
+										min : 0,
+										max : 10000
+									}}
+									variant="outlined"
+									name="price"
+									label="Final Price"
+									type="number"
+									size="small"
+								/>
+
+								<Button
+									className={cls.button}
+									disabled={loading}
+									type="submit"
+									variant="contained"
+									color="primary"
+								>
+									{loading ? <Loader color="inherit" size={24} /> : 'Sell'}
+								</Button>
+							</Box>
+						</form>
+					</DialogContent>
+				</Dialog>
 			</CardActions>
 		</Card>
 	)

@@ -12,7 +12,7 @@ import {
 	HISTORY_TRADED_LIST_FAIL
 } from '../constants/historyConstants'
 
-export const addGamesToHistory = (games, username, price, gameId, mode) => async (dispatch, getState) => {
+export const addGamesToHistory = (games, username, price, gameId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: HISTORY_ADD_REQUEST })
 
@@ -28,7 +28,7 @@ export const addGamesToHistory = (games, username, price, gameId, mode) => async
 			}
 		}
 
-		await axios.post('/api/history/add', { games: simplifyGames, username, price, gameId, mode }, config)
+		await axios.post('/api/history/add', { games: simplifyGames, username, price, gameId }, config)
 
 		dispatch({
 			type : HISTORY_ADD_SUCCESS

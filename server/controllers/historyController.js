@@ -9,9 +9,9 @@ import History from '../models/historyModel.js'
 // * @route   POST  /api/history/add
 // * @access  Private route
 const addGamesToHistory = asyncHandler(async (req, res) => {
-	const { games, username, price, gameId, mode } = req.body
+	const { games, username, price, gameId } = req.body
 
-	console.log(games, username, price, gameId, mode)
+	console.log(games, username, price, gameId)
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
@@ -25,21 +25,31 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const history = await History.create({
-		mode,
-		seller     : req.user._id,
-		buyer      : username ? username : null,
-		games,
-		finalPrice : price
-	})
+	const gameExists = await Game.findOne({ _id: gameId }).select('type mode').lean()
 
-	if (history) {
-		await Game.findOneAndDelete({ _id: gameId })
-		res.status(200).json('success')
+	if (gameExists) {
+		const history = await History.create({
+			mode       : gameExists.mode,
+			type       : gameExists.type,
+			seller     : req.user._id,
+			buyer      : username ? username : null,
+			games,
+			finalPrice : price ? price : null
+		})
+
+		if (history) {
+			await Game.findOneAndDelete({ _id: gameId })
+			res.status(200).json('success')
+		} else {
+			res.status(500)
+			throw {
+				message : 'Error. Please try again'
+			}
+		}
 	} else {
-		res.status(500)
+		res.status(404)
 		throw {
-			message : 'Error. Please try again'
+			message : 'Game not found'
 		}
 	}
 })

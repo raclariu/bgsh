@@ -37,14 +37,24 @@ const MyActiveGamesScreen = () => {
 	const userGames = useSelector((state) => state.userActiveGames)
 	const { loading, error, success, pagination, activeGames } = userGames
 
-	const { success: successAdd } = useSelector((state) => state.addToHistory)
+	const { success: successAdd, loading: loadingAdd } = useSelector((state) => state.addToHistory)
 	const { success: successDelete } = useSelector((state) => state.deleteGame)
 
 	useEffect(
 		() => {
 			dispatch(getUserActiveGames(search, page))
 		},
-		[ dispatch, search, page, successAdd, successDelete ]
+		[ dispatch, search, page, successDelete ]
+	)
+
+	useEffect(
+		() => {
+			if (loadingAdd === false && successAdd) {
+				dispatch(getUserActiveGames(search, page))
+				dispatch({ type: HISTORY_ADD_RESET })
+			}
+		},
+		[ dispatch, search, page, successAdd, loadingAdd ]
 	)
 
 	const handleFilters = (filter, type) => {

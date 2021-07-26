@@ -1,1 +1,2 @@
 lazy loading la restul de pagini care folosesc Card
+redirect to active games on sell/trade
