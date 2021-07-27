@@ -182,7 +182,7 @@ const ActiveGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%">
-					<IconButton color="primary">
+					<IconButton disabled={data.isActive} color="primary">
 						<RefreshIcon />
 					</IconButton>
 					<ActiveAddHistoryButton

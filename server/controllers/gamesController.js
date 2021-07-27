@@ -405,6 +405,17 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 	}
 })
 
+// <> @desc    Reactivate one game
+// <> @route   PATCH /api/games/:id
+// <> @access  Private route
+const reactivateGame = asyncHandler(async (req, res) => {
+	const { id } = req.params
+
+	await Game.updateOne({ _id: id }, { isActive: true })
+
+	res.status(200).end()
+})
+
 // ~ @desc    Get single up for sale game
 // ~ @route   GET /api/games/:altId
 // ~ @access  Private route
@@ -577,5 +588,6 @@ export {
 	getSavedGames,
 	getSingleSavedGame,
 	getUserActiveGames,
-	deleteGame
+	deleteGame,
+	reactivateGame
 }

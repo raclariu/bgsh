@@ -35,7 +35,10 @@ import {
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
 	GAME_DELETE_FAIL,
-	saleListLimit
+	saleListLimit,
+	GAME_REACTIVATE_REQUEST,
+	GAME_REACTIVATE_SUCCESS,
+	GAME_REACTIVATE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -227,6 +230,31 @@ export const getUserActiveGames = (search, page) => async (dispatch, getState) =
 	} catch (error) {
 		dispatch({
 			type    : USER_ACTIVE_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const reactivateGame = (gameId) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: GAME_REACTIVATE_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		await axios.patch(`/api/games/${gameId}`, config)
+
+		dispatch({
+			type : GAME_REACTIVATE_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : GAME_REACTIVATE_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

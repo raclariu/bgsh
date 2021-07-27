@@ -38,7 +38,10 @@ import {
 	USER_ACTIVE_GAMES_FAIL,
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
-	GAME_DELETE_FAIL
+	GAME_DELETE_FAIL,
+	GAME_REACTIVATE_REQUEST,
+	GAME_REACTIVATE_SUCCESS,
+	GAME_REACTIVATE_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -164,6 +167,25 @@ export const getUserActiveGamesReducer = (state = {}, action) => {
 			}
 
 		case USER_ACTIVE_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const reactivateGameReducer = (state = {}, action) => {
+	switch (action.type) {
+		case GAME_REACTIVATE_REQUEST:
+			return { loading: true }
+
+		case GAME_REACTIVATE_SUCCESS:
+			return {
+				loading : false,
+				success : true
+			}
+
+		case GAME_REACTIVATE_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

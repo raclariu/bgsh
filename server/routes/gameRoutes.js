@@ -11,7 +11,8 @@ import {
 	switchSaveGame,
 	getSavedGames,
 	getSingleSavedGame,
-	deleteGame
+	deleteGame,
+	reactivateGame
 } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
 import {
@@ -31,6 +32,7 @@ router.route('/user/:id').get(protect, getUserActiveGames)
 router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/:altId').get(protect, getSingleGame)
+router.route('/:id').patch(protect, reactivateGame)
 router.route('/bgg').post(protect, getGamesFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
 router.route('/trade').post(protect, tradeGames)
