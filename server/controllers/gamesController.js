@@ -406,14 +406,23 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 })
 
 // <> @desc    Reactivate one game
-// <> @route   PATCH /api/games/:id
+// <> @route   PATCH /api/games/reactivate/:id
 // <> @access  Private route
 const reactivateGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
 
-	await Game.updateOne({ _id: id }, { isActive: true })
+	const gameExists = await Game.findOne({ _id: id }).select('_id')
 
-	res.status(200).end()
+	if (gameExists) {
+		await Game.updateOne({ _id: id }, { isActive: true })
+
+		res.status(204).end()
+	} else {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
 })
 
 // ~ @desc    Get single up for sale game

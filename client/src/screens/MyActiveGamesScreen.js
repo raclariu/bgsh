@@ -39,12 +39,13 @@ const MyActiveGamesScreen = () => {
 
 	const { success: successAdd, loading: loadingAdd } = useSelector((state) => state.addToHistory)
 	const { success: successDelete } = useSelector((state) => state.deleteGame)
+	const { success: successReactivate } = useSelector((state) => state.reactivateGame)
 
 	useEffect(
 		() => {
 			dispatch(getUserActiveGames(search, page))
 		},
-		[ dispatch, search, page, successDelete ]
+		[ dispatch, search, page, successDelete, successReactivate ]
 	)
 
 	useEffect(

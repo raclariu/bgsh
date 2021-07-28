@@ -182,17 +182,15 @@ const ActiveGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%">
-					<IconButton disabled={data.isActive} color="primary">
-						<RefreshIcon />
-					</IconButton>
+					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
 					<ActiveAddHistoryButton
 						games={data.games}
 						totalPrice={data.totalPrice}
 						gameId={data._id}
 						mode={data.mode}
-						show="add"
+						display="add"
 					/>
-					<ActiveAddHistoryButton gameId={data._id} show="delete" />
+					<ActiveAddHistoryButton gameId={data._id} display="delete" />
 				</Box>
 			</CardActions>
 		</Card>

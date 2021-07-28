@@ -77,7 +77,7 @@ const Header = () => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar elevation={2} position="static" color="transparent">
+			<AppBar elevation={2} position="static" color="background.paper">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
 						BoardGames
@@ -89,7 +89,7 @@ const Header = () => {
 							<Theme />
 
 							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
-								<MenuIcon />
+								<MenuIcon color="primary" />
 							</IconButton>
 							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
 								<Box boxShadow={2} height={100} p={2} bgcolor="warning.main">

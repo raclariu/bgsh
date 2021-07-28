@@ -13,10 +13,11 @@ import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 import Loader from './Loader'
 
-import { deleteGame } from '../actions/gameActions'
+import { deleteGame, reactivateGame } from '../actions/gameActions'
 import { addGamesToHistory } from '../actions/historyActions'
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
+const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, display }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
@@ -47,6 +48,10 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
 
 	const { loading: loadingDelete, success: successDelete, error: errorDelete } = useSelector(
 		(state) => state.deleteGame
+	)
+
+	const { loading: loadingReactivate, success: successReactivate, error: errorReactivate } = useSelector(
+		(state) => state.reactivateGame
 	)
 
 	const handleOpenDialog = () => {
@@ -61,6 +66,10 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
 		dispatch(deleteGame(gameId))
 	}
 
+	const reactivateGameHandler = () => {
+		dispatch(reactivateGame(gameId))
+	}
+
 	const submitHandler = (e) => {
 		e.preventDefault()
 
@@ -69,7 +78,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
 
 	return (
 		<Fragment>
-			{show === 'add' && (
+			{display === 'add' && (
 				<Fragment>
 					<IconButton onClick={handleOpenDialog} color="primary">
 						<CheckCircleOutlineOutlinedIcon />
@@ -149,9 +158,9 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
 				</Fragment>
 			)}
 
-			{show === 'delete' && (
+			{display === 'delete' && (
 				<Fragment>
-					<IconButton onClick={handleOpenDialog} color="secondary">
+					<IconButton onClick={handleOpenDialog}>
 						<DeleteOutlinedIcon color="error" />
 					</IconButton>
 
@@ -167,6 +176,33 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, show }) => {
 								<ButtonGroup color="primary">
 									<Button disabled={loadingDelete} onClick={deleteGameHandler}>
 										{loadingDelete ? <Loader color="inherit" size={24} /> : 'Yes'}
+									</Button>
+									<Button onClick={handleCloseDialog}>Go back</Button>
+								</ButtonGroup>
+							</Box>
+						</DialogContent>
+					</Dialog>
+				</Fragment>
+			)}
+
+			{display === 'reactivate' && (
+				<Fragment>
+					<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
+						<RefreshIcon />
+					</IconButton>
+
+					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
+						<DialogTitle disableTypography>
+							<Typography variant="h6" align="center">
+								Are you sure?
+							</Typography>
+						</DialogTitle>
+
+						<DialogContent>
+							<Box display="flex" justifyContent="center" alignItems="center">
+								<ButtonGroup color="primary">
+									<Button disabled={loadingReactivate} onClick={reactivateGameHandler}>
+										{loadingReactivate ? <Loader color="inherit" size={24} /> : 'Yes'}
 									</Button>
 									<Button onClick={handleCloseDialog}>Go back</Button>
 								</ButtonGroup>

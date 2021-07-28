@@ -247,7 +247,7 @@ export const reactivateGame = (gameId) => async (dispatch, getState) => {
 			}
 		}
 
-		await axios.patch(`/api/games/${gameId}`, config)
+		await axios.patch(`/api/games/reactivate/${gameId}`, {}, config)
 
 		dispatch({
 			type : GAME_REACTIVATE_SUCCESS
@@ -380,11 +380,10 @@ export const deleteGame = (id) => async (dispatch, getState) => {
 			}
 		}
 
-		const { data } = await axios.delete(`/api/games/delete/${id}`, config)
+		await axios.delete(`/api/games/delete/${id}`, config)
 
 		dispatch({
-			type    : GAME_DELETE_SUCCESS,
-			payload : data
+			type : GAME_DELETE_SUCCESS
 		})
 	} catch (error) {
 		dispatch({
