@@ -14,18 +14,12 @@ import Checkbox from '@material-ui/core/Checkbox'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 
 const useStyles = makeStyles((theme) => ({
-	root        : {
-		height : '300px'
-	},
-	media       : {
+	media : {
 		margin    : theme.spacing(2, 0, 2, 0),
 		objectFit : 'contain',
-		height    : '150px'
+		height    : '180px'
 	},
-	cardContent : {
-		padding : '0px'
-	},
-	title       : {
+	title : {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -39,7 +33,7 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 	const location = useLocation()
 
 	return (
-		<Card elevation={2} className={cls.root}>
+		<Card elevation={2}>
 			<CardMedia
 				className={cls.media}
 				component="img"
@@ -50,23 +44,20 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 
 			<Divider />
 
-			<CardContent className={cls.cardContent}>
-				<Typography component="div">
-					<Box
-						textAlign="center"
-						display="flex"
-						justifyContent="space-between"
-						alignItems="center"
-						fontWeight="fontWeightMedium"
-						fontSize={14}
-						minHeight={50}
-						m={1}
-					>
-						<Box className={cls.title}>
-							{game.title} ({game.year})
-						</Box>
+			<CardContent>
+				<Box
+					textAlign="center"
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+					fontWeight="fontWeightMedium"
+					fontSize={14}
+					minHeight="3rem"
+				>
+					<Box className={cls.title}>
+						{game.title} ({game.year})
 					</Box>
-				</Typography>
+				</Box>
 			</CardContent>
 
 			<Divider />

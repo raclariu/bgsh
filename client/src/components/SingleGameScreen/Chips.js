@@ -7,25 +7,11 @@ const Chips = ({ categories, mechanics }) => {
 	return (
 		<Fragment>
 			{categories.map((ctg) => (
-				<Chip
-					key={ctg.name}
-					icon={<CategoryOutlinedIcon />}
-					label={ctg.name}
-					variant="outlined"
-					color="secondary"
-					size="small"
-				/>
+				<Chip key={ctg.name} icon={<CategoryOutlinedIcon />} label={ctg.name} color="secondary" size="small" />
 			))}
 
 			{mechanics.map((mec) => (
-				<Chip
-					key={mec.name}
-					icon={<SettingsOutlinedIcon />}
-					label={mec.name}
-					variant="outlined"
-					color="primary"
-					size="small"
-				/>
+				<Chip key={mec.name} icon={<SettingsOutlinedIcon />} label={mec.name} color="primary" size="small" />
 			))}
 		</Fragment>
 	)

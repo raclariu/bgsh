@@ -270,7 +270,7 @@ const tradeGames = asyncHandler(async (req, res) => {
 })
 
 // ~ @desc    Get games that are up for sale
-// ~ @route   GET /api/games/
+// ~ @route   GET /api/games
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page

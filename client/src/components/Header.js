@@ -77,7 +77,7 @@ const Header = () => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar elevation={2} position="static" color="background.paper">
+			<AppBar elevation={2} position="static" color="inherit">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
 						BoardGames
