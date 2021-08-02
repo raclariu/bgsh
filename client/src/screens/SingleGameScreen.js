@@ -1,118 +1,121 @@
-import React, { useEffect, Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import { formatDistance, parseISO } from 'date-fns'
+import React, { useEffect, Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { formatDistance, parseISO } from 'date-fns';
 
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Chip from '@material-ui/core/Chip'
-import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
+import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
-import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
-import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
-import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone'
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded'
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded'
-import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
-import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
+import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone';
+import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone';
+import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone';
+import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
+import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
+import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone';
+import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone';
+import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
+import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone';
 
-import Chips from '../components/SingleGameScreen/Chips'
-import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
-import DesLangText from '../components/SingleGameScreen/DesLangText'
-import InfoBoxes from '../components/SingleGameScreen/InfoBoxes'
-import SaveGameButton from '../components/SaveGameButton'
+import Chips from '../components/SingleGameScreen/Chips';
+import StatsBoxes from '../components/SingleGameScreen/StatsBoxes';
+import DesLangText from '../components/SingleGameScreen/DesLangText';
+import InfoBox from '../components/SingleGameScreen/InfoBox';
+import SaveGameButton from '../components/SaveGameButton';
 
-import { getSingleGame, getSingleSavedGame } from '../actions/gameActions'
+import { getSingleGame, getSingleSavedGame } from '../actions/gameActions';
 
-import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
+import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants';
 
 const useStyles = makeStyles((theme) => ({
-	root                 : {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
+	root: {
+		marginTop: theme.spacing(4),
+		marginBottom: theme.spacing(8)
 	},
-	chipsBox             : {
-		display        : 'flex',
-		justifyContent : 'center',
-		flexWrap       : 'wrap',
-		margin         : theme.spacing(1, 0, 1, 0),
-		'& > *'        : {
-			margin : theme.spacing(0.5)
+	chipsBox: {
+		display: 'flex',
+		justifyContent: 'center',
+		flexWrap: 'wrap',
+		margin: theme.spacing(1, 0, 1, 0),
+		'& > *': {
+			margin: theme.spacing(0.5)
 		}
 	},
-	mainGrid             : {
-		marginTop    : theme.spacing(2),
-		marginBottom : theme.spacing(2)
+	mainGrid: {
+		marginTop: theme.spacing(2),
+		marginBottom: theme.spacing(2)
 	},
-	thumbnailContainer   : {
-		display                        : 'flex',
-		justifyContent                 : 'center',
-		alignItems                     : 'center',
-		height                         : '100%',
-		width                          : '100%',
+	thumbnailContainer: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: '250px',
+		width: '100%',
 		[theme.breakpoints.down('sm')]: {
-			height       : '250px',
-			marginBottom : theme.spacing(1)
+			marginBottom: theme.spacing(1)
 		}
 	},
-	thumbnail            : {
-		objectFit                      : 'contain',
-		height                         : '90%',
-		width                          : 'auto',
-		overflow                       : 'auto',
+	thumbnail: {
+		objectFit: 'contain',
+		height: '90%',
+		width: 'auto',
+		overflow: 'auto',
 		[theme.breakpoints.down('sm')]: {
-			height : '220px'
+			height: '220px'
 		}
 	},
-	desLangTextContainer : {
-		marginTop    : theme.spacing(1),
-		marginBottom : theme.spacing(1)
+	desLangTextContainer: {
+		marginTop: theme.spacing(1),
+		marginBottom: theme.spacing(1)
 	},
-	infoBoxesContainer   : {
-		width                          : '90%',
+	infoBoxesContainer: {
+		width: '90%',
 		[theme.breakpoints.down('sm')]: {
-			width : '80%'
+			width: '80%'
 		},
 		[theme.breakpoints.down('xs')]: {
-			width : '75%'
+			width: '75%'
 		}
 	}
-}))
+}));
 
 const SingleGameScreen = () => {
-	const cls = useStyles()
-	const dispatch = useDispatch()
-	const params = useParams()
-	const { altId } = params
+	const cls = useStyles();
+	const dispatch = useDispatch();
+	const params = useParams();
+	const { altId } = params;
 
 	let data = useSelector((state) => {
-		return state.gamesIndex.saleData ? state.gamesIndex.saleData.find((game) => game.altId === altId) : null
-	})
+		return state.gamesIndex.saleData ? state.gamesIndex.saleData.find((game) => game.altId === altId) : null;
+	});
 
-	const gameForSale = useSelector((state) => state.gameForSale)
-	const { loading: loadingGame, success: successGame, error: errorGame, saleData } = gameForSale
+	const gameForSale = useSelector((state) => state.gameForSale);
+	const { loading: loadingGame, success: successGame, error: errorGame, saleData } = gameForSale;
 
-	console.log(data)
+	console.log(data);
 
 	useEffect(
 		() => {
 			if (!data) {
-				dispatch(getSingleGame(altId))
+				dispatch(getSingleGame(altId));
 			}
 
-			dispatch(getSingleSavedGame(altId))
+			dispatch(getSingleSavedGame(altId));
 
 			return () => {
-				dispatch({ type: FOR_SALE_SINGLE_GAME_RESET })
-			}
+				dispatch({ type: FOR_SALE_SINGLE_GAME_RESET });
+			};
 		},
 		[ dispatch, data, altId ]
-	)
+	);
 
 	return (
 		<div className={cls.root}>
@@ -185,7 +188,34 @@ const SingleGameScreen = () => {
 
 							{/* Game info */}
 							<Grid item container className={cls.infoBoxesContainer} justify="center" spacing={2}>
-								<InfoBoxes data={data.games[0]} />
+								<Grid item xs={6} sm={3}>
+									<InfoBox data={`${data.games[0].minPlayers} - ${data.games[0].maxPlayers} players`}>
+										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
+									</InfoBox>
+								</Grid>
+								<Grid item xs={6} sm={3}>
+									<InfoBox
+										data={
+											data.games[0].suggestedPlayers ? (
+												`${data.games[0].suggestedPlayers} players`
+											) : (
+												'N/A'
+											)
+										}
+									>
+										<PersonAddTwoToneIcon fontSize="small" color="primary" />
+									</InfoBox>
+								</Grid>
+								<Grid item xs={6} sm={3}>
+									<InfoBox data={data.games[0].playTime ? `${data.games[0].playTime} min.` : 'N/A'}>
+										<AccessTimeTwoToneIcon fontSize="small" color="primary" />
+									</InfoBox>
+								</Grid>
+								<Grid item xs={6} sm={3}>
+									<InfoBox data={data.games[0].minAge ? `${data.games[0].minAge}` : 'N/A'}>
+										<ChildCareTwoToneIcon fontSize="small" color="primary" />
+									</InfoBox>
+								</Grid>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -312,7 +342,7 @@ const SingleGameScreen = () => {
 				</Fragment>
 			)}
 		</div>
-	)
-}
+	);
+};
 
-export default SingleGameScreen
+export default SingleGameScreen;

@@ -1,63 +1,55 @@
-import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Skeleton from '@material-ui/lab/Skeleton'
-import Divider from '@material-ui/core/Divider'
+import React, { Fragment } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Skeleton from '@material-ui/lab/Skeleton';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
-	box       : {
-		display       : 'flex',
-		flexDirection : 'column',
-		alignItems    : 'center',
-		height        : '300px',
-		paddingBottom : theme.spacing(1)
+	box: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		backgroundColor: theme.palette.background.paper
 	},
-	skMedia   : {
-		margin : theme.spacing(2, 0, 2, 0)
+	skMedia: {
+		margin: theme.spacing(1, 0, 1, 0)
 	},
-	divider   : {
-		width : '100%'
-	},
-	skTitle   : {
-		margin : theme.spacing(2, 0, 1, 0)
-	},
-	skButtons : {
-		width        : '95%',
-		marginTop    : 'auto',
-		marginBottom : theme.spacing(1),
-		borderRadius : '4px'
+	divider: {
+		width: '100%'
 	}
-}))
+}));
 
-const GameCardSkeletons = ({ num }) => {
-	const cls = useStyles()
+const GameCardSkeletons = ({ num, height }) => {
+	const cls = useStyles();
 
 	const renderSkeletons = () => {
-		let skeletonsArr = []
+		let skeletonsArr = [];
 		for (let i = 0; i < num; i++) {
 			skeletonsArr.push(
 				<Grid key={i} item xl={4} lg={4} md={4} sm={6} xs={12}>
 					<Box className={cls.box} boxShadow={2} borderRadius={4}>
-						<Skeleton animation="wave" className={cls.skMedia} variant="rect" width={160} height={150} />
+						<Skeleton animation="wave" className={cls.skMedia} variant="rect" width={200} height={180} />
 
 						<Divider animation="wave" className={cls.divider} />
 
-						<Box minHeight="50px" m={1}>
-							<Skeleton animation="wave" className={cls.skTitle} variant="text" width={200} />
+						<Box display="flex" justifyContent="center" alignItems="center" height="80px">
+							<Skeleton animation="wave" variant="text" width={220} height={25} />
 						</Box>
 
 						<Divider animation="wave" className={cls.divider} />
 
-						<Skeleton animation="wave" className={cls.skButtons} variant="text" />
+						<Box height={height} width="90%" display="flex" justifyContent="center" alignItems="center">
+							<Skeleton animation="wave" variant="text" width="100%" height={25} />
+						</Box>
 					</Box>
 				</Grid>
-			)
+			);
 		}
-		return skeletonsArr
-	}
+		return skeletonsArr;
+	};
 
-	return <Fragment>{renderSkeletons()}</Fragment>
-}
+	return <Fragment>{renderSkeletons()}</Fragment>;
+};
 
-export default GameCardSkeletons
+export default GameCardSkeletons;

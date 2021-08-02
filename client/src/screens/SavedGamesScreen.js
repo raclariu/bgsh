@@ -1,82 +1,83 @@
-import React, { Fragment, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import queryString from 'query-string'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
+import React, { Fragment, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import queryString from 'query-string';
+import LazyLoad from 'react-lazyload';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
-import SavedGameCard from '../components/SavedGameCard'
-import SearchBox from '../components/SearchBox'
-import BackButton from '../components/BackButton'
-import Paginate from '../components/Paginate'
-import Message from '../components/Message'
-import Loader from '../components/Loader'
+import SavedGameCard from '../components/SavedGameCard';
+import SearchBox from '../components/SearchBox';
+import BackButton from '../components/BackButton';
+import Paginate from '../components/Paginate';
+import Message from '../components/Message';
+import GameCardSkeletons from '../components/GameCardSkeletons';
 
-import { getSavedGames } from '../actions/gameActions'
-import { SAVED_GAMES_RESET } from '../constants/gameConstants'
+import { getSavedGames } from '../actions/gameActions';
+import { SAVED_GAMES_RESET } from '../constants/gameConstants';
 
 const useStyles = makeStyles((theme) => ({
-	root          : {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
+	root: {
+		marginTop: theme.spacing(4),
+		marginBottom: theme.spacing(8)
 	},
-	gridContainer : {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
+	gridContainer: {
+		marginTop: theme.spacing(4),
+		marginBottom: theme.spacing(4)
 	},
-	media         : {
-		margin    : theme.spacing(2, 0, 2, 0),
-		objectFit : 'contain',
-		height    : '150px'
+	media: {
+		margin: theme.spacing(2, 0, 2, 0),
+		objectFit: 'contain',
+		height: '150px'
 	},
-	cardContent   : {
-		padding : '0px'
+	cardContent: {
+		padding: '0px'
 	},
-	title         : {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden'
+	title: {
+		display: '-webkit-box',
+		WebkitLineClamp: '2',
+		WebkitBoxOrient: 'vertical',
+		overflow: 'hidden'
 	}
-}))
+}));
 
 const SavedGamesScreen = () => {
-	const cls = useStyles()
-	const dispatch = useDispatch()
-	const history = useHistory()
-	const location = useLocation()
+	const cls = useStyles();
+	const dispatch = useDispatch();
+	const history = useHistory();
+	const location = useLocation();
 
-	const { search, page = 1 } = queryString.parse(location.search)
+	const { search, page = 1 } = queryString.parse(location.search);
 
-	const savedGamesList = useSelector((state) => state.savedGamesList)
-	const { loading, success, error, list, pagination } = savedGamesList
+	const savedGamesList = useSelector((state) => state.savedGamesList);
+	const { loading, success, error, list, pagination } = savedGamesList;
 
 	useEffect(
 		() => {
-			dispatch(getSavedGames(search, page))
+			dispatch(getSavedGames(search, page));
 
 			return () => {
-				dispatch({ type: SAVED_GAMES_RESET })
-			}
+				dispatch({ type: SAVED_GAMES_RESET });
+			};
 		},
 		[ dispatch, search, page ]
-	)
+	);
 
 	const handleFilters = (filter, type) => {
-		const options = { sort: false, skipEmptyString: true, skipNull: true }
+		const options = { sort: false, skipEmptyString: true, skipNull: true };
 
-		let query
+		let query;
 		if (type === 'search') {
-			query = queryString.stringify({ search: filter, page: 1 }, options)
+			query = queryString.stringify({ search: filter, page: 1 }, options);
 		}
 
 		if (type === 'page') {
-			query = queryString.stringify({ search, page: filter }, options)
+			query = queryString.stringify({ search, page: filter }, options);
 		}
 
-		history.push(`${location.pathname}?${query}`)
-	}
+		history.push(`${location.pathname}?${query}`);
+	};
 
 	return (
 		<div className={cls.root}>
@@ -87,9 +88,9 @@ const SavedGamesScreen = () => {
 			</Grid>
 
 			{loading && (
-				<Box mt={2}>
-					<Loader />
-				</Box>
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+					<GameCardSkeletons num={24} height={60} />
+				</Grid>
 			)}
 
 			{error && (
@@ -109,7 +110,9 @@ const SavedGamesScreen = () => {
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<SavedGameCard data={data} />
+							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} height={52} />}>
+								<SavedGameCard data={data} />
+							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>
@@ -130,7 +133,7 @@ const SavedGamesScreen = () => {
 					</Box>
 				))}
 		</div>
-	)
-}
+	);
+};
 
-export default SavedGamesScreen
+export default SavedGamesScreen;
