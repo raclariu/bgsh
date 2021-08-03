@@ -1,67 +1,67 @@
-import React, { Fragment, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import { formatDistance, parseISO } from 'date-fns';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import React, { Fragment, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+import { formatDistance, parseISO } from 'date-fns'
+import Box from '@material-ui/core/Box'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Chip from '@material-ui/core/Chip'
+import Avatar from '@material-ui/core/Avatar'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
 
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import StatsBoxes from './SingleGameScreen/StatsBoxes';
+import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		position: 'relative'
+	card        : {
+		position : 'relative'
 	},
-	media: {
-		objectFit: 'contain',
-		height: '180px'
+	media       : {
+		objectFit : 'contain',
+		height    : '180px'
 	},
-	overlayChip: {
-		position: 'absolute',
-		top: '8px',
-		left: '8px'
+	overlayChip : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '8px'
 	},
-	title: {
-		display: '-webkit-box',
-		WebkitLineClamp: '2',
-		WebkitBoxOrient: 'vertical',
-		overflow: 'hidden',
-		width: '100%',
-		textAlign: 'center'
+	title       : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden',
+		width           : '100%',
+		textAlign       : 'center'
 	},
-	avatar: {
-		width: theme.spacing(4),
-		height: theme.spacing(4),
-		backgroundColor: theme.palette.primary.main
+	avatar      : {
+		width           : theme.spacing(4),
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	}
-}));
+}))
 
 const GameIndexCard = ({ data }) => {
-	const cls = useStyles();
+	const cls = useStyles()
 
-	const [ index, setIndex ] = useState(0);
+	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
 			if (index > 0) {
-				setIndex(index - 1);
+				setIndex(index - 1)
 			}
 		}
 		if (type === 'plus') {
 			if (data.games.length > index + 1) {
-				setIndex(index + 1);
+				setIndex(index + 1)
 			}
 		}
-	};
+	}
 
 	return (
 		<Card className={cls.card} elevation={2}>
@@ -134,9 +134,11 @@ const GameIndexCard = ({ data }) => {
 						/>
 					</Box>
 
-					<Box fontWeight="fontWeightMedium" mt={0.5}>
-						<Chip color="primary" label={`${data.totalPrice} RON`} />
-					</Box>
+					{data.mode === 'sell' && (
+						<Box fontWeight="fontWeightMedium" mt={0.5}>
+							<Chip color="primary" label={`${data.totalPrice} RON`} />
+						</Box>
+					)}
 				</Box>
 			</CardContent>
 
@@ -162,7 +164,7 @@ const GameIndexCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-	);
-};
+	)
+}
 
-export default GameIndexCard;
+export default GameIndexCard

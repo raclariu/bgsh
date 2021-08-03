@@ -174,7 +174,7 @@ export const tradeGames = (gamesData) => async (dispatch, getState) => {
 	}
 }
 
-export const getGames = (search, page, sort) => async (dispatch, getState) => {
+export const getGames = (search, page, sort, mode) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAMES_INDEX_REQUEST })
 
@@ -187,7 +187,8 @@ export const getGames = (search, page, sort) => async (dispatch, getState) => {
 			params  : {
 				search : search ? search.trim() : null,
 				page   : +page ? +page : 1,
-				sort   : sort ? sort : 'new'
+				sort   : sort ? sort : 'new',
+				mode
 			}
 		}
 

@@ -64,6 +64,13 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 
 	const completeList = await History.find({ seller: req.user._id, mode: 'sell' }).sort({ createdAt: -1 }).lean()
 
+	if (completeList.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No games found'
+		}
+	}
+
 	if (search) {
 		const fuse = new Fuse(completeList, {
 			keys      : [ 'games.title' ],
@@ -114,6 +121,13 @@ const getTradedGamesHistory = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	const completeList = await History.find({ seller: req.user._id, mode: 'trade' }).sort({ createdAt: -1 }).lean()
+
+	if (completeList.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No games found'
+		}
+	}
 
 	if (search) {
 		const fuse = new Fuse(completeList, {

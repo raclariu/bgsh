@@ -1,70 +1,70 @@
-import React, { Fragment, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import { format, formatDistance, parseISO } from 'date-fns';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Chip from '@material-ui/core/Chip';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import React, { Fragment, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+import { format, formatDistance, parseISO } from 'date-fns'
+import Box from '@material-ui/core/Box'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Chip from '@material-ui/core/Chip'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 
-import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined';
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
+import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		position: 'relative'
+	card        : {
+		position : 'relative'
 	},
-	media: {
-		margin: theme.spacing(1, 0, 1, 0),
-		objectFit: 'contain',
-		height: '180px'
+	media       : {
+		margin    : theme.spacing(1, 0, 1, 0),
+		objectFit : 'contain',
+		height    : '180px'
 	},
-	overlayChip: {
-		position: 'absolute',
-		top: '8px',
-		left: '8px'
+	overlayChip : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '8px'
 	},
-	title: {
-		display: '-webkit-box',
-		WebkitLineClamp: '2',
-		WebkitBoxOrient: 'vertical',
-		overflow: 'hidden',
-		width: '100%',
-		textAlign: 'center'
+	title       : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden',
+		width           : '100%',
+		textAlign       : 'center'
 	},
-	avatar: {
-		width: theme.spacing(4),
-		height: theme.spacing(4),
-		backgroundColor: theme.palette.primary.main
+	avatar      : {
+		width           : theme.spacing(4),
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	}
-}));
+}))
 
 const HistoryGameCard = ({ data }) => {
-	const cls = useStyles();
+	const cls = useStyles()
 
-	const [ index, setIndex ] = useState(0);
+	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
 			if (index > 0) {
-				setIndex(index - 1);
+				setIndex(index - 1)
 			}
 		}
 		if (type === 'plus') {
 			if (data.games.length > index + 1) {
-				setIndex(index + 1);
+				setIndex(index + 1)
 			}
 		}
-	};
+	}
 
 	return (
 		<Card className={cls.card} elevation={2}>
@@ -124,7 +124,7 @@ const HistoryGameCard = ({ data }) => {
 						<Tooltip
 							disableFocusListener
 							title={format(parseISO(data.createdAt), 'iiii i MMMM y, H:mm', {
-								weekStartsOn: 1
+								weekStartsOn : 1
 							})}
 						>
 							<EventAvailableOutlinedIcon fontSize="small" />
@@ -136,7 +136,7 @@ const HistoryGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 		</Card>
-	);
-};
+	)
+}
 
-export default HistoryGameCard;
+export default HistoryGameCard

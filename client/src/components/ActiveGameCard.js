@@ -1,92 +1,88 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Chip from '@material-ui/core/Chip';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import React, { Fragment, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+import Box from '@material-ui/core/Box'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Chip from '@material-ui/core/Chip'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
 
-import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined';
-import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined';
+import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
+import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
 
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 
-import ActiveAddHistoryButton from './ActiveAddHistoryButton';
+import ActiveAddHistoryButton from './ActiveAddHistoryButton'
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		position: 'relative'
+	card          : {
+		position : 'relative'
 	},
-	media: {
-		margin: theme.spacing(1, 0, 1, 0),
-		objectFit: 'contain',
-		height: '180px'
+	media         : {
+		margin    : theme.spacing(1, 0, 1, 0),
+		objectFit : 'contain',
+		height    : '180px'
 	},
-	overlayTop: {
-		position: 'absolute',
-		top: '8px',
-		left: '8px'
+	overlayTop    : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '8px'
 	},
-	overlayBottom: {
-		position: 'absolute',
-		top: '36px',
-		left: '8px'
+	overlayBottom : {
+		position : 'absolute',
+		top      : '36px',
+		left     : '8px'
 	},
-	title: {
-		display: '-webkit-box',
-		WebkitLineClamp: '2',
-		WebkitBoxOrient: 'vertical',
-		overflow: 'hidden',
-		width: '100%',
-		textAlign: 'center'
+	title         : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden',
+		width           : '100%',
+		textAlign       : 'center'
 	},
-	avatar: {
-		width: theme.spacing(4),
-		height: theme.spacing(4),
-		backgroundColor: theme.palette.primary.main
+	avatar        : {
+		width           : theme.spacing(4),
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	},
-	input: {
-		minHeight: '70px',
-		width: '50%',
+	input         : {
+		minHeight                      : '70px',
+		width                          : '50%',
 		[theme.breakpoints.down('xs')]: {
-			width: '90%'
+			width : '90%'
 		}
 	},
-	button: {
-		width: '50%',
+	button        : {
+		width                          : '50%',
 		[theme.breakpoints.down('xs')]: {
-			width: '90%'
+			width : '90%'
 		}
 	}
-}));
+}))
 
 const ActiveGameCard = ({ data }) => {
-	const cls = useStyles();
+	const cls = useStyles()
 
-	const [ index, setIndex ] = useState(0);
+	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
 			if (index > 0) {
-				setIndex(index - 1);
+				setIndex(index - 1)
 			}
 		}
 		if (type === 'plus') {
 			if (data.games.length > index + 1) {
-				setIndex(index + 1);
+				setIndex(index + 1)
 			}
 		}
-	};
+	}
 
 	return (
 		<Card className={cls.card} elevation={2}>
@@ -186,7 +182,7 @@ const ActiveGameCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-	);
-};
+	)
+}
 
-export default ActiveGameCard;
+export default ActiveGameCard

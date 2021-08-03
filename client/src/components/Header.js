@@ -14,15 +14,22 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
-import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
+import Collapse from '@material-ui/core/Collapse'
 import MenuIcon from '@material-ui/icons/Menu'
-import SaleListPopover from './SaleListPopover'
+import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
 import PersonOutlineTwoToneIcon from '@material-ui/icons/PersonOutlineTwoTone'
 import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
+import MonetizationOnTwoToneIcon from '@material-ui/icons/MonetizationOnTwoTone'
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
+import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveTwoTone'
+import InputTwoToneIcon from '@material-ui/icons/InputTwoTone'
+import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import SaleListPopover from './SaleListPopover'
 import Theme from './Theme'
 import pink from '@material-ui/core/colors/pink'
 import { signOut } from '../actions/userActions'
@@ -48,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor : pink[500],
 		width           : theme.spacing(4),
 		height          : theme.spacing(4)
+	},
+	nested   : {
+		paddingLeft : theme.spacing(4)
 	}
 	// selected : {
 	// 	'&.Mui-selected' : {
@@ -62,17 +72,30 @@ const Header = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
 	const { pathname } = useLocation()
-	const location = useLocation()
-	console.log(location)
-	// console.log(pathname.split('/'))
 
 	const [ isOpen, setIsOpen ] = useState(false)
+	const [ openGames, setOpenGames ] = useState(false)
+	const [ openHistory, setOpenHistory ] = useState(false)
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
 
 	const signOutHandler = () => {
 		dispatch(signOut())
+		setIsOpen(false)
+	}
+
+	const handleExpandClick = (type) => {
+		if (type === 'games') {
+			setOpenGames(!openGames)
+		}
+		if (type === 'history') {
+			setOpenHistory(!openHistory)
+		}
+	}
+
+	const handleClick = () => {
+		setIsOpen(false)
 	}
 
 	return (
@@ -96,29 +119,63 @@ const Header = () => {
 									Hey {userInfo.username}
 								</Box>
 								<Box>
-									<List disablePadding className={classes.list} onClick={() => setIsOpen(!isOpen)}>
+									<List disablePadding className={classes.list}>
 										<Divider />
 
-										<ListItem selected={pathname === '/'} button component={RouterLink} to="/">
+										<ListItem
+											onClick={handleClick}
+											selected={pathname === '/'}
+											button
+											component={RouterLink}
+											to="/"
+										>
 											<ListItemIcon>
 												<HomeTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Home" />
 										</ListItem>
 
-										<ListItem
-											selected={pathname === '/games'}
-											button
-											component={RouterLink}
-											to="/games"
-										>
+										<ListItem button onClick={() => handleExpandClick('games')}>
 											<ListItemIcon>
 												<DashboardTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Board Games" />
+											{openGames ? <ExpandLess /> : <ExpandMore />}
 										</ListItem>
+										<Collapse in={openGames} timeout="auto" unmountOnExit>
+											<List disablePadding>
+												<ListItem
+													onClick={handleClick}
+													button
+													className={classes.nested}
+													selected={pathname.includes('/games')}
+													component={RouterLink}
+													to="/games"
+												>
+													<ListItemIcon>
+														<MonetizationOnTwoToneIcon />
+													</ListItemIcon>
+													<ListItemText primary="Sales" />
+												</ListItem>
+
+												<ListItem
+													onClick={handleClick}
+													button
+													className={classes.nested}
+													selected={pathname.includes('/trades')}
+													component={RouterLink}
+													to="/trades"
+												>
+													<ListItemIcon>
+														<SwapHorizontalCircleOutlinedIcon />
+													</ListItemIcon>
+													<ListItemText primary="Trades" />
+												</ListItem>
+											</List>
+										</Collapse>
 
 										<ListItem
+											onClick={handleClick}
 											selected={pathname === '/profile'}
 											button
 											component={RouterLink}
@@ -131,6 +188,7 @@ const Header = () => {
 										</ListItem>
 
 										<ListItem
+											onClick={handleClick}
 											selected={pathname === '/collection'}
 											button
 											component={RouterLink}
@@ -143,6 +201,7 @@ const Header = () => {
 										</ListItem>
 
 										<ListItem
+											onClick={handleClick}
 											selected={pathname === '/wishlist'}
 											button
 											component={RouterLink}
@@ -155,6 +214,7 @@ const Header = () => {
 										</ListItem>
 
 										<ListItem
+											onClick={handleClick}
 											selected={pathname === '/saved'}
 											button
 											component={RouterLink}
@@ -167,41 +227,56 @@ const Header = () => {
 										</ListItem>
 
 										<ListItem
-											selected={pathname === '/my-games'}
 											button
+											to="/history/active"
 											component={RouterLink}
-											to="/my-games"
+											selected={pathname === '/history/active'}
+											onClick={handleClick}
 										>
 											<ListItemIcon>
-												<BookmarkTwoToneIcon />
+												<InputTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Active" />
 										</ListItem>
 
-										<ListItem
-											selected={pathname === '/my-games/history/sold'}
-											button
-											component={RouterLink}
-											to="/my-games/history/sold"
-										>
+										<ListItem button onClick={() => handleExpandClick('history')}>
 											<ListItemIcon>
-												<BookmarkTwoToneIcon />
+												<ArchiveTwoToneIcon />
 											</ListItemIcon>
-											<ListItemText primary="History Sold" />
+											<ListItemText primary="History" />
+											{openHistory ? <ExpandLess /> : <ExpandMore />}
 										</ListItem>
+										<Collapse in={openHistory} timeout="auto" unmountOnExit>
+											<List disablePadding>
+												<ListItem
+													button
+													to="/history/sold"
+													component={RouterLink}
+													className={classes.nested}
+													selected={pathname === '/history/sold'}
+													onClick={handleClick}
+												>
+													<ListItemIcon>
+														<MonetizationOnTwoToneIcon />
+													</ListItemIcon>
+													<ListItemText primary="Sold" />
+												</ListItem>
 
-										<ListItem
-											selected={pathname === '/my-games/history/'}
-											divider
-											button
-											component={RouterLink}
-											to="/my-games/history/traded"
-										>
-											<ListItemIcon>
-												<BookmarkTwoToneIcon />
-											</ListItemIcon>
-											<ListItemText primary="History Trades" />
-										</ListItem>
+												<ListItem
+													button
+													to="/history/traded"
+													component={RouterLink}
+													className={classes.nested}
+													selected={pathname === '/history/traded'}
+													onClick={handleClick}
+												>
+													<ListItemIcon>
+														<SwapHorizontalCircleOutlinedIcon />
+													</ListItemIcon>
+													<ListItemText primary="Traded" />
+												</ListItem>
+											</List>
+										</Collapse>
 
 										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
 											<ListItemIcon>

@@ -96,7 +96,7 @@ const SaleListPopover = () => {
 									variant="subtitle2"
 									color="textSecondary"
 								>
-									Sale List ({saleList.length}/{saleListLimit})
+									My sale list ({saleList.length}/{saleListLimit})
 								</Typography>
 
 								{saleList.length === 0 && (

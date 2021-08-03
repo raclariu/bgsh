@@ -1,67 +1,73 @@
-import React, { Fragment, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Chip from '@material-ui/core/Chip';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import React, { Fragment, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+import Box from '@material-ui/core/Box'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Chip from '@material-ui/core/Chip'
+import Button from '@material-ui/core/Button'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
 
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
+import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
+import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		position: 'relative'
+	card          : {
+		position : 'relative'
 	},
-	media: {
-		margin: theme.spacing(1, 0, 1, 0),
-		objectFit: 'contain',
-		height: '180px'
+	media         : {
+		margin    : theme.spacing(1, 0, 1, 0),
+		objectFit : 'contain',
+		height    : '180px'
 	},
-	overlayChip: {
-		position: 'absolute',
-		top: '8px',
-		left: '8px'
+	overlayTop    : {
+		position : 'absolute',
+		top      : '8px',
+		left     : '8px'
 	},
-	title: {
-		display: '-webkit-box',
-		WebkitLineClamp: '2',
-		WebkitBoxOrient: 'vertical',
-		overflow: 'hidden',
-		width: '100%',
-		textAlign: 'center'
+	overlayBottom : {
+		position : 'absolute',
+		top      : '36px',
+		left     : '8px'
 	},
-	avatar: {
-		width: theme.spacing(4),
-		height: theme.spacing(4),
-		backgroundColor: theme.palette.primary.main
+	title         : {
+		display         : '-webkit-box',
+		WebkitLineClamp : '2',
+		WebkitBoxOrient : 'vertical',
+		overflow        : 'hidden',
+		width           : '100%',
+		textAlign       : 'center'
+	},
+	avatar        : {
+		width           : theme.spacing(4),
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	}
-}));
+}))
 
 const SavedGameCard = ({ data }) => {
-	const cls = useStyles();
+	const cls = useStyles()
 
-	const [ index, setIndex ] = useState(0);
+	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
 			if (index > 0) {
-				setIndex(index - 1);
+				setIndex(index - 1)
 			}
 		}
 		if (type === 'plus') {
 			if (data.games.length > index + 1) {
-				setIndex(index + 1);
+				setIndex(index + 1)
 			}
 		}
-	};
+	}
 
 	return (
 		<Card className={cls.card} elevation={2}>
@@ -74,7 +80,40 @@ const SavedGameCard = ({ data }) => {
 			/>
 
 			{data.type === 'pack' && (
-				<Chip size="small" color="secondary" className={cls.overlayChip} label={`${data.games.length} pack`} />
+				<Fragment>
+					<Chip
+						size="small"
+						color="secondary"
+						className={cls.overlayTop}
+						label={`${data.games.length} pack`}
+					/>
+
+					{data.mode === 'sell' && (
+						<Box className={cls.overlayBottom}>
+							<MonetizationOnOutlinedIcon color="secondary" />
+						</Box>
+					)}
+
+					{data.mode === 'trade' && (
+						<Box className={cls.overlayBottom}>
+							<SwapHorizontalCircleOutlinedIcon color="secondary" />
+						</Box>
+					)}
+				</Fragment>
+			)}
+
+			{data.type === 'individual' &&
+			data.mode === 'sell' && (
+				<Box className={cls.overlayTop}>
+					<MonetizationOnOutlinedIcon color="secondary" />
+				</Box>
+			)}
+
+			{data.type === 'individual' &&
+			data.mode === 'trade' && (
+				<Box className={cls.overlayTop}>
+					<SwapHorizontalCircleOutlinedIcon color="secondary" />
+				</Box>
 			)}
 
 			<Divider />
@@ -128,7 +167,7 @@ const SavedGameCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-	);
-};
+	)
+}
 
-export default SavedGameCard;
+export default SavedGameCard

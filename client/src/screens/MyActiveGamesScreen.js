@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
+import LazyLoad from 'react-lazyload'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 
 import ActiveGameCard from '../components/ActiveGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
-import Loader from '../components/Loader'
+import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
 import { HISTORY_ADD_RESET } from '../constants/historyConstants'
@@ -82,9 +83,9 @@ const MyActiveGamesScreen = () => {
 			</Grid>
 
 			{loading && (
-				<Box mt={2}>
-					<Loader />
-				</Box>
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+					<GameCardSkeletons num={24} />
+				</Grid>
 			)}
 
 			{search && (
@@ -104,7 +105,9 @@ const MyActiveGamesScreen = () => {
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{activeGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
-							<ActiveGameCard data={data} />
+							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
+								<ActiveGameCard data={data} />
+							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>

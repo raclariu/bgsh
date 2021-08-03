@@ -81,7 +81,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 			{display === 'add' && (
 				<Fragment>
 					<IconButton onClick={handleOpenDialog} color="primary">
-						<CheckCircleOutlineOutlinedIcon />
+						<CheckCircleOutlineOutlinedIcon fontSize="small" />
 					</IconButton>
 
 					<Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md">
@@ -161,7 +161,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 			{display === 'delete' && (
 				<Fragment>
 					<IconButton onClick={handleOpenDialog}>
-						<DeleteOutlinedIcon color="error" />
+						<DeleteOutlinedIcon color="error" fontSize="small" />
 					</IconButton>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
@@ -188,7 +188,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 			{display === 'reactivate' && (
 				<Fragment>
 					<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
-						<RefreshIcon />
+						<RefreshIcon fontSize="small" />
 					</IconButton>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">

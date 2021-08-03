@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import LazyLoad from 'react-lazyload'
 import queryString from 'query-string'
+import LazyLoad from 'react-lazyload'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import GamesIndexCard from '../components/GameIndexCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import SortFilterSelect from '../components/Filters/SortFilterSelect'
+import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
-import GameIndexCardSkeletons from '../components/GameIndexCardSkeletons'
-import { getGames, getSavedGames } from '../actions/gameActions'
+import GameIndexCardSkeletons from '../components/Skeletons/GameIndexCardSkeletons'
+import { getGames } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
 	root          : {
@@ -34,13 +34,14 @@ const GamesIndexScreen = () => {
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
 	const gamesIndex = useSelector((state) => state.gamesIndex)
-	const { loading, error, success, saleData, pagination } = gamesIndex
+	const { loading, error, success, gamesData, pagination } = gamesIndex
 
 	useEffect(
 		() => {
-			dispatch(getGames(search, page, sort))
+			const mode = location.pathname === '/games' ? 'sell' : 'trade'
+			dispatch(getGames(search, page, sort, mode))
 		},
-		[ dispatch, search, page, sort ]
+		[ dispatch, search, page, sort, location ]
 	)
 
 	const handleFilters = (filter, type) => {
@@ -74,7 +75,7 @@ const GamesIndexScreen = () => {
 				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
 					<BackButton />
 				</Box>
-				<SortFilterSelect handleFilters={handleFilters} />
+				<SortGames handleFilters={handleFilters} />
 			</Box>
 
 			{loading && (
@@ -85,7 +86,7 @@ const GamesIndexScreen = () => {
 
 			<Grid container spacing={3} className={cls.gridContainer}>
 				{success &&
-					saleData.map((data) => (
+					gamesData.map((data) => (
 						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeletons num={1} />}>
 								<GamesIndexCard data={data} />

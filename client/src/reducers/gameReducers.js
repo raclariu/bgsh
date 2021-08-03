@@ -141,7 +141,7 @@ export const getGamesReducer = (state = {}, action) => {
 			return {
 				loading    : false,
 				success    : true,
-				saleData   : action.payload.saleData,
+				gamesData  : action.payload.gamesData,
 				pagination : action.payload.pagination
 			}
 

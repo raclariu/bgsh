@@ -269,19 +269,20 @@ const tradeGames = asyncHandler(async (req, res) => {
 	res.status(204).end()
 })
 
-// ~ @desc    Get games that are up for sale
+// ~ @desc    Get games that are up for sale or trade
 // ~ @route   GET /api/games
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
 	const sortBy = req.query.sort
+	const mode = req.query.mode
 	const resultsPerPage = 24
 
 	if (search) {
-		const saleData = await Game.find({ isActive: true, mode: 'sell' }).populate('seller', 'username _id').lean()
+		const gamesData = await Game.find({ isActive: true, mode: mode }).populate('seller', 'username _id').lean()
 
-		const fuse = new Fuse(saleData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
+		const fuse = new Fuse(gamesData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
 			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt
@@ -306,7 +307,7 @@ const getGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({
-			saleData   : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
 	} else {
@@ -328,7 +329,7 @@ const getGames = asyncHandler(async (req, res) => {
 
 		const count = await Game.countDocuments({})
 
-		const saleData = await Game.find({ isActive: true, mode: 'sell' })
+		const gamesData = await Game.find({ isActive: true, mode: mode })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('seller', 'username _id')
@@ -342,7 +343,7 @@ const getGames = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		res.status(200).json({ saleData, pagination })
+		res.status(200).json({ gamesData, pagination })
 	}
 })
 
@@ -507,7 +508,7 @@ const getSingleSavedGame = asyncHandler(async (req, res) => {
 const getSavedGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
-	const resultsPerPage = 3
+	const resultsPerPage = 24
 
 	const user = await User.findOne({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
 

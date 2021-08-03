@@ -50,6 +50,10 @@ const App = () => {
 						<GamesIndexScreen />
 					</ProtectedRoute>
 
+					<ProtectedRoute path="/trades" exact>
+						<GamesIndexScreen />
+					</ProtectedRoute>
+
 					<ProtectedRoute path="/games/:altId" exact>
 						<SingleGameScreen />
 					</ProtectedRoute>
@@ -74,15 +78,15 @@ const App = () => {
 						<SavedGamesScreen />
 					</ProtectedRoute>
 
-					<ProtectedRoute path="/my-games" exact>
+					<ProtectedRoute path="/history/active" exact>
 						<MyActiveGamesScreen />
 					</ProtectedRoute>
 
-					<ProtectedRoute path="/my-games/history/sold" exact>
+					<ProtectedRoute path="/history/sold" exact>
 						<HistorySoldGamesScreen />
 					</ProtectedRoute>
 
-					<ProtectedRoute path="/my-games/history/traded" exact>
+					<ProtectedRoute path="/history/traded" exact>
 						<HistoryTradedGamesScreen />
 					</ProtectedRoute>
 
