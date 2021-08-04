@@ -92,7 +92,7 @@ const HistoryGameCard = ({ data }) => {
 				>
 					{data.type === 'pack' ? (
 						<Fragment>
-							<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
+							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>{data.games[index].title}</Box>

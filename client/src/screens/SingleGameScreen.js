@@ -8,7 +8,6 @@ import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 
@@ -24,10 +23,11 @@ import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone'
 import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone'
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone'
 import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
+import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
+import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 
 import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
-import DesLangText from '../components/SingleGameScreen/DesLangText'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 
@@ -93,18 +93,16 @@ const SingleGameScreen = () => {
 	const params = useParams()
 	const { altId } = params
 
-	let data = useSelector((state) => {
-		return state.gamesIndex.gamesData ? state.gamesIndex.gamesData.find((game) => game.altId === altId) : null
-	})
+	// let data = useSelector((state) => {
+	// 	return state.gamesIndex.gamesData ? state.gamesIndex.gamesData.find((game) => game.altId === altId) : null
+	// })
 
 	const gameForSale = useSelector((state) => state.gameForSale)
-	const { loading: loadingGame, success: successGame, error: errorGame, saleData } = gameForSale
+	const { loading, success, error, saleData: data } = gameForSale
 
 	useEffect(
 		() => {
-			if (!data) {
-				dispatch(getSingleGame(altId))
-			}
+			dispatch(getSingleGame(altId))
 
 			dispatch(getSingleSavedGame(altId))
 
@@ -112,7 +110,7 @@ const SingleGameScreen = () => {
 				dispatch({ type: FOR_SALE_SINGLE_GAME_RESET })
 			}
 		},
-		[ dispatch, data, altId ]
+		[ dispatch, altId ]
 	)
 
 	return (
@@ -181,17 +179,41 @@ const SingleGameScreen = () => {
 
 							{/* Desginers and language dependence */}
 							<Grid item className={cls.desLangTextContainer}>
-								<DesLangText data={data.games[0]} />
+								<Box
+									display="flex"
+									flexDirection="column"
+									alignItems="center"
+									justifyContent="center"
+									width="100%"
+								>
+									<Typography variant="caption">
+										<Box display="flex">
+											<FaceTwoToneIcon fontSize="small" color="primary" />
+											<Box ml={0.5}>
+												{data.games[0].designers.length > 0 ? (
+													data.games[0].designers.join(', ')
+												) : (
+													'N/A'
+												)}
+											</Box>
+										</Box>
+
+										<Box display="flex">
+											<PublicTwoToneIcon fontSize="small" color="primary" />
+											<Box ml={0.5}>{data.games[0].languageDependence}</Box>
+										</Box>
+									</Typography>
+								</Box>
 							</Grid>
 
 							{/* Game info */}
 							<Grid item container className={cls.infoBoxesContainer} justify="center" spacing={2}>
-								<Grid item xs={6} sm={3}>
+								<Grid item xs={6} md={3}>
 									<InfoBox data={`${data.games[0].minPlayers} - ${data.games[0].maxPlayers} players`}>
 										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} sm={3}>
+								<Grid item xs={6} md={3}>
 									<InfoBox
 										data={
 											data.games[0].suggestedPlayers ? (
@@ -204,12 +226,12 @@ const SingleGameScreen = () => {
 										<PersonAddTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} sm={3}>
+								<Grid item xs={6} md={3}>
 									<InfoBox data={data.games[0].playTime ? `${data.games[0].playTime} min.` : 'N/A'}>
 										<AccessTimeTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} sm={3}>
+								<Grid item xs={6} md={3}>
 									<InfoBox data={data.games[0].minAge ? `${data.games[0].minAge}` : 'N/A'}>
 										<ChildCareTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
