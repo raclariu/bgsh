@@ -299,6 +299,13 @@ const getGames = asyncHandler(async (req, res) => {
 			}
 		})
 
+		if (results.length === 0) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
+		}
+
 		const pagination = {
 			page,
 			totalPages : Math.ceil(results.length / resultsPerPage),

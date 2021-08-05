@@ -11,6 +11,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
+import SettingsScreen from './screens/SettingsScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import CollectionScreen from './screens/CollectionScreen'
 import SellGamesScreen from './screens/SellGamesScreen'
@@ -44,6 +45,10 @@ const App = () => {
 
 					<ProtectedRoute path="/profile" exact>
 						<ProfileScreen />
+					</ProtectedRoute>
+
+					<ProtectedRoute path="/settings" exact>
+						<SettingsScreen />
 					</ProtectedRoute>
 
 					<ProtectedRoute path="/games" exact>

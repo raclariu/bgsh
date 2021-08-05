@@ -12,6 +12,7 @@ import BackButton from '../components/BackButton'
 import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeletons from '../components/Skeletons/GameIndexCardSkeletons'
+import Message from '../components/Message'
 import { getGames } from '../actions/gameActions'
 
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +78,8 @@ const GamesIndexScreen = () => {
 				</Box>
 				<SortGames handleFilters={handleFilters} />
 			</Box>
+
+			{error && <Message severity="warning">{error}</Message>}
 
 			{loading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">

@@ -14,7 +14,10 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
+import Avatar from '@material-ui/core/Avatar'
 import Collapse from '@material-ui/core/Collapse'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import MenuIcon from '@material-ui/icons/Menu'
 import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
@@ -51,10 +54,9 @@ const useStyles = makeStyles((theme) => ({
 		textDecoration : 'none'
 	},
 	avatar   : {
-		color           : theme.palette.getContrastText(pink[500]),
-		backgroundColor : pink[500],
 		width           : theme.spacing(4),
-		height          : theme.spacing(4)
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	},
 	nested   : {
 		paddingLeft : theme.spacing(4)
@@ -76,6 +78,7 @@ const Header = () => {
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openGames, setOpenGames ] = useState(false)
 	const [ openHistory, setOpenHistory ] = useState(false)
+	const [ anchorEl, setAnchorEl ] = useState(null)
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
@@ -98,6 +101,11 @@ const Header = () => {
 		setIsOpen(false)
 	}
 
+	const handleMenuClose = () => {
+		setAnchorEl(null)
+		setIsOpen(false)
+	}
+
 	return (
 		<div className={classes.root}>
 			<AppBar elevation={2} position="static" color="inherit">
@@ -115,9 +123,48 @@ const Header = () => {
 								<MenuIcon color="primary" />
 							</IconButton>
 							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
-								<Box boxShadow={2} height={100} p={2} bgcolor="warning.main">
-									Hey {userInfo.username}
+								<Box
+									display="flex"
+									justifyContent="flex-end"
+									alignItems="center"
+									boxShadow={2}
+									height={60}
+									p={2}
+									bgcolor="secondary.light"
+								>
+									<Box mr={1}>
+										<Typography variant="subtitle2">{userInfo.username}</Typography>
+									</Box>
+									<Avatar
+										onClick={(e) => setAnchorEl(e.currentTarget)}
+										className={classes.avatar}
+										color="primary"
+									>
+										<Box fontSize={12}>{userInfo.username.substring(0, 2).toUpperCase()}</Box>
+									</Avatar>
 								</Box>
+
+								<Menu
+									id="simple-menu"
+									anchorEl={anchorEl}
+									keepMounted
+									open={Boolean(anchorEl)}
+									onClose={(e) => setAnchorEl(null)}
+									getContentAnchorEl={null}
+									anchorOrigin={{
+										vertical   : 'bottom',
+										horizontal : 'center'
+									}}
+									transformOrigin={{
+										vertical   : 'top',
+										horizontal : 'center'
+									}}
+								>
+									<MenuItem component={RouterLink} to="/settings" onClick={handleMenuClose}>
+										Settings
+									</MenuItem>
+								</Menu>
+
 								<Box>
 									<List disablePadding className={classes.list}>
 										<Divider />
