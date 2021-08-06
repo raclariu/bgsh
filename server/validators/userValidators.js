@@ -92,4 +92,60 @@ const validateUsername = check('username')
 		}
 	})
 
-export { validateEmail, validateEmailDuplicate, validatePassword, validateUsername, validatePasswordConfirmation }
+const validatePasswordCurrent = check('passwordCurrent')
+	.trim()
+	.notEmpty()
+	.withMessage('Current password is required')
+	.bail()
+	.isLength({ min: 6 })
+	.withMessage('Password must be longer than 6 characters')
+	.bail()
+	.custom(async (passwordCurrent, { req }) => {
+		const { email } = req.user
+		const userExists = await User.findOne({ email }).select('password').lean()
+		if (userExists) {
+			const correctPw = await comparePasswords(passwordCurrent, userExists.password)
+			if (!correctPw) {
+				throw new Error('Invalid current password')
+			} else {
+				return true
+			}
+		}
+	})
+
+const validatePasswordNew = check('passwordNew')
+	.trim()
+	.notEmpty()
+	.withMessage('New password is required')
+	.bail()
+	.isLength({ min: 6 })
+	.withMessage('New password must be longer than 6 characters')
+	.bail()
+	.custom((passwordNew, { req }) => {
+		return passwordNew !== req.body.passwordCurrent
+	})
+	.withMessage('New password cannot be the same to the current password')
+
+const validatePasswordNewConfirmation = check('passwordNewConfirmation')
+	.trim()
+	.notEmpty()
+	.withMessage('New password confirmation is required')
+	.bail()
+	.isLength({ min: 6 })
+	.withMessage('New password confirmation must be longer than 6 characters')
+	.bail()
+	.custom((passwordNewConfirmation, { req }) => {
+		return passwordNewConfirmation === req.body.passwordNew
+	})
+	.withMessage('New password confirmation does not match new password')
+
+export {
+	validateEmail,
+	validateEmailDuplicate,
+	validatePassword,
+	validateUsername,
+	validatePasswordConfirmation,
+	validatePasswordCurrent,
+	validatePasswordNew,
+	validatePasswordNewConfirmation
+}

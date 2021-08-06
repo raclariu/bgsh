@@ -28,7 +28,7 @@ const AuthScreen = () => {
 
 	return (
 		<Grid container className={classes.gridContainer} direction="column" justify="center" alignItems="center">
-			<Grid item xl={4} lg={4} md={4} sm={7} xs={11}>
+			<Grid item md={4} sm={7} xs={11}>
 				<Tabs
 					className={classes.container}
 					value={selectedTab}

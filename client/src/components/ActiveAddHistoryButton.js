@@ -84,9 +84,9 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 						<CheckCircleOutlineOutlinedIcon fontSize="small" />
 					</IconButton>
 
-					<Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md">
+					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<DialogTitle disableTypography>
-							<Typography variant="h6" align="center">
+							<Typography variant="subtitle2" align="center">
 								{mode === 'sell' && 'For history purposes, type the buyers username and final price'}
 								{mode === 'trade' && 'For history purposes, type the other traders username'}
 							</Typography>
@@ -166,7 +166,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
-							<Typography variant="h6" align="center">
+							<Typography variant="subtitle2" align="center">
 								Are you sure?
 							</Typography>
 						</DialogTitle>
@@ -193,7 +193,7 @@ const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, dis
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
-							<Typography variant="h6" align="center">
+							<Typography variant="subtitle2" align="center">
 								Are you sure?
 							</Typography>
 						</DialogTitle>

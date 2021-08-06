@@ -7,7 +7,10 @@ import {
 	USER_SIGNUP_REQUEST,
 	USER_SIGNUP_SUCCESS,
 	USER_SIGNUP_FAIL,
-	USER_PREFERENCES_SET_THEME
+	USER_PREFERENCES_SET_THEME,
+	USER_CHANGE_PASSWORD_REQUEST,
+	USER_CHANGE_PASSWORD_SUCCESS,
+	USER_CHANGE_PASSWORD_FAIL
 } from '../constants/userConstants'
 
 export const signIn = (email, password) => async (dispatch) => {
@@ -66,6 +69,32 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 	} catch (error) {
 		dispatch({
 			type    : USER_SIGNUP_FAIL,
+			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+		})
+	}
+}
+
+export const changePassword = (passwordCurrent, passwordNew, passwordNewConfirmation) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: USER_CHANGE_PASSWORD_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				'Content-Type' : 'application/json',
+				Authorization  : `Bearer ${userInfo.token}`
+			}
+		}
+
+		await axios.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation }, config)
+
+		dispatch({
+			type : USER_CHANGE_PASSWORD_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : USER_CHANGE_PASSWORD_FAIL,
 			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
 		})
 	}

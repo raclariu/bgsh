@@ -68,4 +68,30 @@ const userRegister = asyncHandler(async (req, res) => {
 	}
 })
 
-export { userAuth, userRegister }
+// * @desc    Change password
+// * @route   POST  /api/users/password
+// * @access  Private route
+const changePassword = asyncHandler(async (req, res) => {
+	const { passwordNew } = req.body
+
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message : {
+				passwordCurrentError         : err.passwordCurrent ? err.passwordCurrent.msg : null,
+				passwordNewError             : err.passwordNew ? err.passwordNew.msg : null,
+				passwordNewConfirmationError : err.passwordNewConfirmation ? err.passwordNewConfirmation.msg : null
+			}
+		}
+	} else {
+		const pw = await hashPassword(passwordNew)
+		await User.updateOne({ _id: req.user._id }, { password: pw })
+
+		res.status(200).end()
+	}
+})
+
+export { userAuth, userRegister, changePassword }

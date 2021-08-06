@@ -18,6 +18,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import FeaturedPlayListTwoToneIcon from '@material-ui/icons/FeaturedPlayListTwoTone'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import SaleListPopoverDialog from './SaleListPopoverDialog'
 import { removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
 
@@ -45,6 +46,8 @@ const SaleListPopover = () => {
 	const dispatch = useDispatch()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
+	const [ openDialog, setOpenDialog ] = useState(false)
+	const [ mode, setMode ] = useState('')
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -61,6 +64,16 @@ const SaleListPopover = () => {
 
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
+	}
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false)
+		setAnchorEl(null)
+	}
+
+	const handleModeClick = (clicked) => {
+		setMode(clicked)
+		setOpenDialog(true)
 	}
 
 	return (
@@ -157,16 +170,24 @@ const SaleListPopover = () => {
 							<Grid item>
 								<Box m={1}>
 									<ButtonGroup color="primary">
-										<Button component={RouterLink} to="/trade" onClick={(e) => setAnchorEl(null)}>
+										{/* <Button component={RouterLink} to="/trade" onClick={(e) => setAnchorEl(null)}>
 											Trade
 										</Button>
 										<Button component={RouterLink} to="/sell" onClick={(e) => setAnchorEl(null)}>
 											Sell
-										</Button>
+										</Button> */}
+										<Button onClick={() => handleModeClick('sell')}>Sell</Button>
+										<Button onClick={() => handleModeClick('trade')}>Trade</Button>
 									</ButtonGroup>
 								</Box>
 							</Grid>
 						)}
+
+						<SaleListPopoverDialog
+							openDialog={openDialog}
+							handleCloseDialog={handleCloseDialog}
+							mode={mode}
+						/>
 					</Grid>
 				)}
 			</Popover>
