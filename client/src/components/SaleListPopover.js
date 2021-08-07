@@ -169,16 +169,30 @@ const SaleListPopover = () => {
 						{saleList.length > 0 && (
 							<Grid item>
 								<Box m={1}>
-									<ButtonGroup color="primary">
-										{/* <Button component={RouterLink} to="/trade" onClick={(e) => setAnchorEl(null)}>
-											Trade
-										</Button>
-										<Button component={RouterLink} to="/sell" onClick={(e) => setAnchorEl(null)}>
-											Sell
-										</Button> */}
-										<Button onClick={() => handleModeClick('sell')}>Sell</Button>
-										<Button onClick={() => handleModeClick('trade')}>Trade</Button>
-									</ButtonGroup>
+									{saleList.length === 1 && (
+										<ButtonGroup color="primary">
+											<Button
+												component={RouterLink}
+												to="/sell"
+												onClick={(e) => setAnchorEl(null)}
+											>
+												Sell
+											</Button>
+											<Button
+												component={RouterLink}
+												to="/trade"
+												onClick={(e) => setAnchorEl(null)}
+											>
+												Trade
+											</Button>
+										</ButtonGroup>
+									)}
+									{saleList.length > 1 && (
+										<ButtonGroup color="primary">
+											<Button onClick={() => handleModeClick('sell')}>Sell</Button>
+											<Button onClick={() => handleModeClick('trade')}>Trade</Button>
+										</ButtonGroup>
+									)}
 								</Box>
 							</Grid>
 						)}

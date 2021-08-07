@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const ActiveAddHistoryButton = ({ games, totalPrice, mode, gameId, isActive, display }) => {
+const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ buyerUsername, setBuyerUsername ] = useState('')
-	const [ finalPrice, setFinalPrice ] = useState(totalPrice ? totalPrice : '')
+	const [ finalPrice, setFinalPrice ] = useState(price ? price : '')
 
 	const { loading, success, error } = useSelector((state) => state.addToHistory)
 

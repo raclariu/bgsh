@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const GameIndexCard = ({ data }) => {
 	const cls = useStyles()
+	console.log(data)
 
 	const [ index, setIndex ] = useState(0)
 
@@ -134,9 +135,13 @@ const GameIndexCard = ({ data }) => {
 						/>
 					</Box>
 
-					{data.mode === 'sell' && (
+					{data.mode === 'sell' && data.type === 'pack' ? (
 						<Box fontWeight="fontWeightMedium" mt={0.5}>
-							<Chip color="primary" label={`${data.totalPrice} RON`} />
+							<Chip color="primary" label={`${data.packPrice} RON`} />
+						</Box>
+					) : (
+						<Box fontWeight="fontWeightMedium" mt={0.5}>
+							<Chip color="primary" label={`${data.games[0].price} RON`} />
 						</Box>
 					)}
 				</Box>

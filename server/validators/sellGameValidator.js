@@ -1,6 +1,14 @@
 import { check } from 'express-validator'
 
-const validateExtraInfoTxt = check('games.*.extraInfoTxt')
+const validateExtraInfoTxt = check('games.*.extraInfo')
+	.trim()
+	.isLength({ min: 0, max: 500 })
+	.withMessage('500 maximum characters')
+	.bail()
+	.isString()
+	.withMessage('Can only contain letters and numbers')
+
+const validateExtraInfoPackTxt = check('extraInfoPack')
 	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('500 maximum characters')
@@ -57,6 +65,8 @@ const validateGameCondition = check('games').custom((games, { req }) => {
 })
 
 const validateGamePrice = check('games').custom((games, { req }) => {
+	if (req.body.type === 'pack') return true
+
 	try {
 		for (let i = 0; i < req.body.games.length; i++) {
 			const priceOk = games[i].price > 0
@@ -68,6 +78,18 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 		return true
 	} catch (error) {
 		throw new Error('Price error. Check prices and resubmit')
+	}
+})
+
+const validateGamePackPrice = check('packPrice').custom((packPrice, { req }) => {
+	if (req.body.type === 'individual') return true
+
+	console.log(typeof packPrice)
+
+	if (packPrice > 2) {
+		return true
+	} else {
+		throw new Error('Invalid price for the pack')
 	}
 })
 
@@ -94,7 +116,9 @@ export {
 	validateGameCondition,
 	validateIsSleeved,
 	validateGamePrice,
+	validateGamePackPrice,
 	validateExtraInfoTxt,
+	validateExtraInfoPackTxt,
 	validateShippingMethod,
 	validateShipCities
 }

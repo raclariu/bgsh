@@ -12,7 +12,7 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 		const { bggUsername } = req.body
 
 		// >> Owned
-		const { data: collData } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
+		const { data: collData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',
@@ -60,7 +60,7 @@ const getCollectionFromBGG = asyncHandler(async (req, res) => {
 		}
 
 		// >> Wishlist
-		const { data: wishlistData } = await axios.get('https://www.boardgamegeek.com/xmlapi2/collection', {
+		const { data: wishlistData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',

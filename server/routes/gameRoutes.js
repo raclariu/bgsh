@@ -21,7 +21,9 @@ import {
 	validateGameCondition,
 	validateIsSleeved,
 	validateGamePrice,
+	validateGamePackPrice,
 	validateExtraInfoTxt,
+	validateExtraInfoPackTxt,
 	validateShippingMethod,
 	validateShipCities
 } from '../validators/sellGameValidator.js'
@@ -46,7 +48,9 @@ router
 			validateGameCondition,
 			validateIsSleeved,
 			validateGamePrice,
+			validateGamePackPrice,
 			validateExtraInfoTxt,
+			validateExtraInfoPackTxt,
 			validateShippingMethod,
 			validateShipCities
 		],

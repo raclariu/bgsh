@@ -15,7 +15,7 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 
 		let gamesArr = []
 
-		const { data } = await axios.get('https://www.boardgamegeek.com/xmlapi2/thing', {
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
 			params : {
 				id       : bggIds.join(','),
 				versions : 1,
@@ -180,8 +180,11 @@ const sellGames = asyncHandler(async (req, res) => {
 		shipCourierPayer,
 		shipPersonal,
 		shipCities,
-		totalPrice
+		extraInfoPack,
+		packPrice
 	} = req.body
+
+	console.log(req.body)
 
 	if (type === 'pack') {
 		await Game.create({
@@ -195,7 +198,8 @@ const sellGames = asyncHandler(async (req, res) => {
 			shipCourierPayer,
 			shipPersonal,
 			shipCities,
-			totalPrice
+			extraInfoPack,
+			packPrice
 		})
 	} else {
 		let sellList = []
@@ -211,7 +215,8 @@ const sellGames = asyncHandler(async (req, res) => {
 				shipCourierPayer,
 				shipPersonal,
 				shipCities,
-				totalPrice       : game.price
+				extraInfoPack,
+				packPrice
 			}
 			sellList.push(data)
 		}

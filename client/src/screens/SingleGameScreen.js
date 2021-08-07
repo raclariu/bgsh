@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatDistance, parseISO } from 'date-fns'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
@@ -92,6 +93,15 @@ const SingleGameScreen = () => {
 	const dispatch = useDispatch()
 	const params = useParams()
 	const { altId } = params
+	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
+
+	const displayImageHandler = (image, thumbnail) => {
+		if (matches) {
+			return image ? image : '/images/gameImgPlaceholder.jpg'
+		} else {
+			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
+		}
+	}
 
 	// let data = useSelector((state) => {
 	// 	return state.gamesIndex.gamesData ? state.gamesIndex.gamesData.find((game) => game.altId === altId) : null
@@ -128,7 +138,7 @@ const SingleGameScreen = () => {
 							>
 								<img
 									className={cls.thumbnail}
-									src={data.games[0].thumbnail}
+									src={displayImageHandler(data.games[0].image, data.games[0].thumbnail)}
 									alt={data.games[0].title}
 								/>
 							</Box>
@@ -250,7 +260,15 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					<Grid item container justify="center" alignItems="center">
-						<Box>{data.totalPrice} RON</Box>
+						{data.mode === 'sell' && data.type === 'pack' ? (
+							<Box fontWeight="fontWeightMedium" mt={0.5}>
+								<Box>{data.packPrice} RON</Box>
+							</Box>
+						) : (
+							<Box fontWeight="fontWeightMedium" mt={0.5}>
+								<Box>{data.games[0].price} RON</Box>
+							</Box>
+						)}
 						<IconButton color="primary">
 							<MailTwoToneIcon fontSize="small" />
 						</IconButton>

@@ -22,7 +22,8 @@ const gameSchema = mongoose.Schema(
 		shipPersonal     : Boolean,
 		shipCourierPayer : String,
 		shipPostPayer    : String,
-		totalPrice       : Number,
+		extraInfoPack    : String,
+		packPrice        : Number,
 		isActive         : {
 			type    : Boolean,
 			default : true
