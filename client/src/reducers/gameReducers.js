@@ -20,6 +20,7 @@ import {
 	GAMES_INDEX_REQUEST,
 	GAMES_INDEX_SUCCESS,
 	GAMES_INDEX_FAIL,
+	GAMES_INDEX_RESET,
 	FOR_SALE_SINGLE_GAME_REQUEST,
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
@@ -148,6 +149,9 @@ export const getGamesReducer = (state = {}, action) => {
 
 		case GAMES_INDEX_FAIL:
 			return { loading: false, error: action.payload }
+
+		case GAMES_INDEX_RESET:
+			return {}
 
 		default:
 			return state

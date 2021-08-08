@@ -155,7 +155,7 @@ const ChangePasswordForm = () => {
 				/>
 
 				<Button variant="contained" type="submit" color="primary" size="large" disabled={loading} fullWidth>
-					{loading ? <Loader size={26} color="inherit" /> : 'Sign up'}
+					{loading ? <Loader size={26} color="inherit" /> : 'Change password'}
 				</Button>
 			</form>
 		</Fragment>

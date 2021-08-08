@@ -12,6 +12,7 @@ import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Icons
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
@@ -180,9 +181,11 @@ const ActiveGameCard = ({ data }) => {
 						display="add"
 					/>
 
-					<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
-						<CenterFocusWeakTwoToneIcon fontSize="small" />
-					</IconButton>
+					<Tooltip disableFocusListener title="Details">
+						<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
+							<CenterFocusWeakTwoToneIcon fontSize="small" />
+						</IconButton>
+					</Tooltip>
 
 					<ActiveAddHistoryButton gameId={data._id} display="delete" />
 				</Box>

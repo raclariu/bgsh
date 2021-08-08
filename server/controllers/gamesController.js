@@ -341,7 +341,7 @@ const getGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		const count = await Game.countDocuments({})
+		const count = await Game.countDocuments({ isActive: true, mode: mode })
 
 		const gamesData = await Game.find({ isActive: true, mode: mode })
 			.skip(resultsPerPage * (page - 1))

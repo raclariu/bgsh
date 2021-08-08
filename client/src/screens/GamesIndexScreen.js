@@ -21,6 +21,7 @@ import Message from '../components/Message'
 
 // @ Others
 import { getGames } from '../actions/gameActions'
+import { GAMES_INDEX_RESET } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-// Main
+// @ Main
 const GamesIndexScreen = () => {
 	const cls = useStyles()
 	const history = useHistory()
@@ -50,6 +51,10 @@ const GamesIndexScreen = () => {
 		() => {
 			const mode = location.pathname === '/games' ? 'sell' : 'trade'
 			dispatch(getGames(search, page, sort, mode))
+
+			return () => {
+				dispatch({ type: GAMES_INDEX_RESET })
+			}
 		},
 		[ dispatch, search, page, sort, location ]
 	)
