@@ -1,8 +1,9 @@
+// @ Libraries
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-// Mui
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -16,10 +17,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
 
-// Icons
+// @ Icons
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 
-// Styles
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	media        : {
 		objectFit      : 'cover',
@@ -37,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const SellGameCard = ({ game, type, data, removeFromSaleListHandler, handleGameInfo }) => {
+// @ Main
+const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
 	const cls = useStyles()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
@@ -144,7 +146,8 @@ const SellGameCard = ({ game, type, data, removeFromSaleListHandler, handleGameI
 							label={<Typography variant="body2">Sleeved?</Typography>}
 						/>
 					</Grid>
-					{type === 'individual' && (
+					{mode === 'sell' &&
+					type === 'individual' && (
 						<Grid item xs={6}>
 							<TextField
 								onChange={(e) => handleGameInfo(e, e.target.value, game, 'price')}

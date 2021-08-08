@@ -1,13 +1,16 @@
-import React, { Fragment } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+// @ Libraries
+import React from 'react'
 import { useLocation } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 
+// @ Mui
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	formControl : {
 		margin   : theme.spacing(1),
@@ -15,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SortGames = ({ handleFilters }) => {
 	const cls = useStyles()
 	const location = useLocation()

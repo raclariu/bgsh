@@ -1,7 +1,10 @@
+// @ Libraries
 import React, { Fragment, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 import { formatDistance, parseISO } from 'date-fns'
+
+// @ Mui
 import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -12,11 +15,15 @@ import Avatar from '@material-ui/core/Avatar'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 
+// @ Icons
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+
+// @ Components
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	card        : {
 		position : 'relative'
@@ -45,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const GameIndexCard = ({ data }) => {
 	const cls = useStyles()
 	console.log(data)

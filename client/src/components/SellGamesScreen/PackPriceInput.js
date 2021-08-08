@@ -1,9 +1,11 @@
+// @ Libraries
 import React from 'react'
 
-// Mui
+// @ Mui
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
+// @ Main
 const PackPriceInput = ({ packPrice, handlePackPrice }) => {
 	return (
 		<TextField

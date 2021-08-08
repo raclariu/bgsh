@@ -1,5 +1,7 @@
+// @ Libraries
 import { createMuiTheme } from '@material-ui/core/styles'
 
+// @ Light
 export const light = createMuiTheme({
 	palette : {
 		type      : 'light',
@@ -12,6 +14,7 @@ export const light = createMuiTheme({
 	}
 })
 
+// @ Dark
 export const dark = createMuiTheme({
 	palette : {
 		type       : 'dark',

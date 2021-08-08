@@ -1,7 +1,10 @@
+// @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Box from '@material-ui/core/Box'
@@ -18,6 +21,9 @@ import Avatar from '@material-ui/core/Avatar'
 import Collapse from '@material-ui/core/Collapse'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import pink from '@material-ui/core/colors/pink'
+
+// @ Icons
 import MenuIcon from '@material-ui/icons/Menu'
 import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
@@ -32,11 +38,15 @@ import InputTwoToneIcon from '@material-ui/icons/InputTwoTone'
 import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+
+// @ Components
 import SaleListPopover from './SaleListPopover'
 import Theme from './Theme'
-import pink from '@material-ui/core/colors/pink'
+
+// @ Others
 import { signOut } from '../actions/userActions'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root     : {
 		flexGrow : 1
@@ -70,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
 	// }
 }))
 
+// @ Main
 const Header = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()

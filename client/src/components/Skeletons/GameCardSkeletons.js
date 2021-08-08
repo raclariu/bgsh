@@ -1,10 +1,14 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Components
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Skeleton from '@material-ui/lab/Skeleton'
 import Divider from '@material-ui/core/Divider'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	box     : {
 		display         : 'flex',
@@ -20,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const GameCardSkeletons = ({ num, height }) => {
+// @ Main
+const GameCardSkeletons = ({ num }) => {
 	const cls = useStyles()
 
 	const renderSkeletons = () => {

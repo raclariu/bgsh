@@ -1,21 +1,28 @@
-import React, { Fragment, useEffect } from 'react'
+// @ Libraries
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
 
+// @ Mui
+import Grid from '@material-ui/core/Grid'
+import Box from '@material-ui/core/Box'
+
+// @ Components
 import ActiveGameCard from '../components/ActiveGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+
+// @ Others
 import { HISTORY_ADD_RESET } from '../constants/historyConstants'
 import { getUserActiveGames } from '../actions/gameActions'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -27,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const MyActiveGamesScreen = () => {
+// @ Main
+const ActiveGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -131,4 +139,4 @@ const MyActiveGamesScreen = () => {
 	)
 }
 
-export default MyActiveGamesScreen
+export default ActiveGamesScreen

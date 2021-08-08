@@ -1,9 +1,13 @@
+// @ Libraries
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
+import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import Link from '@material-ui/core/Link'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	footer : {
 		padding         : theme.spacing(3, 2),
@@ -26,6 +30,7 @@ function Copyright() {
 	)
 }
 
+// @ Main
 export default function StickyFooter() {
 	const classes = useStyles()
 

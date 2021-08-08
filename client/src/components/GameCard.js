@@ -1,6 +1,9 @@
+// @ Libraries
 import React from 'react'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
@@ -11,9 +14,12 @@ import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
+
+// @ Icons
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import SearchIcon from '@material-ui/icons/Search'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	media : {
 		margin    : theme.spacing(1, 0, 1, 0),
@@ -30,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 	const cls = useStyles()
 	const location = useLocation()

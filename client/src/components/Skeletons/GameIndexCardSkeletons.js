@@ -1,9 +1,13 @@
+// @ Libraries
 import React, { Fragment } from 'react'
+
+// @ Mui
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Skeleton from '@material-ui/lab/Skeleton'
 import Divider from '@material-ui/core/Divider'
 
+// @ Main
 const GameIndexCardSkeletons = ({ num }) => {
 	const renderSkeletons = () => {
 		let skeletonsArr = []
@@ -17,6 +21,7 @@ const GameIndexCardSkeletons = ({ num }) => {
 						alignItems="center"
 						height={473}
 						boxShadow={2}
+						bgcolor="background.paper"
 					>
 						<Box height={240} width="100%">
 							<Box display="flex" justifyContent="center" alignItems="center" my={1}>

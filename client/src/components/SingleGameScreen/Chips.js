@@ -1,8 +1,12 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import Chip from '@material-ui/core/Chip'
+
+// @ Icons
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined'
 import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined'
 
+// @ Main
 const Chips = ({ categories, mechanics }) => {
 	return (
 		<Fragment>

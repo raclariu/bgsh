@@ -1,15 +1,23 @@
+// @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useDebounce } from 'use-debounce'
 import { makeStyles } from '@material-ui/core/styles'
+import { useDebounce } from 'use-debounce'
+
+// @ Mui
 import TextField from '@material-ui/core/TextField'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+
+// @ Components
 import Loader from './Loader'
+
+// @ Others
 import { bggSearchGames, addToSaleList } from '../actions/gameActions'
 import { BGG_GAMES_SEARCH_RESET } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	btnGroup : {
 		display        : 'flex',
@@ -18,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const BggSearchGamesBox = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

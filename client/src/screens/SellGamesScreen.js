@@ -1,15 +1,16 @@
+// @ Libraries
 import React, { Fragment, useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
 
-// Mui
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 
-// Components
+// @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import PackInfoTextarea from '../components/SellGamesScreen/PackInfoTextarea'
@@ -17,11 +18,11 @@ import PackPriceInput from '../components/SellGamesScreen/PackPriceInput'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
-// Others
+// @ Others
 import { bggGetGamesDetails, removeFromSaleList, sellGames } from '../actions/gameActions'
 import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
 
-// Styles
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	section : {
 		marginTop    : theme.spacing(4),
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SellGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
@@ -210,6 +212,7 @@ const SellGamesScreen = () => {
 								<SellGameCard
 									game={game}
 									type={type}
+									mode="sell"
 									data={values.find((val) => val.bggId === game.bggId)}
 									removeFromSaleListHandler={removeFromSaleListHandler}
 									handleGameInfo={handleGameInfo}
@@ -226,6 +229,7 @@ const SellGamesScreen = () => {
 							<ShippingSection
 								handleShippingInfo={handleShippingInfo}
 								mode="sell"
+								shipError={shipError}
 								shipData={{
 									shipPost,
 									shipCourier,

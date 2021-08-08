@@ -1,12 +1,16 @@
-import React, { Fragment, useEffect } from 'react'
+// @ Libraries
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
+// @ Components
 import SavedGameCard from '../components/SavedGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
@@ -14,9 +18,11 @@ import Paginate from '../components/Paginate'
 import Message from '../components/Message'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 
+// @ Others
 import { getSavedGames } from '../actions/gameActions'
 import { SAVED_GAMES_RESET } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -42,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SavedGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

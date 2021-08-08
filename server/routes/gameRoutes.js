@@ -37,7 +37,22 @@ router.route('/reactivate/:id').patch(protect, reactivateGame)
 router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
-router.route('/trade').post(protect, tradeGames)
+router
+	.route('/trade')
+	.post(
+		[
+			protect,
+			validateType,
+			validateGameVersion,
+			validateGameCondition,
+			validateIsSleeved,
+			validateExtraInfoTxt,
+			validateExtraInfoPackTxt,
+			validateShippingMethod,
+			validateShipCities
+		],
+		tradeGames
+	)
 router
 	.route('/sell')
 	.post(

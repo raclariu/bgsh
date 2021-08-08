@@ -1,7 +1,11 @@
+// @ Libraries
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root : {
 		display        : 'flex',
@@ -9,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const Loader = ({ size, color }) => {
 	const classes = useStyles()
 
@@ -19,6 +24,7 @@ const Loader = ({ size, color }) => {
 	)
 }
 
+// @ Default Props
 Loader.defaultProps = {
 	size  : 40,
 	color : 'primary'

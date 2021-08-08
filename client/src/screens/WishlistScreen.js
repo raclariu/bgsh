@@ -1,20 +1,28 @@
+// @ Libraries
 import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+
+// @ Components
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
+
+// @ Others
 import { getWishlist } from '../actions/collectionActions'
 import { WISHLIST_LIST_RESET } from '../constants/collectionConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -29,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const WishlistScreen = () => {
 	const cls = useStyles()
 	const history = useHistory()

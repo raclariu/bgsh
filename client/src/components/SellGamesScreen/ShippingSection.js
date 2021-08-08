@@ -1,6 +1,7 @@
+// @ Libraries
 import React from 'react'
 
-// Mui
+// @ Mui
 import FormControl from '@material-ui/core/FormControl'
 import FormGroup from '@material-ui/core/FormGroup'
 import FormLabel from '@material-ui/core/FormLabel'
@@ -13,20 +14,21 @@ import Chip from '@material-ui/core/Chip'
 import Radio from '@material-ui/core/Radio'
 import FormHelperText from '@material-ui/core/FormHelperText'
 
-// Cities json
+// @ Others
 import citiesArr from '../../constants/cities'
 
+// @ Main
 const ShippingSection = ({
 	handleShippingInfo,
 	mode,
+	shipError,
 	shipData           : { shipPost, shipCourier, shipPersonal, shipPostPayer, shipCourierPayer, shipCities }
 }) => {
-	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
-
 	return (
 		<FormControl required error={shipError} fullWidth>
 			{/* Post shipping */}
-			<FormLabel>Shipping method</FormLabel>
+			{mode === 'sell' && <FormLabel>Shipping method</FormLabel>}
+			{mode === 'trade' && <FormLabel>My preffered shipping method</FormLabel>}
 			<FormGroup>
 				<FormControlLabel
 					control={
@@ -114,7 +116,13 @@ const ShippingSection = ({
 					)}
 				/>
 
-				{shipError && <FormHelperText error>Select at least one shipping method</FormHelperText>}
+				{shipError &&
+				mode === 'sell' && <FormHelperText error>Select at least one shipping method</FormHelperText>}
+
+				{shipError &&
+				mode === 'trade' && (
+					<FormHelperText error>Select at least one preffered shipping method</FormHelperText>
+				)}
 			</FormGroup>
 		</FormControl>
 	)

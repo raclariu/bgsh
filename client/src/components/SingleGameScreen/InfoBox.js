@@ -1,6 +1,10 @@
+// @ Libraries
 import React from 'react'
+
+// @ Mui
 import Box from '@material-ui/core/Box'
 
+// @ Styles
 const defaultBox = {
 	display        : 'flex',
 	flexDirection  : 'column',
@@ -12,6 +16,7 @@ const defaultBox = {
 	bgcolor        : 'background.paper'
 }
 
+// @ Main
 const InfoBox = ({ data, children }) => {
 	return (
 		<Box {...defaultBox}>

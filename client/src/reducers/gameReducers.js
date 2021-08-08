@@ -1,3 +1,4 @@
+// @ Constants
 import {
 	BGG_GAMES_DETAILS_REQUEST,
 	BGG_GAMES_DETAILS_SUCCESS,

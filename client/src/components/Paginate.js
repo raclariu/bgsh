@@ -1,6 +1,10 @@
+// @ Libraries
 import React from 'react'
+
+// @ Mui
 import Pagination from '@material-ui/lab/Pagination'
 
+// @ Main
 const Paginate = ({ pagination, handleFilters }) => {
 	const onPageChangeHandler = (e, page) => {
 		window.scrollTo(0, 0)

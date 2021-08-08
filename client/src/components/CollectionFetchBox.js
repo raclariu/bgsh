@@ -1,13 +1,21 @@
+// @ Libraries
 import React, { useState, useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
+
+// @ Components
 import Loader from './Loader'
+
+// @ Others
 import { bggGetCollection } from '../actions/collectionActions'
 import { SALE_LIST_RESET } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	paper  : {
 		padding : theme.spacing(1.2, 1.5, 1.2, 1.5)
@@ -19,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const CollectionFetchBox = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

@@ -1,14 +1,24 @@
+// @ Libraries
 import React from 'react'
-import './App.css'
 import { useSelector } from 'react-redux'
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+
+// @ CSS
+import './App.css'
+
+// @ Mui
 import Container from '@material-ui/core/Container'
 
-import { light, dark } from './themePalette'
+// @ Components
 import Header from './components/Header'
 import Footer from './components/Footer'
+
+// @ Theme
+import { light, dark } from './themePalette'
+
+// @ Screens
 import HomePageScreen from './screens/HomePageScreen'
 import AuthScreen from './screens/AuthScreen'
 import SettingsScreen from './screens/SettingsScreen'
@@ -26,6 +36,7 @@ import HistorySoldGamesScreen from './screens/HistorySoldGamesScreen'
 import HistoryTradedGamesScreen from './screens/HistoryTradedGamesScreen'
 import NotFoundScreen from './screens/NotFoundScreen'
 
+// @ Main
 const App = () => {
 	const theme = useSelector((state) => state.userPreferences.theme)
 

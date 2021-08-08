@@ -1,11 +1,18 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Switch from '@material-ui/core/Switch'
+
+// @ Mui
+import IconButton from '@material-ui/core/IconButton'
+
+// @ Icons
 import Brightness4Icon from '@material-ui/icons/Brightness4'
 import Brightness7Icon from '@material-ui/icons/Brightness7'
-import IconButton from '@material-ui/core/IconButton'
+
+// @ Others
 import { setCurrentTheme } from '../actions/userActions'
 
+// @ Main
 const Theme = () => {
 	const dispatch = useDispatch()
 
@@ -17,9 +24,6 @@ const Theme = () => {
 
 	return (
 		<Fragment>
-			{/* <BrightnessHighTwoToneIcon fontSize="small" />
-			<Switch size="small" checked={theme === 'light' ? false : true} onChange={changeHandler} />
-			<Brightness4TwoToneIconfontSize="small" /> */}
 			<IconButton onClick={(e) => changeHandler(e, theme)}>
 				{theme === 'light' ? <Brightness4Icon color="primary" /> : <Brightness7Icon color="secondary" />}
 			</IconButton>

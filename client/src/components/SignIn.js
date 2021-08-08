@@ -1,16 +1,26 @@
+// @ Libraries
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
+
+// @ Icons
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
 import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
+
+// @ Components
 import Loader from './Loader'
+
+// @ Others
 import { signIn } from '../actions/userActions'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root  : {
 		width  : '100%',
@@ -21,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SignIn = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

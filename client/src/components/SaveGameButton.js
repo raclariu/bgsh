@@ -1,13 +1,21 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
+// @ Mui
 import IconButton from '@material-ui/core/IconButton'
+
+// @ Icons
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
 
+// @ Components
 import Loader from './Loader'
 
+// @ Others
 import { switchSaveGame } from '../actions/gameActions'
 
+// @ Main
 const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
 

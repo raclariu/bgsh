@@ -1,7 +1,10 @@
+// @ Libraries
 import React, { useState, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Popover from '@material-ui/core/Popover'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
@@ -16,12 +19,19 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
+
+// @ Icons
 import FeaturedPlayListTwoToneIcon from '@material-ui/icons/FeaturedPlayListTwoTone'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+
+// @ Components
 import SaleListPopoverDialog from './SaleListPopoverDialog'
+
+// @ Others
 import { removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	badge     : {
 		margin : theme.spacing(0, 1, 0, 0)
@@ -40,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SaleListPopover = () => {
 	const cls = useStyles()
 

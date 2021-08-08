@@ -1,12 +1,16 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 
+// @ Components
 import Message from '../components/Message'
-
 import ChangePasswordForm from '../components/ChangePasswordForm'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	gridContainer : {
 		marginTop    : theme.spacing(4),
@@ -14,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SettingsScreen = () => {
 	const cls = useStyles()
 

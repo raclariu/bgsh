@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react'
+// @ Libraries
+import React, { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+
+// @ Mui
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
+
+// @ Components
 import GamesIndexCard from '../components/GameIndexCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
@@ -13,8 +18,11 @@ import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeletons from '../components/Skeletons/GameIndexCardSkeletons'
 import Message from '../components/Message'
+
+// @ Others
 import { getGames } from '../actions/gameActions'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -26,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// Main
 const GamesIndexScreen = () => {
 	const cls = useStyles()
 	const history = useHistory()

@@ -1,13 +1,16 @@
-import React, { useEffect, Fragment } from 'react'
+// @ Libraries
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 
+// @ Mui
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 
+// @ Components
 import HistoryGameCard from '../components/HistoryGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
@@ -15,8 +18,10 @@ import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 import Paginate from '../components/Paginate'
 import Message from '../components/Message'
 
+// @ Others
 import { getTradedGamesHistory } from '../actions/historyActions'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -42,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const HistorySoldGames = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

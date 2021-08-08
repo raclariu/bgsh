@@ -239,31 +239,33 @@ const tradeGames = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const { games, type, shipPost, shipCourier, shipPersonal, shipCities } = req.body
+	const { games, type, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
 
 	if (type === 'pack') {
 		await Game.create({
-			mode         : 'trade',
-			seller       : req.user._id,
+			mode          : 'trade',
+			seller        : req.user._id,
 			games,
 			type,
 			shipPost,
 			shipCourier,
 			shipPersonal,
-			shipCities
+			shipCities,
+			extraInfoPack
 		})
 	} else {
 		let tradeList = []
 		for (let game of games) {
 			let data = {
-				mode         : 'trade',
-				seller       : req.user._id,
-				games        : [ game ],
+				mode          : 'trade',
+				seller        : req.user._id,
+				games         : [ game ],
 				type,
 				shipPost,
 				shipCourier,
 				shipPersonal,
-				shipCities
+				shipCities,
+				extraInfoPack
 			}
 			tradeList.push(data)
 		}

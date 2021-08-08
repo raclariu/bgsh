@@ -1,8 +1,10 @@
+// @ Libraries
 import React from 'react'
 
-// Mui
+// @ Mui
 import TextField from '@material-ui/core/TextField'
 
+// @ Main
 const PackInfoTextarea = ({ extraInfoPack, handleExtraInfoPack }) => {
 	return (
 		<TextField

@@ -1,10 +1,12 @@
+// @ Libraries
 import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { formatDistance, parseISO } from 'date-fns'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { formatDistance, parseISO } from 'date-fns'
 
+// @ Mui
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Chip from '@material-ui/core/Chip'
@@ -12,13 +14,12 @@ import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 
+// @ Icons
 import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
 import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
 import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone'
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded'
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded'
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone'
 import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone'
@@ -27,15 +28,17 @@ import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
 import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 
+// @ Components
 import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 
+// @ Others
 import { getSingleGame, getSingleSavedGame } from '../actions/gameActions'
-
 import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root                 : {
 		marginTop    : theme.spacing(4),
@@ -88,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const SingleGameScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

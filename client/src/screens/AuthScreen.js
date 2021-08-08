@@ -1,12 +1,18 @@
+// @ Libraries
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+
+// @ Components
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	gridContainer : {
 		marginTop    : theme.spacing(4),
@@ -14,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const AuthScreen = () => {
 	const classes = useStyles()
 	const history = useHistory()

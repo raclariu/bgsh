@@ -1,7 +1,9 @@
+// @ Libraries
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
 
+// @ Main
 const ProtectedRoute = ({ children: component, ...rest }) => {
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn

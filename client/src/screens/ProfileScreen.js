@@ -1,11 +1,17 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
+
+// @ Components
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root : {
 		marginTop    : theme.spacing(4),
@@ -13,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const ProfileScreen = () => {
 	const cls = useStyles()
 

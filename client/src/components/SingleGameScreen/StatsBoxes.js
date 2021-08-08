@@ -1,8 +1,12 @@
+// @ Libraries
 import React, { Fragment } from 'react'
 import approx from 'approximate-number'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
+// @ Main
 const StatsBoxes = ({ complexity, stats, variant }) => {
 	let defaultBox
 

@@ -1,23 +1,30 @@
+// @ Libraries
 import React, { useEffect } from 'react'
-import { useLocation, useHistory, Link as RouterLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useHistory } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+
+// @ Mui
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
+
+// @ Components
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+
+// @ Others
 import { dbGetCollection } from '../actions/collectionActions'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { DB_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
 import { saleListLimit } from '../constants/gameConstants'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	root          : {
 		marginTop    : theme.spacing(4),
@@ -32,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
+// @ Main
 const CollectionScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()

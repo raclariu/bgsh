@@ -1,18 +1,25 @@
+// @ Libraries
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+
+// @ Mui
 import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import InputAdornment from '@material-ui/core/InputAdornment'
+
+// @ Icons
 import SearchIcon from '@material-ui/icons/Search'
 import ClearIcon from '@material-ui/icons/Clear'
 
+// @ Styles
 const useStyles = makeStyles((theme) => ({
 	paper : {
 		padding : theme.spacing(1.2, 1.5, 1.2, 1.5)
 	}
 }))
 
+// @ Main
 const SearchBox = ({ placeholder, handleFilters }) => {
 	const cls = useStyles()
 
