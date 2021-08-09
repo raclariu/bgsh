@@ -13,6 +13,8 @@ const defaultBox = {
 	boxShadow      : 2,
 	p              : 1,
 	borderRadius   : 4,
+	width          : 100,
+	height         : 60,
 	bgcolor        : 'background.paper'
 }
 
@@ -21,7 +23,9 @@ const InfoBox = ({ data, children }) => {
 	return (
 		<Box {...defaultBox}>
 			<Box>{children}</Box>
-			<Box textAlign="center">{data}</Box>
+			<Box textAlign="center" fontSize={12}>
+				{data}
+			</Box>
 		</Box>
 	)
 }

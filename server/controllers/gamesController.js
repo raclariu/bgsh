@@ -445,12 +445,19 @@ const reactivateGame = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const saleData = await Game.findOne({ altId, isActive: true }).populate('seller', 'username _id').lean()
+	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
 
 	if (!saleData) {
 		res.status(404)
 		throw {
 			message : 'Game not found'
+		}
+	}
+
+	if (saleData.isActive === false) {
+		res.status(404)
+		throw {
+			message : 'Game is inactive'
 		}
 	}
 

@@ -131,9 +131,15 @@ const SingleGameScreen = () => {
 		<div className={cls.root}>
 			{data && (
 				<Fragment>
-					<Grid container direction="row" className={cls.mainGrid}>
+					<Grid
+						container
+						justifyContent="center"
+						alignItems="center"
+						direction="row"
+						className={cls.mainGrid}
+					>
 						{/* Thumbnail */}
-						<Grid item container xl={4} lg={4} md={4} sm={12} xs={12} justify="center">
+						<Grid item container md={5} xs={12} justify="center">
 							<Box
 								bgcolor="background.paper"
 								className={cls.thumbnailContainer}
@@ -150,18 +156,7 @@ const SingleGameScreen = () => {
 
 						{/* Right side */}
 
-						<Grid
-							item
-							container
-							direction="column"
-							justify="center"
-							alignItems="center"
-							xl={8}
-							lg={8}
-							md={8}
-							sm={12}
-							xs={12}
-						>
+						<Grid item container direction="column" justify="center" alignItems="center" md={7} xs={12}>
 							{/* Title */}
 							<Grid item>
 								<Box fontSize={25} textAlign="center">
@@ -171,24 +166,37 @@ const SingleGameScreen = () => {
 
 							{/* Subtitle */}
 							<Grid item>
-								<Typography component="span">
-									<Box
-										fontSize={12}
-										mb={1}
-										fontStyle="italic"
-										color="grey.600"
-										textAlign="center"
-									>{`${data.games[0].type} • ${data.games[0].year}`}</Box>
-								</Typography>
+								<Box fontSize={12} mb={1} fontStyle="italic" color="grey.600" textAlign="center">
+									{`${data.games[0].type} • ${data.games[0].year}`}
+								</Box>
 							</Grid>
 
 							{/* Stats boxes */}
-							<Grid item container justify="center" spacing={2}>
-								<StatsBoxes
-									variant="full"
-									complexity={data.games[0].complexity}
-									stats={data.games[0].stats}
-								/>
+							<Grid item container justify="center" alignItems="center">
+								<Box>
+									<StatsBoxes
+										variant="full"
+										complexity={data.games[0].complexity}
+										stats={data.games[0].stats}
+										type="rating"
+									/>
+								</Box>
+								<Box ml={1}>
+									<StatsBoxes
+										variant="full"
+										complexity={data.games[0].complexity}
+										stats={data.games[0].stats}
+										type="rank"
+									/>
+								</Box>
+								<Box ml={1}>
+									<StatsBoxes
+										variant="full"
+										complexity={data.games[0].complexity}
+										stats={data.games[0].stats}
+										type="complexity"
+									/>
+								</Box>
 							</Grid>
 
 							{/* Desginers and language dependence */}
@@ -196,9 +204,9 @@ const SingleGameScreen = () => {
 								<Box
 									display="flex"
 									flexDirection="column"
-									alignItems="center"
+									alignItems="flex-start"
 									justifyContent="center"
-									width="100%"
+									width="316px"
 								>
 									<Typography variant="caption">
 										<Box display="flex">
@@ -221,7 +229,7 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							{/* Game info */}
-							<Grid item container className={cls.infoBoxesContainer} justify="center" spacing={2}>
+							<Grid item container className={cls.infoBoxesContainer} justify="center">
 								<Grid item xs={6} md={3}>
 									<InfoBox data={`${data.games[0].minPlayers} - ${data.games[0].maxPlayers} players`}>
 										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
