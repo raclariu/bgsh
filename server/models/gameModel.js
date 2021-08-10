@@ -23,7 +23,7 @@ const gameSchema = mongoose.Schema(
 		shipCourierPayer : String,
 		shipPostPayer    : String,
 		extraInfoPack    : String,
-		packPrice        : Number,
+		totalPrice       : Number,
 		isActive         : {
 			type    : Boolean,
 			default : true

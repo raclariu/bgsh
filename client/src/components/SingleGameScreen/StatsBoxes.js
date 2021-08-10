@@ -76,7 +76,7 @@ const RankBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box ml={1} bgcolor={stats.rank <= 100 ? '#d4b215' : '#666e75'} {...defaultMiniBox}>
+				<Box bgcolor={stats.rank <= 100 ? '#d4b215' : '#666e75'} {...defaultMiniBox}>
 					{stats.rank}
 				</Box>
 			) : (
@@ -107,7 +107,7 @@ const ComplexityBox = ({ variant, complexity }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box ml={1} bgcolor={handleComplexityBgColor()} {...defaultMiniBox}>
+				<Box bgcolor={handleComplexityBgColor()} {...defaultMiniBox}>
 					{(Math.round(complexity.weight * 100) / 100).toFixed(2)}
 				</Box>
 			) : (

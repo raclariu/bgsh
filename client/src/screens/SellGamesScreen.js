@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button'
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import PackInfoTextarea from '../components/SellGamesScreen/PackInfoTextarea'
-import PackPriceInput from '../components/SellGamesScreen/PackPriceInput'
+import PackTotalPriceInput from '../components/SellGamesScreen/PackTotalPriceInput'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -42,10 +42,6 @@ const SellGamesScreen = () => {
 
 	const { type = 'individual' } = queryString.parse(location.search)
 
-	if (type !== 'individual' && type !== 'pack') {
-		history.push('/sell')
-	}
-
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
@@ -53,11 +49,15 @@ const SellGamesScreen = () => {
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
-	const [ packPrice, setPackPrice ] = useState('')
+	const [ totalPrice, setTotalPrice ] = useState('')
 
 	const ms = useRef(0)
 
 	const saleList = useSelector((state) => state.saleList)
+
+	if (type !== 'individual' && type !== 'pack') {
+		history.push('/sell')
+	}
 
 	if (saleList.length === 1 && type === 'pack') {
 		history.push('/sell')
@@ -117,8 +117,8 @@ const SellGamesScreen = () => {
 		setExtraInfoPack(text)
 	}
 
-	const handlePackPrice = (price) => {
-		setPackPrice(price)
+	const handleTotalPrice = (price) => {
+		setTotalPrice(price)
 	}
 
 	const handleShippingInfo = (data, type) => {
@@ -186,7 +186,7 @@ const SellGamesScreen = () => {
 			shipPersonal,
 			shipCities,
 			extraInfoPack    : type === 'pack' ? extraInfoPack.trim() : '',
-			packPrice        : type === 'pack' ? +packPrice : null
+			totalPrice       : type === 'pack' ? totalPrice : null
 		}
 
 		dispatch(sellGames(gamesData))
@@ -246,7 +246,10 @@ const SellGamesScreen = () => {
 								{type === 'pack' && (
 									<Fragment>
 										<Grid item>
-											<PackPriceInput packPrice={packPrice} handlePackPrice={handlePackPrice} />
+											<PackTotalPriceInput
+												totalPrice={totalPrice}
+												handleTotalPrice={handleTotalPrice}
+											/>
 										</Grid>
 										<Grid item>
 											<PackInfoTextarea

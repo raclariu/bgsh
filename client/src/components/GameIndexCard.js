@@ -86,11 +86,30 @@ const GameIndexCard = ({ data }) => {
 				/>
 
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1}>
-					<StatsBoxes
-						variant="mini"
-						complexity={data.games[index].complexity}
-						stats={data.games[index].stats}
-					/>
+					<Box>
+						<StatsBoxes
+							variant="mini"
+							complexity={data.games[index].complexity}
+							stats={data.games[index].stats}
+							type="rating"
+						/>
+					</Box>
+					<Box ml={1}>
+						<StatsBoxes
+							variant="mini"
+							complexity={data.games[index].complexity}
+							stats={data.games[index].stats}
+							type="rank"
+						/>
+					</Box>
+					<Box ml={1}>
+						<StatsBoxes
+							variant="mini"
+							complexity={data.games[index].complexity}
+							stats={data.games[index].stats}
+							type="complexity"
+						/>
+					</Box>
 				</Box>
 			</Box>
 
@@ -143,13 +162,9 @@ const GameIndexCard = ({ data }) => {
 						/>
 					</Box>
 
-					{data.mode === 'sell' && data.type === 'pack' ? (
+					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium" mt={0.5}>
-							<Chip color="primary" label={`${data.packPrice} RON`} />
-						</Box>
-					) : (
-						<Box fontWeight="fontWeightMedium" mt={0.5}>
-							<Chip color="primary" label={`${data.games[0].price} RON`} />
+							<Chip color="primary" label={`${data.totalPrice} RON`} />
 						</Box>
 					)}
 				</Box>

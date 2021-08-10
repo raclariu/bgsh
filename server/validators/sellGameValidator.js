@@ -69,7 +69,7 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 
 	try {
 		for (let i = 0; i < req.body.games.length; i++) {
-			const priceOk = games[i].price > 0
+			const priceOk = games[i].price > 0 && games[i].price < 10001
 
 			if (!priceOk) {
 				throw new Error(`Invalid price for ${games[i].title}`)
@@ -81,12 +81,10 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 	}
 })
 
-const validateGamePackPrice = check('packPrice').custom((packPrice, { req }) => {
+const validateGameTotalPrice = check('totalPrice').custom((totalPrice, { req }) => {
 	if (req.body.type === 'individual') return true
 
-	console.log(typeof packPrice)
-
-	if (packPrice > 2) {
+	if (totalPrice > 0 && totalPrice < 10001) {
 		return true
 	} else {
 		throw new Error('Invalid price for the pack')
@@ -116,7 +114,7 @@ export {
 	validateGameCondition,
 	validateIsSleeved,
 	validateGamePrice,
-	validateGamePackPrice,
+	validateGameTotalPrice,
 	validateExtraInfoTxt,
 	validateExtraInfoPackTxt,
 	validateShippingMethod,

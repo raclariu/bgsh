@@ -52,10 +52,6 @@ const TradeGamesScreen = () => {
 
 	const { type = 'individual' } = queryString.parse(location.search)
 
-	if (type !== 'individual' && type !== 'pack') {
-		history.push('/trade')
-	}
-
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPersonal, setShipPersonal ] = useState(false)
@@ -65,6 +61,14 @@ const TradeGamesScreen = () => {
 	const ms = useRef(0)
 
 	const saleList = useSelector((state) => state.saleList)
+
+	if (type !== 'individual' && type !== 'pack') {
+		history.push('/trade')
+	}
+
+	if (saleList.length === 1 && type === 'pack') {
+		history.push('/trade')
+	}
 
 	const [ values, setValues ] = useState(
 		saleList.map((el) => {

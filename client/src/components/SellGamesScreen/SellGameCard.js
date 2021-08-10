@@ -156,7 +156,7 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 									startAdornment : <InputAdornment position="start">RON</InputAdornment>
 								}}
 								inputProps={{
-									min : 0,
+									min : 1,
 									max : 10000
 								}}
 								name={`price-${game.bggId}`}

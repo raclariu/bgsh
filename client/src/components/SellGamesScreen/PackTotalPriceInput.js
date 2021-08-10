@@ -6,22 +6,22 @@ import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
 // @ Main
-const PackPriceInput = ({ packPrice, handlePackPrice }) => {
+const PackTotalPriceInput = ({ totalPrice, handleTotalPrice }) => {
 	return (
 		<TextField
-			onChange={(e) => handlePackPrice(e.target.value)}
-			value={packPrice}
+			onChange={(e) => handleTotalPrice(e.target.value)}
+			value={totalPrice}
 			InputProps={{
 				startAdornment : <InputAdornment position="start">RON</InputAdornment>
 			}}
 			inputProps={{
-				min : 0,
+				min : 1,
 				max : 10000
 			}}
 			name="pack-price"
 			variant="outlined"
 			label="Price for the entire pack"
-			type="number"
+			type="text"
 			size="small"
 			fullWidth
 			required
@@ -29,4 +29,4 @@ const PackPriceInput = ({ packPrice, handlePackPrice }) => {
 	)
 }
 
-export default PackPriceInput
+export default PackTotalPriceInput

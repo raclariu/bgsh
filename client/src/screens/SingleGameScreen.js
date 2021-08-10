@@ -13,6 +13,8 @@ import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
@@ -40,11 +42,11 @@ import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	root                 : {
+	root               : {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	chipsBox             : {
+	chipsBox           : {
 		display        : 'flex',
 		justifyContent : 'center',
 		flexWrap       : 'wrap',
@@ -53,40 +55,36 @@ const useStyles = makeStyles((theme) => ({
 			margin : theme.spacing(0.5)
 		}
 	},
-	mainGrid             : {
+	mainGrid           : {
 		marginTop    : theme.spacing(2),
 		marginBottom : theme.spacing(2)
 	},
-	thumbnailContainer   : {
+	thumbnailContainer : {
 		display                        : 'flex',
 		justifyContent                 : 'center',
 		alignItems                     : 'center',
 		height                         : '250px',
 		width                          : '100%',
+		padding                        : theme.spacing(1),
 		[theme.breakpoints.down('sm')]: {
 			marginBottom : theme.spacing(1)
 		}
 	},
-	thumbnail            : {
-		objectFit                      : 'contain',
-		height                         : '90%',
-		width                          : 'auto',
-		overflow                       : 'auto',
-		[theme.breakpoints.down('sm')]: {
-			height : '220px'
-		}
+	thumbnail          : {
+		objectFit : 'contain',
+		height    : '220px',
+		width     : 'auto',
+		overflow  : 'auto'
 	},
-	desLangTextContainer : {
+	statsBoxes         : {
 		marginTop    : theme.spacing(1),
 		marginBottom : theme.spacing(1)
 	},
-	infoBoxesContainer   : {
+	infoBoxesContainer : {
 		width                          : '90%',
-		[theme.breakpoints.down('sm')]: {
-			width : '80%'
-		},
+		marginTop                      : theme.spacing(1),
 		[theme.breakpoints.down('xs')]: {
-			width : '75%'
+			width : '70%'
 		}
 	}
 }))
@@ -139,7 +137,7 @@ const SingleGameScreen = () => {
 						className={cls.mainGrid}
 					>
 						{/* Thumbnail */}
-						<Grid item container md={5} xs={12} justify="center">
+						<Grid item container md={4} xs={12} justify="center">
 							<Box
 								bgcolor="background.paper"
 								className={cls.thumbnailContainer}
@@ -156,57 +154,63 @@ const SingleGameScreen = () => {
 
 						{/* Right side */}
 
-						<Grid item container direction="column" justify="center" alignItems="center" md={7} xs={12}>
+						<Grid item container direction="column" justify="center" alignItems="center" md={8} xs={12}>
 							{/* Title */}
 							<Grid item>
-								<Box fontSize={25} textAlign="center">
+								<Box fontSize={22} textAlign="center">
 									{data.games[0].title}
 								</Box>
 							</Grid>
 
 							{/* Subtitle */}
 							<Grid item>
-								<Box fontSize={12} mb={1} fontStyle="italic" color="grey.600" textAlign="center">
+								<Box fontSize={12} fontStyle="italic" color="grey.600" textAlign="center">
 									{`${data.games[0].type} • ${data.games[0].year}`}
 								</Box>
 							</Grid>
 
 							{/* Stats boxes */}
-							<Grid item container justify="center" alignItems="center">
-								<Box>
+							<Grid
+								item
+								container
+								className={cls.statsBoxes}
+								justify="center"
+								alignItems="center"
+								spacing={1}
+							>
+								<Grid item>
 									<StatsBoxes
 										variant="full"
 										complexity={data.games[0].complexity}
 										stats={data.games[0].stats}
 										type="rating"
 									/>
-								</Box>
-								<Box ml={1}>
+								</Grid>
+								<Grid item>
 									<StatsBoxes
 										variant="full"
 										complexity={data.games[0].complexity}
 										stats={data.games[0].stats}
 										type="rank"
 									/>
-								</Box>
-								<Box ml={1}>
+								</Grid>
+								<Grid item>
 									<StatsBoxes
 										variant="full"
 										complexity={data.games[0].complexity}
 										stats={data.games[0].stats}
 										type="complexity"
 									/>
-								</Box>
+								</Grid>
 							</Grid>
 
 							{/* Desginers and language dependence */}
-							<Grid item className={cls.desLangTextContainer}>
+							<Grid item>
 								<Box
 									display="flex"
 									flexDirection="column"
 									alignItems="flex-start"
 									justifyContent="center"
-									width="316px"
 								>
 									<Typography variant="caption">
 										<Box display="flex">
@@ -229,13 +233,20 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							{/* Game info */}
-							<Grid item container className={cls.infoBoxesContainer} justify="center">
-								<Grid item xs={6} md={3}>
+							<Grid
+								item
+								container
+								className={cls.infoBoxesContainer}
+								justify="center"
+								alignItems="center"
+								spacing={1}
+							>
+								<Grid item xs={6} sm={3}>
 									<InfoBox data={`${data.games[0].minPlayers} - ${data.games[0].maxPlayers} players`}>
 										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} md={3}>
+								<Grid item xs={6} sm={3}>
 									<InfoBox
 										data={
 											data.games[0].suggestedPlayers ? (
@@ -248,12 +259,12 @@ const SingleGameScreen = () => {
 										<PersonAddTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} md={3}>
+								<Grid item xs={6} sm={3}>
 									<InfoBox data={data.games[0].playTime ? `${data.games[0].playTime} min.` : 'N/A'}>
 										<AccessTimeTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
-								<Grid item xs={6} md={3}>
+								<Grid item xs={6} sm={3}>
 									<InfoBox data={data.games[0].minAge ? `${data.games[0].minAge}` : 'N/A'}>
 										<ChildCareTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
@@ -272,15 +283,12 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					<Grid item container justify="center" alignItems="center">
-						{data.mode === 'sell' && data.type === 'pack' ? (
+						{data.mode === 'sell' && (
 							<Box fontWeight="fontWeightMedium" mt={0.5}>
-								<Box>{data.packPrice} RON</Box>
-							</Box>
-						) : (
-							<Box fontWeight="fontWeightMedium" mt={0.5}>
-								<Box>{data.games[0].price} RON</Box>
+								<Box>{data.totalPrice} RON</Box>
 							</Box>
 						)}
+
 						<IconButton color="primary">
 							<MailTwoToneIcon fontSize="small" />
 						</IconButton>

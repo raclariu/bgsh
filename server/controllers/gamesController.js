@@ -181,7 +181,7 @@ const sellGames = asyncHandler(async (req, res) => {
 		shipPersonal,
 		shipCities,
 		extraInfoPack,
-		packPrice
+		totalPrice
 	} = req.body
 
 	console.log(req.body)
@@ -199,11 +199,11 @@ const sellGames = asyncHandler(async (req, res) => {
 			shipPersonal,
 			shipCities,
 			extraInfoPack,
-			packPrice
+			totalPrice
 		})
 	} else {
 		let sellList = []
-		for (let game of games) {
+		games.forEach((game, index) => {
 			let data = {
 				mode             : 'sell',
 				seller           : req.user._id,
@@ -216,10 +216,10 @@ const sellGames = asyncHandler(async (req, res) => {
 				shipPersonal,
 				shipCities,
 				extraInfoPack,
-				packPrice
+				totalPrice       : games[index].price
 			}
 			sellList.push(data)
-		}
+		})
 
 		await Game.insertMany(sellList)
 	}

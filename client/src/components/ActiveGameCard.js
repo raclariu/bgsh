@@ -175,7 +175,7 @@ const ActiveGameCard = ({ data }) => {
 					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
 					<ActiveAddHistoryButton
 						games={data.games}
-						price={data.type === 'pack' ? data.packPrice : data.games[0].price}
+						price={data.totalPrice}
 						gameId={data._id}
 						mode={data.mode}
 						display="add"
