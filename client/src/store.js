@@ -11,6 +11,7 @@ import {
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
 import {
 	bggGetGamesDetailsReducer,
+	bggGetHotGamesReducer,
 	saleListReducer,
 	bggSearchGamesReducer,
 	sellGamesReducer,
@@ -38,6 +39,7 @@ const reducer = combineReducers({
 	dbCollection    : dbGetCollectionReducer,
 	bggGamesDetails : bggGetGamesDetailsReducer,
 	bggSearchGames  : bggSearchGamesReducer,
+	bggHotGames     : bggGetHotGamesReducer,
 	gamesIndex      : getGamesReducer,
 	gameForSale     : getSingleGameReducer,
 	userActiveGames : getUserActiveGamesReducer,

@@ -2,9 +2,10 @@ import express from 'express'
 const router = express.Router()
 import {
 	getGamesFromBGG,
+	bggSearchGame,
+	bggGetHotGames,
 	sellGames,
 	tradeGames,
-	bggSearchGame,
 	getGames,
 	getUserActiveGames,
 	getSingleGame,
@@ -37,6 +38,7 @@ router.route('/reactivate/:id').patch(protect, reactivateGame)
 router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
+router.route('/bgg/hot').get(bggGetHotGames)
 router
 	.route('/trade')
 	.post(

@@ -113,6 +113,29 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 	}
 })
 
+// ~ @desc    Get BGG hot games
+// ~ @route   GET /api/games/bgg/hot
+// ~ @access  Public route
+const bggGetHotGames = asyncHandler(async (req, res) => {
+	try {
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/hot', {
+			params : {
+				type : 'boardgame'
+			}
+		})
+
+		let { item } = await parseXML(data)
+
+		res.status(200).json(item)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
 // * @desc    Search BGG for games
 // * @route   POST  /api/games/bgg/search
 // * @access  Private route
@@ -610,9 +633,10 @@ const deleteGame = asyncHandler(async (req, res) => {
 
 export {
 	getGamesFromBGG,
+	bggSearchGame,
+	bggGetHotGames,
 	sellGames,
 	tradeGames,
-	bggSearchGame,
 	getGames,
 	getSingleGame,
 	switchSaveGame,

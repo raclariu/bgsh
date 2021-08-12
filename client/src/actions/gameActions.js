@@ -3,6 +3,9 @@ import {
 	BGG_GAMES_DETAILS_REQUEST,
 	BGG_GAMES_DETAILS_SUCCESS,
 	BGG_GAMES_DETAILS_FAIL,
+	BGG_HOT_GAMES_REQUEST,
+	BGG_HOT_GAMES_SUCCESS,
+	BGG_HOT_GAMES_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
 	SELL_GAMES_REQUEST,
@@ -35,10 +38,10 @@ import {
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
 	GAME_DELETE_FAIL,
-	saleListLimit,
 	GAME_REACTIVATE_REQUEST,
 	GAME_REACTIVATE_SUCCESS,
-	GAME_REACTIVATE_FAIL
+	GAME_REACTIVATE_FAIL,
+	saleListLimit
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -62,6 +65,32 @@ export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : BGG_GAMES_DETAILS_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const bggGetHotGames = () => async (dispatch, getState) => {
+	try {
+		dispatch({ type: BGG_HOT_GAMES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get('/api/games/bgg/hot', config)
+
+		dispatch({
+			type    : BGG_HOT_GAMES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : BGG_HOT_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

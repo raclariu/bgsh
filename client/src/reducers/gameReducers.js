@@ -4,6 +4,9 @@ import {
 	BGG_GAMES_DETAILS_SUCCESS,
 	BGG_GAMES_DETAILS_FAIL,
 	BGG_GAMES_DETAILS_RESET,
+	BGG_HOT_GAMES_REQUEST,
+	BGG_HOT_GAMES_SUCCESS,
+	BGG_HOT_GAMES_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
 	SALE_LIST_RESET,
@@ -60,6 +63,24 @@ export const bggGetGamesDetailsReducer = (state = {}, action) => {
 			return { loading: false, error: action.payload }
 		case BGG_GAMES_DETAILS_RESET:
 			return {}
+
+		default:
+			return state
+	}
+}
+
+export const bggGetHotGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case BGG_HOT_GAMES_REQUEST:
+			return { loading: true }
+		case BGG_HOT_GAMES_SUCCESS:
+			return {
+				loading : false,
+				success : true,
+				hotList : action.payload
+			}
+		case BGG_HOT_GAMES_FAIL:
+			return { loading: false, error: action.payload }
 
 		default:
 			return state
