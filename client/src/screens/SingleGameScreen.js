@@ -1,5 +1,5 @@
 // @ Libraries
-import React, { useEffect, Fragment } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,8 +13,13 @@ import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogActions from '@material-ui/core/DialogActions'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
@@ -37,7 +42,7 @@ import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 
 // @ Others
-import { getSingleGame, getSingleSavedGame } from '../actions/gameActions'
+import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
 import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 
 // @ Styles
@@ -86,6 +91,16 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down('xs')]: {
 			width : '70%'
 		}
+	},
+	galleryImg         : {
+		maxHeight : '100%',
+		width     : '100%',
+		objectFit : 'contain',
+		cursor    : 'zoom-in'
+	},
+	galleryDialog      : {
+		height : '75vh',
+		width  : '90vh'
 	}
 }))
 
@@ -109,8 +124,16 @@ const SingleGameScreen = () => {
 	// 	return state.gamesIndex.gamesData ? state.gamesIndex.gamesData.find((game) => game.altId === altId) : null
 	// })
 
+	const [ open, setOpen ] = useState(false)
+	const [ imgIndex, setImgIndex ] = useState(0)
+
 	const gameForSale = useSelector((state) => state.gameForSale)
 	const { loading, success, error, saleData: data } = gameForSale
+
+	console.log(data)
+
+	const bggGallery = useSelector((state) => state.bggGallery)
+	const { loading: loadingGallery, success: successGallery, error: errorGallery, gallery } = bggGallery
 
 	useEffect(
 		() => {
@@ -125,17 +148,29 @@ const SingleGameScreen = () => {
 		[ dispatch, altId ]
 	)
 
+	useEffect(
+		() => {
+			if (success) {
+				dispatch(bggGetGallery(data.games[0].bggId))
+			}
+		},
+		[ dispatch, success, data ]
+	)
+
+	const handleOpen = (index) => {
+		setImgIndex(index)
+		setOpen(true)
+	}
+
+	const handleClose = () => {
+		setOpen(false)
+	}
+
 	return (
 		<div className={cls.root}>
 			{data && (
 				<Fragment>
-					<Grid
-						container
-						justifyContent="center"
-						alignItems="center"
-						direction="row"
-						className={cls.mainGrid}
-					>
+					<Grid container justify="center" alignItems="center" direction="row" className={cls.mainGrid}>
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justify="center">
 							<Box
@@ -397,6 +432,65 @@ const SingleGameScreen = () => {
 							</Box>
 						</Grid>
 					</Grid>
+
+					<Divider light />
+
+					<Box my={2}>Gallery</Box>
+
+					{successGallery && (
+						<Fragment>
+							<Grid container justify="center" alignItems="center" spacing={2}>
+								{gallery.map((obj, index) => (
+									<Grid item xs={12} sm={6} md={4} lg={3}>
+										<Box
+											display="flex"
+											justifyContent="center"
+											height="220px"
+											width="100%"
+											bgcolor="background.paper"
+											borderRadius={4}
+											boxShadow={2}
+											p={2}
+										>
+											<img
+												onClick={() => handleOpen(index)}
+												className={cls.galleryImg}
+												src={obj.thumbnail}
+												alt={obj.caption}
+											/>
+										</Box>
+									</Grid>
+								))}
+							</Grid>
+
+							<Dialog maxWidth={false} open={open} onClose={handleClose}>
+								<DialogTitle disableTypography>
+									<Typography variant="subtitle2">{gallery[imgIndex].caption}</Typography>
+								</DialogTitle>
+
+								<DialogContent dividers>
+									<Box maxWidth="100%">
+										<img
+											className={cls.gallery}
+											alt={gallery[imgIndex].caption}
+											src={gallery[imgIndex].image}
+										/>
+									</Box>
+								</DialogContent>
+
+								<DialogActions>
+									<Button
+										color="secondary"
+										href={`https://boardgamegeek.com${gallery[imgIndex].extLink}`}
+										target="_blank"
+										rel="noopener"
+									>
+										See on BGG
+									</Button>
+								</DialogActions>
+							</Dialog>
+						</Fragment>
+					)}
 				</Fragment>
 			)}
 		</div>

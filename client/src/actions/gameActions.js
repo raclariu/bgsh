@@ -6,6 +6,9 @@ import {
 	BGG_HOT_GAMES_REQUEST,
 	BGG_HOT_GAMES_SUCCESS,
 	BGG_HOT_GAMES_FAIL,
+	BGG_GAME_GALLERY_REQUEST,
+	BGG_GAME_GALLERY_SUCCESS,
+	BGG_GAME_GALLERY_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
 	SELL_GAMES_REQUEST,
@@ -70,9 +73,27 @@ export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
 	}
 }
 
-export const bggGetHotGames = () => async (dispatch, getState) => {
+export const bggGetHotGames = () => async (dispatch) => {
 	try {
 		dispatch({ type: BGG_HOT_GAMES_REQUEST })
+
+		const { data } = await axios.get('/api/games/bgg/hot')
+
+		dispatch({
+			type    : BGG_HOT_GAMES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : BGG_HOT_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const bggGetGallery = (bggId) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: BGG_GAME_GALLERY_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -82,15 +103,15 @@ export const bggGetHotGames = () => async (dispatch, getState) => {
 			}
 		}
 
-		const { data } = await axios.get('/api/games/bgg/hot', config)
+		const { data } = await axios.get(`/api/games/bgg/${bggId}/images`, config)
 
 		dispatch({
-			type    : BGG_HOT_GAMES_SUCCESS,
+			type    : BGG_GAME_GALLERY_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : BGG_HOT_GAMES_FAIL,
+			type    : BGG_GAME_GALLERY_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

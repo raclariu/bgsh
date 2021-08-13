@@ -13,8 +13,6 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 	try {
 		const { bggIds } = req.body
 
-		let gamesArr = []
-
 		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
 			params : {
 				id       : bggIds.join(','),
@@ -23,6 +21,7 @@ const getGamesFromBGG = asyncHandler(async (req, res) => {
 			}
 		})
 
+		let gamesArr = []
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
@@ -131,6 +130,52 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 		res.status(503)
 		throw {
 			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
+// ~ @desc Get gallery of images for single game from BGG
+// ~ @route  GET /api/games/bgg/:bggId/images
+// ~ @access Private route
+const bggGetGallery = asyncHandler(async (req, res) => {
+	try {
+		const { bggId } = req.params
+
+		const { data } = await axios.get('https://api.geekdo.com/api/images', {
+			params : {
+				ajax       : 1,
+				date       : 'alltime',
+				gallery    : 'game',
+				nosession  : 1,
+				objectid   : bggId,
+				objecttype : 'thing',
+				pageid     : 1,
+				showcount  : 16,
+				size       : 'thumb',
+				sort       : 'hot',
+				tag        : 'Components,Play'
+			}
+		})
+
+		if (data.images.length === 0) {
+			res.status(404)
+			throw {
+				message : 'No images found'
+			}
+		}
+
+		let images = []
+		data.images.map((obj) => {
+			const { imageid, imageurl_lg: image, caption, imageurl: thumbnail, href: extLink } = obj
+			images.push({ imageid, image, caption, thumbnail, extLink })
+		})
+
+		res.status(200).json(images)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve images from BGG',
 			devErr  : error.stack
 		}
 	}
@@ -635,6 +680,7 @@ export {
 	getGamesFromBGG,
 	bggSearchGame,
 	bggGetHotGames,
+	bggGetGallery,
 	sellGames,
 	tradeGames,
 	getGames,

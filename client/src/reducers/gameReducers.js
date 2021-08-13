@@ -7,6 +7,9 @@ import {
 	BGG_HOT_GAMES_REQUEST,
 	BGG_HOT_GAMES_SUCCESS,
 	BGG_HOT_GAMES_FAIL,
+	BGG_GAME_GALLERY_REQUEST,
+	BGG_GAME_GALLERY_SUCCESS,
+	BGG_GAME_GALLERY_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
 	SALE_LIST_RESET,
@@ -80,6 +83,24 @@ export const bggGetHotGamesReducer = (state = {}, action) => {
 				hotList : action.payload
 			}
 		case BGG_HOT_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const bggGetGalleryReducer = (state = {}, action) => {
+	switch (action.type) {
+		case BGG_GAME_GALLERY_REQUEST:
+			return { loading: true }
+		case BGG_GAME_GALLERY_SUCCESS:
+			return {
+				loading : false,
+				success : true,
+				gallery : action.payload
+			}
+		case BGG_GAME_GALLERY_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:
