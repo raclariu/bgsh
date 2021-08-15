@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { bggGetHotGames } from '../actions/gameActions'
 
 // @ Main
-const HomePageScreen = () => {
+const HomeScreen = () => {
 	const dispatch = useDispatch()
 
 	useEffect(
@@ -19,4 +19,4 @@ const HomePageScreen = () => {
 	return <div>Home</div>
 }
 
-export default HomePageScreen
+export default HomeScreen

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
+import LazyLoad from 'react-lazyload'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -12,7 +13,6 @@ import Grid from '@material-ui/core/Grid'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -27,7 +27,6 @@ import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
 import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone'
 import CancelRoundedIcon from '@material-ui/icons/CancelRounded'
 import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone'
-import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
 import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone'
 import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone'
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone'
@@ -40,6 +39,8 @@ import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
+import Loader from '../components/Loader'
+import SendMessage from '../components/SendMessage'
 
 // @ Others
 import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 		display        : 'flex',
 		justifyContent : 'center',
 		flexWrap       : 'wrap',
-		margin         : theme.spacing(1, 0, 1, 0),
+		margin         : theme.spacing(2, 0, 2, 0),
 		'& > *'        : {
 			margin : theme.spacing(0.5)
 		}
@@ -92,15 +93,19 @@ const useStyles = makeStyles((theme) => ({
 			width : '70%'
 		}
 	},
+	priceContainer     : {
+		marginTop : theme.spacing(2)
+	},
 	galleryImg         : {
 		maxHeight : '100%',
 		width     : '100%',
 		objectFit : 'contain',
 		cursor    : 'zoom-in'
 	},
-	galleryDialog      : {
-		height : '75vh',
-		width  : '90vh'
+	dialogImg          : {
+		maxHeight : '100%',
+		width     : '100%',
+		objectFit : 'contain'
 	}
 }))
 
@@ -120,12 +125,9 @@ const SingleGameScreen = () => {
 		}
 	}
 
-	// let data = useSelector((state) => {
-	// 	return state.gamesIndex.gamesData ? state.gamesIndex.gamesData.find((game) => game.altId === altId) : null
-	// })
-
 	const [ open, setOpen ] = useState(false)
 	const [ imgIndex, setImgIndex ] = useState(0)
+	const [ load, setLoad ] = useState(false)
 
 	const gameForSale = useSelector((state) => state.gameForSale)
 	const { loading, success, error, saleData: data } = gameForSale
@@ -164,13 +166,18 @@ const SingleGameScreen = () => {
 
 	const handleClose = () => {
 		setOpen(false)
+		setLoad(false)
+	}
+
+	const onImgLoad = () => {
+		setLoad(true)
 	}
 
 	return (
 		<div className={cls.root}>
 			{data && (
 				<Fragment>
-					<Grid container justify="center" alignItems="center" direction="row" className={cls.mainGrid}>
+					<Grid container justify="center" direction="row" className={cls.mainGrid}>
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justify="center">
 							<Box
@@ -305,35 +312,30 @@ const SingleGameScreen = () => {
 									</InfoBox>
 								</Grid>
 							</Grid>
+
+							<Grid className={cls.priceContainer} item container justify="center" alignItems="center">
+								{data.mode === 'sell' && (
+									<Box fontWeight="fontWeightMedium">
+										<Box>{data.totalPrice} RON</Box>
+									</Box>
+								)}
+
+								<SendMessage
+									title={data.games[0].title}
+									recipientUsername={data.seller.username}
+									recipientId={data.seller._id}
+								/>
+								<SaveGameButton altId={altId} sellerId={data.seller._id} />
+							</Grid>
 						</Grid>
 					</Grid>
 
 					<Divider light />
 
-					{/* Chips */}
-					<Box className={cls.chipsBox}>
-						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
-					</Box>
-
-					<Divider light />
-
-					<Grid item container justify="center" alignItems="center">
-						{data.mode === 'sell' && (
-							<Box fontWeight="fontWeightMedium" mt={0.5}>
-								<Box>{data.totalPrice} RON</Box>
-							</Box>
-						)}
-
-						<IconButton color="primary">
-							<MailTwoToneIcon fontSize="small" />
-						</IconButton>
-						<SaveGameButton altId={altId} sellerId={data.seller._id} />
-					</Grid>
-
 					{/* Shipping */}
-					<Grid container>
+					<Grid className={cls.mainGrid} container>
 						<Grid item container xs={12} direction="column">
-							<Box p={1} my={2}>
+							<Box p={1}>
 								<Typography component="div">
 									{data.shipPost ? (
 										<Box
@@ -405,7 +407,7 @@ const SingleGameScreen = () => {
 											<Box className={cls.chipsBox}>
 												{data.shipCities.map((city, index) => (
 													<Chip
-														key={index}
+														key={city}
 														icon={<RoomTwoToneIcon />}
 														size="small"
 														color="primary"
@@ -435,52 +437,57 @@ const SingleGameScreen = () => {
 
 					<Divider light />
 
-					<Box my={2}>Gallery</Box>
-
 					{successGallery && (
 						<Fragment>
-							<Grid container justify="center" alignItems="center" spacing={2}>
+							<Grid className={cls.mainGrid} container justify="center" alignItems="center" spacing={2}>
 								{gallery.map((obj, index) => (
-									<Grid item xs={12} sm={6} md={4} lg={3}>
-										<Box
-											display="flex"
-											justifyContent="center"
-											height="220px"
-											width="100%"
-											bgcolor="background.paper"
-											borderRadius={4}
-											boxShadow={2}
-											p={2}
-										>
-											<img
-												onClick={() => handleOpen(index)}
-												className={cls.galleryImg}
-												src={obj.thumbnail}
-												alt={obj.caption}
-											/>
-										</Box>
+									<Grid key={obj.imageid} item xs={12} sm={6} md={4} lg={3}>
+										<LazyLoad offset={200} once>
+											<Box
+												display="flex"
+												justifyContent="center"
+												height="220px"
+												width="100%"
+												bgcolor="background.paper"
+												borderRadius={4}
+												boxShadow={2}
+												p={2}
+											>
+												<img
+													onClick={() => handleOpen(index)}
+													className={cls.galleryImg}
+													src={obj.thumbnail}
+													alt={obj.caption}
+												/>
+											</Box>
+										</LazyLoad>
 									</Grid>
 								))}
 							</Grid>
 
-							<Dialog maxWidth={false} open={open} onClose={handleClose}>
+							<Dialog fullWidth={true} maxWidth="md" open={open} onClose={handleClose}>
 								<DialogTitle disableTypography>
 									<Typography variant="subtitle2">{gallery[imgIndex].caption}</Typography>
 								</DialogTitle>
 
 								<DialogContent dividers>
-									<Box maxWidth="100%">
-										<img
-											className={cls.gallery}
-											alt={gallery[imgIndex].caption}
-											src={gallery[imgIndex].image}
-										/>
-									</Box>
+									<img
+										onLoad={onImgLoad}
+										className={cls.dialogImg}
+										alt={gallery[imgIndex].caption}
+										src={gallery[imgIndex].image}
+									/>
+									{!load && (
+										<Box display="flex" justifyContent="center" alignItems="center">
+											<Loader />
+										</Box>
+									)}
 								</DialogContent>
 
 								<DialogActions>
 									<Button
-										color="secondary"
+										color="primary"
+										variant="outlined"
 										href={`https://boardgamegeek.com${gallery[imgIndex].extLink}`}
 										target="_blank"
 										rel="noopener"
@@ -491,6 +498,13 @@ const SingleGameScreen = () => {
 							</Dialog>
 						</Fragment>
 					)}
+
+					<Divider light />
+
+					{/* Chips */}
+					<Box className={cls.chipsBox}>
+						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
+					</Box>
 				</Fragment>
 			)}
 		</div>

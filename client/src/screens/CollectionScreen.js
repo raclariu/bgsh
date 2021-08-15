@@ -64,8 +64,6 @@ const CollectionScreen = () => {
 		[ dispatch, search, page ]
 	)
 
-	useEffect(() => {}, [])
-
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
 

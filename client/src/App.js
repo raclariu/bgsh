@@ -1,5 +1,5 @@
 // @ Libraries
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/core/styles'
@@ -10,8 +10,10 @@ import './App.css'
 
 // @ Mui
 import Container from '@material-ui/core/Container'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 // @ Components
+import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
@@ -19,22 +21,21 @@ import Footer from './components/Footer'
 import { light, dark } from './themePalette'
 
 // @ Screens
-import HomePageScreen from './screens/HomePageScreen'
-import AuthScreen from './screens/AuthScreen'
-import SettingsScreen from './screens/SettingsScreen'
-import ProfileScreen from './screens/ProfileScreen'
-import CollectionScreen from './screens/CollectionScreen'
-import SellGamesScreen from './screens/SellGamesScreen'
-import TradeGamesScreen from './screens/TradeGamesScreen'
-import WishlistScreen from './screens/WishlistScreen'
-import ProtectedRoute from './components/ProtectedRoute'
-import GamesIndexScreen from './screens/GamesIndexScreen'
-import SingleGameScreen from './screens/SingleGameScreen'
-import SavedGamesScreen from './screens/SavedGamesScreen'
-import ActiveGamesScreen from './screens/ActiveGamesScreen'
-import HistorySoldGamesScreen from './screens/HistorySoldGamesScreen'
-import HistoryTradedGamesScreen from './screens/HistoryTradedGamesScreen'
-import NotFoundScreen from './screens/NotFoundScreen'
+const Home = lazy(() => import('./screens/HomeScreen'))
+const Auth = lazy(() => import('./screens/AuthScreen'))
+const Settings = lazy(() => import('./screens/SettingsScreen'))
+const Profile = lazy(() => import('./screens/ProfileScreen'))
+const Collection = lazy(() => import('./screens/CollectionScreen'))
+const SellGames = lazy(() => import('./screens/SellGamesScreen'))
+const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
+const Wishlist = lazy(() => import('./screens/WishlistScreen'))
+const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
+const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
+const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
+const ActiveGames = lazy(() => import('./screens/ActiveGamesScreen'))
+const HistorySoldGames = lazy(() => import('./screens/HistorySoldGamesScreen'))
+const HistoryTradedGames = lazy(() => import('./screens/HistoryTradedGamesScreen'))
+const NotFound = lazy(() => import('./screens/NotFoundScreen'))
 
 // @ Main
 const App = () => {
@@ -46,77 +47,79 @@ const App = () => {
 				<CssBaseline />
 				<Header />
 
-				<Container maxWidth="md" component="main">
-					<Switch>
-						<Route path="/" exact>
-							<HomePageScreen test={1} />
-						</Route>
+				<Suspense fallback={<LinearProgress />}>
+					<Container maxWidth="md" component="main">
+						<Switch>
+							<Route path="/" exact>
+								<Home test={1} />
+							</Route>
 
-						<Route path={[ '/signin', '/signup' ]} exact>
-							<AuthScreen />
-						</Route>
+							<Route path={[ '/signin', '/signup' ]} exact>
+								<Auth />
+							</Route>
 
-						<ProtectedRoute path="/profile" exact>
-							<ProfileScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/profile" exact>
+								<Profile />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/settings" exact>
-							<SettingsScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/settings" exact>
+								<Settings />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/games" exact>
-							<GamesIndexScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/games" exact>
+								<GamesIndex />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/trades" exact>
-							<GamesIndexScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/trades" exact>
+								<GamesIndex />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/games/:altId" exact>
-							<SingleGameScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/games/:altId" exact>
+								<SingleGame />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/collection" exact>
-							<CollectionScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/collection" exact>
+								<Collection />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/wishlist" exact>
-							<WishlistScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/wishlist" exact>
+								<Wishlist />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/sell" exact>
-							<SellGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/sell" exact>
+								<SellGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/trade" exact>
-							<TradeGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/trade" exact>
+								<TradeGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/saved" exact>
-							<SavedGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/saved" exact>
+								<SavedGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/history/active" exact>
-							<ActiveGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/history/active" exact>
+								<ActiveGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/history/sold" exact>
-							<HistorySoldGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/history/sold" exact>
+								<HistorySoldGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/history/traded" exact>
-							<HistoryTradedGamesScreen />
-						</ProtectedRoute>
+							<ProtectedRoute path="/history/traded" exact>
+								<HistoryTradedGames />
+							</ProtectedRoute>
 
-						<ProtectedRoute path="/signout" exact>
-							<Redirect to="/" />
-						</ProtectedRoute>
+							<ProtectedRoute path="/signout" exact>
+								<Redirect to="/" />
+							</ProtectedRoute>
 
-						<Route>
-							<NotFoundScreen />
-						</Route>
-					</Switch>
-				</Container>
+							<Route>
+								<NotFound />
+							</Route>
+						</Switch>
+					</Container>
+				</Suspense>
 
 				<Footer />
 			</BrowserRouter>

@@ -139,6 +139,49 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 	})
 	.withMessage('New password confirmation does not match new password')
 
+const validateMessageRecipient = check('recipientUsername')
+	.trim()
+	.notEmpty()
+	.withMessage('Username is required')
+	.bail()
+	.isLength({ min: 4, max: 20 })
+	.withMessage('Username must have between 4 and 20 characters')
+	.bail()
+	.isAlphanumeric()
+	.withMessage('Username can only contain letters and numbers')
+	.bail()
+	.custom(async (username, { req }) => {
+		if (username === req.user.username) {
+			throw new Error('You cannot buy your own games')
+		}
+
+		if (username) {
+			const usernameExists = await User.findOne({ username }).select('_id').lean()
+
+			if (!usernameExists) {
+				throw new Error('User not found')
+			} else {
+				return true
+			}
+		}
+	})
+
+const validateMessageSubject = check('subject')
+	.trim()
+	.notEmpty()
+	.withMessage('Subject is required')
+	.bail()
+	.isLength({ min: 1, max: 60 })
+	.withMessage('Subject must have between 1 and 60 characters')
+
+const validateMessageBody = check('message')
+	.trim()
+	.isLength({ min: 0, max: 500 })
+	.withMessage('500 maximum characters')
+	.bail()
+	.isString()
+	.withMessage('Can only contain letters and numbers')
+
 export {
 	validateEmail,
 	validateEmailDuplicate,
@@ -147,5 +190,8 @@ export {
 	validatePasswordConfirmation,
 	validatePasswordCurrent,
 	validatePasswordNew,
-	validatePasswordNewConfirmation
+	validatePasswordNewConfirmation,
+	validateMessageRecipient,
+	validateMessageSubject,
+	validateMessageBody
 }

@@ -28,7 +28,9 @@ const userSchema = mongoose.Schema({
 			required : true,
 			ref      : 'Game'
 		}
-	]
+	],
+	received   : [],
+	sent       : []
 })
 
 const User = mongoose.model('User', userSchema)

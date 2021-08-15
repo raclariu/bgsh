@@ -63,7 +63,7 @@ const RatingBox = ({ variant, stats }) => {
 			) : (
 				<Box bgcolor={handleRatingBgColor()} {...defaultBigBox}>
 					{approx(stats.avgRating)}
-					<Box fontSize={11} color="grey.200">
+					<Box fontSize={10} color="grey.200">
 						{approx(stats.ratings)} ratings
 					</Box>
 				</Box>
@@ -76,11 +76,11 @@ const RankBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box bgcolor={stats.rank <= 100 ? '#d4b215' : '#666e75'} {...defaultMiniBox}>
+				<Box bgcolor={stats.rank <= 100 ? '#cfb000' : '#666e75'} {...defaultMiniBox}>
 					{stats.rank}
 				</Box>
 			) : (
-				<Box bgcolor={stats.rank <= 100 ? '#d4b215' : '#666e75'} {...defaultBigBox}>
+				<Box bgcolor={stats.rank <= 100 ? '#cfb000' : '#666e75'} {...defaultBigBox}>
 					{stats.rank}
 					<Box fontSize={11} color="grey.200">
 						rank

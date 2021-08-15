@@ -21,7 +21,6 @@ import Avatar from '@material-ui/core/Avatar'
 import Collapse from '@material-ui/core/Collapse'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import pink from '@material-ui/core/colors/pink'
 
 // @ Icons
 import MenuIcon from '@material-ui/icons/Menu'
@@ -34,10 +33,10 @@ import MonetizationOnTwoToneIcon from '@material-ui/icons/MonetizationOnTwoTone'
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveTwoTone'
-import InputTwoToneIcon from '@material-ui/icons/InputTwoTone'
-import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
+import LocalActivityTwoToneIcon from '@material-ui/icons/LocalActivityTwoTone'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
 
 // @ Components
 import SaleListPopover from './SaleListPopover'
@@ -225,7 +224,7 @@ const Header = () => {
 													to="/trades"
 												>
 													<ListItemIcon>
-														<SwapHorizontalCircleOutlinedIcon />
+														<SwapHorizontalCircleTwoToneIcon />
 													</ListItemIcon>
 													<ListItemText primary="Trades" />
 												</ListItem>
@@ -292,7 +291,7 @@ const Header = () => {
 											onClick={handleClick}
 										>
 											<ListItemIcon>
-												<InputTwoToneIcon />
+												<LocalActivityTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="Active" />
 										</ListItem>
@@ -329,7 +328,7 @@ const Header = () => {
 													onClick={handleClick}
 												>
 													<ListItemIcon>
-														<SwapHorizontalCircleOutlinedIcon />
+														<SwapHorizontalCircleTwoToneIcon />
 													</ListItemIcon>
 													<ListItemText primary="Traded" />
 												</ListItem>
@@ -351,20 +350,6 @@ const Header = () => {
 							<Button color="inherit" component={RouterLink} to="/signin">
 								Sign In
 							</Button>
-
-							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
-								<MenuIcon />
-							</IconButton>
-							<Drawer anchor="right" open={isOpen} onClick={() => setIsOpen(!isOpen)}>
-								<List className={classes.list}>
-									<ListItem button component={RouterLink} to="/">
-										<ListItemIcon>
-											<HomeTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText primary="Home" />
-									</ListItem>
-								</List>
-							</Drawer>
 						</Fragment>
 					)}
 				</Toolbar>

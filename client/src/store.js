@@ -6,6 +6,7 @@ import {
 	userSignInReducer,
 	userSignUpReducer,
 	userChangePasswordReducer,
+	userSendMessageReducer,
 	setThemeReducer
 } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
@@ -35,6 +36,7 @@ const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
 	userSignUp      : userSignUpReducer,
 	userPreferences : setThemeReducer,
+	sendMessage     : userSendMessageReducer,
 	changePassword  : userChangePasswordReducer,
 	bggCollection   : bggGetCollectionReducer,
 	dbCollection    : dbGetCollectionReducer,
