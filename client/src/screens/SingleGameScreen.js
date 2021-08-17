@@ -320,11 +320,7 @@ const SingleGameScreen = () => {
 									</Box>
 								)}
 
-								<SendMessage
-									title={data.games[0].title}
-									recipientUsername={data.seller.username}
-									recipientId={data.seller._id}
-								/>
+								<SendMessage recipientUsername={data.seller.username} recipientId={data.seller._id} />
 								<SaveGameButton altId={altId} sellerId={data.seller._id} />
 							</Grid>
 						</Grid>

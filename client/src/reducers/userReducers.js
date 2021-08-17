@@ -10,10 +10,7 @@ import {
 	USER_PREFERENCES_SET_THEME,
 	USER_CHANGE_PASSWORD_REQUEST,
 	USER_CHANGE_PASSWORD_SUCCESS,
-	USER_CHANGE_PASSWORD_FAIL,
-	USER_SEND_MESSAGE_REQUEST,
-	USER_SEND_MESSAGE_SUCCESS,
-	USER_SEND_MESSAGE_FAIL
+	USER_CHANGE_PASSWORD_FAIL
 } from '../constants/userConstants'
 
 export const userSignInReducer = (state = {}, action) => {
@@ -53,20 +50,6 @@ export const userChangePasswordReducer = (state = {}, action) => {
 		case USER_CHANGE_PASSWORD_SUCCESS:
 			return { loading: false, success: true }
 		case USER_CHANGE_PASSWORD_FAIL:
-			return { loading: false, error: action.payload }
-
-		default:
-			return state
-	}
-}
-
-export const userSendMessageReducer = (state = {}, action) => {
-	switch (action.type) {
-		case USER_SEND_MESSAGE_REQUEST:
-			return { loading: true }
-		case USER_SEND_MESSAGE_SUCCESS:
-			return { loading: false, success: true }
-		case USER_SEND_MESSAGE_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

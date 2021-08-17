@@ -6,7 +6,6 @@ import {
 	userSignInReducer,
 	userSignUpReducer,
 	userChangePasswordReducer,
-	userSendMessageReducer,
 	setThemeReducer
 } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
@@ -31,12 +30,14 @@ import {
 	getSoldGamesHistoryReducer,
 	getTradedGamesHistoryReducer
 } from './reducers/historyReducers'
+import { sendMessageReducer, getAllMessagesReducer } from './reducers/messageReducers'
 
 const reducer = combineReducers({
 	userSignIn      : userSignInReducer,
 	userSignUp      : userSignUpReducer,
 	userPreferences : setThemeReducer,
-	sendMessage     : userSendMessageReducer,
+	sendMessage     : sendMessageReducer,
+	messages        : getAllMessagesReducer,
 	changePassword  : userChangePasswordReducer,
 	bggCollection   : bggGetCollectionReducer,
 	dbCollection    : dbGetCollectionReducer,

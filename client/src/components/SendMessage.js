@@ -15,7 +15,8 @@ import Button from '@material-ui/core/Button'
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
 
 // @ Others
-import { userSendMessage } from '../actions/userActions'
+import { sendMessage } from '../actions/messageActions'
+import { SEND_MESSAGE_RESET } from '../constants/messageConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -29,15 +30,28 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @Main
-const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
+const SendMessage = ({ recipientUsername, recipientId }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
 	const [ open, setOpen ] = useState(false)
 
-	const [ recipient, setRecipient ] = useState(recipientUsername)
-	const [ subject, setSubject ] = useState(`Doresc sa cumpar ${title}`)
+	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')
+	const [ subject, setSubject ] = useState('')
 	const [ message, setMessage ] = useState('')
+
+	const sendMessageSelector = useSelector((state) => state.sendMessage)
+	const { success, error, loading } = sendMessageSelector
+
+	useEffect(
+		() => {
+			return () => {
+				dispatch({ type: SEND_MESSAGE_RESET })
+			}
+		},
+		[ dispatch ]
+	)
+
 	const handleOpenDialog = () => {
 		setOpen(true)
 	}
@@ -48,10 +62,10 @@ const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		console.log('sub')
-		console.log(subject, message, recipientUsername, recipientId)
-		dispatch(userSendMessage(subject, message, recipientUsername, recipientId))
+		dispatch(sendMessage(subject, message, recipient, recipientId))
 	}
+
+	console.log(subject, message, recipient, recipientId)
 
 	return (
 		<Fragment>
@@ -64,6 +78,8 @@ const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
 					<DialogContent>
 						<TextField
 							className={cls.input}
+							error={error && error.recipientUsernameError ? true : false}
+							helperText={error ? error.recipientUsernameError : false}
 							onChange={(e) => setRecipient(e.target.value)}
 							value={recipient}
 							variant="outlined"
@@ -78,6 +94,8 @@ const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
 
 						<TextField
 							className={cls.input}
+							error={error && error.subjectError ? true : false}
+							helperText={error ? error.subjectError : false}
 							onChange={(e) => setSubject(e.target.value)}
 							value={subject}
 							variant="outlined"
@@ -90,6 +108,8 @@ const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
 						/>
 
 						<TextField
+							error={error && error.messageError ? true : false}
+							helperText={error ? error.messageError : false}
 							onChange={(e) => setMessage(e.target.value)}
 							value={message}
 							inputProps={{
@@ -110,9 +130,13 @@ const SendMessage = ({ title = '', recipientUsername, recipientId }) => {
 						/>
 					</DialogContent>
 					<DialogActions>
-						<Button color="primary" type="submit" variant="outlined">
-							Send
-						</Button>
+						{success ? (
+							'success'
+						) : (
+							<Button color="primary" type="submit" variant="outlined">
+								Send
+							</Button>
+						)}
 					</DialogActions>
 				</form>
 			</Dialog>

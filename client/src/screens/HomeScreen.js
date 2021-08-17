@@ -11,7 +11,7 @@ const HomeScreen = () => {
 
 	useEffect(
 		() => {
-			dispatch(bggGetHotGames())
+			dispatch(bggGetHotGames()).then((data) => console.log(data))
 		},
 		[ dispatch ]
 	)

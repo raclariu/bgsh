@@ -30,6 +30,7 @@ import {
 	validateShipCities
 } from '../validators/sellGameValidator.js'
 
+// @ api/games
 router.route('/').get(protect, getGames)
 router.route('/delete/:id').delete(protect, deleteGame)
 router.route('/user/:id').get(protect, getUserActiveGames)

@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes.js'
 import collectionRoutes from './routes/collectionRoutes.js'
 import gameRoutes from './routes/gameRoutes.js'
 import historyRoutes from './routes/historyRoutes.js'
+import messageRoutes from './routes/messageRoutes.js'
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes)
 app.use('/api/games', gameRoutes)
 app.use('/api/history', historyRoutes)
+app.use('/api/messages', messageRoutes)
 
 app.get('/', (req, res) => {
 	res.send('Api is running...')

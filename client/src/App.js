@@ -32,6 +32,7 @@ const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
+const Messages = lazy(() => import('./screens/MessagesScreen'))
 const ActiveGames = lazy(() => import('./screens/ActiveGamesScreen'))
 const HistorySoldGames = lazy(() => import('./screens/HistorySoldGamesScreen'))
 const HistoryTradedGames = lazy(() => import('./screens/HistoryTradedGamesScreen'))
@@ -96,6 +97,10 @@ const App = () => {
 
 							<ProtectedRoute path="/saved" exact>
 								<SavedGames />
+							</ProtectedRoute>
+
+							<ProtectedRoute path="/inbox" exact>
+								<Messages />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/history/active" exact>

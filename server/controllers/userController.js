@@ -95,38 +95,4 @@ const changePassword = asyncHandler(async (req, res) => {
 	}
 })
 
-// * @desc    Send message
-// * @route   POST  /api/users/message
-// * @access  Private route
-const sendMessage = asyncHandler(async (req, res) => {
-	const { subject, message, recipientUsername, recipientId } = req.body
-
-	const validationErrors = validationResult(req)
-	if (!validationErrors.isEmpty()) {
-		const err = validationErrors.mapped()
-
-		res.status(400)
-		throw {
-			message : {
-				recipientUsernameError : err.recipientUsername ? err.recipientUsername.msg : null,
-				subjectError           : err.subject ? err.subject.msg : null,
-				messageError           : err.message ? err.message.msg : null
-			}
-		}
-	} else {
-		// Recipient
-		const recipient = await User.findOne({ _id: recipientId }).select('received').lean()
-		recipient.received.unshift({ subject, message })
-		console.log(recipient)
-		await User.updateOne({ _id: recipientId }, { received: recipient.received })
-
-		// Sender
-		const sender = await User.findOne({ _id: req.user._id }).select('sent').lean()
-		sender.sent.unshift({ subject, message })
-		await User.updateOne({ _id: req.user._id }, { sent: sender.sent })
-
-		res.status(200).end()
-	}
-})
-
-export { userAuth, userRegister, changePassword, sendMessage }
+export { userAuth, userRegister, changePassword }

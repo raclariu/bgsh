@@ -37,6 +37,7 @@ import LocalActivityTwoToneIcon from '@material-ui/icons/LocalActivityTwoTone'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
+import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 
 // @ Components
 import SaleListPopover from './SaleListPopover'
@@ -281,6 +282,19 @@ const Header = () => {
 												<BookmarkTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText primary="My Saved Games" />
+										</ListItem>
+
+										<ListItem
+											onClick={handleClick}
+											selected={pathname === '/inbox'}
+											button
+											component={RouterLink}
+											to="/inbox"
+										>
+											<ListItemIcon>
+												<EmailTwoToneIcon />
+											</ListItemIcon>
+											<ListItemText primary="Messages" />
 										</ListItem>
 
 										<ListItem

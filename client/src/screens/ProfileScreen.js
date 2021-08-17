@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography'
 // @ Components
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
+import SendMessage from '../components/SendMessage'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +43,8 @@ const ProfileScreen = () => {
 						<BggSearchGamesBox />
 					</Box>
 				</Grid>
+
+				<SendMessage />
 			</Grid>
 		</Fragment>
 	)
