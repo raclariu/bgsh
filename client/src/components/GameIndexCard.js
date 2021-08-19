@@ -119,10 +119,10 @@ const GameIndexCard = ({ data }) => {
 
 			<Divider />
 
-			<CardContent className={cls.content}>
+			<CardContent>
 				<Box
 					display="flex"
-					justifyContent="space-between"
+					justifyContent={data.type === 'pack' ? 'space-between' : 'center'}
 					alignItems="center"
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"

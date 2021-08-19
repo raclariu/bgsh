@@ -9,6 +9,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Chip from '@material-ui/core/Chip'
 import Box from '@material-ui/core/Box'
 import Checkbox from '@material-ui/core/Checkbox'
 import Typography from '@material-ui/core/Typography'
@@ -39,14 +40,17 @@ const useStyles = makeStyles((theme) => ({
 	buttonBase : {
 		width : '100%'
 	},
-	title      : {
-		textOverflow : 'ellipsis',
-		overflow     : 'hidden',
-		width        : '250px'
+	subject    : {
+		whiteSpace                     : 'nowrap',
+		textOverflow                   : 'ellipsis',
+		overflow                       : 'hidden',
+		width                          : '80%',
+		[theme.breakpoints.down('xs')]: {
+			width : 200
+		}
 	},
 	avatar     : {
-		width  : theme.spacing(4),
-		height : theme.spacing(4)
+		margin : theme.spacing(0, 1, 0, 1)
 	}
 }))
 
@@ -115,16 +119,22 @@ const MessagesScreen = () => {
 						/>
 					</Grid>
 					{received.map((msg) => (
-						<Grid key={msg._id} item container xs={12} md={8}>
+						<Grid key={msg._id} item container xs={12} sm={8}>
 							<Box width="100%" bgcolor="background.paper" boxShadow={2} borderRadius={4}>
 								<ListItem button>
 									<ListItemAvatar>
 										<Avatar className={cls.avatar}>
-											<Box fontSize={12}>{msg.sender.username.substring(0, 2).toUpperCase()}</Box>
+											<Box className={cls.subject} fontSize={12}>
+												{msg.sender.username.substring(0, 2).toUpperCase()}
+											</Box>
 										</Avatar>
 									</ListItemAvatar>
 									<ListItemText
-										primary={<Box fontWeight={!msg.read && 'fontWeightBold'}>{msg.subject}</Box>}
+										primary={
+											<Box fontWeight={!msg.read && 'fontWeightBold'}>
+												{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+											</Box>
+										}
 										secondary={formatDistance(parseISO(msg.createdAt), new Date(), {
 											addSuffix : true
 										})}
@@ -146,31 +156,38 @@ const MessagesScreen = () => {
 					alignItems="center"
 					spacing={1}
 				>
-					<Grid item container justify="flex-start" alignItems="center" xs={12} md={7}>
+					<Grid item container justify="flex-start" alignItems="center" xs={12} sm={11} md={7}>
 						<FormControlLabel
 							label="Select all"
-							control={<Checkbox label="Select all" disabled={!success} onChange={handleSelectAll} />}
+							control={
+								<Checkbox
+									size="small"
+									label="Select all"
+									disabled={!success}
+									onChange={handleSelectAll}
+								/>
+							}
 						/>
 					</Grid>
 					{sent.map((msg) => (
-						<Grid key={msg._id} item container xs={12} md={7}>
+						<Grid key={msg._id} item container xs={12} sm={11} md={7}>
 							<ButtonBase className={cls.buttonBase} component="div">
 								<Box
-									bgcolor="background.paper"
-									width="100%"
-									p={1}
 									display="flex"
+									p={1}
 									boxShadow={1}
 									borderRadius={4}
+									width="100%"
+									bgcolor="background.paper"
 								>
-									<Box mr={1} display="flex" justifyContent="center" alignItems="center">
+									<Box display="flex" justifyContent="center" alignItems="center">
 										<Checkbox
 											checked={checked.some((el) => el === msg._id)}
 											onChange={(e) => handleChecked(e, msg._id)}
 											size="small"
 										/>
 										<Avatar className={cls.avatar}>
-											<Box fontSize={12}>
+											<Box fontSize={14}>
 												{msg.recipient.username.substring(0, 2).toUpperCase()}
 											</Box>
 										</Avatar>
@@ -178,16 +195,23 @@ const MessagesScreen = () => {
 
 									<Divider flexItem orientation="vertical" />
 
-									<Box ml={2} display="flex" flexDirection="column" justifyContent="center">
-										<Box fontSize={11} color="grey.500" fontStyle="italic">
-											from {msg.recipient.username}
+									<Box
+										ml={1}
+										my={1.5}
+										display="flex"
+										flexDirection="column"
+										justifyContent="center"
+										width="100%"
+									>
+										<Box
+											className={cls.subject}
+											fontSize={16}
+											fontWeight={!msg.read && 'fontWeightBold'}
+										>
+											{msg.subject}ssssssssssssssssssssssssssssssssssssssss
 										</Box>
 
-										<Box mt={0.5} className={cls.title} fontWeight={!msg.read && 'fontWeightBold'}>
-											{msg.subject}assssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-										</Box>
-
-										<Box mt={0.5} fontSize={11} color="grey.500" fontStyle="italic">
+										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic">
 											{formatDistance(parseISO(msg.createdAt), new Date(), {
 												addSuffix : true
 											})}
