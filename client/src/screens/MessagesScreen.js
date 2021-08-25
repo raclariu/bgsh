@@ -41,16 +41,10 @@ const useStyles = makeStyles((theme) => ({
 		width : '100%'
 	},
 	subject    : {
-		whiteSpace                     : 'nowrap',
-		textOverflow                   : 'ellipsis',
-		overflow                       : 'hidden',
-		width                          : '80%',
-		[theme.breakpoints.down('xs')]: {
-			width : 200
-		}
-	},
-	avatar     : {
-		margin : theme.spacing(0, 1, 0, 1)
+		whiteSpace   : 'nowrap',
+		textOverflow : 'ellipsis',
+		overflow     : 'hidden',
+		width        : '95%'
 	}
 }))
 
@@ -86,7 +80,7 @@ const MessagesScreen = () => {
 
 	const handleSelectAll = (e) => {
 		if (e.target.checked) {
-			setChecked(sent.map((el) => el._id))
+			setChecked(received.map((el) => el._id))
 		} else {
 			setChecked([])
 		}
@@ -106,41 +100,80 @@ const MessagesScreen = () => {
 			{success &&
 			tab === 'received' && (
 				<Grid
-					className={cls.grid}
 					container
 					direction="column"
 					justify="center"
 					alignItems="center"
+					className={cls.grid}
 					spacing={1}
 				>
-					<Grid item container justify="flex-start" alignItems="center" xs={12} md={8}>
+					<Grid item container justify="flex-start" alignItems="center" xs={12} sm={9} md={7}>
 						<FormControlLabel
-							control={<Checkbox label="Select all" disabled={!success} onChange={handleSelectAll} />}
+							label="Select all"
+							control={
+								<Checkbox
+									size="small"
+									label="Select all"
+									disabled={!success}
+									onChange={handleSelectAll}
+								/>
+							}
 						/>
 					</Grid>
 					{received.map((msg) => (
-						<Grid key={msg._id} item container xs={12} sm={8}>
-							<Box width="100%" bgcolor="background.paper" boxShadow={2} borderRadius={4}>
-								<ListItem button>
-									<ListItemAvatar>
-										<Avatar className={cls.avatar}>
-											<Box className={cls.subject} fontSize={12}>
-												{msg.sender.username.substring(0, 2).toUpperCase()}
-											</Box>
+						<Grid item container key={msg._id} xs={12} sm={9} md={7}>
+							<ButtonBase className={cls.buttonBase}>
+								<Box
+									display="flex"
+									boxShadow={2}
+									borderRadius={4}
+									bgcolor="background.paper"
+									alignItems="center"
+									width="100%"
+									px={1}
+									py={1}
+								>
+									<Box my={1} mr={1}>
+										<Checkbox
+											checked={checked.some((el) => el === msg._id)}
+											onChange={(e) => handleChecked(e, msg._id)}
+											size="small"
+										/>
+									</Box>
+
+									<Box mr={1}>
+										<Avatar>
+											<Box fontSize={14}>{msg.sender.username.substring(0, 2).toUpperCase()}</Box>
 										</Avatar>
-									</ListItemAvatar>
-									<ListItemText
-										primary={
-											<Box fontWeight={!msg.read && 'fontWeightBold'}>
-												{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-											</Box>
-										}
-										secondary={formatDistance(parseISO(msg.createdAt), new Date(), {
-											addSuffix : true
-										})}
-									/>
-								</ListItem>
-							</Box>
+									</Box>
+
+									<Divider orientation="vertical" flexItem />
+
+									<Box
+										display="flex"
+										flexDirection="column"
+										justifyContent="center"
+										alignItems="flex-start"
+										minWidth={0}
+										ml={1}
+									>
+										<Box
+											className={cls.subject}
+											width="100%"
+											fontWeight={!msg.read && 'fontWeightBold'}
+											fontSize="subtitle2.fontSize"
+										>
+											{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+										</Box>
+
+										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic">
+											{formatDistance(parseISO(msg.createdAt), new Date(), {
+												addSuffix : true
+											})}
+										</Box>
+									</Box>
+								</Box>
+							</ButtonBase>
 						</Grid>
 					))}
 				</Grid>
@@ -149,14 +182,14 @@ const MessagesScreen = () => {
 			{success &&
 			tab === 'sent' && (
 				<Grid
-					className={cls.grid}
 					container
 					direction="column"
 					justify="center"
 					alignItems="center"
+					className={cls.grid}
 					spacing={1}
 				>
-					<Grid item container justify="flex-start" alignItems="center" xs={12} sm={11} md={7}>
+					<Grid item container justify="flex-start" alignItems="center" xs={12} sm={9} md={7}>
 						<FormControlLabel
 							label="Select all"
 							control={
@@ -170,45 +203,51 @@ const MessagesScreen = () => {
 						/>
 					</Grid>
 					{sent.map((msg) => (
-						<Grid key={msg._id} item container xs={12} sm={11} md={7}>
-							<ButtonBase className={cls.buttonBase} component="div">
+						<Grid item container key={msg._id} xs={12} sm={9} md={7}>
+							<ButtonBase className={cls.buttonBase}>
 								<Box
 									display="flex"
-									p={1}
-									boxShadow={1}
+									boxShadow={2}
 									borderRadius={4}
-									width="100%"
 									bgcolor="background.paper"
+									alignItems="center"
+									width="100%"
+									px={1}
+									py={1}
 								>
-									<Box display="flex" justifyContent="center" alignItems="center">
+									<Box my={1} mr={1}>
 										<Checkbox
 											checked={checked.some((el) => el === msg._id)}
 											onChange={(e) => handleChecked(e, msg._id)}
 											size="small"
 										/>
-										<Avatar className={cls.avatar}>
+									</Box>
+
+									<Box mr={1}>
+										<Avatar>
 											<Box fontSize={14}>
 												{msg.recipient.username.substring(0, 2).toUpperCase()}
 											</Box>
 										</Avatar>
 									</Box>
 
-									<Divider flexItem orientation="vertical" />
+									<Divider orientation="vertical" flexItem />
 
 									<Box
-										ml={1}
-										my={1.5}
 										display="flex"
 										flexDirection="column"
 										justifyContent="center"
-										width="100%"
+										alignItems="flex-start"
+										minWidth={0}
+										ml={1}
 									>
 										<Box
 											className={cls.subject}
-											fontSize={16}
+											width="100%"
 											fontWeight={!msg.read && 'fontWeightBold'}
+											fontSize="subtitle2.fontSize"
 										>
-											{msg.subject}ssssssssssssssssssssssssssssssssssssssss
+											{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 										</Box>
 
 										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic">

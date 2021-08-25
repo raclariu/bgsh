@@ -42,12 +42,12 @@ const SortGames = ({ handleFilters }) => {
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
 				>
-					<MenuItem value="new">Added Newest</MenuItem>
-					<MenuItem value="old">Added Oldest</MenuItem>
-					<MenuItem value="price-low">Lowest Price</MenuItem>
-					<MenuItem value="price-high">Highest Price</MenuItem>
+					<MenuItem value="new">Added newest</MenuItem>
+					<MenuItem value="old">Added oldest</MenuItem>
+					<MenuItem value="price-low">Lowest price</MenuItem>
+					<MenuItem value="price-high">Highest price</MenuItem>
 					<MenuItem value="rank">Rank</MenuItem>
-					<MenuItem value="year">Release Newest</MenuItem>
+					<MenuItem value="year">Release date</MenuItem>
 				</Select>
 			)}
 
@@ -67,10 +67,10 @@ const SortGames = ({ handleFilters }) => {
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
 				>
-					<MenuItem value="new">Added Newest</MenuItem>
-					<MenuItem value="old">Added Oldest</MenuItem>
+					<MenuItem value="new">Added newest</MenuItem>
+					<MenuItem value="old">Added oldest</MenuItem>
 					<MenuItem value="rank">Rank</MenuItem>
-					<MenuItem value="year">Release Newest</MenuItem>
+					<MenuItem value="year">Release date</MenuItem>
 				</Select>
 			)}
 		</FormControl>

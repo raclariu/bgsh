@@ -36,8 +36,15 @@ const useStyles = makeStyles((theme) => ({
 	badge     : {
 		margin : theme.spacing(0, 1, 0, 0)
 	},
+	grid      : {
+		[theme.breakpoints.up('sm')]: {
+			width : 400
+		}
+	},
 	popover   : {
-		width : '350px'
+		[theme.breakpoints.down('sm')]: {
+			width : '100vw'
+		}
 	},
 	subheader : {
 		margin : theme.spacing(2, 0, 2, 0)
@@ -88,7 +95,7 @@ const SaleListPopover = () => {
 	}
 
 	return (
-		<div>
+		<Fragment>
 			<IconButton className={cls.badge} onClick={handleClick} color="primary">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
@@ -97,6 +104,7 @@ const SaleListPopover = () => {
 
 			<Popover
 				id={id}
+				className={cls.popover}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={handleClose}
@@ -111,8 +119,8 @@ const SaleListPopover = () => {
 			>
 				{/* Content */}
 				{saleList && (
-					<Grid container className={cls.popover} justify="flex-end">
-						<Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+					<Grid container className={cls.grid} justify="flex-end">
+						<Grid item xs={12}>
 							<List disablePadding>
 								<Typography
 									className={cls.subheader}
@@ -216,7 +224,7 @@ const SaleListPopover = () => {
 					</Grid>
 				)}
 			</Popover>
-		</div>
+		</Fragment>
 	)
 }
 

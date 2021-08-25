@@ -123,9 +123,22 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 			}
 		})
 
+		const hotArr = []
 		let { item } = await parseXML(data)
+		const ensureArray = Array.isArray(item) ? item : [ item ]
+		for (let game of ensureArray) {
+			const hotGame = {
+				id        : game.id,
+				rank      : game.rank ? +game.rank : null,
+				thumbnail : game.thumbnail.value || null,
+				title     : game.name.value || '',
+				year      : game.yearpublished.value ? +game.yearpublished.value : null
+			}
 
-		res.status(200).json(item)
+			hotArr.push(hotGame)
+		}
+
+		res.status(200).json(hotArr)
 	} catch (error) {
 		res.status(503)
 		throw {

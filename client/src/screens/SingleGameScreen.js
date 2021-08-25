@@ -6,10 +6,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
 import LazyLoad from 'react-lazyload'
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
@@ -186,11 +189,17 @@ const SingleGameScreen = () => {
 								borderRadius={4}
 								boxShadow={2}
 							>
-								<img
-									className={cls.thumbnail}
-									src={displayImageHandler(data.games[0].image, data.games[0].thumbnail)}
-									alt={data.games[0].title}
-								/>
+								<Zoom
+									overlayBgColorStart="rgba(255, 255, 255, 0)"
+									overlayBgColorEnd="rgba(255, 255, 255, 0)"
+									zoomMargin={40}
+								>
+									<img
+										className={cls.thumbnail}
+										src={displayImageHandler(data.games[0].image, data.games[0].thumbnail)}
+										alt={data.games[0].title}
+									/>
+								</Zoom>
 							</Box>
 						</Grid>
 
@@ -443,7 +452,6 @@ const SingleGameScreen = () => {
 												display="flex"
 												justifyContent="center"
 												height="220px"
-												width="100%"
 												bgcolor="background.paper"
 												borderRadius={4}
 												boxShadow={2}
@@ -468,13 +476,15 @@ const SingleGameScreen = () => {
 
 								<DialogContent dividers>
 									<img
-										onLoad={onImgLoad}
-										className={cls.dialogImg}
 										alt={gallery[imgIndex].caption}
 										src={gallery[imgIndex].image}
+										hidden={!load}
+										onLoad={onImgLoad}
+										className={cls.dialogImg}
 									/>
+
 									{!load && (
-										<Box display="flex" justifyContent="center" alignItems="center">
+										<Box p={10} display="flex" justifyContent="center" alignItems="center">
 											<Loader />
 										</Box>
 									)}

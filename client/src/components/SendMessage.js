@@ -129,6 +129,7 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 							required
 						/>
 					</DialogContent>
+
 					<DialogActions>
 						{success ? (
 							'success'

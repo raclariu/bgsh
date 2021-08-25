@@ -40,8 +40,8 @@ const AuthScreen = () => {
 					className={classes.container}
 					value={selectedTab}
 					centered
-					indicatorColor="secondary"
-					textColor="secondary"
+					indicatorColor="primary"
+					textColor="primary"
 					onChange={handleChange}
 				>
 					<Tab value="signin" onClick={() => history.replace('/signin')} label="Sign In" />

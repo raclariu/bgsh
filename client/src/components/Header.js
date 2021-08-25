@@ -38,6 +38,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
 import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
+import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
 
 // @ Components
 import SaleListPopover from './SaleListPopover'
@@ -90,6 +91,7 @@ const Header = () => {
 	const [ openGames, setOpenGames ] = useState(false)
 	const [ openHistory, setOpenHistory ] = useState(false)
 	const [ anchorEl, setAnchorEl ] = useState(null)
+	const [ selectedIndex, setSelectedIndex ] = useState(0)
 
 	const userSignIn = useSelector((state) => state.userSignIn)
 	const { userInfo } = userSignIn
@@ -108,7 +110,8 @@ const Header = () => {
 		}
 	}
 
-	const handleClick = () => {
+	const handleClick = (e, ind) => {
+		setSelectedIndex(ind)
 		setIsOpen(false)
 	}
 
@@ -134,25 +137,16 @@ const Header = () => {
 								<MenuIcon color="primary" />
 							</IconButton>
 							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
-								<Box
-									display="flex"
-									justifyContent="flex-end"
-									alignItems="center"
-									boxShadow={2}
-									height={60}
-									p={2}
-									bgcolor="secondary.light"
-								>
-									<Box mr={1}>
-										<Typography variant="subtitle2">{userInfo.username}</Typography>
-									</Box>
-									<Avatar
-										onClick={(e) => setAnchorEl(e.currentTarget)}
-										className={classes.avatar}
-										color="primary"
-									>
+								<Box display="flex" alignItems="center" m={2} p={1} boxShadow={2} borderRadius={8}>
+									<Avatar className={classes.avatar} color="primary">
 										<Box fontSize={12}>{userInfo.username.substring(0, 2).toUpperCase()}</Box>
 									</Avatar>
+									<Box ml={1} flexGrow={1}>
+										<Typography variant="subtitle2">{userInfo.username}</Typography>
+									</Box>
+									<IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+										<SettingsTwoToneIcon />
+									</IconButton>
 								</Box>
 
 								<Menu
@@ -181,170 +175,342 @@ const Header = () => {
 										<Divider />
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/'}
 											button
+											onClick={(e) => handleClick(e, 1)}
+											selected={selectedIndex === 1}
 											component={RouterLink}
 											to="/"
 										>
 											<ListItemIcon>
-												<HomeTwoToneIcon />
+												<HomeTwoToneIcon color={selectedIndex === 1 ? 'primary' : 'inherit'} />
 											</ListItemIcon>
-											<ListItemText primary="Home" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 1 ? 'primary.main' : 'text.secondary'}
+													>
+														Home
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem button onClick={() => handleExpandClick('games')}>
 											<ListItemIcon>
 												<DashboardTwoToneIcon />
 											</ListItemIcon>
-											<ListItemText primary="Board Games" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color="text.secondary"
+													>
+														Board games
+													</Box>
+												}
+											/>
 											{openGames ? <ExpandLess /> : <ExpandMore />}
 										</ListItem>
 										<Collapse in={openGames} timeout="auto" unmountOnExit>
 											<List disablePadding>
 												<ListItem
-													onClick={handleClick}
-													button
 													className={classes.nested}
-													selected={pathname.includes('/games')}
+													button
+													onClick={(e) => handleClick(e, 2)}
+													selected={selectedIndex === 2}
 													component={RouterLink}
 													to="/games"
 												>
 													<ListItemIcon>
-														<MonetizationOnTwoToneIcon />
+														<MonetizationOnTwoToneIcon
+															color={selectedIndex === 2 ? 'primary' : 'inherit'}
+														/>
 													</ListItemIcon>
-													<ListItemText primary="Sales" />
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 2 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Sales
+															</Box>
+														}
+													/>
 												</ListItem>
 
 												<ListItem
-													onClick={handleClick}
-													button
 													className={classes.nested}
-													selected={pathname.includes('/trades')}
+													button
+													onClick={(e) => handleClick(e, 3)}
+													selected={selectedIndex === 3}
 													component={RouterLink}
 													to="/trades"
 												>
 													<ListItemIcon>
-														<SwapHorizontalCircleTwoToneIcon />
+														<SwapHorizontalCircleTwoToneIcon
+															color={selectedIndex === 3 ? 'primary' : 'inherit'}
+														/>
 													</ListItemIcon>
-													<ListItemText primary="Trades" />
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 3 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Trades
+															</Box>
+														}
+													/>
 												</ListItem>
 											</List>
 										</Collapse>
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/profile'}
 											button
+											onClick={(e) => handleClick(e, 4)}
+											selected={selectedIndex === 4}
 											component={RouterLink}
 											to="/profile"
 										>
 											<ListItemIcon>
-												<PersonOutlineTwoToneIcon />
+												<PersonOutlineTwoToneIcon
+													color={selectedIndex === 4 ? 'primary' : 'inherit'}
+												/>
 											</ListItemIcon>
-											<ListItemText primary="Profile" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 4 ? 'primary.main' : 'text.secondary'}
+													>
+														Profile
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/collection'}
 											button
+											onClick={(e) => handleClick(e, 5)}
+											selected={selectedIndex === 5}
 											component={RouterLink}
 											to="/collection"
 										>
 											<ListItemIcon>
-												<LibraryBooksTwoToneIcon />
+												<LibraryBooksTwoToneIcon
+													color={selectedIndex === 5 ? 'primary' : 'inherit'}
+												/>
 											</ListItemIcon>
-											<ListItemText primary="My Collection" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 5 ? 'primary.main' : 'text.secondary'}
+													>
+														My collection
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/wishlist'}
 											button
+											onClick={(e) => handleClick(e, 6)}
+											selected={selectedIndex === 6}
 											component={RouterLink}
 											to="/wishlist"
 										>
 											<ListItemIcon>
-												<FavoriteTwoToneIcon />
+												<FavoriteTwoToneIcon
+													color={selectedIndex === 6 ? 'primary' : 'inherit'}
+												/>
 											</ListItemIcon>
-											<ListItemText primary="My Wishlist" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 6 ? 'primary.main' : 'text.secondary'}
+													>
+														My wishlist
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/saved'}
 											button
+											onClick={(e) => handleClick(e, 7)}
+											selected={selectedIndex === 7}
 											component={RouterLink}
 											to="/saved"
 										>
 											<ListItemIcon>
-												<BookmarkTwoToneIcon />
+												<BookmarkTwoToneIcon
+													color={selectedIndex === 7 ? 'primary' : 'inherit'}
+												/>
 											</ListItemIcon>
-											<ListItemText primary="My Saved Games" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 7 ? 'primary.main' : 'text.secondary'}
+													>
+														Saved games
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem
-											onClick={handleClick}
-											selected={pathname === '/inbox'}
 											button
+											onClick={(e) => handleClick(e, 8)}
+											selected={selectedIndex === 8}
 											component={RouterLink}
 											to="/inbox"
 										>
 											<ListItemIcon>
-												<EmailTwoToneIcon />
+												<EmailTwoToneIcon color={selectedIndex === 8 ? 'primary' : 'inherit'} />
 											</ListItemIcon>
-											<ListItemText primary="Messages" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 8 ? 'primary.main' : 'text.secondary'}
+													>
+														Inbox
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem
 											button
-											to="/history/active"
+											onClick={(e) => handleClick(e, 9)}
+											selected={selectedIndex === 9}
 											component={RouterLink}
-											selected={pathname === '/history/active'}
-											onClick={handleClick}
+											to="/history/active"
 										>
 											<ListItemIcon>
-												<LocalActivityTwoToneIcon />
+												<LocalActivityTwoToneIcon
+													color={selectedIndex === 9 ? 'primary' : 'inherit'}
+												/>
 											</ListItemIcon>
-											<ListItemText primary="Active" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 9 ? 'primary.main' : 'text.secondary'}
+													>
+														Active
+													</Box>
+												}
+											/>
 										</ListItem>
 
 										<ListItem button onClick={() => handleExpandClick('history')}>
 											<ListItemIcon>
 												<ArchiveTwoToneIcon />
 											</ListItemIcon>
-											<ListItemText primary="History" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color="text.secondary"
+													>
+														History
+													</Box>
+												}
+											/>
 											{openHistory ? <ExpandLess /> : <ExpandMore />}
 										</ListItem>
 										<Collapse in={openHistory} timeout="auto" unmountOnExit>
 											<List disablePadding>
 												<ListItem
-													button
-													to="/history/sold"
-													component={RouterLink}
 													className={classes.nested}
-													selected={pathname === '/history/sold'}
-													onClick={handleClick}
+													button
+													onClick={(e) => handleClick(e, 10)}
+													selected={selectedIndex === 10}
+													component={RouterLink}
+													to="/history/sold"
 												>
 													<ListItemIcon>
-														<MonetizationOnTwoToneIcon />
+														<MonetizationOnTwoToneIcon
+															color={selectedIndex === 10 ? 'primary' : 'inherit'}
+														/>
 													</ListItemIcon>
-													<ListItemText primary="Sold" />
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 10 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Sold
+															</Box>
+														}
+													/>
 												</ListItem>
 
 												<ListItem
-													button
-													to="/history/traded"
-													component={RouterLink}
 													className={classes.nested}
-													selected={pathname === '/history/traded'}
-													onClick={handleClick}
+													button
+													onClick={(e) => handleClick(e, 11)}
+													selected={selectedIndex === 11}
+													component={RouterLink}
+													to="/history/traded"
 												>
 													<ListItemIcon>
-														<SwapHorizontalCircleTwoToneIcon />
+														<SwapHorizontalCircleTwoToneIcon
+															color={selectedIndex === 11 ? 'primary' : 'inherit'}
+														/>
 													</ListItemIcon>
-													<ListItemText primary="Traded" />
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 11 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Traded
+															</Box>
+														}
+													/>
 												</ListItem>
 											</List>
 										</Collapse>
@@ -353,7 +519,17 @@ const Header = () => {
 											<ListItemIcon>
 												<MeetingRoomTwoToneIcon />
 											</ListItemIcon>
-											<ListItemText primary="Sign Out" />
+											<ListItemText
+												primary={
+													<Box
+														fontWeight={500}
+														fontSize="subtitle2.fontSize"
+														color="text.secondary"
+													>
+														Log out
+													</Box>
+												}
+											/>
 										</ListItem>
 									</List>
 								</Box>
@@ -361,7 +537,7 @@ const Header = () => {
 						</Fragment>
 					) : (
 						<Fragment>
-							<Button color="inherit" component={RouterLink} to="/signin">
+							<Button color="primary" variant="outlined" component={RouterLink} to="/signin">
 								Sign In
 							</Button>
 						</Fragment>
