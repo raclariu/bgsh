@@ -24,8 +24,8 @@ const Theme = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={(e) => changeHandler(e, theme)}>
-				{theme === 'light' ? <Brightness4Icon color="primary" /> : <Brightness7Icon color="secondary" />}
+			<IconButton color="primary" onClick={(e) => changeHandler(e, theme)}>
+				{theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon color="secondary" />}
 			</IconButton>
 		</Fragment>
 	)

@@ -10,7 +10,8 @@ import {
 	USER_PREFERENCES_SET_THEME,
 	USER_CHANGE_PASSWORD_REQUEST,
 	USER_CHANGE_PASSWORD_SUCCESS,
-	USER_CHANGE_PASSWORD_FAIL
+	USER_CHANGE_PASSWORD_FAIL,
+	USER_CHANGE_PASSWORD_RESET
 } from '../constants/userConstants'
 
 export const userSignInReducer = (state = {}, action) => {
@@ -51,6 +52,8 @@ export const userChangePasswordReducer = (state = {}, action) => {
 			return { loading: false, success: true }
 		case USER_CHANGE_PASSWORD_FAIL:
 			return { loading: false, error: action.payload }
+		case USER_CHANGE_PASSWORD_RESET:
+			return {}
 
 		default:
 			return state

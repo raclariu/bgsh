@@ -18,6 +18,7 @@ import Loader from './Loader'
 
 // @ Others
 import { changePassword } from '../actions/userActions'
+import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -52,8 +53,12 @@ const ChangePasswordForm = () => {
 				setPasswordNew('')
 				setPasswordNewConfirmation('')
 			}
+
+			return () => {
+				dispatch({ type: USER_CHANGE_PASSWORD_RESET })
+			}
 		},
-		[ success ]
+		[ success, dispatch ]
 	)
 
 	const handlePassVisibility = (type) => {
@@ -154,7 +159,7 @@ const ChangePasswordForm = () => {
 					required
 				/>
 
-				<Button variant="contained" type="submit" color="primary" size="large" disabled={loading} fullWidth>
+				<Button variant="contained" type="submit" color="primary" size="large" disabled={loading}>
 					{loading ? <Loader size={26} color="inherit" /> : 'Change password'}
 				</Button>
 			</form>

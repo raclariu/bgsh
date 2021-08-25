@@ -41,6 +41,7 @@ import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
 
 // @ Components
+import MessagesBadge from './MessagesBadge'
 import SaleListPopover from './SaleListPopover'
 import Theme from './Theme'
 
@@ -72,13 +73,6 @@ const useStyles = makeStyles((theme) => ({
 	nested   : {
 		paddingLeft : theme.spacing(4)
 	}
-	// selected : {
-	// 	'&.Mui-selected' : {
-	// 		// consoleackgroundColor : theme.palette.background.default,
-	// 		color      : theme.palette.primary.light,
-	// 		fontWeight : '500'
-	// 	}
-	// }
 }))
 
 // @ Main
@@ -130,11 +124,18 @@ const Header = () => {
 
 					{userInfo ? (
 						<Fragment>
-							<SaleListPopover />
-							<Theme />
+							<Box mr={1}>
+								<MessagesBadge />
+							</Box>
+							<Box mr={1}>
+								<SaleListPopover />
+							</Box>
+							<Box mr={1}>
+								<Theme />
+							</Box>
 
-							<IconButton onClick={() => setIsOpen(!isOpen)} color="inherit" aria-label="menu">
-								<MenuIcon color="primary" />
+							<IconButton color="primary" onClick={() => setIsOpen(!isOpen)} aria-label="menu">
+								<MenuIcon />
 							</IconButton>
 							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
 								<Box display="flex" alignItems="center" m={2} p={1} boxShadow={2} borderRadius={8}>

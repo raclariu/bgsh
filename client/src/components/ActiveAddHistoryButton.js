@@ -172,7 +172,7 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 			{display === 'delete' && (
 				<Fragment>
-					<Tooltip disableFocusListener title="Delete">
+					<Tooltip title="Delete">
 						<IconButton onClick={handleOpenDialog}>
 							<DeleteOutlinedIcon color="error" fontSize="small" />
 						</IconButton>

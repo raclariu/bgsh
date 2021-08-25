@@ -30,35 +30,36 @@ import {
 	getSoldGamesHistoryReducer,
 	getTradedGamesHistoryReducer
 } from './reducers/historyReducers'
-import { sendMessageReducer, getAllMessagesReducer } from './reducers/messageReducers'
+import { sendMessageReducer, getAllMessagesReducer, getNewMessagesCountReducer } from './reducers/messageReducers'
 
 const reducer = combineReducers({
-	userSignIn      : userSignInReducer,
-	userSignUp      : userSignUpReducer,
-	userPreferences : setThemeReducer,
-	sendMessage     : sendMessageReducer,
-	messages        : getAllMessagesReducer,
-	changePassword  : userChangePasswordReducer,
-	bggCollection   : bggGetCollectionReducer,
-	dbCollection    : dbGetCollectionReducer,
-	bggGamesDetails : bggGetGamesDetailsReducer,
-	bggSearchGames  : bggSearchGamesReducer,
-	bggHotGames     : bggGetHotGamesReducer,
-	bggGallery      : bggGetGalleryReducer,
-	gamesIndex      : getGamesReducer,
-	gameForSale     : getSingleGameReducer,
-	userActiveGames : getUserActiveGamesReducer,
-	wishlist        : getWishlistReducer,
-	saleList        : saleListReducer,
-	sellGames       : sellGamesReducer,
-	tradeGames      : tradeGamesReducer,
-	savedGameStatus : savedGameStatusReducer,
-	savedGamesList  : savedGamesListReducer,
-	addToHistory    : addToHistoryReducer,
-	soldHistory     : getSoldGamesHistoryReducer,
-	tradedHistory   : getTradedGamesHistoryReducer,
-	deleteGame      : deleteGameReducer,
-	reactivateGame  : reactivateGameReducer
+	userSignIn       : userSignInReducer,
+	userSignUp       : userSignUpReducer,
+	userPreferences  : setThemeReducer,
+	sendMessage      : sendMessageReducer,
+	messages         : getAllMessagesReducer,
+	newMessagesCount : getNewMessagesCountReducer,
+	changePassword   : userChangePasswordReducer,
+	bggCollection    : bggGetCollectionReducer,
+	dbCollection     : dbGetCollectionReducer,
+	bggGamesDetails  : bggGetGamesDetailsReducer,
+	bggSearchGames   : bggSearchGamesReducer,
+	bggHotGames      : bggGetHotGamesReducer,
+	bggGallery       : bggGetGalleryReducer,
+	gamesIndex       : getGamesReducer,
+	gameForSale      : getSingleGameReducer,
+	userActiveGames  : getUserActiveGamesReducer,
+	wishlist         : getWishlistReducer,
+	saleList         : saleListReducer,
+	sellGames        : sellGamesReducer,
+	tradeGames       : tradeGamesReducer,
+	savedGameStatus  : savedGameStatusReducer,
+	savedGamesList   : savedGamesListReducer,
+	addToHistory     : addToHistoryReducer,
+	soldHistory      : getSoldGamesHistoryReducer,
+	tradedHistory    : getTradedGamesHistoryReducer,
+	deleteGame       : deleteGameReducer,
+	reactivateGame   : reactivateGameReducer
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

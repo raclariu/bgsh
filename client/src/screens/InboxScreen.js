@@ -33,10 +33,6 @@ const useStyles = makeStyles((theme) => ({
 	grid       : {
 		marginTop : theme.spacing(4)
 	},
-	appbar     : {
-		marginTop       : theme.spacing(2),
-		backgroundColor : theme.palette.background.paper
-	},
 	buttonBase : {
 		width : '100%'
 	},
@@ -49,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const MessagesScreen = () => {
+const InboxScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
@@ -90,12 +86,17 @@ const MessagesScreen = () => {
 
 	return (
 		<Fragment>
-			<AppBar className={cls.appbar} position="static" color="transparent" elevation={2}>
-				<Tabs value={tab} centered indicatorColor="secondary" textColor="secondary" onChange={handleTabChange}>
-					<Tab value="received" label="Received" />
-					<Tab value="sent" label="Sent" />
-				</Tabs>
-			</AppBar>
+			<Tabs
+				className={cls.grid}
+				value={tab}
+				centered
+				indicatorColor="primary"
+				textColor="primary"
+				onChange={handleTabChange}
+			>
+				<Tab value="received" label="Received" />
+				<Tab value="sent" label="Sent" />
+			</Tabs>
 
 			{success &&
 			tab === 'received' && (
@@ -160,7 +161,7 @@ const MessagesScreen = () => {
 										<Box
 											className={cls.subject}
 											width="100%"
-											fontWeight={!msg.read && 'fontWeightBold'}
+											fontWeight={msg.read ? 'fontWeightRegular' : 'fontWeightBold'}
 											fontSize="subtitle2.fontSize"
 										>
 											{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
@@ -244,7 +245,7 @@ const MessagesScreen = () => {
 										<Box
 											className={cls.subject}
 											width="100%"
-											fontWeight={!msg.read && 'fontWeightBold'}
+											fontWeight={msg.read ? 'fontWeightRegular' : 'fontWeightBold'}
 											fontSize="subtitle2.fontSize"
 										>
 											{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
@@ -266,4 +267,4 @@ const MessagesScreen = () => {
 	)
 }
 
-export default MessagesScreen
+export default InboxScreen

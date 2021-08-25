@@ -33,9 +33,6 @@ import { saleListLimit } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	badge     : {
-		margin : theme.spacing(0, 1, 0, 0)
-	},
 	grid      : {
 		[theme.breakpoints.up('sm')]: {
 			width : 400
@@ -96,7 +93,7 @@ const SaleListPopover = () => {
 
 	return (
 		<Fragment>
-			<IconButton className={cls.badge} onClick={handleClick} color="primary">
+			<IconButton onClick={handleClick} color="primary">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>
