@@ -56,7 +56,6 @@ const getAllMessages = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getNewMessagesCount = asyncHandler(async (req, res) => {
 	const count = await Message.countDocuments({ read: false, recipient: req.user._id })
-	console.log(count)
 
 	res.status(200).json(count)
 })

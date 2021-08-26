@@ -164,7 +164,7 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 				objectid   : bggId,
 				objecttype : 'thing',
 				pageid     : 1,
-				showcount  : 24,
+				showcount  : 12,
 				size       : 'thumb',
 				sort       : 'hot',
 				tag        : 'Components,Play'
