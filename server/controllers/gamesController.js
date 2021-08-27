@@ -166,8 +166,8 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 				pageid     : 1,
 				showcount  : 12,
 				size       : 'thumb',
-				sort       : 'hot',
-				tag        : 'Components,Play'
+				sort       : 'hot'
+				// tag        : 'Play,Components'
 			}
 		})
 

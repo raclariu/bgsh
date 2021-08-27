@@ -34,8 +34,8 @@ import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
 import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
 import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveTwoTone'
 import LocalActivityTwoToneIcon from '@material-ui/icons/LocalActivityTwoTone'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
 import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
@@ -72,6 +72,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	nested   : {
 		paddingLeft : theme.spacing(4)
+	},
+	paper    : {
+		borderRadius : theme.spacing(2),
+		marginTop    : '2vh',
+		marginRight  : '1vh',
+		height       : '96vh'
 	}
 }))
 
@@ -137,7 +143,13 @@ const Header = () => {
 							<IconButton color="primary" onClick={() => setIsOpen(!isOpen)} aria-label="menu">
 								<MenuIcon />
 							</IconButton>
-							<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
+
+							<Drawer
+								classes={{ paper: classes.paper }}
+								anchor="right"
+								open={isOpen}
+								onClose={() => setIsOpen(!isOpen)}
+							>
 								<Box display="flex" alignItems="center" m={2} p={1} boxShadow={2} borderRadius={8}>
 									<Avatar className={classes.avatar} color="primary">
 										<Box fontSize={12}>{userInfo.username.substring(0, 2).toUpperCase()}</Box>
@@ -213,7 +225,11 @@ const Header = () => {
 													</Box>
 												}
 											/>
-											{openGames ? <ExpandLess /> : <ExpandMore />}
+											{openGames ? (
+												<ArrowDropUpIcon color="disabled" />
+											) : (
+												<ArrowDropDownIcon color="disabled" />
+											)}
 										</ListItem>
 										<Collapse in={openGames} timeout="auto" unmountOnExit>
 											<List disablePadding>
@@ -446,7 +462,11 @@ const Header = () => {
 													</Box>
 												}
 											/>
-											{openHistory ? <ExpandLess /> : <ExpandMore />}
+											{openHistory ? (
+												<ArrowDropUpIcon color="disabled" />
+											) : (
+												<ArrowDropDownIcon color="disabled" />
+											)}
 										</ListItem>
 										<Collapse in={openHistory} timeout="auto" unmountOnExit>
 											<List disablePadding>

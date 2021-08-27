@@ -36,6 +36,7 @@ import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone'
 import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
 import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
+import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -338,6 +339,12 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					{/* Shipping */}
+					<Box display="flex" alignItems="center">
+						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
+						<Box ml={0.5} className={cls.mainGrid} fontSize={16}>
+							Shipping
+						</Box>
+					</Box>
 					<Grid className={cls.mainGrid} container>
 						<Grid item container xs={12} direction="column">
 							<Box p={1}>
@@ -444,7 +451,13 @@ const SingleGameScreen = () => {
 
 					{successGallery && (
 						<Fragment>
-							<Grid className={cls.mainGrid} container justify="center" alignItems="center" spacing={2}>
+							<Box display="flex" alignItems="center">
+								<ImageTwoToneIcon color="primary" fontSize="small" />
+								<Box ml={0.5} className={cls.mainGrid} fontSize={16}>
+									Gallery
+								</Box>
+							</Box>
+							<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
 								{gallery.map((obj, index) => (
 									<Grid key={obj.imageid} item xs={12} sm={6} md={4} lg={3}>
 										<LazyLoad offset={200} once>
