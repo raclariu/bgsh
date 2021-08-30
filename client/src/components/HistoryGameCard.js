@@ -1,5 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { format, formatDistance, parseISO } from 'date-fns'
 
@@ -49,10 +50,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const HistoryGameCard = ({ data }) => {
+const HistoryGameCard = ({ gameId, page }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
+
+	const data = useSelector((state) => {
+		if (page === 'sold') {
+			return state.soldHistory.soldList.find((obj) => obj._id === gameId)
+		}
+
+		if (page === 'traded') {
+			return state.tradedHistory.tradedList.find((obj) => obj._id === gameId)
+		}
+	})
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {

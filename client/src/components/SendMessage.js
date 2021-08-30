@@ -85,7 +85,7 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 							variant="outlined"
 							id="recipient"
 							name="recipient"
-							label="Recipient"
+							label="Username of recipient"
 							type="text"
 							disabled={recipientId ? true : false}
 							fullWidth

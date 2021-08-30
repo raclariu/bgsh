@@ -106,7 +106,7 @@ const GamesIndexScreen = () => {
 					gamesData.map((data) => (
 						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeletons num={1} />}>
-								<GamesIndexCard data={data} />
+								<GamesIndexCard gameId={data._id} />
 							</LazyLoad>
 						</Grid>
 					))}

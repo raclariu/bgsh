@@ -108,7 +108,7 @@ const WishlistScreen = () => {
 					{wishlist.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
-								<GameCard game={game} />
+								<GameCard bggId={game.bggId} page="wishlist" />
 							</LazyLoad>
 						</Grid>
 					))}

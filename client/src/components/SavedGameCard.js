@@ -1,7 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -57,10 +58,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const SavedGameCard = ({ data }) => {
+const SavedGameCard = ({ gameId }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
+
+	const data = useSelector((state) => state.savedGamesList.list.find((obj) => obj._id === gameId))
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -157,7 +160,7 @@ const SavedGameCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Button
-						color="secondary"
+						color="primary"
 						href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
 						target="_blank"
 						rel="noopener"

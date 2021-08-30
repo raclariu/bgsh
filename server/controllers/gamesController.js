@@ -265,8 +265,6 @@ const sellGames = asyncHandler(async (req, res) => {
 		totalPrice
 	} = req.body
 
-	console.log(req.body)
-
 	if (type === 'pack') {
 		await Game.create({
 			mode             : 'sell',

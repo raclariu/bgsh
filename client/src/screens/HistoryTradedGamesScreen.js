@@ -113,7 +113,7 @@ const HistorySoldGames = () => {
 					{tradedList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
-								<HistoryGameCard data={data} />
+								<HistoryGameCard gameId={data._id} page="traded" />
 							</LazyLoad>
 						</Grid>
 					))}

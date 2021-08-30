@@ -118,7 +118,7 @@ const SavedGamesScreen = () => {
 					{list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
-								<SavedGameCard data={data} />
+								<SavedGameCard gameId={data._id} />
 							</LazyLoad>
 						</Grid>
 					))}

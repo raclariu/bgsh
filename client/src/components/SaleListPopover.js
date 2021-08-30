@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	popover   : {
-		[theme.breakpoints.down('sm')]: {
-			width : '100vw'
+		[theme.breakpoints.down('xs')]: {
+			width : '90vw'
 		}
 	},
 	subheader : {
@@ -101,7 +101,7 @@ const SaleListPopover = () => {
 
 			<Popover
 				id={id}
-				className={cls.popover}
+				classes={{ paper: cls.popover }}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={handleClose}
@@ -111,7 +111,7 @@ const SaleListPopover = () => {
 				}}
 				transformOrigin={{
 					vertical   : 'top',
-					horizontal : 'right'
+					horizontal : 'center'
 				}}
 			>
 				{/* Content */}

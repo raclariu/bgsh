@@ -19,8 +19,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
 import Collapse from '@material-ui/core/Collapse'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 
 // @ Icons
 import MenuIcon from '@material-ui/icons/Menu'
@@ -85,12 +83,10 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
-	const { pathname } = useLocation()
 
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openGames, setOpenGames ] = useState(false)
 	const [ openHistory, setOpenHistory ] = useState(false)
-	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
 
 	const userSignIn = useSelector((state) => state.userSignIn)
@@ -112,11 +108,6 @@ const Header = () => {
 
 	const handleClick = (e, ind) => {
 		setSelectedIndex(ind)
-		setIsOpen(false)
-	}
-
-	const handleMenuClose = () => {
-		setAnchorEl(null)
 		setIsOpen(false)
 	}
 
@@ -157,31 +148,10 @@ const Header = () => {
 									<Box ml={1} flexGrow={1}>
 										<Typography variant="subtitle2">{userInfo.username}</Typography>
 									</Box>
-									<IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
+									<IconButton onClick={() => setIsOpen(false)} component={RouterLink} to="/settings">
 										<SettingsTwoToneIcon />
 									</IconButton>
 								</Box>
-
-								<Menu
-									id="simple-menu"
-									anchorEl={anchorEl}
-									keepMounted
-									open={Boolean(anchorEl)}
-									onClose={(e) => setAnchorEl(null)}
-									getContentAnchorEl={null}
-									anchorOrigin={{
-										vertical   : 'bottom',
-										horizontal : 'center'
-									}}
-									transformOrigin={{
-										vertical   : 'top',
-										horizontal : 'center'
-									}}
-								>
-									<MenuItem component={RouterLink} to="/settings" onClick={handleMenuClose}>
-										Settings
-									</MenuItem>
-								</Menu>
 
 								<Box>
 									<List disablePadding className={classes.list}>

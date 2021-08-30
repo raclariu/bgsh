@@ -1,5 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatDistance, parseISO } from 'date-fns'
@@ -53,11 +54,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const GameIndexCard = ({ data }) => {
+const GameIndexCard = ({ gameId }) => {
 	const cls = useStyles()
-	console.log(data)
 
 	const [ index, setIndex ] = useState(0)
+
+	const data = useSelector((state) => state.gamesIndex.gamesData.find((obj) => obj._id === gameId))
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {

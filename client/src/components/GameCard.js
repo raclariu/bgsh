@@ -1,6 +1,7 @@
 // @ Libraries
 import React from 'react'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -37,9 +38,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
+const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 	const cls = useStyles()
 	const location = useLocation()
+
+	const game = useSelector((state) => {
+		if (page === 'collection') {
+			return state.dbCollection.collection.find((obj) => obj.bggId === bggId)
+		}
+
+		if (page === 'wishlist') {
+			return state.wishlist.wishlist.find((obj) => obj.bggId === bggId)
+		}
+	})
 
 	return (
 		<Card elevation={2}>
@@ -73,7 +84,7 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 				<Grid container direction="row" justify="space-between" alignItems="center">
 					<Grid item>
 						<Button
-							color="secondary"
+							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
 							target="_blank"
 							rel="noopener"
@@ -81,7 +92,7 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 							BGG
 						</Button>
 					</Grid>
-					{location.pathname === '/collection' && (
+					{page === 'collection' && (
 						<Checkbox
 							checked={isChecked}
 							disabled={isDisabled}
@@ -89,7 +100,7 @@ const GameCard = ({ game, saleListHandler, isChecked, isDisabled }) => {
 							icon={<AddBoxOutlinedIcon />}
 						/>
 					)}
-					{location.pathname === '/wishlist' && (
+					{page === 'wishlist' && (
 						<IconButton
 							color="primary"
 							component={RouterLink}

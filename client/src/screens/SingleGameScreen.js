@@ -45,6 +45,7 @@ import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
 import SendMessage from '../components/SendMessage'
+import HelmetComponent from '../components/HelmetComponent'
 
 // @ Others
 import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
@@ -181,6 +182,7 @@ const SingleGameScreen = () => {
 		<div className={cls.root}>
 			{data && (
 				<Fragment>
+					<HelmetComponent title={success ? data.games[0].title : 'Boardgame'} />
 					<Grid container justify="center" direction="row" className={cls.mainGrid}>
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justify="center">

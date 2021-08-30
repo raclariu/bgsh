@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
 import SendMessage from '../components/SendMessage'
+import HelmetComponent from '../components/HelmetComponent'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +27,7 @@ const ProfileScreen = () => {
 
 	return (
 		<Fragment>
+			<HelmetComponent title="Profile" />
 			<Grid container spacing={3}>
 				<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
 					<Box p={2} borderRadius={4} boxShadow={2}>

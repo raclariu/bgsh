@@ -1,6 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { formatDistance, parseISO } from 'date-fns'
 
@@ -48,9 +49,11 @@ const useStyles = makeStyles((theme) => ({
 const InboxScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
+	const history = useHistory()
 
 	const [ tab, setTab ] = useState('received')
-	const [ checked, setChecked ] = useState([])
+	const [ checkedReceived, setCheckedReceived ] = useState([])
+	const [ checkedSent, setCheckedSent ] = useState([])
 
 	const messagesSelector = useSelector((state) => state.messages)
 	const { loading, success, error, received, sent } = messagesSelector
@@ -66,23 +69,41 @@ const InboxScreen = () => {
 		setTab(newTab)
 	}
 
-	const handleChecked = (e, id) => {
+	const handleChecked = (e, id, type) => {
 		if (e.target.checked) {
-			setChecked([ ...checked, id ])
+			if (type === 'received') {
+				setCheckedReceived([ ...checkedReceived, id ])
+			} else {
+				setCheckedSent([ ...checkedSent, id ])
+			}
 		} else {
-			setChecked(checked.filter((chk) => chk !== id))
+			if (type === 'received') {
+				setCheckedReceived(checkedReceived.filter((chk) => chk !== id))
+			} else {
+				setCheckedSent(checkedSent.filter((chk) => chk !== id))
+			}
 		}
 	}
 
-	const handleSelectAll = (e) => {
+	const handleSelectAll = (e, type) => {
 		if (e.target.checked) {
-			setChecked(received.map((el) => el._id))
+			if (type === 'received') {
+				setCheckedReceived(received.map((el) => el._id))
+			} else {
+				setCheckedSent(sent.map((el) => el._id))
+			}
 		} else {
-			setChecked([])
+			if (type === 'received') {
+				setCheckedReceived([])
+			} else {
+				setCheckedSent([])
+			}
 		}
 	}
 
-	console.log(checked)
+	const handleMessageClick = (id) => {
+		history.push(`/inbox/${id}`)
+	}
 
 	return (
 		<Fragment>
@@ -116,7 +137,7 @@ const InboxScreen = () => {
 									size="small"
 									label="Select all"
 									disabled={!success}
-									onChange={handleSelectAll}
+									onChange={(e) => handleSelectAll(e, 'received')}
 								/>
 							}
 						/>
@@ -131,13 +152,11 @@ const InboxScreen = () => {
 									bgcolor="background.paper"
 									alignItems="center"
 									width="100%"
-									px={1}
-									py={1}
 								>
 									<Box my={1} mr={1}>
 										<Checkbox
-											checked={checked.some((el) => el === msg._id)}
-											onChange={(e) => handleChecked(e, msg._id)}
+											checked={checkedReceived.some((el) => el === msg._id)}
+											onChange={(e) => handleChecked(e, msg._id, 'received')}
 											size="small"
 										/>
 									</Box>
@@ -156,7 +175,9 @@ const InboxScreen = () => {
 										justifyContent="center"
 										alignItems="flex-start"
 										minWidth={0}
-										ml={1}
+										pl={1}
+										py={2}
+										onClick={() => handleMessageClick(msg._id)}
 									>
 										<Box
 											className={cls.subject}
@@ -198,7 +219,7 @@ const InboxScreen = () => {
 									size="small"
 									label="Select all"
 									disabled={!success}
-									onChange={handleSelectAll}
+									onChange={(e) => handleSelectAll(e, 'sent')}
 								/>
 							}
 						/>
@@ -218,8 +239,8 @@ const InboxScreen = () => {
 								>
 									<Box my={1} mr={1}>
 										<Checkbox
-											checked={checked.some((el) => el === msg._id)}
-											onChange={(e) => handleChecked(e, msg._id)}
+											checked={checkedSent.some((el) => el === msg._id)}
+											onChange={(e) => handleChecked(e, msg._id, 'sent')}
 											size="small"
 										/>
 									</Box>
