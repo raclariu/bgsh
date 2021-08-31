@@ -38,7 +38,7 @@ const validateEmailDuplicate = check('email')
 		}
 	})
 
-const validatePassword = check('password')
+const validatePasswordSignIn = check('password')
 	.trim()
 	.notEmpty()
 	.withMessage('Password is required')
@@ -58,6 +58,14 @@ const validatePassword = check('password')
 			}
 		}
 	})
+
+const validatePasswordSignUp = check('password')
+	.trim()
+	.notEmpty()
+	.withMessage('Password is required')
+	.bail()
+	.isLength({ min: 6 })
+	.withMessage('Password must be longer than 6 characters')
 
 const validatePasswordConfirmation = check('passwordConfirmation')
 	.trim()
@@ -142,7 +150,8 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 export {
 	validateEmail,
 	validateEmailDuplicate,
-	validatePassword,
+	validatePasswordSignIn,
+	validatePasswordSignUp,
 	validateUsername,
 	validatePasswordConfirmation,
 	validatePasswordCurrent,

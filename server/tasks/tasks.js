@@ -1,4 +1,5 @@
 import cron from 'node-cron'
+import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
 import Game from '../models/gameModel.js'
 
@@ -18,4 +19,16 @@ const setInactiveTask = cron.schedule(
 	options
 )
 
-export { setInactiveTask }
+const getKickstarters = cron.schedule(
+	'*/10 * * * * *',
+	async () => {
+		console.log('asd')
+		const browser = await puppeteer.launch({ headless: false })
+		const page = await browser.newPage()
+		await page.goto('https://google.ro')
+		await browser.close()
+	},
+	options
+)
+
+export { setInactiveTask, getKickstarters }

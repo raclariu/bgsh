@@ -43,6 +43,8 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 	const sendMessageSelector = useSelector((state) => state.sendMessage)
 	const { success, error, loading } = sendMessageSelector
 
+	const userId = useSelector((state) => state.userSignIn.userInfo._id)
+
 	useEffect(
 		() => {
 			return () => {
@@ -69,7 +71,7 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 
 	return (
 		<Fragment>
-			<IconButton color="primary" onClick={handleOpenDialog}>
+			<IconButton disabled={userId === recipientId} color="primary" onClick={handleOpenDialog}>
 				<MailTwoToneIcon fontSize="small" />
 			</IconButton>
 

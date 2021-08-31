@@ -15,7 +15,7 @@ import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import PackInfoTextarea from '../components/SellGamesScreen/PackInfoTextarea'
 import PackTotalPriceInput from '../components/SellGamesScreen/PackTotalPriceInput'
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 
 // @ Others
@@ -195,11 +195,11 @@ const SellGamesScreen = () => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className={cls.error}>
-				{detailsError && <Message>{detailsError}</Message>}
+				{detailsError && <CustomAlert>{detailsError}</CustomAlert>}
 
-				{sellError && sellError.map((err, i) => <Message key={i}>{err}</Message>)}
+				{sellError && sellError.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
 
-				{saleList.length === 0 && <Message severity="warning">Your sale list is empty</Message>}
+				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 			</div>
 
 			{detailsLoading && <Loader />}

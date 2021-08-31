@@ -17,7 +17,7 @@ import BackButton from '../components/BackButton'
 import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeletons from '../components/Skeletons/GameIndexCardSkeletons'
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { getGames } from '../actions/gameActions'
@@ -80,7 +80,7 @@ const GamesIndexScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center" spacing={2}>
+			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search games" handleFilters={handleFilters} />
 				</Grid>
@@ -93,7 +93,7 @@ const GamesIndexScreen = () => {
 				<SortGames handleFilters={handleFilters} />
 			</Box>
 
-			{error && <Message severity="warning">{error}</Message>}
+			{error && <CustomAlert severity="warning">{error}</CustomAlert>}
 
 			{loading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">

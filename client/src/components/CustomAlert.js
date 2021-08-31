@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert'
 import Box from '@material-ui/core/Box'
 
 // @ Main
-const Message = ({ severity, children }) => {
+const CustomAlert = ({ severity, children }) => {
 	return (
 		<Box boxShadow={2} borderRadius={4}>
 			<Alert variant="filled" severity={severity}>
@@ -17,9 +17,9 @@ const Message = ({ severity, children }) => {
 }
 
 // @ Default Props
-Message.defaultProps = {
+CustomAlert.defaultProps = {
 	severity : 'error',
 	children : 'Error occured. Try again.'
 }
 
-export default Message
+export default CustomAlert

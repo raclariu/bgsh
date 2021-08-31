@@ -35,20 +35,42 @@ const sendMessage = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get messages
-// ~ @route   GET  /api/messages
+// ~ @desc    Get received messages
+// ~ @route   GET  /api/messages/received
 // ~ @access  Private route
-const getAllMessages = asyncHandler(async (req, res) => {
-	const sent = await Message.find({ sender: req.user._id })
-		.populate({ path: 'recipient', select: '_id username' })
-		.sort({ createdAt: -1 })
-		.lean()
-	const received = await Message.find({ recipient: req.user._id })
+const getReceivedMessages = asyncHandler(async (req, res) => {
+	const messages = await Message.find({ recipient: req.user._id })
 		.populate({ path: 'sender', select: '_id username' })
 		.sort({ createdAt: -1 })
 		.lean()
 
-	res.status(200).json({ sent, received })
+	if (messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No messages found'
+		}
+	}
+
+	res.status(200).json(messages)
+})
+
+// ~ @desc    Get sent messages
+// ~ @route   GET  /api/messages/sent
+// ~ @access  Private route
+const getSentMessages = asyncHandler(async (req, res) => {
+	const messages = await Message.find({ sender: req.user._id })
+		.populate({ path: 'recipient', select: '_id username' })
+		.sort({ createdAt: -1 })
+		.lean()
+
+	if (messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No messages found'
+		}
+	}
+
+	res.status(200).json(messages)
 })
 
 // ~ @desc    Get new messages count
@@ -60,4 +82,4 @@ const getNewMessagesCount = asyncHandler(async (req, res) => {
 	res.status(200).json(count)
 })
 
-export { sendMessage, getAllMessages, getNewMessagesCount }
+export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount }

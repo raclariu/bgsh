@@ -128,7 +128,7 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 		for (let game of ensureArray) {
 			const hotGame = {
-				id        : game.id,
+				bggId     : game.id,
 				rank      : game.rank ? +game.rank : null,
 				thumbnail : game.thumbnail.value || null,
 				title     : game.name.value || '',

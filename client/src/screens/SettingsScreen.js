@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography'
 import VpnKeyIcon from '@material-ui/icons/VpnKey'
 
 // @ Components
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 
 // @ Styles
@@ -43,9 +43,15 @@ const SettingsScreen = () => {
 
 	return (
 		<Fragment>
-			{success && <Message severity="success">Password changed successfully.</Message>}
+			{success && <CustomAlert severity="success">Password changed successfully.</CustomAlert>}
 
-			<Grid container className={cls.gridContainer} direction="column" justify="center" alignItems="center">
+			<Grid
+				container
+				className={cls.gridContainer}
+				direction="column"
+				justifyContent="center"
+				alignItems="center"
+			>
 				<Grid item>
 					<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
 						<Tab

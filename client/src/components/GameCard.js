@@ -81,7 +81,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 			<Divider />
 
 			<CardActions>
-				<Grid container direction="row" justify="space-between" alignItems="center">
+				<Grid container direction="row" justifyContent="space-between" alignItems="center">
 					<Grid item>
 						<Button
 							color="primary"

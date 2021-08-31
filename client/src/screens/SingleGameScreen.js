@@ -183,9 +183,9 @@ const SingleGameScreen = () => {
 			{data && (
 				<Fragment>
 					<HelmetComponent title={success ? data.games[0].title : 'Boardgame'} />
-					<Grid container justify="center" direction="row" className={cls.mainGrid}>
+					<Grid container justifyContent="center" direction="row" className={cls.mainGrid}>
 						{/* Thumbnail */}
-						<Grid item container md={4} xs={12} justify="center">
+						<Grid item container md={4} xs={12} justifyContent="center">
 							<Box
 								bgcolor="background.paper"
 								className={cls.thumbnailContainer}
@@ -208,7 +208,15 @@ const SingleGameScreen = () => {
 
 						{/* Right side */}
 
-						<Grid item container direction="column" justify="center" alignItems="center" md={8} xs={12}>
+						<Grid
+							item
+							container
+							direction="column"
+							justifyContent="center"
+							alignItems="center"
+							md={8}
+							xs={12}
+						>
 							{/* Title */}
 							<Grid item>
 								<Box fontSize={22} textAlign="center">
@@ -228,7 +236,7 @@ const SingleGameScreen = () => {
 								item
 								container
 								className={cls.statsBoxes}
-								justify="center"
+								justifyContent="center"
 								alignItems="center"
 								spacing={1}
 							>
@@ -291,7 +299,7 @@ const SingleGameScreen = () => {
 								item
 								container
 								className={cls.infoBoxesContainer}
-								justify="center"
+								justifyContent="center"
 								alignItems="center"
 								spacing={1}
 							>
@@ -325,7 +333,13 @@ const SingleGameScreen = () => {
 								</Grid>
 							</Grid>
 
-							<Grid className={cls.priceContainer} item container justify="center" alignItems="center">
+							<Grid
+								className={cls.priceContainer}
+								item
+								container
+								justifyContent="center"
+								alignItems="center"
+							>
 								{data.mode === 'sell' && (
 									<Box fontWeight="fontWeightMedium">
 										<Box>{data.totalPrice} RON</Box>

@@ -116,7 +116,7 @@ const SaleListPopover = () => {
 			>
 				{/* Content */}
 				{saleList && (
-					<Grid container className={cls.grid} justify="flex-end">
+					<Grid container className={cls.grid} justifyContent="flex-end">
 						<Grid item xs={12}>
 							<List disablePadding>
 								<Typography

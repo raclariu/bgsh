@@ -30,14 +30,20 @@ import {
 	getSoldGamesHistoryReducer,
 	getTradedGamesHistoryReducer
 } from './reducers/historyReducers'
-import { sendMessageReducer, getAllMessagesReducer, getNewMessagesCountReducer } from './reducers/messageReducers'
+import {
+	sendMessageReducer,
+	getReceivedMessagesReducer,
+	getSentMessagesReducer,
+	getNewMessagesCountReducer
+} from './reducers/messageReducers'
 
 const reducer = combineReducers({
 	userSignIn       : userSignInReducer,
 	userSignUp       : userSignUpReducer,
 	userPreferences  : setThemeReducer,
 	sendMessage      : sendMessageReducer,
-	messages         : getAllMessagesReducer,
+	messagesReceived : getReceivedMessagesReducer,
+	messagesSent     : getSentMessagesReducer,
 	newMessagesCount : getNewMessagesCountReducer,
 	changePassword   : userChangePasswordReducer,
 	bggCollection    : bggGetCollectionReducer,

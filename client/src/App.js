@@ -32,8 +32,8 @@ const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
-const Inbox = lazy(() => import('./screens/InboxScreen'))
-const ReadMessage = lazy(() => import('./screens/ReadMessageScreen'))
+const InboxReceived = lazy(() => import('./screens/InboxReceivedScreen'))
+const InboxSent = lazy(() => import('./screens/InboxSentScreen'))
 const ActiveGames = lazy(() => import('./screens/ActiveGamesScreen'))
 const HistorySoldGames = lazy(() => import('./screens/HistorySoldGamesScreen'))
 const HistoryTradedGames = lazy(() => import('./screens/HistoryTradedGamesScreen'))
@@ -101,11 +101,11 @@ const App = () => {
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/inbox" exact>
-								<Inbox />
+								<InboxReceived />
 							</ProtectedRoute>
 
-							<ProtectedRoute path="/inbox/:msgId" exact>
-								<ReadMessage />
+							<ProtectedRoute path="/inbox/sent" exact>
+								<InboxSent />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/history/active" exact>

@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import morgan from 'morgan'
 import colors from 'colors'
 import connectDB from './db/dbConnect.js'
-import { setInactiveTask } from './tasks/tasks.js'
+import { setInactiveTask, getKickstarters } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 import userRoutes from './routes/userRoutes.js'
 import collectionRoutes from './routes/collectionRoutes.js'
@@ -39,6 +39,7 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	setInactiveTask.start()
+	//getKickstarters.start()
 	console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.white.bgMagenta.bold)
 	console.log(`setInactiveTask starting... running every day at 03:00 and 15:00`.yellow.bgBlue.bold)
 })

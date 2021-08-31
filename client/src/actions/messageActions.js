@@ -3,9 +3,12 @@ import {
 	SEND_MESSAGE_REQUEST,
 	SEND_MESSAGE_SUCCESS,
 	SEND_MESSAGE_FAIL,
-	GET_MESSAGES_REQUEST,
-	GET_MESSAGES_SUCCESS,
-	GET_MESSAGES_FAIL,
+	GET_RECEIVED_MESSAGES_REQUEST,
+	GET_RECEIVED_MESSAGES_SUCCESS,
+	GET_RECEIVED_MESSAGES_FAIL,
+	GET_SENT_MESSAGES_REQUEST,
+	GET_SENT_MESSAGES_SUCCESS,
+	GET_SENT_MESSAGES_FAIL,
 	GET_NEW_MESSAGES_COUNT_REQUEST,
 	GET_NEW_MESSAGES_COUNT_SUCCESS,
 	GET_NEW_MESSAGES_COUNT_FAIL
@@ -32,14 +35,14 @@ export const sendMessage = (subject, message, recipientUsername, recipientId) =>
 	} catch (error) {
 		dispatch({
 			type    : SEND_MESSAGE_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }
 
-export const getAllMessages = () => async (dispatch, getState) => {
+export const getReceivedMessages = () => async (dispatch, getState) => {
 	try {
-		dispatch({ type: GET_MESSAGES_REQUEST })
+		dispatch({ type: GET_RECEIVED_MESSAGES_REQUEST })
 
 		const { userSignIn: { userInfo } } = getState()
 
@@ -50,16 +53,43 @@ export const getAllMessages = () => async (dispatch, getState) => {
 			}
 		}
 
-		const { data } = await axios.get('/api/messages', config)
+		const { data } = await axios.get('/api/messages/received', config)
 
 		dispatch({
-			type    : GET_MESSAGES_SUCCESS,
+			type    : GET_RECEIVED_MESSAGES_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : GET_MESSAGES_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			type    : GET_RECEIVED_MESSAGES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getSentMessages = () => async (dispatch, getState) => {
+	try {
+		dispatch({ type: GET_SENT_MESSAGES_REQUEST })
+
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				'Content-Type' : 'application/json',
+				Authorization  : `Bearer ${userInfo.token}`
+			}
+		}
+
+		const { data } = await axios.get('/api/messages/sent', config)
+
+		dispatch({
+			type    : GET_SENT_MESSAGES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : GET_SENT_MESSAGES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }
@@ -86,7 +116,7 @@ export const getNewMessagesCount = () => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : GET_NEW_MESSAGES_COUNT_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }

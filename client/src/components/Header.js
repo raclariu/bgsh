@@ -36,7 +36,9 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
 import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
+import InboxTwoToneIcon from '@material-ui/icons/InboxTwoTone'
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
+import SendTwoToneIcon from '@material-ui/icons/SendTwoTone'
 
 // @ Components
 import MessagesBadge from './MessagesBadge'
@@ -87,6 +89,7 @@ const Header = () => {
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openGames, setOpenGames ] = useState(false)
 	const [ openHistory, setOpenHistory ] = useState(false)
+	const [ openInbox, setOpenInbox ] = useState(false)
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
 
 	const userSignIn = useSelector((state) => state.userSignIn)
@@ -103,6 +106,9 @@ const Header = () => {
 		}
 		if (type === 'history') {
 			setOpenHistory(!openHistory)
+		}
+		if (type === 'inbox') {
+			setOpenInbox(!openInbox)
 		}
 	}
 
@@ -201,6 +207,7 @@ const Header = () => {
 												<ArrowDropDownIcon color="disabled" />
 											)}
 										</ListItem>
+
 										<Collapse in={openGames} timeout="auto" unmountOnExit>
 											<List disablePadding>
 												<ListItem
@@ -369,39 +376,106 @@ const Header = () => {
 											/>
 										</ListItem>
 
-										<ListItem
-											button
-											onClick={(e) => handleClick(e, 8)}
-											selected={selectedIndex === 8}
-											component={RouterLink}
-											to="/inbox"
-										>
+										<ListItem button onClick={() => handleExpandClick('inbox')}>
 											<ListItemIcon>
-												<EmailTwoToneIcon color={selectedIndex === 8 ? 'primary' : 'inherit'} />
+												<EmailTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText
 												primary={
 													<Box
 														fontWeight={500}
 														fontSize="subtitle2.fontSize"
-														color={selectedIndex === 8 ? 'primary.main' : 'text.secondary'}
+														color="text.secondary"
 													>
 														Inbox
 													</Box>
 												}
 											/>
+											{openGames ? (
+												<ArrowDropUpIcon color="disabled" />
+											) : (
+												<ArrowDropDownIcon color="disabled" />
+											)}
 										</ListItem>
+
+										<Collapse in={openInbox} timeout="auto" unmountOnExit>
+											<List disablePadding>
+												<ListItem
+													className={classes.nested}
+													button
+													onClick={(e) => handleClick(e, 8)}
+													selected={selectedIndex === 8}
+													component={RouterLink}
+													to="/inbox"
+												>
+													<ListItemIcon>
+														<InboxTwoToneIcon
+															color={selectedIndex === 8 ? 'primary' : 'inherit'}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 8 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Received
+															</Box>
+														}
+													/>
+												</ListItem>
+
+												<ListItem
+													className={classes.nested}
+													button
+													onClick={(e) => handleClick(e, 9)}
+													selected={selectedIndex === 9}
+													component={RouterLink}
+													to="/inbox/sent"
+												>
+													<ListItemIcon>
+														<SendTwoToneIcon
+															color={selectedIndex === 9 ? 'primary' : 'inherit'}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 9 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Sent
+															</Box>
+														}
+													/>
+												</ListItem>
+											</List>
+										</Collapse>
 
 										<ListItem
 											button
-											onClick={(e) => handleClick(e, 9)}
-											selected={selectedIndex === 9}
+											onClick={(e) => handleClick(e, 10)}
+											selected={selectedIndex === 10}
 											component={RouterLink}
 											to="/history/active"
 										>
 											<ListItemIcon>
 												<LocalActivityTwoToneIcon
-													color={selectedIndex === 9 ? 'primary' : 'inherit'}
+													color={selectedIndex === 10 ? 'primary' : 'inherit'}
 												/>
 											</ListItemIcon>
 											<ListItemText
@@ -409,7 +483,7 @@ const Header = () => {
 													<Box
 														fontWeight={500}
 														fontSize="subtitle2.fontSize"
-														color={selectedIndex === 9 ? 'primary.main' : 'text.secondary'}
+														color={selectedIndex === 10 ? 'primary.main' : 'text.secondary'}
 													>
 														Active
 													</Box>
@@ -443,14 +517,14 @@ const Header = () => {
 												<ListItem
 													className={classes.nested}
 													button
-													onClick={(e) => handleClick(e, 10)}
-													selected={selectedIndex === 10}
+													onClick={(e) => handleClick(e, 11)}
+													selected={selectedIndex === 11}
 													component={RouterLink}
 													to="/history/sold"
 												>
 													<ListItemIcon>
 														<MonetizationOnTwoToneIcon
-															color={selectedIndex === 10 ? 'primary' : 'inherit'}
+															color={selectedIndex === 11 ? 'primary' : 'inherit'}
 														/>
 													</ListItemIcon>
 													<ListItemText
@@ -459,7 +533,7 @@ const Header = () => {
 																fontWeight={500}
 																fontSize="subtitle2.fontSize"
 																color={
-																	selectedIndex === 10 ? (
+																	selectedIndex === 11 ? (
 																		'primary.main'
 																	) : (
 																		'text.secondary'
@@ -475,14 +549,14 @@ const Header = () => {
 												<ListItem
 													className={classes.nested}
 													button
-													onClick={(e) => handleClick(e, 11)}
-													selected={selectedIndex === 11}
+													onClick={(e) => handleClick(e, 12)}
+													selected={selectedIndex === 12}
 													component={RouterLink}
 													to="/history/traded"
 												>
 													<ListItemIcon>
 														<SwapHorizontalCircleTwoToneIcon
-															color={selectedIndex === 11 ? 'primary' : 'inherit'}
+															color={selectedIndex === 12 ? 'primary' : 'inherit'}
 														/>
 													</ListItemIcon>
 													<ListItemText
@@ -491,7 +565,7 @@ const Header = () => {
 																fontWeight={500}
 																fontSize="subtitle2.fontSize"
 																color={
-																	selectedIndex === 11 ? (
+																	selectedIndex === 12 ? (
 																		'primary.main'
 																	) : (
 																		'text.secondary'

@@ -16,7 +16,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
 import Paginate from '../components/Paginate'
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { getSoldGamesHistory } from '../actions/historyActions'
@@ -83,7 +83,7 @@ const HistorySoldGamesScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center" spacing={2}>
+			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title" handleFilters={handleFilters} />
 				</Grid>
@@ -97,7 +97,7 @@ const HistorySoldGamesScreen = () => {
 
 			{error && (
 				<Box mt={2}>
-					<Message>{error}</Message>
+					<CustomAlert>{error}</CustomAlert>
 				</Box>
 			)}
 

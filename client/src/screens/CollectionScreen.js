@@ -15,7 +15,7 @@ import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
 // @ Others
@@ -90,7 +90,7 @@ const CollectionScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center" spacing={2}>
+			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 				</Grid>
@@ -104,7 +104,7 @@ const CollectionScreen = () => {
 			)}
 			{dbError && (
 				<div className={cls.error}>
-					<Message>{dbError}</Message>
+					<CustomAlert>{dbError}</CustomAlert>
 				</div>
 			)}
 			{dbLoading && (

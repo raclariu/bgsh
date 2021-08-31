@@ -15,7 +15,7 @@ import ActiveGameCard from '../components/ActiveGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
 import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
 // @ Others
@@ -84,7 +84,7 @@ const ActiveGamesScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			<Grid container justify="center" spacing={2}>
+			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
@@ -105,7 +105,7 @@ const ActiveGamesScreen = () => {
 
 			{error && (
 				<Box mt={2}>
-					<Message>{error}</Message>
+					<CustomAlert>{error}</CustomAlert>
 				</Box>
 			)}
 

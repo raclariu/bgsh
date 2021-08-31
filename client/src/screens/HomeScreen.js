@@ -27,8 +27,8 @@ const HomeScreen = () => {
 		<Fragment>
 			{success && (
 				<Grid container spacing={2}>
-					{hotList.map((item) => (
-						<Grid item key={item.bggId} xs={12} md={4}>
+					{hotList.map((obj) => (
+						<Grid key={obj.bggId} item xs={12} md={4}>
 							<Box
 								bgcolor="background.paper"
 								height="100%"
@@ -40,8 +40,8 @@ const HomeScreen = () => {
 								justifyContent="center"
 								alignItems="center"
 							>
-								<img src={item.thumbnail} alt={item.title} />
-								<Box>{item.title}</Box>
+								<img src={obj.thumbnail} alt={obj.title} />
+								<Box>{obj.title}</Box>
 							</Box>
 						</Grid>
 					))}

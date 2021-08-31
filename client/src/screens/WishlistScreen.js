@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
 // @ Components
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
@@ -85,7 +85,7 @@ const WishlistScreen = () => {
 				</Grid>
 			)}
 
-			<Grid container justify="center" spacing={2}>
+			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={11}>
 					<SearchBox placeholder="Search wishlist" handleFilters={handleFilters} />
 				</Grid>
@@ -93,7 +93,7 @@ const WishlistScreen = () => {
 
 			{error && (
 				<div className={cls.error}>
-					<Message>{error}</Message>
+					<CustomAlert>{error}</CustomAlert>
 				</div>
 			)}
 

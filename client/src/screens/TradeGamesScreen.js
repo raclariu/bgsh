@@ -11,7 +11,7 @@ import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 
 // @ Components
-import Message from '../components/Message'
+import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import PackInfoTextarea from '../components/SellGamesScreen/PackInfoTextarea'
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
@@ -176,11 +176,11 @@ const TradeGamesScreen = () => {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className={cls.error}>
-				{detailsError && <Message>{detailsError}</Message>}
+				{detailsError && <CustomAlert>{detailsError}</CustomAlert>}
 
-				{tradeError && tradeError.map((err, i) => <Message key={i}>{err}</Message>)}
+				{tradeError && tradeError.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
 
-				{saleList.length === 0 && <Message severity="warning">Your trade list is empty</Message>}
+				{saleList.length === 0 && <CustomAlert severity="warning">Your trade list is empty</CustomAlert>}
 			</div>
 
 			{detailsLoading && <Loader />}

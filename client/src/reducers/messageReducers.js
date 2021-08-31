@@ -3,9 +3,12 @@ import {
 	SEND_MESSAGE_SUCCESS,
 	SEND_MESSAGE_FAIL,
 	SEND_MESSAGE_RESET,
-	GET_MESSAGES_REQUEST,
-	GET_MESSAGES_SUCCESS,
-	GET_MESSAGES_FAIL,
+	GET_RECEIVED_MESSAGES_REQUEST,
+	GET_RECEIVED_MESSAGES_SUCCESS,
+	GET_RECEIVED_MESSAGES_FAIL,
+	GET_SENT_MESSAGES_REQUEST,
+	GET_SENT_MESSAGES_SUCCESS,
+	GET_SENT_MESSAGES_FAIL,
 	GET_NEW_MESSAGES_COUNT_REQUEST,
 	GET_NEW_MESSAGES_COUNT_SUCCESS,
 	GET_NEW_MESSAGES_COUNT_FAIL
@@ -28,13 +31,27 @@ export const sendMessageReducer = (state = {}, action) => {
 	}
 }
 
-export const getAllMessagesReducer = (state = {}, action) => {
+export const getReceivedMessagesReducer = (state = {}, action) => {
 	switch (action.type) {
-		case GET_MESSAGES_REQUEST:
+		case GET_RECEIVED_MESSAGES_REQUEST:
 			return { loading: true }
-		case GET_MESSAGES_SUCCESS:
-			return { loading: false, success: true, received: action.payload.received, sent: action.payload.sent }
-		case GET_MESSAGES_FAIL:
+		case GET_RECEIVED_MESSAGES_SUCCESS:
+			return { loading: false, success: true, messages: action.payload }
+		case GET_RECEIVED_MESSAGES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const getSentMessagesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case GET_SENT_MESSAGES_REQUEST:
+			return { loading: true }
+		case GET_SENT_MESSAGES_SUCCESS:
+			return { loading: false, success: true, messages: action.payload }
+		case GET_SENT_MESSAGES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

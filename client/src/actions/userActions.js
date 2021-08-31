@@ -34,7 +34,7 @@ export const signIn = (email, password) => async (dispatch) => {
 	} catch (error) {
 		dispatch({
 			type    : USER_SIGNIN_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }
@@ -69,7 +69,7 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 	} catch (error) {
 		dispatch({
 			type    : USER_SIGNUP_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }
@@ -95,7 +95,7 @@ export const changePassword = (passwordCurrent, passwordNew, passwordNewConfirma
 	} catch (error) {
 		dispatch({
 			type    : USER_CHANGE_PASSWORD_FAIL,
-			payload : error.response && error.response.data ? { ...error.response.data.message } : error.message
+			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
 }

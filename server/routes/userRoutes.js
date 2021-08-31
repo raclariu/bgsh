@@ -5,7 +5,8 @@ import { userAuth, userRegister, changePassword } from '../controllers/userContr
 import {
 	validateEmail,
 	validateEmailDuplicate,
-	validatePassword,
+	validatePasswordSignIn,
+	validatePasswordSignUp,
 	validatePasswordConfirmation,
 	validateUsername,
 	validatePasswordCurrent,
@@ -14,10 +15,13 @@ import {
 } from '../validators/userValidators.js'
 
 // @route /api/users
-router.route('/signin').post([ validateEmail, validatePassword ], userAuth)
+router.route('/signin').post([ validateEmail, validatePasswordSignIn ], userAuth)
 router
 	.route('/signup')
-	.post([ validateEmailDuplicate, validateUsername, validatePassword, validatePasswordConfirmation ], userRegister)
+	.post(
+		[ validateEmailDuplicate, validateUsername, validatePasswordSignUp, validatePasswordConfirmation ],
+		userRegister
+	)
 router
 	.route('/password')
 	.post([ protect, validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ], changePassword)

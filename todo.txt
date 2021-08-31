@@ -1,3 +1,6 @@
 lazy loading la restul de pagini care folosesc Card
 redirect to active games on sell/trade
 one card to rule them all reusable
+- pentru inbox si history sold/traded, un singur screen
+- sparge header poate
+- tooltips pentru toate

@@ -34,7 +34,13 @@ const AuthScreen = () => {
 	}
 
 	return (
-		<Grid container className={classes.gridContainer} direction="column" justify="center" alignItems="center">
+		<Grid
+			container
+			className={classes.gridContainer}
+			direction="column"
+			justifyContent="center"
+			alignItems="center"
+		>
 			<Grid item md={4} sm={7} xs={11}>
 				<Tabs
 					className={classes.container}
