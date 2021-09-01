@@ -11,7 +11,10 @@ import {
 	GET_SENT_MESSAGES_FAIL,
 	GET_NEW_MESSAGES_COUNT_REQUEST,
 	GET_NEW_MESSAGES_COUNT_SUCCESS,
-	GET_NEW_MESSAGES_COUNT_FAIL
+	GET_NEW_MESSAGES_COUNT_FAIL,
+	DELETE_MESSAGES_REQUEST,
+	DELETE_MESSAGES_SUCCESS,
+	DELETE_MESSAGES_FAIL
 } from '../constants/messageConstants'
 
 export const sendMessageReducer = (state = {}, action) => {
@@ -38,6 +41,20 @@ export const getReceivedMessagesReducer = (state = {}, action) => {
 		case GET_RECEIVED_MESSAGES_SUCCESS:
 			return { loading: false, success: true, messages: action.payload }
 		case GET_RECEIVED_MESSAGES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const deleteMessagesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case DELETE_MESSAGES_REQUEST:
+			return { loading: true }
+		case DELETE_MESSAGES_SUCCESS:
+			return { loading: false, success: true }
+		case DELETE_MESSAGES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

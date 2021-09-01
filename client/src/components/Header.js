@@ -406,7 +406,7 @@ const Header = () => {
 													onClick={(e) => handleClick(e, 8)}
 													selected={selectedIndex === 8}
 													component={RouterLink}
-													to="/inbox"
+													to="/received"
 												>
 													<ListItemIcon>
 														<InboxTwoToneIcon
@@ -438,7 +438,7 @@ const Header = () => {
 													onClick={(e) => handleClick(e, 9)}
 													selected={selectedIndex === 9}
 													component={RouterLink}
-													to="/inbox/sent"
+													to="/sent"
 												>
 													<ListItemIcon>
 														<SendTwoToneIcon

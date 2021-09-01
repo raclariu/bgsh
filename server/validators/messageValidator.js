@@ -13,6 +13,7 @@ const validateMessageRecipient = check('recipientUsername')
 	.withMessage('Username can only contain letters and numbers')
 	.bail()
 	.custom(async (username, { req }) => {
+		console.log(req.user)
 		if (username === req.user.username) {
 			throw new Error('You cannot send a message to yourself.')
 		}

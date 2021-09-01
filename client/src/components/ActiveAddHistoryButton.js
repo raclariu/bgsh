@@ -18,7 +18,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Icons
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import RefreshIcon from '@material-ui/icons/Refresh'
 
 // @ Components
@@ -174,7 +174,7 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 				<Fragment>
 					<Tooltip disableFocusListener title="Delete">
 						<IconButton onClick={handleOpenDialog}>
-							<DeleteOutlinedIcon color="error" fontSize="small" />
+							<DeleteOutlineIcon color="error" fontSize="small" />
 						</IconButton>
 					</Tooltip>
 

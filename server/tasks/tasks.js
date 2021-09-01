@@ -25,7 +25,28 @@ const getKickstarters = cron.schedule(
 		console.log('asd')
 		const browser = await puppeteer.launch({ headless: false })
 		const page = await browser.newPage()
-		await page.goto('https://google.ro')
+		await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
+		await page.waitForSelector('#projects_list')
+		const data = await page.evaluate(() => {
+			let documents = [ ...document.querySelectorAll('[data-pid]') ]
+			let games = []
+			for (let game of documents) {
+				const doc = {
+					image       : game.children[0].children[0].children[0].children[0].childNodes[0].children[0].src,
+					title       :
+						game.children[0].children[0].children[0].children[2].children[0].children[0].children[0]
+							.children[0].innerText,
+					description :
+						game.children[0].children[0].children[0].children[2].children[0].children[0].children[0]
+							.children[1].innerText
+				}
+				games.push(doc)
+			}
+
+			return games
+		})
+
+		console.log(data)
 		await browser.close()
 	},
 	options

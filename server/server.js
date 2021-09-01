@@ -39,7 +39,7 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	setInactiveTask.start()
-	//getKickstarters.start()
+	getKickstarters.start()
 	console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.white.bgMagenta.bold)
 	console.log(`setInactiveTask starting... running every day at 03:00 and 15:00`.yellow.bgBlue.bold)
 })

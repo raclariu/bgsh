@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @Main
-const SendMessage = ({ recipientUsername, recipientId }) => {
+const SendMessage = ({ recipientUsername }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
@@ -43,7 +43,7 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 	const sendMessageSelector = useSelector((state) => state.sendMessage)
 	const { success, error, loading } = sendMessageSelector
 
-	const userId = useSelector((state) => state.userSignIn.userInfo._id)
+	const username = useSelector((state) => state.userSignIn.userInfo.username)
 
 	useEffect(
 		() => {
@@ -64,14 +64,14 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		dispatch(sendMessage(subject, message, recipient, recipientId))
+		dispatch(sendMessage(subject, message, recipient))
 	}
 
-	console.log(subject, message, recipient, recipientId)
+	console.log(subject, message, recipient)
 
 	return (
 		<Fragment>
-			<IconButton disabled={userId === recipientId} color="primary" onClick={handleOpenDialog}>
+			<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
 				<MailTwoToneIcon fontSize="small" />
 			</IconButton>
 
@@ -89,7 +89,7 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 							name="recipient"
 							label="Username of recipient"
 							type="text"
-							disabled={recipientId ? true : false}
+							disabled={recipientUsername ? true : false}
 							fullWidth
 							required
 						/>
@@ -125,8 +125,8 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 							type="text"
 							size="small"
 							multiline
-							rows={3}
-							rowsMax={10}
+							minRows={3}
+							maxRows={10}
 							fullWidth
 							required
 						/>
@@ -140,6 +140,9 @@ const SendMessage = ({ recipientUsername, recipientId }) => {
 								Send
 							</Button>
 						)}
+						<Button color="primary" type="submit" variant="outlined">
+							Send
+						</Button>
 					</DialogActions>
 				</form>
 			</Dialog>

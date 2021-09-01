@@ -7,9 +7,7 @@ import Message from '../models/messageModel.js'
 // * @route   POST  /api/messages
 // * @access  Private route
 const sendMessage = asyncHandler(async (req, res) => {
-	const { subject, message, recipientUsername, recipientId } = req.body
-
-	console.log(subject, message, recipientUsername, recipientId)
+	const { subject, message, recipientId } = req.body
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
@@ -24,12 +22,28 @@ const sendMessage = asyncHandler(async (req, res) => {
 			}
 		}
 	} else {
-		await Message.create({
+		const sender = await User.findOne({ _id: req.user._id }).select('messages _id username')
+		const recipient = await User.findOne({ _id: recipientId }).select('messages _id username')
+
+		if (!sender || !recipient) {
+			res.status(404)
+			throw {
+				message : 'User not found'
+			}
+		}
+
+		const msg = await Message.create({
 			sender    : req.user._id,
 			recipient : recipientId,
 			subject,
 			message
 		})
+
+		sender.messages.unshift(msg._id)
+		recipient.messages.unshift(msg._id)
+
+		await sender.save()
+		await recipient.save()
 
 		res.status(200).end()
 	}
@@ -39,38 +53,46 @@ const sendMessage = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/messages/received
 // ~ @access  Private route
 const getReceivedMessages = asyncHandler(async (req, res) => {
-	const messages = await Message.find({ recipient: req.user._id })
-		.populate({ path: 'sender', select: '_id username' })
-		.sort({ createdAt: -1 })
-		.lean()
-
-	if (messages.length === 0) {
-		res.status(404)
-		throw {
-			message : 'No messages found'
+	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
+		path     : 'messages',
+		match    : { recipient: req.user._id },
+		populate : {
+			path   : 'sender',
+			select : '_id username'
 		}
-	}
+	})
 
-	res.status(200).json(messages)
+	res.status(200).json(user.messages)
 })
 
 // ~ @desc    Get sent messages
 // ~ @route   GET  /api/messages/sent
 // ~ @access  Private route
 const getSentMessages = asyncHandler(async (req, res) => {
-	const messages = await Message.find({ sender: req.user._id })
-		.populate({ path: 'recipient', select: '_id username' })
-		.sort({ createdAt: -1 })
-		.lean()
-
-	if (messages.length === 0) {
-		res.status(404)
-		throw {
-			message : 'No messages found'
+	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
+		path     : 'messages',
+		match    : { sender: req.user._id },
+		populate : {
+			path   : 'recipient',
+			select : '_id username'
 		}
-	}
+	})
 
-	res.status(200).json(messages)
+	res.status(200).json(user.messages)
+})
+
+// ! @desc    Delete messages
+// ! @route   DELETE  /api/messages/delete
+// ! @access  Private route
+const deleteMessages = asyncHandler(async (req, res) => {
+	const { ids } = req.query
+	const idsArr = ids.split(',')
+
+	const user = await User.findOne({ _id: req.user._id }).select('messages').lean()
+	user.messages = user.messages.filter((id) => !idsArr.includes(id.toString()))
+	await User.updateOne({ _id: req.user._id }, { messages: user.messages })
+
+	res.status(200).end()
 })
 
 // ~ @desc    Get new messages count
@@ -82,4 +104,4 @@ const getNewMessagesCount = asyncHandler(async (req, res) => {
 	res.status(200).json(count)
 })
 
-export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount }
+export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount, deleteMessages }

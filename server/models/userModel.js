@@ -28,6 +28,13 @@ const userSchema = mongoose.Schema({
 			required : true,
 			ref      : 'Game'
 		}
+	],
+	messages   : [
+		{
+			type     : mongoose.Schema.Types.ObjectId,
+			required : true,
+			ref      : 'Message'
+		}
 	]
 })
 

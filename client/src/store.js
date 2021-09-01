@@ -34,7 +34,8 @@ import {
 	sendMessageReducer,
 	getReceivedMessagesReducer,
 	getSentMessagesReducer,
-	getNewMessagesCountReducer
+	getNewMessagesCountReducer,
+	deleteMessagesReducer
 } from './reducers/messageReducers'
 
 const reducer = combineReducers({
@@ -44,6 +45,7 @@ const reducer = combineReducers({
 	sendMessage      : sendMessageReducer,
 	messagesReceived : getReceivedMessagesReducer,
 	messagesSent     : getSentMessagesReducer,
+	deleteMessages   : deleteMessagesReducer,
 	newMessagesCount : getNewMessagesCountReducer,
 	changePassword   : userChangePasswordReducer,
 	bggCollection    : bggGetCollectionReducer,

@@ -6,7 +6,8 @@ import {
 	sendMessage,
 	getReceivedMessages,
 	getSentMessages,
-	getNewMessagesCount
+	getNewMessagesCount,
+	deleteMessages
 } from '../controllers/messageController.js'
 import {
 	validateMessageRecipient,
@@ -16,6 +17,7 @@ import {
 
 // @ api/messages
 router.route('/').post([ protect, validateMessageRecipient, validateMessageSubject, validateMessageBody ], sendMessage)
+router.route('/delete').delete(protect, deleteMessages)
 router.route('/received').get(protect, getReceivedMessages)
 router.route('/sent').get(protect, getSentMessages)
 router.route('/new').get(protect, getNewMessagesCount)
