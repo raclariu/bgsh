@@ -36,7 +36,7 @@ const MessagesBadge = () => {
 
 	return (
 		<Fragment>
-			<IconButton component={RouterLink} to="/inbox" color="primary">
+			<IconButton component={RouterLink} to="/received" color="primary">
 				<Badge color="secondary" badgeContent={success ? count : 0}>
 					<EmailTwoToneIcon />
 				</Badge>

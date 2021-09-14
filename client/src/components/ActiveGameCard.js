@@ -51,24 +51,6 @@ const useStyles = makeStyles((theme) => ({
 		overflow        : 'hidden',
 		width           : '100%',
 		textAlign       : 'center'
-	},
-	avatar        : {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main
-	},
-	input         : {
-		minHeight                      : '70px',
-		width                          : '50%',
-		[theme.breakpoints.down('xs')]: {
-			width : '90%'
-		}
-	},
-	button        : {
-		width                          : '50%',
-		[theme.breakpoints.down('xs')]: {
-			width : '90%'
-		}
 	}
 }))
 

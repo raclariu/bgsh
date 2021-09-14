@@ -108,8 +108,8 @@ export const deleteMessages = (ids) => async (dispatch, getState) => {
 				'Content-Type' : 'application/json',
 				Authorization  : `Bearer ${userInfo.token}`
 			},
-			params  : {
-				ids : ids.join(',')
+			data    : {
+				ids
 			}
 		}
 

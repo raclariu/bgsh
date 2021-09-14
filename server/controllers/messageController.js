@@ -85,11 +85,10 @@ const getSentMessages = asyncHandler(async (req, res) => {
 // ! @route   DELETE  /api/messages/delete
 // ! @access  Private route
 const deleteMessages = asyncHandler(async (req, res) => {
-	const { ids } = req.query
-	const idsArr = ids.split(',')
+	const { ids } = req.body
 
 	const user = await User.findOne({ _id: req.user._id }).select('messages').lean()
-	user.messages = user.messages.filter((id) => !idsArr.includes(id.toString()))
+	user.messages = user.messages.filter((id) => !ids.includes(id.toString()))
 	await User.updateOne({ _id: req.user._id }, { messages: user.messages })
 
 	res.status(200).end()
