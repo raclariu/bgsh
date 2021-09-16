@@ -1,6 +1,6 @@
 // @ Libraries
 import React from 'react'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Icons
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
@@ -40,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 	const cls = useStyles()
-	const location = useLocation()
 
 	const game = useSelector((state) => {
 		if (page === 'collection') {
@@ -83,31 +83,37 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 			<CardActions>
 				<Grid container direction="row" justifyContent="space-between" alignItems="center">
 					<Grid item>
-						<Button
-							color="primary"
-							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-							target="_blank"
-							rel="noopener"
-						>
-							BGG
-						</Button>
+						<Tooltip title="Check on BGG">
+							<Button
+								color="primary"
+								href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+								target="_blank"
+								rel="noopener"
+							>
+								BGG
+							</Button>
+						</Tooltip>
 					</Grid>
 					{page === 'collection' && (
-						<Checkbox
-							checked={isChecked}
-							disabled={isDisabled}
-							onChange={(e) => saleListHandler(e, game.bggId)}
-							icon={<AddBoxOutlinedIcon />}
-						/>
+						<Tooltip title={isChecked ? 'Remove from list' : 'Add to list'}>
+							<Checkbox
+								checked={isChecked}
+								disabled={isDisabled}
+								onChange={(e) => saleListHandler(e, game.bggId)}
+								icon={<AddBoxOutlinedIcon />}
+							/>
+						</Tooltip>
 					)}
 					{page === 'wishlist' && (
-						<IconButton
-							color="primary"
-							component={RouterLink}
-							to={`/games?search=${game.title.toLowerCase()}`}
-						>
-							<SearchIcon fontSize="small" />
-						</IconButton>
+						<Tooltip title="Search this game on market">
+							<IconButton
+								color="primary"
+								component={RouterLink}
+								to={`/games?search=${game.title.toLowerCase()}`}
+							>
+								<SearchIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
 					)}
 				</Grid>
 			</CardActions>

@@ -3,7 +3,6 @@ import React, { Fragment } from 'react'
 import approx from 'approximate-number'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
 // @ Helpers
@@ -63,7 +62,7 @@ const RatingBox = ({ variant, stats }) => {
 			) : (
 				<Box bgcolor={handleRatingBgColor()} {...defaultBigBox}>
 					{approx(stats.avgRating)}
-					<Box fontSize={10} color="grey.200">
+					<Box fontSize={11} color="grey.200">
 						{approx(stats.ratings)} ratings
 					</Box>
 				</Box>

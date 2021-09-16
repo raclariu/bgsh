@@ -10,6 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Mui Icons
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
@@ -71,9 +72,11 @@ const SendMessage = ({ recipientUsername }) => {
 
 	return (
 		<Fragment>
-			<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
-				<MailTwoToneIcon fontSize="small" />
-			</IconButton>
+			<Tooltip title="Send message">
+				<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
+					<MailTwoToneIcon fontSize="small" />
+				</IconButton>
+			</Tooltip>
 
 			<Dialog fullWidth maxWidth="xs" open={open} onClose={handleCloseDialog}>
 				<form onSubmit={submitHandler} autoComplete="off">

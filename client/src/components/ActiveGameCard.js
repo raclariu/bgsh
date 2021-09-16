@@ -93,31 +93,39 @@ const ActiveGameCard = ({ data }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<Box className={cls.overlayBottom}>
-							<MonetizationOnOutlinedIcon color="secondary" />
-						</Box>
+						<Tooltip title="For sale">
+							<Box className={cls.overlayBottom}>
+								<MonetizationOnOutlinedIcon color="secondary" />
+							</Box>
+						</Tooltip>
 					)}
 
 					{data.mode === 'trade' && (
-						<Box className={cls.overlayBottom}>
-							<SwapHorizontalCircleOutlinedIcon color="secondary" />
-						</Box>
+						<Tooltip title="For trade">
+							<Box className={cls.overlayBottom}>
+								<SwapHorizontalCircleOutlinedIcon color="secondary" />
+							</Box>
+						</Tooltip>
 					)}
 				</Fragment>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'sell' && (
-				<Box className={cls.overlayTop}>
-					<MonetizationOnOutlinedIcon color="secondary" />
-				</Box>
+				<Tooltip title="For sale">
+					<Box className={cls.overlayTop}>
+						<MonetizationOnOutlinedIcon color="secondary" />
+					</Box>
+				</Tooltip>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'trade' && (
-				<Box className={cls.overlayTop}>
-					<SwapHorizontalCircleOutlinedIcon color="secondary" />
-				</Box>
+				<Tooltip title="For trade">
+					<Box className={cls.overlayTop}>
+						<SwapHorizontalCircleOutlinedIcon color="secondary" />
+					</Box>
+				</Tooltip>
 			)}
 
 			<Divider />

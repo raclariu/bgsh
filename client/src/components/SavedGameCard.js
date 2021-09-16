@@ -14,6 +14,7 @@ import Chip from '@material-ui/core/Chip'
 import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 
 // @ icons
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
@@ -98,31 +99,39 @@ const SavedGameCard = ({ gameId }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<Box className={cls.overlayBottom}>
-							<MonetizationOnOutlinedIcon color="secondary" />
-						</Box>
+						<Tooltip title="For sale">
+							<Box className={cls.overlayBottom}>
+								<MonetizationOnOutlinedIcon color="secondary" />
+							</Box>
+						</Tooltip>
 					)}
 
 					{data.mode === 'trade' && (
-						<Box className={cls.overlayBottom}>
-							<SwapHorizontalCircleOutlinedIcon color="secondary" />
-						</Box>
+						<Tooltip title="For trade">
+							<Box className={cls.overlayBottom}>
+								<SwapHorizontalCircleOutlinedIcon color="secondary" />
+							</Box>
+						</Tooltip>
 					)}
 				</Fragment>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'sell' && (
-				<Box className={cls.overlayTop}>
-					<MonetizationOnOutlinedIcon color="secondary" />
-				</Box>
+				<Tooltip title="For sale">
+					<Box className={cls.overlayTop}>
+						<MonetizationOnOutlinedIcon color="secondary" />
+					</Box>
+				</Tooltip>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'trade' && (
-				<Box className={cls.overlayTop}>
-					<SwapHorizontalCircleOutlinedIcon color="secondary" />
-				</Box>
+				<Tooltip title="For trade">
+					<Box className={cls.overlayTop}>
+						<SwapHorizontalCircleOutlinedIcon color="secondary" />
+					</Box>
+				</Tooltip>
 			)}
 
 			<Divider />
@@ -159,19 +168,27 @@ const SavedGameCard = ({ gameId }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<Button
-						color="primary"
-						href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
-						target="_blank"
-						rel="noopener"
-					>
-						BGG
-					</Button>
+					<Tooltip title="Check on BGG">
+						<Button
+							color="primary"
+							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
+							target="_blank"
+							rel="noopener"
+						>
+							BGG
+						</Button>
+					</Tooltip>
 
 					<Box display="flex" justifyContent="center" alignItems="center">
-						<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
-							<CenterFocusWeakTwoToneIcon fontSize="small" />
-						</IconButton>
+						<Tooltip title="Details">
+							<IconButton
+								component={RouterLink}
+								to={{ pathname: `/games/${data.altId}` }}
+								color="primary"
+							>
+								<CenterFocusWeakTwoToneIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
 					</Box>
 				</Box>
 			</CardActions>

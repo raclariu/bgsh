@@ -183,7 +183,13 @@ const SingleGameScreen = () => {
 			{data && (
 				<Fragment>
 					<HelmetComponent title={success ? data.games[0].title : 'Boardgame'} />
-					<Grid container justifyContent="center" direction="row" className={cls.mainGrid}>
+					<Grid
+						container
+						justifyContent="center"
+						alignItems="flex-start"
+						direction="row"
+						className={cls.mainGrid}
+					>
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justifyContent="center">
 							<Box
