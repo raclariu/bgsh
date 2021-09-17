@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -25,6 +24,7 @@ import SearchIcon from '@material-ui/icons/Search'
 const useStyles = makeStyles((theme) => ({
 	media : {
 		margin    : theme.spacing(1, 0, 1, 0),
+		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
@@ -81,21 +81,20 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 			<Divider />
 
 			<CardActions>
-				<Grid container direction="row" justifyContent="space-between" alignItems="center">
-					<Grid item>
-						<Tooltip title="Check on BGG">
-							<Button
-								color="primary"
-								href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
-								target="_blank"
-								rel="noopener"
-							>
-								BGG
-							</Button>
-						</Tooltip>
-					</Grid>
+				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
+					<Tooltip disableFocusListener title="Check on BGG">
+						<Button
+							color="primary"
+							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+							target="_blank"
+							rel="noopener"
+						>
+							BGG
+						</Button>
+					</Tooltip>
+
 					{page === 'collection' && (
-						<Tooltip title={isChecked ? 'Remove from list' : 'Add to list'}>
+						<Tooltip disableFocusListener title={isChecked ? 'Remove from list' : 'Add to list'}>
 							<Checkbox
 								checked={isChecked}
 								disabled={isDisabled}
@@ -105,7 +104,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 						</Tooltip>
 					)}
 					{page === 'wishlist' && (
-						<Tooltip title="Search this game on market">
+						<Tooltip disableFocusListener title="Search this game on market">
 							<IconButton
 								color="primary"
 								component={RouterLink}
@@ -115,7 +114,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 							</IconButton>
 						</Tooltip>
 					)}
-				</Grid>
+				</Box>
 			</CardActions>
 		</Card>
 	)

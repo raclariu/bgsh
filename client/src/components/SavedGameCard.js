@@ -19,9 +19,11 @@ import Tooltip from '@material-ui/core/Tooltip'
 // @ icons
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
 import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+
+// @ Components
+import GameDetailsButton from './GameDetailsButton'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	media         : {
 		margin    : theme.spacing(1, 0, 1, 0),
+		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
@@ -168,7 +171,7 @@ const SavedGameCard = ({ gameId }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<Tooltip title="Check on BGG">
+					<Tooltip disableFocusListener title="Check on BGG">
 						<Button
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
@@ -179,17 +182,7 @@ const SavedGameCard = ({ gameId }) => {
 						</Button>
 					</Tooltip>
 
-					<Box display="flex" justifyContent="center" alignItems="center">
-						<Tooltip title="Details">
-							<IconButton
-								component={RouterLink}
-								to={{ pathname: `/games/${data.altId}` }}
-								color="primary"
-							>
-								<CenterFocusWeakTwoToneIcon fontSize="small" />
-							</IconButton>
-						</Tooltip>
-					</Box>
+					<GameDetailsButton altId={data.altId} />
 				</Box>
 			</CardActions>
 		</Card>

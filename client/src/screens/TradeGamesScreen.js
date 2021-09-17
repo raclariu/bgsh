@@ -23,22 +23,11 @@ import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	section      : {
+	section : {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	media        : {
-		objectFit      : 'cover',
-		height         : '150px',
-		objectPosition : 'center 0%'
-	},
-	autocomplete : {
-		marginTop : theme.spacing(2)
-	},
-	extraInfo    : {
-		margin : theme.spacing(2, 0, 2, 0)
-	},
-	error        : {
+	error   : {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))

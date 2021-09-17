@@ -36,6 +36,7 @@ const Inbox = lazy(() => import('./screens/InboxScreen'))
 const ActiveGames = lazy(() => import('./screens/ActiveGamesScreen'))
 const HistorySoldGames = lazy(() => import('./screens/HistorySoldGamesScreen'))
 const HistoryTradedGames = lazy(() => import('./screens/HistoryTradedGamesScreen'))
+const HotGames = lazy(() => import('./screens/HotGamesScreen'))
 const NotFound = lazy(() => import('./screens/NotFoundScreen'))
 
 // @ Main
@@ -100,11 +101,11 @@ const App = () => {
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/received" exact>
-								<Inbox display="received" />
+								<Inbox />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/sent" exact>
-								<Inbox display="sent" />
+								<Inbox />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/history/active" exact>
@@ -117,6 +118,10 @@ const App = () => {
 
 							<ProtectedRoute path="/history/traded" exact>
 								<HistoryTradedGames />
+							</ProtectedRoute>
+
+							<ProtectedRoute path="/hot" exact>
+								<HotGames />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/signout" exact>

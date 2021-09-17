@@ -115,7 +115,7 @@ const CollectionScreen = () => {
 			{dbSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
-						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
+						<Grid item key={game._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} height={58} />}>
 								<GameCard
 									bggId={game.bggId}

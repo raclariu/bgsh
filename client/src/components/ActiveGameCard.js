@@ -19,10 +19,10 @@ import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutline
 import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 
 // @ Components
 import ActiveAddHistoryButton from './ActiveAddHistoryButton'
+import GameDetailsButton from './GameDetailsButton'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	media         : {
 		margin    : theme.spacing(1, 0, 1, 0),
+		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
@@ -171,11 +172,7 @@ const ActiveGameCard = ({ data }) => {
 						display="add"
 					/>
 
-					<Tooltip disableFocusListener title="Details">
-						<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
-							<CenterFocusWeakTwoToneIcon fontSize="small" />
-						</IconButton>
-					</Tooltip>
+					<GameDetailsButton altId={data.altId} />
 
 					<ActiveAddHistoryButton gameId={data._id} display="delete" />
 				</Box>

@@ -14,6 +14,9 @@ import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 
+// @ Components
+import CustomAvatar from './CustomAvatar'
+
 // @ Icons
 import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
@@ -26,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	media       : {
 		margin    : theme.spacing(1, 0, 1, 0),
+		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
@@ -122,14 +126,18 @@ const HistoryGameCard = ({ gameId, page }) => {
 
 			<CardContent>
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-					{data.mode === 'sell' && <Box textAlign="center">Bought by: {data.buyer ? data.buyer : 'N/A'}</Box>}
-
-					{data.mode === 'trade' && (
-						<Box textAlign="center">Traded to: {data.buyer ? data.buyer : 'N/A'}</Box>
+					{data.mode === 'sell' && (
+						<Box fontWeight="fontWeightMedium">
+							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
+						</Box>
 					)}
 
 					{data.mode === 'sell' && (
-						<Box textAlign="center">RON {data.finalPrice ? data.finalPrice : 'N/A'}</Box>
+						<Box my={1}>{data.buyer ? <CustomAvatar size="medium" showUser /> : 'N/A'}</Box>
+					)}
+
+					{data.mode === 'trade' && (
+						<Box my={1}>{data.buyer ? <CustomAvatar size="medium" showUser /> : 'N/A'}</Box>
 					)}
 
 					<Box display="flex" alignItems="center">

@@ -481,7 +481,7 @@ const SingleGameScreen = () => {
 							</Box>
 							<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
 								{gallery.map((obj, index) => (
-									<Grid key={obj.imageid} item xs={12} sm={6} md={4} lg={3}>
+									<Grid item key={obj.imageid} xs={12} sm={6} md={4} lg={3}>
 										<LazyLoad offset={200} once>
 											<Box
 												display="flex"
@@ -504,7 +504,7 @@ const SingleGameScreen = () => {
 								))}
 							</Grid>
 
-							<Dialog fullWidth={true} maxWidth="md" open={open} onClose={handleClose}>
+							<Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
 								<DialogTitle disableTypography>
 									<Typography variant="subtitle2">{gallery[imgIndex].caption}</Typography>
 								</DialogTitle>
@@ -525,7 +525,7 @@ const SingleGameScreen = () => {
 									)}
 								</DialogContent>
 
-								<DialogActions>
+								<DialogActions dividers>
 									<Button
 										color="primary"
 										variant="outlined"

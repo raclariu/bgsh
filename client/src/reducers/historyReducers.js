@@ -41,7 +41,8 @@ export const getSoldGamesHistoryReducer = (state = {}, action) => {
 				loading    : false,
 				success    : true,
 				soldList   : action.payload.soldList,
-				pagination : action.payload.pagination
+				pagination : action.payload.pagination,
+				sum        : action.payload.sum
 			}
 
 		case HISTORY_SOLD_LIST_FAIL:

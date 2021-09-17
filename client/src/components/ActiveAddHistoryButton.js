@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down('xs')]: {
 			width : '90%'
 		}
+	},
+	ml     : {
+		marginLeft : theme.spacing(2)
 	}
 }))
 
@@ -103,7 +106,7 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 								{mode === 'trade' && 'For history purposes, type the other traders username'}
 							</Typography>
 							<Typography variant="body2" color="textSecondary" align="center">
-								You can skip this feature by just clicking on the button below
+								Username is not required, but it is recommended
 							</Typography>
 						</DialogTitle>
 
@@ -181,18 +184,23 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
 							<Typography variant="subtitle2" align="center">
-								Are you sure?
+								Are you sure you want to delete this board game?
 							</Typography>
 						</DialogTitle>
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
-								<ButtonGroup color="primary">
-									<Button disabled={loadingDelete} onClick={deleteGameHandler}>
-										{loadingDelete ? <Loader color="inherit" size={24} /> : 'Yes'}
-									</Button>
-									<Button onClick={handleCloseDialog}>Go back</Button>
-								</ButtonGroup>
+								<Button
+									disabled={loadingDelete}
+									onClick={deleteGameHandler}
+									variant="contained"
+									color="primary"
+								>
+									{loadingDelete ? <Loader color="inherit" size={24} /> : 'Delete'}
+								</Button>
+								<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
+									Go back
+								</Button>
 							</Box>
 						</DialogContent>
 					</Dialog>
@@ -212,18 +220,23 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
 							<Typography variant="subtitle2" align="center">
-								Are you sure?
+								Are you sure you want to reactivate this board game?
 							</Typography>
 						</DialogTitle>
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
-								<ButtonGroup color="primary">
-									<Button disabled={loadingReactivate} onClick={reactivateGameHandler}>
-										{loadingReactivate ? <Loader color="inherit" size={24} /> : 'Yes'}
-									</Button>
-									<Button onClick={handleCloseDialog}>Go back</Button>
-								</ButtonGroup>
+								<Button
+									disabled={loadingReactivate}
+									onClick={reactivateGameHandler}
+									variant="contained"
+									color="primary"
+								>
+									{loadingReactivate ? <Loader color="inherit" size={24} /> : 'Yes'}
+								</Button>
+								<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
+									Go back
+								</Button>
 							</Box>
 						</DialogContent>
 					</Dialog>

@@ -64,6 +64,10 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 
 	const completeList = await History.find({ seller: req.user._id, mode: 'sell' }).sort({ createdAt: -1 }).lean()
 
+	const sum = completeList.reduce((acc, { finalPrice }) => {
+		return acc + finalPrice
+	}, 0)
+
 	if (completeList.length === 0) {
 		res.status(404)
 		throw {
@@ -107,7 +111,8 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 
 		res.status(200).json({
 			soldList,
-			pagination
+			pagination,
+			sum
 		})
 	}
 })

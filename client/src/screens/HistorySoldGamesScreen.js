@@ -31,14 +31,6 @@ const useStyles = makeStyles((theme) => ({
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	},
-	media         : {
-		margin    : theme.spacing(2, 0, 2, 0),
-		objectFit : 'contain',
-		height    : '150px'
-	},
-	cardContent   : {
-		padding : '0px'
-	},
 	title         : {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
@@ -57,7 +49,7 @@ const HistorySoldGamesScreen = () => {
 	const { search, page = 1 } = queryString.parse(location.search)
 
 	const soldHistory = useSelector((state) => state.soldHistory)
-	const { loading, success, error, soldList, pagination } = soldHistory
+	const { loading, success, error, soldList, pagination, sum } = soldHistory
 
 	useEffect(
 		() => {
@@ -118,6 +110,13 @@ const HistorySoldGamesScreen = () => {
 						</Grid>
 					))}
 				</Grid>
+			)}
+
+			{success &&
+			!search && (
+				<Box mt={2} fontWeight="fontWeightMedium" fontStyle="italic">
+					You've sold {pagination.totalItems} board games worth a total of {sum} RON
+				</Box>
 			)}
 
 			{success &&

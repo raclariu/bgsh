@@ -17,12 +17,12 @@ import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 
 // @ Icons
-import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 // @ Components
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
+import GameDetailsButton from './GameDetailsButton'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -186,11 +186,7 @@ const GameIndexCard = ({ gameId }) => {
 						</Box>
 					</Box>
 
-					<Box display="flex" justifyContent="center" alignItems="center">
-						<IconButton component={RouterLink} to={{ pathname: `/games/${data.altId}` }} color="primary">
-							<CenterFocusWeakTwoToneIcon fontSize="small" />
-						</IconButton>
-					</Box>
+					<GameDetailsButton altId={data.altId} />
 				</Box>
 			</CardActions>
 		</Card>

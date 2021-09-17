@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -44,6 +44,7 @@ import SendTwoToneIcon from '@material-ui/icons/SendTwoTone'
 import MessagesBadge from './MessagesBadge'
 import SaleListPopover from './SaleListPopover'
 import Theme from './Theme'
+import CustomAvatar from './CustomAvatar'
 
 // @ Others
 import { signOut } from '../actions/userActions'
@@ -147,13 +148,16 @@ const Header = () => {
 								open={isOpen}
 								onClose={() => setIsOpen(!isOpen)}
 							>
-								<Box display="flex" alignItems="center" m={2} p={1} boxShadow={2} borderRadius={8}>
-									<Avatar className={classes.avatar} color="primary">
-										<Box fontSize={12}>{userInfo.username.substring(0, 2).toUpperCase()}</Box>
-									</Avatar>
-									<Box ml={1} flexGrow={1}>
-										<Typography variant="subtitle2">{userInfo.username}</Typography>
-									</Box>
+								<Box
+									display="flex"
+									alignItems="center"
+									justifyContent="space-between"
+									m={2}
+									p={1}
+									boxShadow={2}
+									borderRadius={8}
+								>
+									<CustomAvatar size="large" showUser />
 									<IconButton onClick={() => setIsOpen(false)} component={RouterLink} to="/settings">
 										<SettingsTwoToneIcon />
 									</IconButton>
