@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box'
 import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
+import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
@@ -109,14 +109,14 @@ const CollectionScreen = () => {
 			)}
 			{dbLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					<GameCardSkeletons num={24} height={58} />
+					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 			{dbSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{collection.map((game) => (
 						<Grid item key={game._id} xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} height={58} />}>
+							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard
 									bggId={game.bggId}
 									page="collection"

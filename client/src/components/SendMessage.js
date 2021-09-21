@@ -73,9 +73,11 @@ const SendMessage = ({ recipientUsername }) => {
 	return (
 		<Fragment>
 			<Tooltip disableFocusListener title="Send message">
-				<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
-					<MailTwoToneIcon fontSize="small" />
-				</IconButton>
+				<span>
+					<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
+						<MailTwoToneIcon fontSize="small" />
+					</IconButton>
+				</span>
 			</Tooltip>
 
 			<Dialog fullWidth maxWidth="xs" open={open} onClose={handleCloseDialog}>

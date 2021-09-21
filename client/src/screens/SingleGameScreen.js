@@ -525,7 +525,7 @@ const SingleGameScreen = () => {
 									)}
 								</DialogContent>
 
-								<DialogActions dividers>
+								<DialogActions>
 									<Button
 										color="primary"
 										variant="outlined"

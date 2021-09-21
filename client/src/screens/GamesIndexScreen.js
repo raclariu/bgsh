@@ -16,7 +16,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
-import GameIndexCardSkeletons from '../components/Skeletons/GameIndexCardSkeletons'
+import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
@@ -97,7 +97,7 @@ const GamesIndexScreen = () => {
 
 			{loading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					<GameIndexCardSkeletons num={24} />
+					{[ ...Array(16).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
@@ -105,7 +105,7 @@ const GamesIndexScreen = () => {
 				{success &&
 					gamesData.map((data) => (
 						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeletons num={1} />}>
+							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeleton />}>
 								<GamesIndexCard gameId={data._id} />
 							</LazyLoad>
 						</Grid>

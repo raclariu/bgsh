@@ -15,23 +15,7 @@ export const light = createTheme({
 })
 
 // @ Dark
-export const dark = createTheme({
-	palette : {
-		type       : 'dark',
-		primary    : {
-			main : '#bb86fc'
-		},
-		secondary  : {
-			main : '#03dac5'
-		},
-		background : {
-			paper   : '#332940',
-			default : '#1f1a24'
-		}
-	}
-})
-
-// export const dark = createMuiTheme({
+// export const dark = createTheme({
 // 	palette : {
 // 		type       : 'dark',
 // 		primary    : {
@@ -41,8 +25,24 @@ export const dark = createTheme({
 // 			main : '#03dac5'
 // 		},
 // 		background : {
-// 			paper   : 'rgb(35 47 68)',
-// 			default : 'rgb(27 38 53)'
+// 			paper   : '#332940',
+// 			default : '#1f1a24'
 // 		}
 // 	}
 // })
+
+export const dark = createTheme({
+	palette : {
+		type       : 'dark',
+		primary    : {
+			main : '#58a5f0'
+		},
+		secondary  : {
+			main : '#E94560'
+		},
+		background : {
+			paper   : '#16213F',
+			default : '#1A122E'
+		}
+	}
+})

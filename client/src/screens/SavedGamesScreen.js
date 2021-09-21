@@ -16,7 +16,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
-import GameCardSkeletons from '../components/Skeletons/GameCardSkeletons'
+import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 
 // @ Others
 import { getSavedGames } from '../actions/gameActions'
@@ -88,7 +88,7 @@ const SavedGamesScreen = () => {
 
 			{loading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					<GameCardSkeletons num={24} />
+					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
@@ -109,7 +109,7 @@ const SavedGamesScreen = () => {
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeletons num={1} />}>
+							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<SavedGameCard gameId={data._id} />
 							</LazyLoad>
 						</Grid>
