@@ -80,7 +80,7 @@ const SendMessage = ({ recipientUsername }) => {
 				</span>
 			</Tooltip>
 
-			<Dialog fullWidth maxWidth="xs" open={open} onClose={handleCloseDialog}>
+			<Dialog fullWidth maxWidth="sm" open={open} onClose={handleCloseDialog}>
 				<form onSubmit={submitHandler} autoComplete="off">
 					<DialogContent>
 						<TextField
@@ -89,6 +89,10 @@ const SendMessage = ({ recipientUsername }) => {
 							helperText={error ? error.recipientUsernameError : false}
 							onChange={(e) => setRecipient(e.target.value)}
 							value={recipient}
+							inputProps={{
+								minLength : 4,
+								maxLength : 20
+							}}
 							variant="outlined"
 							id="recipient"
 							name="recipient"
@@ -105,10 +109,14 @@ const SendMessage = ({ recipientUsername }) => {
 							helperText={error ? error.subjectError : false}
 							onChange={(e) => setSubject(e.target.value)}
 							value={subject}
+							inputProps={{
+								minLength : 1,
+								maxLength : 60
+							}}
 							variant="outlined"
 							id="subject"
 							name="subject"
-							label="Subject"
+							label={`Subject (${subject.length}/60)`}
 							type="text"
 							fullWidth
 							required
@@ -120,13 +128,13 @@ const SendMessage = ({ recipientUsername }) => {
 							onChange={(e) => setMessage(e.target.value)}
 							value={message}
 							inputProps={{
-								maxLength   : 500,
-								placeholder : 'Your message (500 characters limit)'
+								minLength : 1,
+								maxLength : 500
 							}}
 							variant="outlined"
 							id="message"
 							name="message"
-							label="Message"
+							label={`Message (${message.length}/500)`}
 							type="text"
 							size="small"
 							multiline

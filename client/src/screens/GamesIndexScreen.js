@@ -82,7 +82,7 @@ const GamesIndexScreen = () => {
 		<div className={cls.root}>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search games" handleFilters={handleFilters} />
+					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 

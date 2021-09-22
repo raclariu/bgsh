@@ -94,7 +94,10 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 					</Tooltip>
 
 					{page === 'collection' && (
-						<Tooltip disableFocusListener title={isChecked ? 'Remove from list' : 'Add to list'}>
+						<Tooltip
+							disableFocusListener
+							title={isChecked ? `Remove "${game.title}" from list` : `Add "${game.title}" to list`}
+						>
 							<Checkbox
 								checked={isChecked}
 								disabled={isDisabled}

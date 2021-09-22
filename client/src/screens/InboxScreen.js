@@ -65,6 +65,9 @@ const InboxScreen = () => {
 		(state) => state.deleteMessages
 	)
 
+	const sendMessageSelector = useSelector((state) => state.sendMessage)
+	const { success: successSend } = sendMessageSelector
+
 	useEffect(
 		() => {
 			if (pathname === '/received') {
@@ -99,6 +102,15 @@ const InboxScreen = () => {
 			}
 		},
 		[ dispatch, pathname, successDelete ]
+	)
+
+	useEffect(
+		() => {
+			if (successSend) {
+				dispatch(getSentMessages())
+			}
+		},
+		[ dispatch, successSend ]
 	)
 
 	const handleChecked = (e, id) => {
@@ -220,17 +232,19 @@ const InboxScreen = () => {
 										pl={1}
 										py={2}
 										onClick={(e) => handleClick(e, i)}
+										width="100%"
 									>
 										<Box
 											className={cls.subject}
 											width="100%"
+											textAlign="left"
 											fontWeight={msg.read ? 'fontWeightRegular' : 'fontWeightBold'}
 											fontSize="subtitle2.fontSize"
 										>
-											{msg.subject}ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+											{msg.subject}
 										</Box>
 
-										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic">
+										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic" textAlign="left">
 											{formatDistance(parseISO(msg.createdAt), new Date(), {
 												addSuffix : true
 											})}
@@ -255,13 +269,13 @@ const InboxScreen = () => {
 											Subject
 										</Box>
 										<Box borderRadius={4} boxShadow={2} p={1} style={{ wordWrap: 'break-word' }}>
-											{msg.subject}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+											{msg.subject}
 										</Box>
 
 										<Box mt={2} fontStyle="italic" fontWeight="fontWeightMedium">
 											Message
 										</Box>
-										<Box borderRadius={4} boxShadow={1} p={1}>
+										<Box borderRadius={4} boxShadow={1} p={1} style={{ wordWrap: 'break-word' }}>
 											{msg.message}
 										</Box>
 										<Divider />
