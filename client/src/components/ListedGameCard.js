@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const ActiveGameCard = ({ data }) => {
+const ListedGameCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
@@ -181,4 +181,4 @@ const ActiveGameCard = ({ data }) => {
 	)
 }
 
-export default ActiveGameCard
+export default ListedGameCard

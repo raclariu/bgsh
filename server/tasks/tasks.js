@@ -9,6 +9,7 @@ const options = {
 }
 
 const setInactiveTask = cron.schedule(
+	// */10 * * * * *
 	'0 3,15 * * *',
 	async () => {
 		const lookback = subDays(new Date(), 7)

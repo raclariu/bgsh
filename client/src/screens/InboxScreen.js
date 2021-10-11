@@ -8,6 +8,7 @@ import { format, formatDistance, parseISO } from 'date-fns'
 // @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Chip from '@material-ui/core/Chip'
 import Checkbox from '@material-ui/core/Checkbox'
 import Avatar from '@material-ui/core/Avatar'
 import ButtonBase from '@material-ui/core/ButtonBase'
@@ -29,17 +30,23 @@ import { getReceivedMessages, getSentMessages, deleteMessages } from '../actions
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	grid       : {
+	grid        : {
 		marginTop : theme.spacing(4)
 	},
-	buttonBase : {
-		width : '100%'
+	buttonBase  : {
+		display : 'relative',
+		width   : '100%'
 	},
-	subject    : {
+	subject     : {
 		whiteSpace   : 'nowrap',
 		textOverflow : 'ellipsis',
 		overflow     : 'hidden',
 		width        : '95%'
+	},
+	overlayChip : {
+		position : 'absolute',
+		bottom   : '4px',
+		right    : '4px'
 	}
 }))
 
@@ -191,9 +198,9 @@ const InboxScreen = () => {
 							<ButtonBase className={cls.buttonBase}>
 								<Box
 									display="flex"
-									boxShadow={2}
+									boxShadow={checked.some((id) => id === msg._id) ? 6 : 2}
 									borderRadius={4}
-									bgcolor={checked.some((id) => id === msg._id) ? 'grey.200' : 'background.paper'}
+									bgcolor="background.paper"
 									alignItems="center"
 									width="100%"
 								>
@@ -250,18 +257,22 @@ const InboxScreen = () => {
 											})}
 										</Box>
 									</Box>
+
+									{!msg.read && (
+										<Chip label="New" color="secondary" size="small" className={cls.overlayChip} />
+									)}
 								</Box>
 							</ButtonBase>
 							{indexClicked === i && (
 								<Fade in={indexClicked >= 0}>
 									<Box
-										bgcolor={checked.some((id) => id === msg._id) ? 'grey.200' : 'background.paper'}
 										width="100%"
 										display="flex"
 										flexDirection="column"
 										justifyContent="center"
 										borderRadius={4}
-										boxShadow={1}
+										bgcolor="background.paper"
+										boxShadow={checked.some((id) => id === msg._id) ? 6 : 2}
 										my={1}
 										p={2}
 									>

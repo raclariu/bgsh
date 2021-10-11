@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 
 // @ Components
-import ActiveGameCard from '../components/ActiveGameCard'
+import ListedGameCard from '../components/ListedGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const ActiveGamesScreen = () => {
+const ListedGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -114,7 +114,7 @@ const ActiveGamesScreen = () => {
 					{activeGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<ActiveGameCard data={data} />
+								<ListedGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
@@ -139,4 +139,4 @@ const ActiveGamesScreen = () => {
 	)
 }
 
-export default ActiveGamesScreen
+export default ListedGamesScreen

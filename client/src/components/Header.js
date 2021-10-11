@@ -475,7 +475,7 @@ const Header = () => {
 											onClick={(e) => handleClick(e, 10)}
 											selected={selectedIndex === 10}
 											component={RouterLink}
-											to="/history/active"
+											to="/listed"
 										>
 											<ListItemIcon>
 												<LocalActivityTwoToneIcon
@@ -489,7 +489,7 @@ const Header = () => {
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 10 ? 'primary.main' : 'text.secondary'}
 													>
-														Active
+														My listed games
 													</Box>
 												}
 											/>
@@ -506,7 +506,7 @@ const Header = () => {
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
-														History
+														My History
 													</Box>
 												}
 											/>
