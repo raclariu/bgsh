@@ -62,6 +62,13 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 		select : '_id'
 	})
 
+	if (count.messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No messages found'
+		}
+	}
+
 	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path     : 'messages',
 		match    : { recipient: req.user._id },
@@ -98,6 +105,13 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		match  : { sender: req.user._id },
 		select : '_id'
 	})
+
+	if (count.messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No sent messages found'
+		}
+	}
 
 	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path     : 'messages',
