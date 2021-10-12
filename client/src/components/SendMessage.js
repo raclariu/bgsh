@@ -49,10 +49,12 @@ const SendMessage = ({ recipientUsername }) => {
 	useEffect(
 		() => {
 			return () => {
-				dispatch({ type: SEND_MESSAGE_RESET })
+				if (success) {
+					dispatch({ type: SEND_MESSAGE_RESET })
+				}
 			}
 		},
-		[ dispatch ]
+		[ dispatch, success ]
 	)
 
 	const handleOpenDialog = () => {

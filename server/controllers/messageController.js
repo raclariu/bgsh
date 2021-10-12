@@ -53,32 +53,74 @@ const sendMessage = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/messages/received
 // ~ @access  Private route
 const getReceivedMessages = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const resultsPerPage = 1
+
+	const count = await User.findOne({ _id: req.user._id }).select('messages').populate({
+		path   : 'messages',
+		match  : { recipient: req.user._id },
+		select : '_id'
+	})
+
 	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path     : 'messages',
 		match    : { recipient: req.user._id },
 		populate : {
 			path   : 'sender',
 			select : '_id username'
+		},
+		options  : {
+			limit : resultsPerPage,
+			sort  : { createdAt: -1 },
+			skip  : resultsPerPage * (page - 1)
 		}
 	})
 
-	res.status(200).json(user.messages)
+	const pagination = {
+		page         : page,
+		totalPages   : Math.ceil(count.messages.length / resultsPerPage),
+		totalItems   : count.messages.length,
+		itemsPerPage : resultsPerPage
+	}
+
+	res.status(200).json({ messages: user.messages, pagination })
 })
 
 // ~ @desc    Get sent messages
 // ~ @route   GET  /api/messages/sent
 // ~ @access  Private route
 const getSentMessages = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const resultsPerPage = 4
+
+	const count = await User.findOne({ _id: req.user._id }).select('messages').populate({
+		path   : 'messages',
+		match  : { sender: req.user._id },
+		select : '_id'
+	})
+
 	const user = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path     : 'messages',
 		match    : { sender: req.user._id },
 		populate : {
 			path   : 'recipient',
 			select : '_id username'
+		},
+		options  : {
+			limit : resultsPerPage,
+			sort  : { createdAt: -1 },
+			skip  : resultsPerPage * (page - 1)
 		}
 	})
 
-	res.status(200).json(user.messages)
+	const pagination = {
+		page         : page,
+		totalPages   : Math.ceil(count.messages.length / resultsPerPage),
+		totalItems   : count.messages.length,
+		itemsPerPage : resultsPerPage
+	}
+
+	res.status(200).json({ messages: user.messages, pagination })
 })
 
 // ! @desc    Delete messages

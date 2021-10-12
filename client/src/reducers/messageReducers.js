@@ -39,8 +39,32 @@ export const getReceivedMessagesReducer = (state = {}, action) => {
 		case GET_RECEIVED_MESSAGES_REQUEST:
 			return { loading: true }
 		case GET_RECEIVED_MESSAGES_SUCCESS:
-			return { loading: false, success: true, messages: action.payload }
+			return {
+				loading    : false,
+				success    : true,
+				messages   : action.payload.messages,
+				pagination : action.payload.pagination
+			}
 		case GET_RECEIVED_MESSAGES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const getSentMessagesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case GET_SENT_MESSAGES_REQUEST:
+			return { loading: true }
+		case GET_SENT_MESSAGES_SUCCESS:
+			return {
+				loading    : false,
+				success    : true,
+				messages   : action.payload.messages,
+				pagination : action.payload.pagination
+			}
+		case GET_SENT_MESSAGES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:
@@ -55,20 +79,6 @@ export const deleteMessagesReducer = (state = {}, action) => {
 		case DELETE_MESSAGES_SUCCESS:
 			return { loading: false, success: true }
 		case DELETE_MESSAGES_FAIL:
-			return { loading: false, error: action.payload }
-
-		default:
-			return state
-	}
-}
-
-export const getSentMessagesReducer = (state = {}, action) => {
-	switch (action.type) {
-		case GET_SENT_MESSAGES_REQUEST:
-			return { loading: true }
-		case GET_SENT_MESSAGES_SUCCESS:
-			return { loading: false, success: true, messages: action.payload }
-		case GET_SENT_MESSAGES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:

@@ -1,14 +1,15 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { format, formatDistance, parseISO } from 'date-fns'
+import queryString from 'query-string'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
-import Chip from '@material-ui/core/Chip'
+import Skeleton from '@material-ui/lab/Skeleton'
 import Checkbox from '@material-ui/core/Checkbox'
 import Avatar from '@material-ui/core/Avatar'
 import ButtonBase from '@material-ui/core/ButtonBase'
@@ -24,42 +25,75 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import SendMessage from '../components/SendMessage'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
+import Paginate from '../components/Paginate'
 
 // @ Others
 import { getReceivedMessages, getSentMessages, deleteMessages } from '../actions/messageActions'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	grid        : {
+	grid       : {
 		marginTop : theme.spacing(4)
 	},
-	buttonBase  : {
-		display : 'relative',
-		width   : '100%'
+	buttonBase : {
+		width : '100%'
 	},
-	subject     : {
+	subject    : {
 		whiteSpace   : 'nowrap',
 		textOverflow : 'ellipsis',
 		overflow     : 'hidden',
 		width        : '95%'
-	},
-	overlayChip : {
-		position : 'absolute',
-		bottom   : '4px',
-		right    : '4px'
 	}
 }))
+
+// @ Skeleton
+const MessageSkeleton = () => {
+	return (
+		<Grid item container xs={12} sm={9} md={7}>
+			<Box
+				display="flex"
+				alignItems="center"
+				bgcolor="background.paper"
+				width="100%"
+				boxShadow={2}
+				borderRadius={4}
+				height={68}
+			>
+				<Box ml={1.5}>
+					<Skeleton variant="rect" width={20} height={20} />
+				</Box>
+				<Box ml={2}>
+					<Skeleton variant="circle" width={40} height={40} />
+				</Box>
+
+				<Box display="flex" flexDirection="column" width="100%" mx={2}>
+					<Box width="100%">
+						<Skeleton variant="text" width="75%" />
+					</Box>
+					<Box width="100%">
+						<Skeleton variant="text" width="20%" />
+					</Box>
+				</Box>
+			</Box>
+		</Grid>
+	)
+}
 
 // @ Main
 const InboxScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
-	const { pathname } = useLocation()
+	const history = useHistory()
+	const { pathname, search } = useLocation()
+
+	const { page = 1 } = queryString.parse(search)
+
+	console.log(page)
 
 	const [ checked, setChecked ] = useState([])
 	const [ indexClicked, setIndexClicked ] = useState(null)
 
-	const { loading, success, error, messages } = useSelector((state) => {
+	const { loading, success, error, messages, pagination } = useSelector((state) => {
 		if (pathname === '/received') {
 			return state.messagesReceived
 		}
@@ -78,28 +112,27 @@ const InboxScreen = () => {
 	useEffect(
 		() => {
 			if (pathname === '/received') {
-				dispatch(getReceivedMessages())
+				dispatch(getReceivedMessages(page))
 			}
 			if (pathname === '/sent') {
-				dispatch(getSentMessages())
+				dispatch(getSentMessages(page))
 			}
 
 			return () => {
-				setChecked([])
 				setIndexClicked(null)
 			}
 		},
-		[ dispatch, pathname ]
+		[ dispatch, pathname, page ]
 	)
 
 	useEffect(
 		() => {
 			if (successDelete) {
 				if (pathname === '/received') {
-					dispatch(getReceivedMessages())
+					dispatch(getReceivedMessages(page))
 				}
 				if (pathname === '/sent') {
-					dispatch(getSentMessages())
+					dispatch(getSentMessages(page))
 				}
 			}
 
@@ -108,17 +141,31 @@ const InboxScreen = () => {
 				setIndexClicked(null)
 			}
 		},
-		[ dispatch, pathname, successDelete ]
+		[ dispatch, pathname, successDelete, page ]
 	)
 
 	useEffect(
 		() => {
 			if (successSend) {
-				dispatch(getSentMessages())
+				if (pathname === '/sent') {
+					dispatch(getSentMessages(page))
+				}
 			}
 		},
-		[ dispatch, successSend ]
+		[ dispatch, pathname, successSend, page ]
 	)
+
+	const handleFilters = (filter, type) => {
+		const options = { sort: false, skipEmptyString: true, skipNull: true }
+
+		let query
+
+		if (type === 'page') {
+			query = queryString.stringify({ page: filter }, options)
+		}
+
+		history.push(`${pathname}?${query}`)
+	}
 
 	const handleChecked = (e, id) => {
 		if (e.target.checked) {
@@ -168,32 +215,34 @@ const InboxScreen = () => {
 				</Box>
 			)}
 
-			{success && (
-				<Grid
-					container
-					direction="column"
-					justifyContent="center"
-					alignItems="center"
-					className={cls.grid}
-					spacing={1}
-				>
-					<Grid item container xs={12} sm={9} md={7}>
-						<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={60}>
-							<FormControlLabel
-								label="Select all"
-								disabled={!success}
-								control={<Checkbox label="Select all" onChange={(e) => handleSelectAll(e)} />}
-							/>
+			<Grid
+				container
+				direction="column"
+				justifyContent="center"
+				alignItems="center"
+				className={cls.grid}
+				spacing={1}
+			>
+				<Grid item container xs={12} sm={9} md={7}>
+					<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={60}>
+						<FormControlLabel
+							label="Select all"
+							disabled={!success}
+							control={<Checkbox label="Select all" onChange={(e) => handleSelectAll(e)} />}
+						/>
 
-							{checked.length > 0 && (
-								<IconButton onClick={handleDelete}>
-									<DeleteOutlineIcon color="error" />
-								</IconButton>
-							)}
-						</Box>
-					</Grid>
+						{checked.length > 0 && (
+							<IconButton onClick={handleDelete}>
+								<DeleteOutlineIcon color="error" />
+							</IconButton>
+						)}
+					</Box>
+				</Grid>
 
-					{messages.map((msg, i) => (
+				{loading && [ ...Array(4).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
+
+				{success &&
+					messages.map((msg, i) => (
 						<Grid item container key={msg._id} xs={12} sm={9} md={7}>
 							<ButtonBase className={cls.buttonBase}>
 								<Box
@@ -245,6 +294,7 @@ const InboxScreen = () => {
 											className={cls.subject}
 											width="100%"
 											textAlign="left"
+											color={msg.read ? 'inherit' : 'primary.main'}
 											fontWeight={msg.read ? 'fontWeightRegular' : 'fontWeightBold'}
 											fontSize="subtitle2.fontSize"
 										>
@@ -257,12 +307,9 @@ const InboxScreen = () => {
 											})}
 										</Box>
 									</Box>
-
-									{!msg.read && (
-										<Chip label="New" color="secondary" size="small" className={cls.overlayChip} />
-									)}
 								</Box>
 							</ButtonBase>
+
 							{indexClicked === i && (
 								<Fade in={indexClicked >= 0}>
 									<Box
@@ -312,8 +359,22 @@ const InboxScreen = () => {
 							)}
 						</Grid>
 					))}
-				</Grid>
-			)}
+			</Grid>
+
+			{success &&
+				(pagination.totalPages > 1 && (
+					<Box
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+						height={60}
+						width="100%"
+						borderRadius={4}
+						mt={4}
+					>
+						<Paginate pagination={pagination} handleFilters={handleFilters} />
+					</Box>
+				))}
 		</Fragment>
 	)
 }

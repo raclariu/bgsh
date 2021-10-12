@@ -43,7 +43,7 @@ export const sendMessage = (subject, message, recipientUsername) => async (dispa
 	}
 }
 
-export const getReceivedMessages = () => async (dispatch, getState) => {
+export const getReceivedMessages = (page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GET_RECEIVED_MESSAGES_REQUEST })
 
@@ -53,6 +53,9 @@ export const getReceivedMessages = () => async (dispatch, getState) => {
 			headers : {
 				'Content-Type' : 'application/json',
 				Authorization  : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				page : +page ? +page : 1
 			}
 		}
 
@@ -70,7 +73,7 @@ export const getReceivedMessages = () => async (dispatch, getState) => {
 	}
 }
 
-export const getSentMessages = () => async (dispatch, getState) => {
+export const getSentMessages = (page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GET_SENT_MESSAGES_REQUEST })
 
@@ -80,6 +83,9 @@ export const getSentMessages = () => async (dispatch, getState) => {
 			headers : {
 				'Content-Type' : 'application/json',
 				Authorization  : `Bearer ${userInfo.token}`
+			},
+			params  : {
+				page : +page ? +page : 1
 			}
 		}
 
