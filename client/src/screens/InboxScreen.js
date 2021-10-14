@@ -28,7 +28,7 @@ import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
 
 // @ Others
-import { getReceivedMessages, getSentMessages, deleteMessages } from '../actions/messageActions'
+import { getReceivedMessages, getSentMessages, deleteMessages, updateMessageStatus } from '../actions/messageActions'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -88,9 +88,8 @@ const InboxScreen = () => {
 
 	const { page = 1 } = queryString.parse(search)
 
-	console.log(page)
-
-	const [ checked, setChecked ] = useState([])
+	const [ selected, setSelected ] = useState([])
+	const [ isChecked, setIsChecked ] = useState(false)
 	const [ indexClicked, setIndexClicked ] = useState(null)
 
 	const { loading, success, error, messages, pagination } = useSelector((state) => {
@@ -119,6 +118,7 @@ const InboxScreen = () => {
 			}
 
 			return () => {
+				setSelected([])
 				setIndexClicked(null)
 			}
 		},
@@ -137,7 +137,7 @@ const InboxScreen = () => {
 			}
 
 			return () => {
-				setChecked([])
+				setSelected([])
 				setIndexClicked(null)
 			}
 		},
@@ -151,8 +151,24 @@ const InboxScreen = () => {
 					dispatch(getSentMessages(page))
 				}
 			}
+
+			return () => {
+				setSelected([])
+				setIndexClicked(null)
+			}
 		},
 		[ dispatch, pathname, successSend, page ]
+	)
+
+	useEffect(
+		() => {
+			if (isChecked) {
+				setSelected(messages.map((el) => el._id))
+			} else {
+				setSelected([])
+			}
+		},
+		[ isChecked, messages ]
 	)
 
 	const handleFilters = (filter, type) => {
@@ -167,23 +183,24 @@ const InboxScreen = () => {
 		history.push(`${pathname}?${query}`)
 	}
 
-	const handleChecked = (e, id) => {
+	const handleSelect = (e, id) => {
 		if (e.target.checked) {
-			setChecked([ ...checked, id ])
+			setSelected([ ...selected, id ])
 		} else {
-			setChecked(checked.filter((chk) => chk !== id))
+			setSelected(selected.filter((selectedId) => selectedId !== id))
 		}
 	}
 
 	const handleSelectAll = (e) => {
-		if (e.target.checked) {
-			setChecked(messages.map((el) => el._id))
-		} else {
-			setChecked([])
-		}
+		setIsChecked(e.target.checked)
 	}
 
-	const handleClick = (e, i) => {
+	const handleClick = (e, i, msg) => {
+		if (!msg.read && i !== indexClicked) {
+			if (pathname === '/received') {
+				dispatch(updateMessageStatus(msg._id))
+			}
+		}
 		if (i === indexClicked) {
 			setIndexClicked(null)
 		} else {
@@ -192,7 +209,8 @@ const InboxScreen = () => {
 	}
 
 	const handleDelete = () => {
-		dispatch(deleteMessages(checked))
+		setIsChecked(false)
+		dispatch(deleteMessages(selected))
 	}
 
 	return (
@@ -228,10 +246,17 @@ const InboxScreen = () => {
 						<FormControlLabel
 							label="Select all"
 							disabled={!success}
-							control={<Checkbox label="Select all" onChange={(e) => handleSelectAll(e)} />}
+							control={
+								<Checkbox
+									label="Select all"
+									indeterminate={isChecked && messages.length !== selected.length}
+									checked={isChecked}
+									onChange={(e) => handleSelectAll(e)}
+								/>
+							}
 						/>
 
-						{checked.length > 0 && (
+						{selected.length > 0 && (
 							<IconButton onClick={handleDelete}>
 								<DeleteOutlineIcon color="error" />
 							</IconButton>
@@ -239,7 +264,7 @@ const InboxScreen = () => {
 					</Box>
 				</Grid>
 
-				{loading && [ ...Array(4).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
+				{loading && [ ...Array(16).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
 
 				{success &&
 					messages.map((msg, i) => (
@@ -247,7 +272,7 @@ const InboxScreen = () => {
 							<ButtonBase className={cls.buttonBase}>
 								<Box
 									display="flex"
-									boxShadow={checked.some((id) => id === msg._id) ? 6 : 2}
+									boxShadow={selected.some((id) => id === msg._id) ? 6 : 2}
 									borderRadius={4}
 									bgcolor="background.paper"
 									alignItems="center"
@@ -255,8 +280,8 @@ const InboxScreen = () => {
 								>
 									<Box my={1} mr={1}>
 										<Checkbox
-											checked={checked.some((el) => el === msg._id)}
-											onChange={(e) => handleChecked(e, msg._id, 'received')}
+											checked={selected.some((el) => el === msg._id)}
+											onChange={(e) => handleSelect(e, msg._id, 'received')}
 											size="small"
 										/>
 									</Box>
@@ -287,7 +312,7 @@ const InboxScreen = () => {
 										minWidth={0}
 										pl={1}
 										py={2}
-										onClick={(e) => handleClick(e, i)}
+										onClick={(e) => handleClick(e, i, msg)}
 										width="100%"
 									>
 										<Box
@@ -319,31 +344,31 @@ const InboxScreen = () => {
 										justifyContent="center"
 										borderRadius={4}
 										bgcolor="background.paper"
-										boxShadow={checked.some((id) => id === msg._id) ? 6 : 2}
+										boxShadow={selected.some((id) => id === msg._id) ? 6 : 2}
 										my={1}
 										p={2}
 									>
-										<Box fontStyle="italic" fontWeight="fontWeightMedium">
+										<Box alignSelf="flex-end" fontSize={12} my={2} fontStyle="italic">
+											{format(parseISO(msg.createdAt), 'iiii, i MMMM y, H:mm', {
+												weekStartsOn : 1
+											})}
+										</Box>
+
+										<Box fontStyle="italic" fontSize={12} mb={1}>
 											Subject
 										</Box>
 										<Box borderRadius={4} boxShadow={2} p={1} style={{ wordWrap: 'break-word' }}>
 											{msg.subject}
 										</Box>
 
-										<Box mt={2} fontStyle="italic" fontWeight="fontWeightMedium">
+										<Box mt={2} fontStyle="italic" fontSize={12} mb={1}>
 											Message
 										</Box>
 										<Box borderRadius={4} boxShadow={1} p={1} style={{ wordWrap: 'break-word' }}>
 											{msg.message}
 										</Box>
 										<Divider />
-										<Box width="100%" mt={2} display="flex" alignItems="center">
-											<Box flexGrow={1} fontStyle="italic" fontWeight="fontWeightMedium">
-												{format(parseISO(msg.createdAt), 'iiii i MMMM y, H:mm', {
-													weekStartsOn : 1
-												})}
-											</Box>
-
+										<Box mt={2} alignSelf="flex-end">
 											<SendMessage
 												recipientUsername={
 													pathname === '/received' ? (

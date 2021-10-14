@@ -32,6 +32,7 @@ import {
 } from './reducers/historyReducers'
 import {
 	sendMessageReducer,
+	updateMessageReducer,
 	getReceivedMessagesReducer,
 	getSentMessagesReducer,
 	getNewMessagesCountReducer,
@@ -43,6 +44,7 @@ const reducer = combineReducers({
 	userSignUp       : userSignUpReducer,
 	userPreferences  : setThemeReducer,
 	sendMessage      : sendMessageReducer,
+	updateMessage    : updateMessageReducer,
 	messagesReceived : getReceivedMessagesReducer,
 	messagesSent     : getSentMessagesReducer,
 	deleteMessages   : deleteMessagesReducer,

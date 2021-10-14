@@ -14,7 +14,9 @@ import {
 	GET_NEW_MESSAGES_COUNT_FAIL,
 	DELETE_MESSAGES_REQUEST,
 	DELETE_MESSAGES_SUCCESS,
-	DELETE_MESSAGES_FAIL
+	DELETE_MESSAGES_FAIL,
+	UPDATE_MESSAGE_SUCCESS,
+	UPDATE_MESSAGE_FAIL
 } from '../constants/messageConstants'
 
 export const sendMessageReducer = (state = {}, action) => {
@@ -80,6 +82,18 @@ export const deleteMessagesReducer = (state = {}, action) => {
 			return { loading: false, success: true }
 		case DELETE_MESSAGES_FAIL:
 			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const updateMessageReducer = (state = {}, action) => {
+	switch (action.type) {
+		case UPDATE_MESSAGE_SUCCESS:
+			return { success: true }
+		case UPDATE_MESSAGE_FAIL:
+			return { error: action.payload }
 
 		default:
 			return state

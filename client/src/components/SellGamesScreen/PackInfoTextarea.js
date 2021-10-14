@@ -18,8 +18,8 @@ const PackInfoTextarea = ({ extraInfoPack, handleExtraInfoPack }) => {
 			name="extra-info-pack"
 			type="text"
 			multiline
-			rows={3}
-			rowsMax={10}
+			minRows={3}
+			maxRows={10}
 			size="small"
 			fullWidth
 		/>

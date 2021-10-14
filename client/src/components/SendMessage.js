@@ -70,8 +70,6 @@ const SendMessage = ({ recipientUsername }) => {
 		dispatch(sendMessage(subject, message, recipient))
 	}
 
-	console.log(subject, message, recipient)
-
 	return (
 		<Fragment>
 			<Tooltip disableFocusListener title="Send message">
@@ -148,14 +146,7 @@ const SendMessage = ({ recipientUsername }) => {
 					</DialogContent>
 
 					<DialogActions>
-						{success ? (
-							'success'
-						) : (
-							<Button color="primary" type="submit" variant="outlined">
-								Send
-							</Button>
-						)}
-						<Button color="primary" type="submit" variant="outlined">
+						<Button disabled={username === recipient} color="primary" type="submit" variant="outlined">
 							Send
 						</Button>
 					</DialogActions>

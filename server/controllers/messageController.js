@@ -54,7 +54,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getReceivedMessages = asyncHandler(async (req, res) => {
 	const page = +req.query.page
-	const resultsPerPage = 1
+	const resultsPerPage = 24
 
 	const count = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path   : 'messages',
@@ -83,6 +83,13 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 		}
 	})
 
+	if (user.messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'Page not found'
+		}
+	}
+
 	const pagination = {
 		page         : page,
 		totalPages   : Math.ceil(count.messages.length / resultsPerPage),
@@ -98,7 +105,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSentMessages = asyncHandler(async (req, res) => {
 	const page = +req.query.page
-	const resultsPerPage = 4
+	const resultsPerPage = 24
 
 	const count = await User.findOne({ _id: req.user._id }).select('messages').populate({
 		path   : 'messages',
@@ -127,6 +134,13 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		}
 	})
 
+	if (user.messages.length === 0) {
+		res.status(404)
+		throw {
+			message : 'Page not found'
+		}
+	}
+
 	const pagination = {
 		page         : page,
 		totalPages   : Math.ceil(count.messages.length / resultsPerPage),
@@ -135,6 +149,30 @@ const getSentMessages = asyncHandler(async (req, res) => {
 	}
 
 	res.status(200).json({ messages: user.messages, pagination })
+})
+
+// <> @desc    Update message status
+// <> @route   PATCH /api/messages/update/:id
+// <> @access  Private route
+const updateMessageStatus = asyncHandler(async (req, res) => {
+	const { id } = req.params
+
+	const messageExists = await Message.findById(id).select('_id read')
+	console.log(messageExists)
+
+	if (messageExists) {
+		if (messageExists.read) {
+			res.status(204).end()
+		} else {
+			await Message.updateOne({ _id: id }, { read: true })
+			res.status(204).end()
+		}
+	} else {
+		res.status(404)
+		throw {
+			message : 'Message not found'
+		}
+	}
 })
 
 // ! @desc    Delete messages
@@ -147,7 +185,7 @@ const deleteMessages = asyncHandler(async (req, res) => {
 	user.messages = user.messages.filter((id) => !ids.includes(id.toString()))
 	await User.updateOne({ _id: req.user._id }, { messages: user.messages })
 
-	res.status(200).end()
+	res.status(204).end()
 })
 
 // ~ @desc    Get new messages count
@@ -159,4 +197,4 @@ const getNewMessagesCount = asyncHandler(async (req, res) => {
 	res.status(200).json(count)
 })
 
-export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount, deleteMessages }
+export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount, deleteMessages, updateMessageStatus }

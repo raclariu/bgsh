@@ -186,7 +186,7 @@ const SellGamesScreen = () => {
 			shipPersonal,
 			shipCities,
 			extraInfoPack    : type === 'pack' ? extraInfoPack.trim() : '',
-			totalPrice       : type === 'pack' ? totalPrice : null
+			totalPrice       : type === 'pack' ? +totalPrice : null
 		}
 
 		dispatch(sellGames(gamesData))

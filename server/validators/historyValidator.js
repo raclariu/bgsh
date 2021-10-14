@@ -2,9 +2,12 @@ import { check } from 'express-validator'
 import User from '../models/userModel.js'
 
 const validateUsername = check('username').trim().custom(async (username, { req }) => {
+	console.log('asdadasdasdasdasd')
 	if (!username) {
 		return true
 	}
+
+	console.log(req.user)
 
 	if (username === req.user.username) {
 		throw new Error('You cannot buy your own games')

@@ -14,7 +14,9 @@ import {
 	GET_NEW_MESSAGES_COUNT_FAIL,
 	DELETE_MESSAGES_REQUEST,
 	DELETE_MESSAGES_SUCCESS,
-	DELETE_MESSAGES_FAIL
+	DELETE_MESSAGES_FAIL,
+	UPDATE_MESSAGE_SUCCESS,
+	UPDATE_MESSAGE_FAIL
 } from '../constants/messageConstants'
 
 export const sendMessage = (subject, message, recipientUsername) => async (dispatch, getState) => {
@@ -98,6 +100,30 @@ export const getSentMessages = (page) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type    : GET_SENT_MESSAGES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const updateMessageStatus = (id) => async (dispatch, getState) => {
+	try {
+		const { userSignIn: { userInfo } } = getState()
+
+		const config = {
+			headers : {
+				'Content-Type' : 'application/json',
+				Authorization  : `Bearer ${userInfo.token}`
+			}
+		}
+
+		await axios.patch(`/api/messages/update/${id}`, {}, config)
+
+		dispatch({
+			type : UPDATE_MESSAGE_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : UPDATE_MESSAGE_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

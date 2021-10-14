@@ -128,8 +128,8 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 					name="extra-info-txt"
 					type="text"
 					multiline
-					rows={3}
-					rowsMax={10}
+					minRows={3}
+					maxRows={10}
 					size="small"
 					fullWidth
 				/>

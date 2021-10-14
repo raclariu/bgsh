@@ -505,7 +505,7 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 const reactivateGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
 
-	const gameExists = await Game.findOne({ _id: id }).select('_id')
+	const gameExists = await Game.findById(id).select('_id')
 
 	if (gameExists) {
 		await Game.updateOne({ _id: id }, { isActive: true })
@@ -525,6 +525,8 @@ const reactivateGame = asyncHandler(async (req, res) => {
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
 	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
+
+	console.log(req.user)
 
 	if (!saleData) {
 		res.status(404)
