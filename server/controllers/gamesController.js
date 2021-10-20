@@ -153,38 +153,44 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 // ~ @access Private route
 const bggGetGallery = asyncHandler(async (req, res) => {
 	try {
-		const { bggId } = req.params
+		const { bggIds } = req.params
 
-		const { data } = await axios.get('https://api.geekdo.com/api/images', {
-			params : {
-				ajax       : 1,
-				date       : 'alltime',
-				gallery    : 'game',
-				nosession  : 1,
-				objectid   : bggId,
-				objecttype : 'thing',
-				pageid     : 1,
-				showcount  : 12,
-				size       : 'thumb',
-				sort       : 'hot'
-				// tag        : 'Play,Components'
+		let images = []
+
+		for (let id of bggIds.split(',')) {
+			const { data } = await axios.get('https://api.geekdo.com/api/images', {
+				params : {
+					ajax       : 1,
+					date       : 'alltime',
+					gallery    : 'game',
+					nosession  : 1,
+					objectid   : id,
+					objecttype : 'thing',
+					pageid     : 1,
+					showcount  : 12,
+					size       : 'thumb',
+					sort       : 'hot'
+					// tag        : 'Play,Components'
+				}
+			})
+
+			if (data.images.length !== 0) {
+				const mapImages = data.images.map((obj) => {
+					const { imageid, imageurl_lg: image, caption, imageurl: thumbnail, href: extLink } = obj
+					return { imageid, image, caption, thumbnail, extLink }
+				})
+				images.push(mapImages)
 			}
-		})
+		}
 
-		if (data.images.length === 0) {
+		if (images.length !== bggIds.split(',').length) {
 			res.status(404)
 			throw {
 				message : 'No images found'
 			}
+		} else {
+			res.status(200).json(images)
 		}
-
-		let images = []
-		data.images.map((obj) => {
-			const { imageid, imageurl_lg: image, caption, imageurl: thumbnail, href: extLink } = obj
-			images.push({ imageid, image, caption, thumbnail, extLink })
-		})
-
-		res.status(200).json(images)
 	} catch (error) {
 		res.status(503)
 		throw {

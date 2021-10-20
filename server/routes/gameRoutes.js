@@ -41,7 +41,7 @@ router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
 router.route('/bgg/hot').get(bggGetHotGames)
-router.route('/bgg/:bggId/images').get(protect, bggGetGallery)
+router.route('/bgg/:bggIds/images').get(protect, bggGetGallery)
 router
 	.route('/trade')
 	.post(

@@ -23,6 +23,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 // @ Components
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
 import GameDetailsButton from './GameDetailsButton'
+import CustomAvatar from './CustomAvatar'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -177,9 +178,7 @@ const GameIndexCard = ({ gameId }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Box display="flex" justifyContent="center" alignItems="center">
-						<Avatar className={cls.avatar} color="primary">
-							<Box fontSize={12}>{data.seller.username.substring(0, 2).toUpperCase()}</Box>
-						</Avatar>
+						<CustomAvatar size="medium" user={data.seller.username} />
 
 						<Box fontSize={12} ml={1}>
 							{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}

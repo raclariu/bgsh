@@ -132,12 +132,13 @@ const HistoryGameCard = ({ gameId, page }) => {
 						</Box>
 					)}
 
-					{data.mode === 'sell' && (
-						<Box my={1}>{data.buyer ? <CustomAvatar size="medium" showUser /> : 'N/A'}</Box>
-					)}
-
-					{data.mode === 'trade' && (
-						<Box my={1}>{data.buyer ? <CustomAvatar size="medium" showUser /> : 'N/A'}</Box>
+					{data.buyer ? (
+						<Box my={1} display="flex" alignItems="center">
+							<CustomAvatar size="medium" user={data.buyer} />
+							<Box ml={1}>{data.buyer}</Box>
+						</Box>
+					) : (
+						'N/A'
 					)}
 
 					<Box display="flex" alignItems="center">

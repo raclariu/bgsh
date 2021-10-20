@@ -42,31 +42,11 @@ const SellGamesScreen = () => {
 
 	const { type = 'individual' } = queryString.parse(location.search)
 
-	const [ shipPost, setShipPost ] = useState(true)
-	const [ shipCourier, setShipCourier ] = useState(false)
-	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
-	const [ shipCourierPayer, setShipCourierPayer ] = useState(null)
-	const [ shipPersonal, setShipPersonal ] = useState(false)
-	const [ shipCities, setShipCities ] = useState([])
-	const [ extraInfoPack, setExtraInfoPack ] = useState('')
-	const [ totalPrice, setTotalPrice ] = useState('')
-
-	const ms = useRef(0)
-
 	const saleList = useSelector((state) => state.saleList)
-
-	if (type !== 'individual' && type !== 'pack') {
-		history.push('/sell')
-	}
-
-	if (saleList.length === 1 && type === 'pack') {
-		history.push('/sell')
-	}
-
-	const [ values, setValues ] = useState(
-		saleList.map((el) => {
+	const slRef = useRef(
+		saleList.map((game) => {
 			return {
-				bggId     : el.bggId,
+				...game,
 				isSleeved : false,
 				version   : null,
 				condition : null,
@@ -75,6 +55,24 @@ const SellGamesScreen = () => {
 			}
 		})
 	)
+
+	const [ shipPost, setShipPost ] = useState(true)
+	const [ shipCourier, setShipCourier ] = useState(false)
+	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
+	const [ shipCourierPayer, setShipCourierPayer ] = useState(null)
+	const [ shipPersonal, setShipPersonal ] = useState(false)
+	const [ shipCities, setShipCities ] = useState([])
+	const [ extraInfoPack, setExtraInfoPack ] = useState('')
+	const [ totalPrice, setTotalPrice ] = useState('')
+	const [ values, setValues ] = useState(slRef.current)
+
+	if (type !== 'individual' && type !== 'pack') {
+		history.push('/sell')
+	}
+
+	if (saleList.length === 1 && type === 'pack') {
+		history.push('/sell')
+	}
 
 	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
 	const { loading: detailsLoading, error: detailsError, success: detailsSuccess, games } = bggGamesDetails
@@ -86,23 +84,29 @@ const SellGamesScreen = () => {
 
 	useEffect(
 		() => {
-			const mapped = saleList.map((el) => el.bggId)
-			const timer = setTimeout(() => {
-				if (mapped.length > 0) {
-					dispatch(bggGetGamesDetails(mapped))
-				}
-			}, ms.current)
-			ms.current = 750
+			const mapped = slRef.current.map((el) => el.bggId)
+
+			if (mapped.length > 0) {
+				dispatch(bggGetGamesDetails(mapped))
+			}
+
 			return () => {
 				dispatch({ type: BGG_GAMES_DETAILS_RESET })
-				clearTimeout(timer)
 			}
 		},
-		[ dispatch, saleList ]
+		[ dispatch, location.key ]
+	)
+
+	useEffect(
+		() => {
+			if (slRef.current.length !== saleList.length) {
+				setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
+			}
+		},
+		[ saleList ]
 	)
 
 	const removeFromSaleListHandler = (id) => {
-		ms.current = 0
 		dispatch(removeFromSaleList(id))
 	}
 
@@ -161,7 +165,7 @@ const SellGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesCopy = [ ...games ]
+		const gamesCopy = games.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
 			if (index !== -1) {
@@ -202,23 +206,28 @@ const SellGamesScreen = () => {
 				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 			</div>
 
+			{console.count('Renders')}
+
 			{detailsLoading && <Loader />}
 
 			{detailsSuccess && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
-						{games.map((game) => (
-							<Grid item key={game.bggId} md={6} xs={12}>
-								<SellGameCard
-									game={game}
-									type={type}
-									mode="sell"
-									data={values.find((val) => val.bggId === game.bggId)}
-									removeFromSaleListHandler={removeFromSaleListHandler}
-									handleGameInfo={handleGameInfo}
-								/>
-							</Grid>
-						))}
+						{games.map(
+							(game) =>
+								values.find((val) => val.bggId === game.bggId) && (
+									<Grid item key={game.bggId} md={6} xs={12}>
+										<SellGameCard
+											game={game}
+											type={type}
+											mode="sell"
+											data={values.find((val) => val.bggId === game.bggId)}
+											removeFromSaleListHandler={removeFromSaleListHandler}
+											handleGameInfo={handleGameInfo}
+										/>
+									</Grid>
+								)
+						)}
 					</Grid>
 
 					<Divider />

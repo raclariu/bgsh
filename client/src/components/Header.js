@@ -157,7 +157,7 @@ const Header = () => {
 									boxShadow={2}
 									borderRadius={8}
 								>
-									<CustomAvatar size="large" showUser />
+									<CustomAvatar size="large" user={userInfo.username} />
 									<IconButton onClick={() => setIsOpen(false)} component={RouterLink} to="/settings">
 										<SettingsTwoToneIcon />
 									</IconButton>

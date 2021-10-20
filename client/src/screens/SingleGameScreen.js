@@ -17,8 +17,10 @@ import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Fab from '@material-ui/core/Fab'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -37,6 +39,9 @@ import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
 import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import CachedIcon from '@material-ui/icons/Cached'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -46,6 +51,7 @@ import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
 import SendMessage from '../components/SendMessage'
 import HelmetComponent from '../components/HelmetComponent'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
@@ -111,6 +117,12 @@ const useStyles = makeStyles((theme) => ({
 		maxHeight : '100%',
 		width     : '100%',
 		objectFit : 'contain'
+	},
+	fab                : {
+		position  : 'fixed',
+		left      : '50%',
+		bottom    : theme.spacing(2),
+		transform : 'translate(-50%, 0)'
 	}
 }))
 
@@ -121,6 +133,8 @@ const SingleGameScreen = () => {
 	const params = useParams()
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
+
+	const [ index, setIndex ] = useState(0)
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -158,18 +172,20 @@ const SingleGameScreen = () => {
 	useEffect(
 		() => {
 			if (success) {
-				dispatch(bggGetGallery(data.games[0].bggId))
+				const mappedBggIds = data.games.map((game) => game.bggId)
+
+				dispatch(bggGetGallery(mappedBggIds))
 			}
 		},
 		[ dispatch, success, data ]
 	)
 
-	const handleOpen = (index) => {
-		setImgIndex(index)
+	const handleOpenImage = (imgIndexClicked) => {
+		setImgIndex(imgIndexClicked)
 		setOpen(true)
 	}
 
-	const handleClose = () => {
+	const handleCloseImage = () => {
 		setOpen(false)
 		setLoad(false)
 	}
@@ -178,11 +194,48 @@ const SingleGameScreen = () => {
 		setLoad(true)
 	}
 
+	const cycleGames = (type) => {
+		if (type === 'back') {
+			if (index > 0) {
+				setIndex(index - 1)
+			}
+		}
+		if (type === 'forward') {
+			if (data.games.length > index + 1) {
+				setIndex(index + 1)
+			}
+		}
+	}
+
 	return (
 		<div className={cls.root}>
-			{data && (
+			{success && (
 				<Fragment>
-					<HelmetComponent title={success ? data.games[0].title : 'Boardgame'} />
+					<HelmetComponent title={success ? data.games[index].title : 'Boardgame'} />
+
+					{data.type === 'pack' && (
+						<Box display="flex" className={cls.fab}>
+							<Fab
+								size="small"
+								color="secondary"
+								disabled={index === 0}
+								onClick={() => cycleGames('back')}
+							>
+								<ArrowBackIcon />
+							</Fab>
+							<Box ml={1}>
+								<Fab
+									size="small"
+									color="secondary"
+									disabled={data.games.length === index + 1}
+									onClick={() => cycleGames('forward')}
+								>
+									<ArrowForwardIcon />
+								</Fab>
+							</Box>
+						</Box>
+					)}
+
 					<Grid
 						container
 						justifyContent="center"
@@ -205,8 +258,8 @@ const SingleGameScreen = () => {
 								>
 									<img
 										className={cls.thumbnail}
-										src={displayImageHandler(data.games[0].image, data.games[0].thumbnail)}
-										alt={data.games[0].title}
+										src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
+										alt={data.games[index].title}
 									/>
 								</Zoom>
 							</Box>
@@ -226,14 +279,14 @@ const SingleGameScreen = () => {
 							{/* Title */}
 							<Grid item>
 								<Box fontSize={22} textAlign="center">
-									{data.games[0].title}
+									{data.games[index].title}
 								</Box>
 							</Grid>
 
 							{/* Subtitle */}
 							<Grid item>
 								<Box fontSize={12} fontStyle="italic" color="grey.600" textAlign="center">
-									{`${data.games[0].type} • ${data.games[0].year}`}
+									{`${data.games[index].type} • ${data.games[index].year}`}
 								</Box>
 							</Grid>
 
@@ -249,24 +302,24 @@ const SingleGameScreen = () => {
 								<Grid item>
 									<StatsBoxes
 										variant="full"
-										complexity={data.games[0].complexity}
-										stats={data.games[0].stats}
+										complexity={data.games[index].complexity}
+										stats={data.games[index].stats}
 										type="rating"
 									/>
 								</Grid>
 								<Grid item>
 									<StatsBoxes
 										variant="full"
-										complexity={data.games[0].complexity}
-										stats={data.games[0].stats}
+										complexity={data.games[index].complexity}
+										stats={data.games[index].stats}
 										type="rank"
 									/>
 								</Grid>
 								<Grid item>
 									<StatsBoxes
 										variant="full"
-										complexity={data.games[0].complexity}
-										stats={data.games[0].stats}
+										complexity={data.games[index].complexity}
+										stats={data.games[index].stats}
 										type="complexity"
 									/>
 								</Grid>
@@ -284,8 +337,8 @@ const SingleGameScreen = () => {
 										<Box display="flex">
 											<FaceTwoToneIcon fontSize="small" color="primary" />
 											<Box ml={0.5}>
-												{data.games[0].designers.length > 0 ? (
-													data.games[0].designers.join(', ')
+												{data.games[index].designers.length > 0 ? (
+													data.games[index].designers.join(', ')
 												) : (
 													'N/A'
 												)}
@@ -294,7 +347,7 @@ const SingleGameScreen = () => {
 
 										<Box display="flex">
 											<PublicTwoToneIcon fontSize="small" color="primary" />
-											<Box ml={0.5}>{data.games[0].languageDependence}</Box>
+											<Box ml={0.5}>{data.games[index].languageDependence}</Box>
 										</Box>
 									</Typography>
 								</Box>
@@ -310,15 +363,18 @@ const SingleGameScreen = () => {
 								spacing={1}
 							>
 								<Grid item xs={6} sm={3}>
-									<InfoBox data={`${data.games[0].minPlayers} - ${data.games[0].maxPlayers} players`}>
+									<InfoBox
+										data={`${data.games[index].minPlayers} - ${data.games[index]
+											.maxPlayers} players`}
+									>
 										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
 								<Grid item xs={6} sm={3}>
 									<InfoBox
 										data={
-											data.games[0].suggestedPlayers ? (
-												`${data.games[0].suggestedPlayers} players`
+											data.games[index].suggestedPlayers ? (
+												`${data.games[index].suggestedPlayers} players`
 											) : (
 												'N/A'
 											)
@@ -328,12 +384,14 @@ const SingleGameScreen = () => {
 									</InfoBox>
 								</Grid>
 								<Grid item xs={6} sm={3}>
-									<InfoBox data={data.games[0].playTime ? `${data.games[0].playTime} min.` : 'N/A'}>
+									<InfoBox
+										data={data.games[index].playTime ? `${data.games[index].playTime} min.` : 'N/A'}
+									>
 										<AccessTimeTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
 								<Grid item xs={6} sm={3}>
-									<InfoBox data={data.games[0].minAge ? `${data.games[0].minAge}` : 'N/A'}>
+									<InfoBox data={data.games[index].minAge ? `${data.games[index].minAge}` : 'N/A'}>
 										<ChildCareTwoToneIcon fontSize="small" color="primary" />
 									</InfoBox>
 								</Grid>
@@ -363,7 +421,7 @@ const SingleGameScreen = () => {
 					{/* Shipping */}
 					<Box display="flex" alignItems="center">
 						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
-						<Box ml={0.5} className={cls.mainGrid} fontSize={16}>
+						<Box ml={1} className={cls.mainGrid} fontSize={16}>
 							Shipping
 						</Box>
 					</Box>
@@ -471,16 +529,20 @@ const SingleGameScreen = () => {
 
 					<Divider light />
 
+					<Box display="flex" alignItems="center">
+						{loadingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" fontSize="small" />}
+
+						<Box ml={1} className={cls.mainGrid} fontSize={16}>
+							Gallery
+						</Box>
+					</Box>
+
+					{errorGallery && <CustomAlert severity="warning">{errorGallery}</CustomAlert>}
+
 					{successGallery && (
 						<Fragment>
-							<Box display="flex" alignItems="center">
-								<ImageTwoToneIcon color="primary" fontSize="small" />
-								<Box ml={0.5} className={cls.mainGrid} fontSize={16}>
-									Gallery
-								</Box>
-							</Box>
 							<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
-								{gallery.map((obj, index) => (
+								{gallery[index].map((obj, i) => (
 									<Grid item key={obj.imageid} xs={12} sm={6} md={4} lg={3}>
 										<LazyLoad offset={200} once>
 											<Box
@@ -493,7 +555,7 @@ const SingleGameScreen = () => {
 												p={2}
 											>
 												<img
-													onClick={() => handleOpen(index)}
+													onClick={() => handleOpenImage(i)}
 													className={cls.galleryImg}
 													src={obj.thumbnail}
 													alt={obj.caption}
@@ -504,15 +566,15 @@ const SingleGameScreen = () => {
 								))}
 							</Grid>
 
-							<Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
+							<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
 								<DialogTitle disableTypography>
-									<Typography variant="subtitle2">{gallery[imgIndex].caption}</Typography>
+									<Typography variant="subtitle2">{gallery[index][imgIndex].caption}</Typography>
 								</DialogTitle>
 
 								<DialogContent dividers>
 									<img
-										alt={gallery[imgIndex].caption}
-										src={gallery[imgIndex].image}
+										alt={gallery[index][imgIndex].caption}
+										src={gallery[index][imgIndex].image}
 										hidden={!load}
 										onLoad={onImgLoad}
 										className={cls.dialogImg}
@@ -529,7 +591,7 @@ const SingleGameScreen = () => {
 									<Button
 										color="primary"
 										variant="outlined"
-										href={`https://boardgamegeek.com${gallery[imgIndex].extLink}`}
+										href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
 										target="_blank"
 										rel="noopener"
 									>
@@ -544,7 +606,7 @@ const SingleGameScreen = () => {
 
 					{/* Chips */}
 					<Box className={cls.chipsBox}>
-						<Chips categories={data.games[0].categories} mechanics={data.games[0].mechanics} />
+						<Chips categories={data.games[index].categories} mechanics={data.games[index].mechanics} />
 					</Box>
 				</Fragment>
 			)}

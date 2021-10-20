@@ -91,7 +91,7 @@ export const bggGetHotGames = () => async (dispatch) => {
 	}
 }
 
-export const bggGetGallery = (bggId) => async (dispatch, getState) => {
+export const bggGetGallery = (bggIds) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: BGG_GAME_GALLERY_REQUEST })
 
@@ -103,7 +103,7 @@ export const bggGetGallery = (bggId) => async (dispatch, getState) => {
 			}
 		}
 
-		const { data } = await axios.get(`/api/games/bgg/${bggId}/images`, config)
+		const { data } = await axios.get(`/api/games/bgg/${bggIds}/images`, config)
 
 		dispatch({
 			type    : BGG_GAME_GALLERY_SUCCESS,

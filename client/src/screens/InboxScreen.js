@@ -26,6 +26,7 @@ import SendMessage from '../components/SendMessage'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
+import CustomAvatar from '../components/CustomAvatar'
 
 // @ Others
 import { getReceivedMessages, getSentMessages, deleteMessages, updateMessageStatus } from '../actions/messageActions'
@@ -288,17 +289,9 @@ const InboxScreen = () => {
 
 									<Box mr={1}>
 										{pathname === '/received' ? (
-											<Avatar>
-												<Box fontSize={14}>
-													{msg.sender.username.substring(0, 2).toUpperCase()}
-												</Box>
-											</Avatar>
+											<CustomAvatar size="medium" user={msg.sender.username} />
 										) : (
-											<Avatar>
-												<Box fontSize={14}>
-													{msg.recipient.username.substring(0, 2).toUpperCase()}
-												</Box>
-											</Avatar>
+											<CustomAvatar size="medium" user={msg.recipient.username} />
 										)}
 									</Box>
 
