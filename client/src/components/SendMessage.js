@@ -10,10 +10,12 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Mui Icons
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
+
+// @ Components
+import CustomTooltip from './CustomTooltip'
 
 // @ Others
 import { sendMessage } from '../actions/messageActions'
@@ -44,7 +46,7 @@ const SendMessage = ({ recipientUsername }) => {
 	const sendMessageSelector = useSelector((state) => state.sendMessage)
 	const { success, error, loading } = sendMessageSelector
 
-	const username = useSelector((state) => state.userSignIn.userInfo.username)
+	const username = useSelector((state) => state.userAuth.userData.username)
 
 	useEffect(
 		() => {
@@ -72,13 +74,13 @@ const SendMessage = ({ recipientUsername }) => {
 
 	return (
 		<Fragment>
-			<Tooltip disableFocusListener title="Send message">
+			<CustomTooltip title="Send message">
 				<span>
 					<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
 						<MailTwoToneIcon fontSize="small" />
 					</IconButton>
 				</span>
-			</Tooltip>
+			</CustomTooltip>
 
 			<Dialog fullWidth maxWidth="sm" open={open} onClose={handleCloseDialog}>
 				<form onSubmit={submitHandler} autoComplete="off">

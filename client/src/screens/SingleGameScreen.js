@@ -151,8 +151,6 @@ const SingleGameScreen = () => {
 	const gameForSale = useSelector((state) => state.gameForSale)
 	const { loading, success, error, saleData: data } = gameForSale
 
-	console.log(data)
-
 	const bggGallery = useSelector((state) => state.bggGallery)
 	const { loading: loadingGallery, success: successGallery, error: errorGallery, gallery } = bggGallery
 
@@ -541,64 +539,72 @@ const SingleGameScreen = () => {
 
 					{successGallery && (
 						<Fragment>
-							<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
-								{gallery[index].map((obj, i) => (
-									<Grid item key={obj.imageid} xs={12} sm={6} md={4} lg={3}>
-										<LazyLoad offset={200} once>
-											<Box
-												display="flex"
-												justifyContent="center"
-												height="220px"
-												bgcolor="background.paper"
-												borderRadius={4}
-												boxShadow={2}
-												p={2}
-											>
-												<img
-													onClick={() => handleOpenImage(i)}
-													className={cls.galleryImg}
-													src={obj.thumbnail}
-													alt={obj.caption}
-												/>
-											</Box>
-										</LazyLoad>
+							{gallery[index].length !== 0 ? (
+								<Fragment>
+									<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
+										{gallery[index].map((obj, i) => (
+											<Grid item key={obj.imageid} xs={12} sm={6} md={4} lg={3}>
+												<LazyLoad offset={200} once>
+													<Box
+														display="flex"
+														justifyContent="center"
+														height="220px"
+														bgcolor="background.paper"
+														borderRadius={4}
+														boxShadow={2}
+														p={2}
+													>
+														<img
+															onClick={() => handleOpenImage(i)}
+															className={cls.galleryImg}
+															src={obj.thumbnail}
+															alt={obj.caption}
+														/>
+													</Box>
+												</LazyLoad>
+											</Grid>
+										))}
 									</Grid>
-								))}
-							</Grid>
 
-							<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
-								<DialogTitle disableTypography>
-									<Typography variant="subtitle2">{gallery[index][imgIndex].caption}</Typography>
-								</DialogTitle>
+									<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
+										<DialogTitle disableTypography>
+											<Typography variant="subtitle2">
+												{gallery[index][imgIndex].caption}
+											</Typography>
+										</DialogTitle>
 
-								<DialogContent dividers>
-									<img
-										alt={gallery[index][imgIndex].caption}
-										src={gallery[index][imgIndex].image}
-										hidden={!load}
-										onLoad={onImgLoad}
-										className={cls.dialogImg}
-									/>
+										<DialogContent dividers>
+											<img
+												alt={gallery[index][imgIndex].caption}
+												src={gallery[index][imgIndex].image}
+												hidden={!load}
+												onLoad={onImgLoad}
+												className={cls.dialogImg}
+											/>
 
-									{!load && (
-										<Box p={10} display="flex" justifyContent="center" alignItems="center">
-											<Loader />
-										</Box>
-									)}
-								</DialogContent>
+											{!load && (
+												<Box p={10} display="flex" justifyContent="center" alignItems="center">
+													<Loader />
+												</Box>
+											)}
+										</DialogContent>
 
-								<DialogActions>
-									<Button
-										color="primary"
-										variant="outlined"
-										href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
-										target="_blank"
-										rel="noopener"
-									>
-										See on BGG
-									</Button>
-								</DialogActions>
-							</Dialog>
+										<DialogActions>
+											<Button
+												color="primary"
+												variant="outlined"
+												href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
+												target="_blank"
+												rel="noopener"
+											>
+												See on BGG
+											</Button>
+										</DialogActions>
+									</Dialog>
+								</Fragment>
+							) : (
+								<CustomAlert severity="warning">{` ${data.games[index].title}`}</CustomAlert>
+							)}
 						</Fragment>
 					)}
 

@@ -9,7 +9,6 @@ import {
 	GET_SENT_MESSAGES_REQUEST,
 	GET_SENT_MESSAGES_SUCCESS,
 	GET_SENT_MESSAGES_FAIL,
-	GET_NEW_MESSAGES_COUNT_REQUEST,
 	GET_NEW_MESSAGES_COUNT_SUCCESS,
 	GET_NEW_MESSAGES_COUNT_FAIL,
 	DELETE_MESSAGES_REQUEST,
@@ -23,12 +22,12 @@ export const sendMessage = (subject, message, recipientUsername) => async (dispa
 	try {
 		dispatch({ type: SEND_MESSAGE_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
@@ -49,12 +48,12 @@ export const getReceivedMessages = (page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GET_RECEIVED_MESSAGES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			},
 			params  : {
 				page : +page ? +page : 1
@@ -79,12 +78,12 @@ export const getSentMessages = (page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GET_SENT_MESSAGES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			},
 			params  : {
 				page : +page ? +page : 1
@@ -107,12 +106,12 @@ export const getSentMessages = (page) => async (dispatch, getState) => {
 
 export const updateMessageStatus = (id) => async (dispatch, getState) => {
 	try {
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
@@ -129,23 +128,20 @@ export const updateMessageStatus = (id) => async (dispatch, getState) => {
 	}
 }
 
-export const deleteMessages = (ids) => async (dispatch, getState) => {
+export const deleteMessages = (ids, type) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: DELETE_MESSAGES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
-			},
-			data    : {
-				ids
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
-		await axios.delete('/api/messages/delete', config)
+		await axios.patch('/api/messages/delete', { ids, type }, config)
 
 		dispatch({
 			type : DELETE_MESSAGES_SUCCESS
@@ -160,23 +156,25 @@ export const deleteMessages = (ids) => async (dispatch, getState) => {
 
 export const getNewMessagesCount = () => async (dispatch, getState) => {
 	try {
-		dispatch({ type: GET_NEW_MESSAGES_COUNT_REQUEST })
+		const { newMessagesCount: { count } } = getState()
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
 		const { data } = await axios.get('/api/messages/new', config)
 
-		dispatch({
-			type    : GET_NEW_MESSAGES_COUNT_SUCCESS,
-			payload : data
-		})
+		if (count !== data) {
+			dispatch({
+				type    : GET_NEW_MESSAGES_COUNT_SUCCESS,
+				payload : data
+			})
+		}
 	} catch (error) {
 		dispatch({
 			type    : GET_NEW_MESSAGES_COUNT_FAIL,

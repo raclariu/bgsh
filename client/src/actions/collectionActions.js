@@ -16,12 +16,12 @@ export const bggGetCollection = (bggUsername) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: BGG_COLLECTION_LIST_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
@@ -46,11 +46,11 @@ export const dbGetCollection = (searchKeyword, pageNumber) => async (dispatch, g
 	try {
 		dispatch({ type: DB_COLLECTION_LIST_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : searchKeyword ? searchKeyword.trim() : null,
@@ -76,11 +76,11 @@ export const getWishlist = (searchKeyword, pageNumber) => async (dispatch, getSt
 	try {
 		dispatch({ type: WISHLIST_LIST_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : searchKeyword ? searchKeyword.trim() : null,

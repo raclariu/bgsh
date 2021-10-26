@@ -12,10 +12,10 @@ import CardContent from '@material-ui/core/CardContent'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Components
 import CustomAvatar from './CustomAvatar'
+import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
@@ -142,14 +142,14 @@ const HistoryGameCard = ({ gameId, page }) => {
 					)}
 
 					<Box display="flex" alignItems="center">
-						<Tooltip
-							disableFocusListener
+						<CustomTooltip
 							title={format(parseISO(data.createdAt), 'iiii i MMMM y, H:mm', {
 								weekStartsOn : 1
 							})}
 						>
 							<EventAvailableOutlinedIcon fontSize="small" />
-						</Tooltip>
+						</CustomTooltip>
+
 						<Box textAlign="center" ml={0.5}>
 							{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
 						</Box>

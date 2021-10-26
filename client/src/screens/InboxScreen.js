@@ -29,7 +29,13 @@ import Paginate from '../components/Paginate'
 import CustomAvatar from '../components/CustomAvatar'
 
 // @ Others
-import { getReceivedMessages, getSentMessages, deleteMessages, updateMessageStatus } from '../actions/messageActions'
+import {
+	getReceivedMessages,
+	getSentMessages,
+	deleteMessages,
+	updateMessageStatus,
+	getNewMessagesCount
+} from '../actions/messageActions'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -112,6 +118,7 @@ const InboxScreen = () => {
 	useEffect(
 		() => {
 			if (pathname === '/received') {
+				dispatch(getNewMessagesCount())
 				dispatch(getReceivedMessages(page))
 			}
 			if (pathname === '/sent') {
@@ -130,6 +137,7 @@ const InboxScreen = () => {
 		() => {
 			if (successDelete) {
 				if (pathname === '/received') {
+					dispatch(getNewMessagesCount())
 					dispatch(getReceivedMessages(page))
 				}
 				if (pathname === '/sent') {
@@ -211,7 +219,13 @@ const InboxScreen = () => {
 
 	const handleDelete = () => {
 		setIsChecked(false)
-		dispatch(deleteMessages(selected))
+
+		if (pathname === '/received') {
+			dispatch(deleteMessages(selected, 'received'))
+		}
+		if (pathname === '/sent') {
+			dispatch(deleteMessages(selected, 'sent'))
+		}
 	}
 
 	return (

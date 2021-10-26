@@ -93,8 +93,8 @@ const Header = () => {
 	const [ openInbox, setOpenInbox ] = useState(false)
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
+	const userAuth = useSelector((state) => state.userAuth)
+	const { userData } = userAuth
 
 	const signOutHandler = () => {
 		dispatch(signOut())
@@ -126,7 +126,7 @@ const Header = () => {
 						BoardGames
 					</Typography>
 
-					{userInfo ? (
+					{userData ? (
 						<Fragment>
 							<Box mr={1}>
 								<MessagesBadge />
@@ -157,7 +157,7 @@ const Header = () => {
 									boxShadow={2}
 									borderRadius={8}
 								>
-									<CustomAvatar size="large" user={userInfo.username} />
+									<CustomAvatar size="large" user={userData.username} />
 									<IconButton onClick={() => setIsOpen(false)} component={RouterLink} to="/settings">
 										<SettingsTwoToneIcon />
 									</IconButton>

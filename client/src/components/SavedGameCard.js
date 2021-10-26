@@ -14,7 +14,6 @@ import Chip from '@material-ui/core/Chip'
 import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
 
 // @ icons
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
@@ -24,6 +23,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 
 // @ Components
 import GameDetailsButton from './GameDetailsButton'
+import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -102,39 +102,39 @@ const SavedGameCard = ({ gameId }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<Tooltip title="For sale">
+						<CustomTooltip title="For sale">
 							<Box className={cls.overlayBottom}>
 								<MonetizationOnOutlinedIcon color="secondary" />
 							</Box>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 
 					{data.mode === 'trade' && (
-						<Tooltip title="For trade">
+						<CustomTooltip title="For trade">
 							<Box className={cls.overlayBottom}>
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
 							</Box>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 				</Fragment>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'sell' && (
-				<Tooltip title="For sale">
+				<CustomTooltip title="For sale">
 					<Box className={cls.overlayTop}>
 						<MonetizationOnOutlinedIcon color="secondary" />
 					</Box>
-				</Tooltip>
+				</CustomTooltip>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'trade' && (
-				<Tooltip title="For trade">
+				<CustomTooltip title="For trade">
 					<Box className={cls.overlayTop}>
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
 					</Box>
-				</Tooltip>
+				</CustomTooltip>
 			)}
 
 			<Divider />
@@ -171,7 +171,7 @@ const SavedGameCard = ({ gameId }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<Tooltip disableFocusListener title="Check on BGG">
+					<CustomTooltip title="Check on BGG">
 						<Button
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
@@ -180,7 +180,7 @@ const SavedGameCard = ({ gameId }) => {
 						>
 							BGG
 						</Button>
-					</Tooltip>
+					</CustomTooltip>
 
 					<GameDetailsButton altId={data.altId} />
 				</Box>

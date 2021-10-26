@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
 const CustomAvatar = ({ size, user }) => {
 	const cls = useStyles()
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
+	const userAuth = useSelector((state) => state.userAuth)
+	const { userData } = userAuth
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 

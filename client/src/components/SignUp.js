@@ -44,19 +44,16 @@ const SignUp = () => {
 	const [ passVisibility, setPassVisibility ] = useState(false)
 	const [ passConfirmationVisibility, setPassConfirmationVisibility ] = useState(false)
 
-	const userSignUp = useSelector((state) => state.userSignUp)
-	const { loading, error } = userSignUp
-
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
+	const userAuth = useSelector((state) => state.userAuth)
+	const { loading, error, userData } = userAuth
 
 	useEffect(
 		() => {
-			if (userInfo) {
+			if (userData) {
 				history.push('/collection')
 			}
 		},
-		[ history, userInfo ]
+		[ history, userData ]
 	)
 
 	const handleShowHidePass = () => {

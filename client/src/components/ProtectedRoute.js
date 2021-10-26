@@ -5,14 +5,13 @@ import { Route, Redirect } from 'react-router-dom'
 
 // @ Main
 const ProtectedRoute = ({ children: component, ...rest }) => {
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { userInfo } = userSignIn
+	const { userData } = useSelector((state) => state.userAuth)
 
 	return (
 		<Route
 			{...rest}
 			render={(props) => {
-				if (userInfo) {
+				if (userData) {
 					return component
 				} else {
 					return <Redirect to={{ pathname: '/signin', state: { from: props.location } }} />

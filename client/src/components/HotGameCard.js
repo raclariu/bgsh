@@ -11,7 +11,9 @@ import CardActions from '@material-ui/core/CardActions'
 import Box from '@material-ui/core/Box'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
-import Tooltip from '@material-ui/core/Tooltip'
+
+// @ Components
+import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +68,7 @@ const HotGameCard = ({ bggId }) => {
 			<Divider />
 
 			<CardActions>
-				<Tooltip disableFocusListener title="Check on BGG">
+				<CustomTooltip title="Check on BGG">
 					<Box display="flex" justifyContent="flex-end" width="100%">
 						<Button
 							color="primary"
@@ -77,7 +79,7 @@ const HotGameCard = ({ bggId }) => {
 							BGG
 						</Button>
 					</Box>
-				</Tooltip>
+				</CustomTooltip>
 			</CardActions>
 		</Card>
 	)

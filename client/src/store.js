@@ -1,13 +1,9 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { checkTokenExpirationMiddleware } from './middlewares/middlewares'
 
-import {
-	userSignInReducer,
-	userSignUpReducer,
-	userChangePasswordReducer,
-	setThemeReducer
-} from './reducers/userReducers'
+import { userAuthReducer, userChangePasswordReducer, setThemeReducer } from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
 import {
 	bggGetGamesDetailsReducer,
@@ -40,8 +36,7 @@ import {
 } from './reducers/messageReducers'
 
 const reducer = combineReducers({
-	userSignIn       : userSignInReducer,
-	userSignUp       : userSignUpReducer,
+	userAuth         : userAuthReducer,
 	userPreferences  : setThemeReducer,
 	sendMessage      : sendMessageReducer,
 	updateMessage    : updateMessageReducer,
@@ -72,19 +67,31 @@ const reducer = combineReducers({
 	reactivateGame   : reactivateGameReducer
 })
 
-const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
+const userDataFromStorage = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : null
 const saleListFromStorage = localStorage.getItem('saleList') ? JSON.parse(localStorage.getItem('saleList')) : []
 const currentThemeFromStorage = localStorage.getItem('currentTheme')
 	? JSON.parse(localStorage.getItem('currentTheme'))
 	: 'light'
 
 const initialState = {
-	userSignIn      : { userInfo: userInfoFromStorage },
+	userAuth        : { userData: userDataFromStorage },
 	saleList        : saleListFromStorage,
 	userPreferences : { theme: currentThemeFromStorage }
 }
 
-const middleware = [ thunk ]
+// const checkTokenExpirationMiddleware = (store) => (next) => (action) => {
+// 	// const token =
+// 	//   JSON.parse(localStorage.getItem("user")) &&
+// 	//   JSON.parse(localStorage.getItem("user"))["token"];
+// 	// if (jwtDecode(token).exp < Date.now() / 1000) {
+// 	//   next(action);
+// 	//   localStorage.clear();
+// 	// }
+// 	// next(action);
+// 	console.log('asd')
+// }
+
+const middleware = [ thunk, checkTokenExpirationMiddleware ]
 
 const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(...middleware)))
 

@@ -14,7 +14,6 @@ import TextField from '@material-ui/core/TextField'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Icons
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
@@ -23,6 +22,7 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 
 // @ Components
 import Loader from './Loader'
+import CustomTooltip from './CustomTooltip'
 
 // @ Others
 import { deleteGame, reactivateGame } from '../actions/gameActions'
@@ -93,11 +93,11 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 		<Fragment>
 			{display === 'add' && (
 				<Fragment>
-					<Tooltip disableFocusListener title={mode === 'sell' ? 'Sold' : 'Traded'}>
+					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
 						<IconButton onClick={handleOpenDialog} color="primary">
 							<CheckCircleOutlineOutlinedIcon fontSize="small" />
 						</IconButton>
-					</Tooltip>
+					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<DialogTitle disableTypography>
@@ -175,11 +175,11 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 			{display === 'delete' && (
 				<Fragment>
-					<Tooltip disableFocusListener title="Delete">
+					<CustomTooltip title="Delete">
 						<IconButton onClick={handleOpenDialog}>
 							<DeleteOutlineIcon color="error" fontSize="small" />
 						</IconButton>
-					</Tooltip>
+					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
@@ -209,13 +209,13 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 			{display === 'reactivate' && (
 				<Fragment>
-					<Tooltip disableFocusListener title="Reactivate">
+					<CustomTooltip title="Reactivate">
 						<span>
 							<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
 								<RefreshIcon fontSize="small" />
 							</IconButton>
 						</span>
-					</Tooltip>
+					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>

@@ -14,7 +14,9 @@ import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
+
+// @ Components
+import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
@@ -82,7 +84,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
-					<Tooltip disableFocusListener title="Check on BGG">
+					<CustomTooltip title="Check on BGG">
 						<Button
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
@@ -91,11 +93,10 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 						>
 							BGG
 						</Button>
-					</Tooltip>
+					</CustomTooltip>
 
 					{page === 'collection' && (
-						<Tooltip
-							disableFocusListener
+						<CustomTooltip
 							title={isChecked ? `Remove "${game.title}" from list` : `Add "${game.title}" to list`}
 						>
 							<Checkbox
@@ -104,10 +105,10 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 								onChange={(e) => saleListHandler(e, game.bggId)}
 								icon={<AddBoxOutlinedIcon />}
 							/>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 					{page === 'wishlist' && (
-						<Tooltip disableFocusListener title="Search this game on market">
+						<CustomTooltip title="Search this game on market">
 							<IconButton
 								color="primary"
 								component={RouterLink}
@@ -115,7 +116,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 							>
 								<SearchIcon fontSize="small" />
 							</IconButton>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 				</Box>
 			</CardActions>

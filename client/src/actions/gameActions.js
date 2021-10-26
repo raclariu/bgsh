@@ -1,4 +1,5 @@
 import axios from 'axios'
+import queryString from 'query-string'
 import {
 	BGG_GAMES_DETAILS_REQUEST,
 	BGG_GAMES_DETAILS_SUCCESS,
@@ -51,11 +52,11 @@ export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: BGG_GAMES_DETAILS_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -95,15 +96,21 @@ export const bggGetGallery = (bggIds) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: BGG_GAME_GALLERY_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
-			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+			headers          : {
+				Authorization : `Bearer ${userData.token}`
+			},
+			params           : {
+				bggIds
+			},
+			paramsSerializer : (params) => {
+				return queryString.stringify(params, { arrayFormat: 'comma' })
 			}
 		}
 
-		const { data } = await axios.get(`/api/games/bgg/${bggIds}/images`, config)
+		const { data } = await axios.get(`/api/games/bgg/gallery`, config)
 
 		dispatch({
 			type    : BGG_GAME_GALLERY_SUCCESS,
@@ -152,11 +159,11 @@ export const bggSearchGames = (keyword) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: BGG_GAMES_SEARCH_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -178,11 +185,11 @@ export const sellGames = (gamesData) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: SELL_GAMES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -203,11 +210,11 @@ export const tradeGames = (gamesData) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: TRADE_GAMES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -228,11 +235,11 @@ export const getGames = (search, page, sort, mode) => async (dispatch, getState)
 	try {
 		dispatch({ type: GAMES_INDEX_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : search ? search.trim() : null,
@@ -260,11 +267,11 @@ export const getUserActiveGames = (search, page) => async (dispatch, getState) =
 	try {
 		dispatch({ type: USER_ACTIVE_GAMES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : search ? search.trim() : null,
@@ -272,7 +279,7 @@ export const getUserActiveGames = (search, page) => async (dispatch, getState) =
 			}
 		}
 
-		const { data } = await axios.get(`/api/games/user/${userInfo._id}`, config)
+		const { data } = await axios.get(`/api/games/user/${userData._id}`, config)
 
 		dispatch({
 			type    : USER_ACTIVE_GAMES_SUCCESS,
@@ -290,11 +297,11 @@ export const reactivateGame = (gameId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAME_REACTIVATE_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -315,11 +322,11 @@ export const getSingleGame = (altId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: FOR_SALE_SINGLE_GAME_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -341,11 +348,11 @@ export const switchSaveGame = (altId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: SAVE_GAME_SWITCH_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -367,11 +374,11 @@ export const getSingleSavedGame = (altId) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: SAVED_GAMES_SINGLE_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -393,11 +400,11 @@ export const getSavedGames = (searchKeyword, pageNumber) => async (dispatch, get
 	try {
 		dispatch({ type: SAVED_GAMES_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : searchKeyword ? searchKeyword.trim() : null,
@@ -423,11 +430,11 @@ export const deleteGame = (id) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAME_DELETE_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 

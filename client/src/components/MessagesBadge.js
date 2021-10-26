@@ -25,7 +25,20 @@ const MessagesBadge = () => {
 	const dispatch = useDispatch()
 
 	const newMessagesCount = useSelector((state) => state.newMessagesCount)
-	const { loading, success, error, count } = newMessagesCount
+	const { success, error, count } = newMessagesCount
+
+	useEffect(
+		() => {
+			const intervalId = setInterval(() => {
+				dispatch(getNewMessagesCount())
+			}, 120000)
+
+			return () => {
+				clearInterval(intervalId)
+			}
+		},
+		[ dispatch ]
+	)
 
 	useEffect(
 		() => {

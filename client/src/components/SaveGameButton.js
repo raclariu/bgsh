@@ -22,7 +22,7 @@ const SaveGameButton = ({ altId, sellerId }) => {
 	const savedGameStatus = useSelector((state) => state.savedGameStatus)
 	const { loading, success, error, isSaved } = savedGameStatus
 
-	const userId = useSelector((state) => state.userSignIn.userInfo._id)
+	const userId = useSelector((state) => state.userAuth.userData._id)
 
 	const saveGameHandler = () => {
 		dispatch(switchSaveGame(altId))

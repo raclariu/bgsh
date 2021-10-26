@@ -4,7 +4,9 @@ import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
+
+// @ Components
+import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTone'
@@ -12,11 +14,11 @@ import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTon
 // @ Main
 const GameDetailsButton = ({ altId }) => {
 	return (
-		<Tooltip disableFocusListener title="Details">
+		<CustomTooltip title="Details">
 			<IconButton component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary">
 				<CenterFocusWeakTwoToneIcon fontSize="small" />
 			</IconButton>
-		</Tooltip>
+		</CustomTooltip>
 	)
 }
 

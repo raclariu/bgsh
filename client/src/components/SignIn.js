@@ -41,16 +41,16 @@ const SignIn = () => {
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
 
-	const userSignIn = useSelector((state) => state.userSignIn)
-	const { loading, error, userInfo } = userSignIn
+	const userAuth = useSelector((state) => state.userAuth)
+	const { loading, error, userData } = userAuth
 
 	useEffect(
 		() => {
-			if (userInfo) {
+			if (userData) {
 				history.push('/profile')
 			}
 		},
-		[ history, userInfo ]
+		[ history, userData ]
 	)
 
 	const handleShowHidePass = () => {

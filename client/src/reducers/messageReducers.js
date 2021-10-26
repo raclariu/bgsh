@@ -9,7 +9,6 @@ import {
 	GET_SENT_MESSAGES_REQUEST,
 	GET_SENT_MESSAGES_SUCCESS,
 	GET_SENT_MESSAGES_FAIL,
-	GET_NEW_MESSAGES_COUNT_REQUEST,
 	GET_NEW_MESSAGES_COUNT_SUCCESS,
 	GET_NEW_MESSAGES_COUNT_FAIL,
 	DELETE_MESSAGES_REQUEST,
@@ -102,12 +101,10 @@ export const updateMessageReducer = (state = {}, action) => {
 
 export const getNewMessagesCountReducer = (state = {}, action) => {
 	switch (action.type) {
-		case GET_NEW_MESSAGES_COUNT_REQUEST:
-			return { loading: true }
 		case GET_NEW_MESSAGES_COUNT_SUCCESS:
-			return { loading: false, success: true, count: action.payload }
+			return { success: true, count: action.payload }
 		case GET_NEW_MESSAGES_COUNT_FAIL:
-			return { loading: false, error: action.payload }
+			return { error: action.payload, count: 0 }
 
 		default:
 			return state

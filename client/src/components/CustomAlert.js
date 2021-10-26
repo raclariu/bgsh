@@ -8,8 +8,8 @@ import Box from '@material-ui/core/Box'
 // @ Main
 const CustomAlert = ({ severity, children }) => {
 	return (
-		<Box boxShadow={2} borderRadius={4}>
-			<Alert variant="filled" severity={severity}>
+		<Box borderRadius={4}>
+			<Alert variant="outlined" severity={severity}>
 				{children}
 			</Alert>
 		</Box>

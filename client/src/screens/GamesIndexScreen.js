@@ -18,6 +18,7 @@ import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
+import DrawerFilter from '../components/Filters/DrawerFilter'
 
 // @ Others
 import { getGames } from '../actions/gameActions'
@@ -85,6 +86,10 @@ const GamesIndexScreen = () => {
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
+
+			<Box>
+				<DrawerFilter />
+			</Box>
 
 			<Box display="flex" width="100%" alignItems="center">
 				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">

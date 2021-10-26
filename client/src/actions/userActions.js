@@ -1,12 +1,9 @@
 import axios from 'axios'
 import {
-	USER_SIGNIN_REQUEST,
-	USER_SIGNIN_SUCCESS,
-	USER_SIGNIN_FAIL,
+	USER_AUTH_REQUEST,
+	USER_AUTH_SUCCESS,
+	USER_AUTH_FAIL,
 	USER_SIGNOUT,
-	USER_SIGNUP_REQUEST,
-	USER_SIGNUP_SUCCESS,
-	USER_SIGNUP_FAIL,
 	USER_PREFERENCES_SET_THEME,
 	USER_CHANGE_PASSWORD_REQUEST,
 	USER_CHANGE_PASSWORD_SUCCESS,
@@ -15,7 +12,7 @@ import {
 
 export const signIn = (email, password) => async (dispatch) => {
 	try {
-		dispatch({ type: USER_SIGNIN_REQUEST })
+		dispatch({ type: USER_AUTH_REQUEST })
 
 		const config = {
 			headers : {
@@ -26,14 +23,14 @@ export const signIn = (email, password) => async (dispatch) => {
 		const { data } = await axios.post('/api/users/signin', { email, password }, config)
 
 		dispatch({
-			type    : USER_SIGNIN_SUCCESS,
+			type    : USER_AUTH_SUCCESS,
 			payload : data
 		})
 
-		localStorage.setItem('userInfo', JSON.stringify(data))
+		localStorage.setItem('userData', JSON.stringify(data))
 	} catch (error) {
 		dispatch({
-			type    : USER_SIGNIN_FAIL,
+			type    : USER_AUTH_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
@@ -41,7 +38,7 @@ export const signIn = (email, password) => async (dispatch) => {
 
 export const signUp = (email, username, password, passwordConfirmation) => async (dispatch) => {
 	try {
-		dispatch({ type: USER_SIGNUP_REQUEST })
+		dispatch({ type: USER_AUTH_REQUEST })
 
 		const config = {
 			headers : {
@@ -56,19 +53,14 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 		)
 
 		dispatch({
-			type    : USER_SIGNIN_SUCCESS,
+			type    : USER_AUTH_SUCCESS,
 			payload : data
 		})
 
-		dispatch({
-			type    : USER_SIGNUP_SUCCESS,
-			payload : data
-		})
-
-		localStorage.setItem('userInfo', JSON.stringify(data))
+		localStorage.setItem('userData', JSON.stringify(data))
 	} catch (error) {
 		dispatch({
-			type    : USER_SIGNUP_FAIL,
+			type    : USER_AUTH_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
@@ -78,12 +70,12 @@ export const changePassword = (passwordCurrent, passwordNew, passwordNewConfirma
 	try {
 		dispatch({ type: USER_CHANGE_PASSWORD_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
 				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userInfo.token}`
+				Authorization  : `Bearer ${userData.token}`
 			}
 		}
 
@@ -101,7 +93,7 @@ export const changePassword = (passwordCurrent, passwordNew, passwordNewConfirma
 }
 
 export const signOut = () => async (dispatch) => {
-	localStorage.removeItem('userInfo')
+	localStorage.removeItem('userData')
 
 	dispatch({ type: USER_SIGNOUT })
 }

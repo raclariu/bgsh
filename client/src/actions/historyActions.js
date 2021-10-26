@@ -20,11 +20,11 @@ export const addGamesToHistory = (games, username, price, gameId) => async (disp
 			return { title: game.title, thumbnail: game.thumbnail }
 		})
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			}
 		}
 
@@ -45,11 +45,11 @@ export const getSoldGamesHistory = (page, search) => async (dispatch, getState) 
 	try {
 		dispatch({ type: HISTORY_SOLD_LIST_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : search ? search.trim() : null,
@@ -75,11 +75,11 @@ export const getTradedGamesHistory = (page, search) => async (dispatch, getState
 	try {
 		dispatch({ type: HISTORY_TRADED_LIST_REQUEST })
 
-		const { userSignIn: { userInfo } } = getState()
+		const { userAuth: { userData } } = getState()
 
 		const config = {
 			headers : {
-				Authorization : `Bearer ${userInfo.token}`
+				Authorization : `Bearer ${userData.token}`
 			},
 			params  : {
 				search : search ? search.trim() : null,

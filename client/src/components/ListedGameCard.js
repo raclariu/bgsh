@@ -12,7 +12,6 @@ import CardActions from '@material-ui/core/CardActions'
 import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
 
 // @ Icons
 import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutlined'
@@ -23,6 +22,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 // @ Components
 import ActiveAddHistoryButton from './ActiveAddHistoryButton'
 import GameDetailsButton from './GameDetailsButton'
+import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -94,39 +94,39 @@ const ListedGameCard = ({ data }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<Tooltip title="For sale">
+						<CustomTooltip title="For sale">
 							<Box className={cls.overlayBottom}>
 								<MonetizationOnOutlinedIcon color="secondary" />
 							</Box>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 
 					{data.mode === 'trade' && (
-						<Tooltip title="For trade">
+						<CustomTooltip title="For trade">
 							<Box className={cls.overlayBottom}>
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
 							</Box>
-						</Tooltip>
+						</CustomTooltip>
 					)}
 				</Fragment>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'sell' && (
-				<Tooltip title="For sale">
+				<CustomTooltip title="For sale">
 					<Box className={cls.overlayTop}>
 						<MonetizationOnOutlinedIcon color="secondary" />
 					</Box>
-				</Tooltip>
+				</CustomTooltip>
 			)}
 
 			{data.type === 'individual' &&
 			data.mode === 'trade' && (
-				<Tooltip title="For trade">
+				<CustomTooltip title="For trade">
 					<Box className={cls.overlayTop}>
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
 					</Box>
-				</Tooltip>
+				</CustomTooltip>
 			)}
 
 			<Divider />
