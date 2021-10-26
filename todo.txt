@@ -7,3 +7,4 @@ one card to rule them all reusable
 
 - rezolvare cu galeria in caz de un joc dintr-un pachet nu are poze, deocamdata daca 5/6 au poze tot da eroare pentru ca lucrez pe index, altfel
 da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dreapta sa apara eroarea atunci la un joc specific
+- atunci cand intra cineva la inbox sa se updateze si messageBadge

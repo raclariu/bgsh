@@ -149,15 +149,15 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 })
 
 // ~ @desc Get gallery of images for single game from BGG
-// ~ @route  GET /api/games/bgg/:bggId/images
+// ~ @route  GET /api/games/bgg/gallery
 // ~ @access Private route
 const bggGetGallery = asyncHandler(async (req, res) => {
 	try {
-		const { bggIds } = req.params
+		const { bggIds } = req.query
 
 		let images = []
 
-		for (let id of bggIds.split(',')) {
+		for (let id of bggIds) {
 			const { data } = await axios.get('https://api.geekdo.com/api/images', {
 				params : {
 					ajax       : 1,
@@ -180,10 +180,12 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 					return { imageid, image, caption, thumbnail, extLink }
 				})
 				images.push(mapImages)
+			} else {
+				images.push([])
 			}
 		}
 
-		if (images.length !== bggIds.split(',').length) {
+		if (images.length !== bggIds.length) {
 			res.status(404)
 			throw {
 				message : 'No images found'
@@ -531,8 +533,6 @@ const reactivateGame = asyncHandler(async (req, res) => {
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
 	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
-
-	console.log(req.user)
 
 	if (!saleData) {
 		res.status(404)

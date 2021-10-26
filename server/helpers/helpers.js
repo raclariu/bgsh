@@ -1,4 +1,3 @@
-import axios from 'axios'
 import bcrypt from 'bcryptjs'
 import { parseString } from 'xml2js'
 import jwt from 'jsonwebtoken'
@@ -39,7 +38,7 @@ const hashPassword = async (password) => {
 
 const generateToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET, {
-		expiresIn : '30d'
+		expiresIn : '7d'
 	})
 }
 
