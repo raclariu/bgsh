@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
-const collectionSchema = mongoose.Schema(
+const wishlistSchema = mongoose.Schema(
 	{
-		user       : {
+		user          : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		owned      : [
+		wishlist      : [
 			{
 				bggId     : {
 					type     : String,
@@ -17,17 +17,19 @@ const collectionSchema = mongoose.Schema(
 				year      : Number,
 				thumbnail : String,
 				image     : String,
+				priority  : Number,
 				added     : Date
 			}
 		],
-		ownedCount : Number
+
+		wishlistCount : Number
 	},
 	{
 		timestamps : true,
-		collection : 'bggCollections'
+		collection : 'bggWishlists'
 	}
 )
 
-const Collection = mongoose.model('Collection', collectionSchema)
+const Wishlist = mongoose.model('Wishlist', wishlistSchema)
 
-export default Collection
+export default Wishlist

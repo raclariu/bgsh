@@ -28,8 +28,10 @@ const Profile = lazy(() => import('./screens/ProfileScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
 const SellGames = lazy(() => import('./screens/SellGamesScreen'))
 const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
+const AddWantedGames = lazy(() => import('./screens/AddWantedGamesScreen'))
 const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
+const WantedGamesIndex = lazy(() => import('./screens/WantedGamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
 const Inbox = lazy(() => import('./screens/InboxScreen'))
@@ -53,7 +55,7 @@ const App = () => {
 					<Container maxWidth="md" component="main">
 						<Switch>
 							<Route path="/" exact>
-								<Home test={1} />
+								<Home />
 							</Route>
 
 							<Route path={[ '/signin', '/signup' ]} exact>
@@ -76,6 +78,10 @@ const App = () => {
 								<GamesIndex />
 							</ProtectedRoute>
 
+							<ProtectedRoute path="/wanted" exact>
+								<WantedGamesIndex />
+							</ProtectedRoute>
+
 							<ProtectedRoute path="/games/:altId" exact>
 								<SingleGame />
 							</ProtectedRoute>
@@ -94,6 +100,10 @@ const App = () => {
 
 							<ProtectedRoute path="/trade" exact>
 								<TradeGames />
+							</ProtectedRoute>
+
+							<ProtectedRoute path="/want" exact>
+								<AddWantedGames />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/saved" exact>

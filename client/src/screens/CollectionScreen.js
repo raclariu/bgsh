@@ -49,7 +49,7 @@ const CollectionScreen = () => {
 	const { search, page = 1 } = queryString.parse(location.search)
 
 	const dbCollection = useSelector((state) => state.dbCollection)
-	const { loading: dbLoading, error: dbError, success: dbSuccess, collection, pagination } = dbCollection
+	const { loading: dbLoading, error: dbError, success: dbSuccess, owned, pagination } = dbCollection
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -81,8 +81,9 @@ const CollectionScreen = () => {
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, _id } = collection.find((el) => el.bggId === id)
-			dispatch(addToSaleList({ bggId, title, year, thumbnail, _id }))
+			console.log(owned.find((el) => el.bggId === id))
+			const { bggId, title, year, thumbnail, image, _id } = owned.find((el) => el.bggId === id)
+			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
 		} else {
 			dispatch(removeFromSaleList(id))
 		}
@@ -114,7 +115,7 @@ const CollectionScreen = () => {
 			)}
 			{dbSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{collection.map((game) => (
+					{owned.map((game) => (
 						<Grid item key={game._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard

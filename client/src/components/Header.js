@@ -39,6 +39,7 @@ import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 import InboxTwoToneIcon from '@material-ui/icons/InboxTwoTone'
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
 import SendTwoToneIcon from '@material-ui/icons/SendTwoTone'
+import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone'
 
 // @ Components
 import MessagesBadge from './MessagesBadge'
@@ -273,6 +274,38 @@ const Header = () => {
 																}
 															>
 																Trades
+															</Box>
+														}
+													/>
+												</ListItem>
+
+												<ListItem
+													className={classes.nested}
+													button
+													onClick={(e) => handleClick(e, 13)}
+													selected={selectedIndex === 13}
+													component={RouterLink}
+													to="/wanted"
+												>
+													<ListItemIcon>
+														<AddCircleTwoToneIcon
+															color={selectedIndex === 13 ? 'primary' : 'inherit'}
+														/>
+													</ListItemIcon>
+													<ListItemText
+														primary={
+															<Box
+																fontWeight={500}
+																fontSize="subtitle2.fontSize"
+																color={
+																	selectedIndex === 13 ? (
+																		'primary.main'
+																	) : (
+																		'text.secondary'
+																	)
+																}
+															>
+																Wanted
 															</Box>
 														}
 													/>

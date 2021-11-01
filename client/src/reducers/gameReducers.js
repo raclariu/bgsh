@@ -49,7 +49,14 @@ import {
 	GAME_DELETE_FAIL,
 	GAME_REACTIVATE_REQUEST,
 	GAME_REACTIVATE_SUCCESS,
-	GAME_REACTIVATE_FAIL
+	GAME_REACTIVATE_FAIL,
+	ADD_WANTED_GAMES_REQUEST,
+	ADD_WANTED_GAMES_SUCCESS,
+	ADD_WANTED_GAMES_FAIL,
+	WANTED_GAMES_INDEX_REQUEST,
+	WANTED_GAMES_INDEX_SUCCESS,
+	WANTED_GAMES_INDEX_FAIL,
+	WANTED_GAMES_INDEX_RESET
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -176,6 +183,22 @@ export const tradeGamesReducer = (state = {}, action) => {
 	}
 }
 
+export const addWantedGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case ADD_WANTED_GAMES_REQUEST:
+			return { loading: true }
+
+		case ADD_WANTED_GAMES_SUCCESS:
+			return { loading: false, success: true }
+
+		case ADD_WANTED_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
 export const getGamesReducer = (state = {}, action) => {
 	switch (action.type) {
 		case GAMES_INDEX_REQUEST:
@@ -193,6 +216,30 @@ export const getGamesReducer = (state = {}, action) => {
 			return { loading: false, error: action.payload }
 
 		case GAMES_INDEX_RESET:
+			return {}
+
+		default:
+			return state
+	}
+}
+
+export const getWantedGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case WANTED_GAMES_INDEX_REQUEST:
+			return { loading: true }
+
+		case WANTED_GAMES_INDEX_SUCCESS:
+			return {
+				loading    : false,
+				success    : true,
+				gamesData  : action.payload.gamesData,
+				pagination : action.payload.pagination
+			}
+
+		case WANTED_GAMES_INDEX_FAIL:
+			return { loading: false, error: action.payload }
+
+		case WANTED_GAMES_INDEX_RESET:
 			return {}
 
 		default:

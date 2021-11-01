@@ -21,6 +21,8 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 // @ Others
 import { getWishlist } from '../actions/collectionActions'
 import { WISHLIST_LIST_RESET } from '../constants/collectionConstants'
+import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
+import { saleListLimit } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +48,7 @@ const WishlistScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
+	const saleList = useSelector((state) => state.saleList)
 	const { loading, success, error, wishlist, pagination } = useSelector((state) => state.wishlist)
 
 	useEffect(
@@ -72,6 +75,15 @@ const WishlistScreen = () => {
 		}
 
 		history.push(`${location.pathname}?${query}`)
+	}
+
+	const saleListHandler = (e, id) => {
+		if (e.target.checked) {
+			const { bggId, title, year, thumbnail, image, _id } = wishlist.find((el) => el.bggId === id)
+			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
+		} else {
+			dispatch(removeFromSaleList(id))
+		}
 	}
 
 	return (
@@ -108,7 +120,23 @@ const WishlistScreen = () => {
 					{wishlist.map((game) => (
 						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<GameCard bggId={game.bggId} page="wishlist" />
+								<GameCard
+									bggId={game.bggId}
+									page="wishlist"
+									saleListHandler={saleListHandler}
+									isChecked={saleList.some((el) => el.bggId === game.bggId)}
+									isDisabled={
+										saleList.length === saleListLimit ? saleList.some(
+											(el) => el.bggId === game.bggId
+										) ? (
+											false
+										) : (
+											true
+										) : (
+											false
+										)
+									}
+								/>
 							</LazyLoad>
 						</Grid>
 					))}

@@ -24,6 +24,9 @@ import {
 	GAMES_INDEX_REQUEST,
 	GAMES_INDEX_SUCCESS,
 	GAMES_INDEX_FAIL,
+	WANTED_GAMES_INDEX_SUCCESS,
+	WANTED_GAMES_INDEX_FAIL,
+	WANTED_GAMES_INDEX_REQUEST,
 	FOR_SALE_SINGLE_GAME_REQUEST,
 	FOR_SALE_SINGLE_GAME_SUCCESS,
 	FOR_SALE_SINGLE_GAME_FAIL,
@@ -45,7 +48,10 @@ import {
 	GAME_REACTIVATE_REQUEST,
 	GAME_REACTIVATE_SUCCESS,
 	GAME_REACTIVATE_FAIL,
-	saleListLimit
+	saleListLimit,
+	ADD_WANTED_GAMES_REQUEST,
+	ADD_WANTED_GAMES_SUCCESS,
+	ADD_WANTED_GAMES_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -106,7 +112,7 @@ export const bggGetGallery = (bggIds) => async (dispatch, getState) => {
 				bggIds
 			},
 			paramsSerializer : (params) => {
-				return queryString.stringify(params, { arrayFormat: 'comma' })
+				return queryString.stringify(params, { arrayFormat: 'bracket' })
 			}
 		}
 
@@ -231,6 +237,31 @@ export const tradeGames = (gamesData) => async (dispatch, getState) => {
 	}
 }
 
+export const addWantedGames = (gamesData) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: ADD_WANTED_GAMES_REQUEST })
+
+		const { userAuth: { userData } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userData.token}`
+			}
+		}
+
+		await axios.post('/api/games/wanted', gamesData, config)
+
+		dispatch({
+			type : ADD_WANTED_GAMES_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : ADD_WANTED_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
 export const getGames = (search, page, sort, mode) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: GAMES_INDEX_REQUEST })
@@ -258,6 +289,36 @@ export const getGames = (search, page, sort, mode) => async (dispatch, getState)
 	} catch (error) {
 		dispatch({
 			type    : GAMES_INDEX_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getWantedGames = (page, search) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: WANTED_GAMES_INDEX_REQUEST })
+
+		const { userAuth: { userData } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userData.token}`
+			},
+			params  : {
+				search : search ? search.trim() : null,
+				page   : +page ? +page : 1
+			}
+		}
+
+		const { data } = await axios.get('/api/games/wanted', config)
+
+		dispatch({
+			type    : WANTED_GAMES_INDEX_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : WANTED_GAMES_INDEX_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

@@ -105,8 +105,8 @@ const TradeGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (e, value, game, key) => {
-		const index = values.findIndex((el) => el.bggId === game.bggId)
+	const handleGameInfo = (e, value, bggId, key) => {
+		const index = values.findIndex((el) => el.bggId === bggId)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
 		setValues(copy)

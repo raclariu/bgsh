@@ -46,7 +46,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 
 	const game = useSelector((state) => {
 		if (page === 'collection') {
-			return state.dbCollection.collection.find((obj) => obj.bggId === bggId)
+			return state.dbCollection.owned.find((obj) => obj.bggId === bggId)
 		}
 
 		if (page === 'wishlist') {
@@ -95,19 +95,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 						</Button>
 					</CustomTooltip>
 
-					{page === 'collection' && (
-						<CustomTooltip
-							title={isChecked ? `Remove "${game.title}" from list` : `Add "${game.title}" to list`}
-						>
-							<Checkbox
-								checked={isChecked}
-								disabled={isDisabled}
-								onChange={(e) => saleListHandler(e, game.bggId)}
-								icon={<AddBoxOutlinedIcon />}
-							/>
-						</CustomTooltip>
-					)}
-					{page === 'wishlist' && (
+					{/* {page === 'wishlist' && (
 						<CustomTooltip title="Search this game on market">
 							<IconButton
 								color="primary"
@@ -117,7 +105,18 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 								<SearchIcon fontSize="small" />
 							</IconButton>
 						</CustomTooltip>
-					)}
+					)} */}
+
+					<CustomTooltip
+						title={isChecked ? `Remove "${game.title}" from list` : `Add "${game.title}" to list`}
+					>
+						<Checkbox
+							checked={isChecked}
+							disabled={isDisabled}
+							onChange={(e) => saleListHandler(e, game.bggId)}
+							icon={<AddBoxOutlinedIcon />}
+						/>
+					</CustomTooltip>
 				</Box>
 			</CardActions>
 		</Card>

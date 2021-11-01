@@ -7,7 +7,9 @@ import {
 	bggGetGallery,
 	sellGames,
 	tradeGames,
+	addWantedGames,
 	getGames,
+	getWantedGames,
 	getUserActiveGames,
 	getSingleGame,
 	switchSaveGame,
@@ -29,6 +31,7 @@ import {
 	validateShippingMethod,
 	validateShipCities
 } from '../validators/sellGameValidator.js'
+import { validatePrefShipping } from '../validators/wantedValidator.js'
 
 // @ api/games
 router.route('/').get(protect, getGames)
@@ -36,6 +39,7 @@ router.route('/delete/:id').delete(protect, deleteGame)
 router.route('/user/:id').get(protect, getUserActiveGames)
 router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
+router.route('/wanted').get(protect, getWantedGames).post([ protect, validatePrefShipping ], addWantedGames)
 router.route('/reactivate/:id').patch(protect, reactivateGame)
 router.route('/:altId').get(protect, getSingleGame)
 router.route('/bgg').post(protect, getGamesFromBGG)

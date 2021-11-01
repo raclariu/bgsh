@@ -110,8 +110,8 @@ const SellGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (e, value, game, key) => {
-		const index = values.findIndex((el) => el.bggId === game.bggId)
+	const handleGameInfo = (e, value, id, key) => {
+		const index = values.findIndex((el) => el.bggId === id)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
 		setValues(copy)
@@ -215,6 +215,8 @@ const SellGamesScreen = () => {
 					<Grid container spacing={3} className={cls.section}>
 						{games.map(
 							(game) =>
+								// Because we may have 6 fetched games, but values could have only 3 because
+								// user deleted 3, we need to only render a list of the ones that are in values
 								values.find((val) => val.bggId === game.bggId) && (
 									<Grid item key={game.bggId} md={6} xs={12}>
 										<SellGameCard

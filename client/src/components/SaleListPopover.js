@@ -67,7 +67,6 @@ const SaleListPopover = () => {
 	const saleList = useSelector((state) => state.saleList)
 
 	const open = Boolean(anchorEl)
-	const id = open ? 'simple-popover' : undefined
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget)
@@ -86,8 +85,8 @@ const SaleListPopover = () => {
 		setAnchorEl(null)
 	}
 
-	const handleModeClick = (clicked) => {
-		setMode(clicked)
+	const handleModeClick = (mode) => {
+		setMode(mode)
 		setOpenDialog(true)
 	}
 
@@ -100,7 +99,6 @@ const SaleListPopover = () => {
 			</IconButton>
 
 			<Popover
-				id={id}
 				classes={{ paper: cls.popover }}
 				open={open}
 				anchorEl={anchorEl}
@@ -125,7 +123,7 @@ const SaleListPopover = () => {
 									variant="subtitle2"
 									color="textSecondary"
 								>
-									My sale list ({saleList.length}/{saleListLimit})
+									My list ({saleList.length}/{saleListLimit})
 								</Typography>
 
 								{saleList.length === 0 && (
@@ -134,19 +132,14 @@ const SaleListPopover = () => {
 											To add games visit your
 										</Typography>
 										<ButtonGroup className={cls.btnGroup} size="small" color="primary">
-											<Button
-												component={RouterLink}
-												to="/profile"
-												onClick={(e) => setAnchorEl(null)}
-											>
+											<Button component={RouterLink} to="/profile" onClick={handleClose}>
 												Profile
 											</Button>
-											<Button
-												component={RouterLink}
-												to="/collection"
-												onClick={(e) => setAnchorEl(null)}
-											>
+											<Button component={RouterLink} to="/collection" onClick={handleClose}>
 												Collection
+											</Button>
+											<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
+												Wishlist
 											</Button>
 										</ButtonGroup>
 									</Fragment>
@@ -156,7 +149,7 @@ const SaleListPopover = () => {
 									<ListItem divider key={game.bggId}>
 										<ListItemAvatar>
 											<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
-												{game.title[0] + game.title[1]}
+												{game.title.substring(0, 2).toUpperCase()}
 											</Avatar>
 										</ListItemAvatar>
 										<ListItemText
@@ -171,10 +164,7 @@ const SaleListPopover = () => {
 											}}
 										/>
 										<ListItemSecondaryAction>
-											<IconButton
-												edge="end"
-												onClick={() => removeFromSaleListHandler(game.bggId)}
-											>
+											<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
 												<HighlightOffIcon color="error" />
 											</IconButton>
 										</ListItemSecondaryAction>
@@ -187,26 +177,25 @@ const SaleListPopover = () => {
 								<Box m={1}>
 									{saleList.length === 1 && (
 										<ButtonGroup color="primary">
-											<Button
-												component={RouterLink}
-												to="/sell"
-												onClick={(e) => setAnchorEl(null)}
-											>
+											<Button component={RouterLink} to="/sell" onClick={handleClose}>
 												Sell
 											</Button>
-											<Button
-												component={RouterLink}
-												to="/trade"
-												onClick={(e) => setAnchorEl(null)}
-											>
+											<Button component={RouterLink} to="/trade" onClick={handleClose}>
 												Trade
+											</Button>
+											<Button component={RouterLink} to="/want" onClick={handleClose}>
+												Wanted
 											</Button>
 										</ButtonGroup>
 									)}
+
 									{saleList.length > 1 && (
 										<ButtonGroup color="primary">
 											<Button onClick={() => handleModeClick('sell')}>Sell</Button>
 											<Button onClick={() => handleModeClick('trade')}>Trade</Button>
+											<Button component={RouterLink} to="/want" onClick={handleClose}>
+												Wanted
+											</Button>
 										</ButtonGroup>
 									)}
 								</Box>

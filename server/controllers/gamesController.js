@@ -4,6 +4,7 @@ import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
+import Wanted from '../models/wantedModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get games from BGG by ID
@@ -170,14 +171,22 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 					showcount  : 12,
 					size       : 'thumb',
 					sort       : 'hot'
+					//licensefilter : 'reuse'
 					// tag        : 'Play,Components'
 				}
 			})
 
 			if (data.images.length !== 0) {
 				const mapImages = data.images.map((obj) => {
-					const { imageid, imageurl_lg: image, caption, imageurl: thumbnail, href: extLink } = obj
-					return { imageid, image, caption, thumbnail, extLink }
+					const {
+						imageid,
+						imageurl_lg : image,
+						caption,
+						imageurl    : thumbnail,
+						href        : extLink,
+						user        : { username: postedBy }
+					} = obj
+					return { imageid, image, caption, thumbnail, extLink, postedBy }
 				})
 				images.push(mapImages)
 			} else {
@@ -233,7 +242,8 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 				bggId     : game.id,
 				title     : game.name.value,
 				year      : game.yearpublished ? +game.yearpublished.value : '-',
-				thumbnail : null
+				thumbnail : null,
+				image     : null
 			}
 			gamesArr.push(item)
 		}
@@ -363,6 +373,28 @@ const tradeGames = asyncHandler(async (req, res) => {
 	res.status(204).end()
 })
 
+// * @desc    Add wanted games
+// * @route   POST  /api/games/wanted
+// * @access  Private route
+const addWantedGames = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		res.status(400)
+		throw {
+			message : validationErrors.errors.map((err) => err.msg)
+		}
+	}
+
+	let wantedList = []
+	for (let game of req.body) {
+		wantedList.push({ ...game, wantedBy: req.user._id })
+	}
+
+	await Wanted.insertMany(wantedList)
+
+	res.status(204).end()
+})
+
 // ~ @desc    Get games that are up for sale or trade
 // ~ @route   GET /api/games
 // ~ @access  Private route
@@ -396,7 +428,7 @@ const getGames = asyncHandler(async (req, res) => {
 		if (results.length === 0) {
 			res.status(404)
 			throw {
-				message : 'No games found'
+				message : 'No results found'
 			}
 		}
 
@@ -444,6 +476,79 @@ const getGames = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
+		}
+
+		res.status(200).json({ gamesData, pagination })
+	}
+})
+
+// ~ @desc    Get all wanted games
+// ~ @route   GET /api/games/wanted
+// ~ @access  Private route
+const getWantedGames = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const search = req.query.search
+	const resultsPerPage = 24
+
+	if (search) {
+		const gamesData = await Wanted.find({ isActive: true }).populate('wantedBy', 'username _id').lean()
+		const fuse = new Fuse(gamesData, { keys: [ 'title', 'designers' ], threshold: 0.3, distance: 200 })
+		const results = fuse.search(search).map((game) => game.item)
+
+		if (results.length === 0) {
+			res.status(404)
+			throw {
+				message : 'No results found'
+			}
+		}
+
+		const pagination = {
+			page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		res.status(200).json({
+			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const count = await Wanted.countDocuments({ isActive: true })
+
+		if (count === 0) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
+		}
+
+		const gamesData = await Wanted.find({ isActive: true })
+			.skip(resultsPerPage * (page - 1))
+			.limit(resultsPerPage)
+			.sort({ createdAt: -1 })
+			.populate('wantedBy', 'username _id')
+			.lean()
+
+		const pagination = {
+			page,
+			totalPages   : Math.ceil(count / resultsPerPage),
+			totalItems   : count,
+			itemsPerPage : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
+		}
+
 		res.status(200).json({ gamesData, pagination })
 	}
 })
@@ -475,11 +580,25 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((game) => game.item)
 
+		if (results.length === 0) {
+			res.status(404)
+			throw {
+				message : 'No results found'
+			}
+		}
+
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
 			totalItems : results.length,
 			perPage    : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
 		}
 
 		res.status(200).json({
@@ -498,6 +617,13 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 			totalPages   : Math.ceil(allUserGames.length / resultsPerPage),
 			totalItems   : allUserGames.length,
 			itemsPerPage : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
 		}
 
 		res.status(200).json({
@@ -650,6 +776,13 @@ const getSavedGames = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
+		}
+
 		res.status(200).json({
 			list       : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
@@ -669,6 +802,13 @@ const getSavedGames = asyncHandler(async (req, res) => {
 			totalPages   : Math.ceil(user.savedGames.length / resultsPerPage),
 			totalItems   : user.savedGames.length,
 			itemsPerPage : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No games found'
+			}
 		}
 
 		res.status(200).json({
@@ -702,7 +842,9 @@ export {
 	bggGetGallery,
 	sellGames,
 	tradeGames,
+	addWantedGames,
 	getGames,
+	getWantedGames,
 	getSingleGame,
 	switchSaveGame,
 	getSavedGames,

@@ -250,8 +250,8 @@ const SingleGameScreen = () => {
 								boxShadow={2}
 							>
 								<Zoom
-									overlayBgColorStart="rgba(255, 255, 255, 0)"
-									overlayBgColorEnd="rgba(255, 255, 255, 0)"
+									// overlayBgColorStart="rgba(255, 255, 255, 0)"
+									// overlayBgColorEnd="rgba(255, 255, 255, 0)"
 									zoomMargin={40}
 								>
 									<img
@@ -408,7 +408,7 @@ const SingleGameScreen = () => {
 									</Box>
 								)}
 
-								<SendMessage recipientUsername={data.seller.username} recipientId={data.seller._id} />
+								<SendMessage recipientUsername={data.seller.username} />
 								<SaveGameButton altId={altId} sellerId={data.seller._id} />
 							</Grid>
 						</Grid>
@@ -539,7 +539,7 @@ const SingleGameScreen = () => {
 
 					{successGallery && (
 						<Fragment>
-							{gallery[index].length !== 0 ? (
+							{gallery[index].length > 0 && (
 								<Fragment>
 									<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
 										{gallery[index].map((obj, i) => (
@@ -551,8 +551,8 @@ const SingleGameScreen = () => {
 														height="220px"
 														bgcolor="background.paper"
 														borderRadius={4}
-														boxShadow={2}
-														p={2}
+														boxShadow={1}
+														p={1.5}
 													>
 														<img
 															onClick={() => handleOpenImage(i)}
@@ -568,9 +568,12 @@ const SingleGameScreen = () => {
 
 									<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
 										<DialogTitle disableTypography>
-											<Typography variant="subtitle2">
-												{gallery[index][imgIndex].caption}
-											</Typography>
+											<Box display="flex" flexDirection="column">
+												<Box fontSize="1rem">{gallery[index][imgIndex].caption}</Box>
+												<Box mt={0.5} fontSize="0.70rem" color="grey.500">
+													{`Posted on BGG by ${gallery[index][imgIndex].postedBy}`}
+												</Box>
+											</Box>
 										</DialogTitle>
 
 										<DialogContent dividers>
@@ -579,7 +582,7 @@ const SingleGameScreen = () => {
 												src={gallery[index][imgIndex].image}
 												hidden={!load}
 												onLoad={onImgLoad}
-												className={cls.dialogImg}
+												style={{ maxWidth: '100%', maxHeight: 'calc(100vh - 64px)' }}
 											/>
 
 											{!load && (
@@ -602,8 +605,10 @@ const SingleGameScreen = () => {
 										</DialogActions>
 									</Dialog>
 								</Fragment>
-							) : (
-								<CustomAlert severity="warning">{` ${data.games[index].title}`}</CustomAlert>
+							)}
+
+							{gallery[index].length === 0 && (
+								<CustomAlert severity="warning">{`${data.games[index].title}`}</CustomAlert>
 							)}
 						</Fragment>
 					)}

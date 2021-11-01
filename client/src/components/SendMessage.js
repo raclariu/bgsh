@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @Main
-const SendMessage = ({ recipientUsername }) => {
+const SendMessage = ({ recipientUsername = '' }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 

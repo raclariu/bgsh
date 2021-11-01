@@ -1,5 +1,6 @@
 // @ Libraries
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -15,6 +16,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
+import Chip from '@material-ui/core/Chip'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 // @ Icons
@@ -30,16 +32,13 @@ const useStyles = makeStyles((theme) => ({
 	autocomplete : {
 		marginTop : theme.spacing(2)
 	},
-	extraInfo    : {
-		margin : theme.spacing(2, 0, 2, 0)
-	},
 	error        : {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
-const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
+const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }) => {
 	const cls = useStyles()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
@@ -77,18 +76,36 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 				title={game.title}
 			/>
 			<CardContent>
+				{/* <Autocomplete
+					value={data.prefLanguage}
+					getOptionSelected={(option, value) => option === value}
+					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefLanguage')}
+					options={[ 'Romanian', 'English', 'Any' ]}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							name={`prefLanguage-${game.bggId}`}
+							label="Preferred language"
+							placeholder="Select your preferred language"
+							variant="outlined"
+							size="small"
+							required
+						/>
+					)}
+				/> */}
+
 				<Autocomplete
 					value={data.version}
 					getOptionSelected={(option, value) => option.title === value.title}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'version')}
+					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefVersion')}
 					options={game.versions}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (
 						<TextField
 							{...params}
 							name={`version-${game.bggId}`}
-							label="Version"
-							placeholder="Select game version"
+							label="Preferred version"
+							placeholder="Select preferred version"
 							variant="outlined"
 							size="small"
 							required
@@ -98,81 +115,33 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 
 				<Autocomplete
 					className={cls.autocomplete}
-					value={data.condition}
-					getOptionSelected={(option, value) => option === value}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'condition')}
-					// if options change, don't forget to also change the arr on the server validator
-					options={[ 'New', 'Opened, not played', 'Like new', 'Very Good', 'Good', 'Acceptable', 'Poor' ]}
+					multiple
+					filterSelectedOptions
+					value={data.prefShipping}
+					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefShipping')}
+					limitTags={2}
+					options={[ 'Romanian Post', 'Courier', 'Personal' ]}
+					renderTags={(value, getTagProps) =>
+						value.map((option, index) => <Chip size="small" label={option} {...getTagProps({ index })} />)}
 					renderInput={(params) => (
 						<TextField
 							{...params}
-							name={`condition-${game.bggId}`}
-							label="Condition"
-							placeholder="Select condition"
+							required
+							inputProps={{
+								...params.inputProps,
+								required : data.prefShipping.length === 0
+							}}
+							label="Preferred shipping methods"
+							placeholder={'Select prefered shipping methods'}
+							name="shipping"
 							variant="outlined"
 							size="small"
-							required
 						/>
 					)}
 				/>
-
-				<TextField
-					className={cls.extraInfo}
-					value={data.extraInfo}
-					onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'extraInfo')}
-					inputProps={{
-						maxLength   : 500,
-						placeholder : 'Any other info goes in here (500 characters limit)'
-					}}
-					variant="outlined"
-					name="extra-info-txt"
-					type="text"
-					multiline
-					minRows={3}
-					maxRows={10}
-					size="small"
-					fullWidth
-				/>
-
-				<Grid container>
-					<Grid item xs={6}>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={data.isSleeved}
-									onChange={(e) => handleGameInfo(e, e.target.checked, game.bggId, 'isSleeved')}
-								/>
-							}
-							label={<Typography variant="body2">Sleeved?</Typography>}
-						/>
-					</Grid>
-					{mode === 'sell' &&
-					type === 'individual' && (
-						<Grid item xs={6}>
-							<TextField
-								onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'price')}
-								value={data.price}
-								InputProps={{
-									startAdornment : <InputAdornment position="start">RON</InputAdornment>
-								}}
-								inputProps={{
-									min : 1,
-									max : 10000
-								}}
-								name={`price-${game.bggId}`}
-								variant="outlined"
-								label="Price"
-								type="number"
-								size="small"
-								fullWidth
-								required
-							/>
-						</Grid>
-					)}
-				</Grid>
 			</CardContent>
 		</Card>
 	)
 }
 
-export default SellGameCard
+export default AddWantedCard

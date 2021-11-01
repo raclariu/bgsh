@@ -38,7 +38,7 @@ export const dbGetCollectionReducer = (state = {}, action) => {
 			return {
 				loading    : false,
 				success    : true,
-				collection : action.payload.collection,
+				owned      : action.payload.owned,
 				pagination : action.payload.pagination
 			}
 		case DB_COLLECTION_LIST_FAIL:

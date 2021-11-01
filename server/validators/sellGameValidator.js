@@ -32,12 +32,15 @@ const validateGameVersion = check('games').custom((games, { req }) => {
 				.find((title) => title === games[i].version.title)
 
 			if (!versionOk) {
-				throw new Error(`Invalid version for ${games[i].title}`)
+				throw {
+					message : `Invalid version for ${games[i].title}`
+				}
 			}
 		}
+
 		return true
 	} catch (error) {
-		throw new Error('Version error. Check versions and resubmit')
+		throw new Error(error.message ? error.message : 'Version error. Check versions and resubmit')
 	}
 })
 
@@ -55,12 +58,14 @@ const validateGameCondition = check('games').custom((games, { req }) => {
 			].includes(games[i].condition)
 
 			if (!conditionOk) {
-				throw new Error(`Invalid condition for ${req.body.games[i].title}`)
+				throw {
+					message : `Invalid condition for ${req.body.games[i].title}`
+				}
 			}
 		}
 		return true
 	} catch (error) {
-		throw new Error('Condition error. Check conditions and resubmit')
+		throw new Error(error.message ? error.message : 'Condition error. Check conditions and resubmit')
 	}
 })
 
@@ -72,12 +77,14 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 			const priceOk = games[i].price > 0 && games[i].price < 10001
 
 			if (!priceOk) {
-				throw new Error(`Invalid price for ${games[i].title}`)
+				throw {
+					message : `Invalid price for ${games[i].title}`
+				}
 			}
 		}
 		return true
 	} catch (error) {
-		throw new Error('Price error. Check prices and resubmit')
+		throw new Error(error.message ? error.message : 'Price error. Check prices and resubmit')
 	}
 })
 
