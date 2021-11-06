@@ -6,7 +6,7 @@ import { useDebounce } from 'use-debounce'
 
 // @ Mui
 import TextField from '@material-ui/core/TextField'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
+import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
@@ -19,10 +19,8 @@ import { BGG_GAMES_SEARCH_RESET } from '../constants/gameConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	btnGroup : {
-		display        : 'flex',
-		alignItems     : 'center',
-		justifyContent : 'flex-end'
+	button : {
+		marginLeft : theme.spacing(1)
 	}
 }))
 
@@ -84,11 +82,15 @@ const BggSearchGamesBox = () => {
 
 	return (
 		<Fragment>
+			<Box mb={2} fontWeight="fontWeightMedium">
+				Search BoardGameGeek by game title
+			</Box>
+
 			<Autocomplete
 				fullWidth
 				value={selectedOption}
 				loading={loading}
-				noOptionsText={error ? error : 'No options'}
+				noOptionsText={error ? error : 'Board games will show up here'}
 				onChange={(e, value) => setSelectedOption(value)}
 				getOptionLabel={(option) => `${option.title} (${option.year})`}
 				options={options}
@@ -96,16 +98,16 @@ const BggSearchGamesBox = () => {
 					<TextField
 						{...params}
 						onChange={(e) => changeInputHandler(e)}
-						label="Search game"
+						label="Search for board game"
 						error={error ? true : false}
-						helperText={error ? error : ' '}
-						placeholder="Enter game name"
+						helperText={error ? error : false}
+						placeholder="Enter game title"
 						variant="outlined"
 						InputProps={{
 							...params.InputProps,
 							endAdornment : (
 								<Fragment>
-									{loading ? <Loader color="inherit" size={20} /> : null}
+									{loading ? <Loader color="secondary" size={20} /> : null}
 									{params.InputProps.endAdornment}
 								</Fragment>
 							)
@@ -114,14 +116,20 @@ const BggSearchGamesBox = () => {
 				)}
 			/>
 
-			<ButtonGroup className={cls.btnGroup} size="small">
-				<Button onClick={resetHandler} disabled={options.length === 0} color="secondary">
+			<Box display="flex" alignItems="center" justifyContent="flex-end" mt={2}>
+				<Button variant="contained" onClick={resetHandler} disabled={options.length === 0} color="secondary">
 					Reset
 				</Button>
-				<Button onClick={submitHandler} disabled={!selectedOption} color="secondary">
-					Add to sale list
+				<Button
+					className={cls.button}
+					variant="contained"
+					onClick={submitHandler}
+					disabled={!selectedOption}
+					color="secondary"
+				>
+					Add to my list
 				</Button>
-			</ButtonGroup>
+			</Box>
 		</Fragment>
 	)
 }

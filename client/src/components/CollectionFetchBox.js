@@ -1,37 +1,23 @@
 // @ Libraries
 import React, { useState, useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
+import Box from '@material-ui/core/Box'
 
 // @ Components
 import Loader from './Loader'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { bggGetCollection } from '../actions/collectionActions'
-import { SALE_LIST_RESET } from '../constants/gameConstants'
-
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	paper  : {
-		padding : theme.spacing(1.2, 1.5, 1.2, 1.5)
-	},
-	button : {
-		display        : 'flex',
-		alignContent   : 'center',
-		justifyContent : 'flex-end'
-	}
-}))
+import { BGG_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
 
 // @ Main
 const CollectionFetchBox = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
-	const history = useHistory()
 
 	const [ bggUsername, setBggUsername ] = useState('')
 
@@ -41,11 +27,19 @@ const CollectionFetchBox = () => {
 	useEffect(
 		() => {
 			if (success) {
-				dispatch({ type: SALE_LIST_RESET })
-				history.push('/collection')
+				setBggUsername('')
 			}
 		},
-		[ dispatch, success, history ]
+		[ success ]
+	)
+
+	useEffect(
+		() => {
+			return () => {
+				dispatch({ type: BGG_COLLECTION_LIST_RESET })
+			}
+		},
+		[ dispatch ]
 	)
 
 	const submitToBGGHandler = (e) => {
@@ -56,38 +50,48 @@ const CollectionFetchBox = () => {
 	}
 
 	return (
-		<Fragment>
-			<form onSubmit={submitToBGGHandler} autoComplete="off">
-				<TextField
-					onChange={(e) => setBggUsername(e.target.value)}
-					value={bggUsername}
-					error={error ? true : false}
-					helperText={error ? error : ' '}
-					id="bggUsername"
-					name="bggUsername"
-					label="Import collection"
-					placeholder="Enter your boardgamegeek username"
-					type="text"
-					variant="outlined"
-					fullWidth
-					InputProps={{
-						endAdornment : <Fragment>{loading ? <Loader color="inherit" size={20} /> : null}</Fragment>
-					}}
-				/>
+		<form onSubmit={submitToBGGHandler} autoComplete="off">
+			{success && (
+				<Box mb={2}>
+					<CustomAlert severity="success">
+						<Box>Collection successfully imported.</Box>
+					</CustomAlert>
+				</Box>
+			)}
 
-				<div className={cls.button}>
-					<Button
-						type="submit"
-						size="small"
-						variant="outlined"
-						disabled={loading || bggUsername.trim().length < 4}
-						color="primary"
-					>
-						Import
-					</Button>
-				</div>
-			</form>
-		</Fragment>
+			<Box fontWeight="fontWeightMedium">Import your BoardGameGeek collection</Box>
+			<Box color="grey.500" mb={2} fontStyle="italic" fontSize="caption.fontSize">
+				Warning: Your sale/trade/wanted list will reset
+			</Box>
+
+			<TextField
+				onChange={(e) => setBggUsername(e.target.value)}
+				value={bggUsername}
+				error={error ? true : false}
+				helperText={error ? error : false}
+				id="bggUsername"
+				name="bggUsername"
+				label="Import collection"
+				placeholder="Enter your boardgamegeek username"
+				type="text"
+				variant="outlined"
+				fullWidth
+				InputProps={{
+					endAdornment : <Fragment>{loading ? <Loader color="secondary" size={20} /> : null}</Fragment>
+				}}
+			/>
+
+			<Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>
+				<Button
+					type="submit"
+					variant="contained"
+					disabled={loading || bggUsername.trim().length < 4}
+					color="primary"
+				>
+					Import collection
+				</Button>
+			</Box>
+		</form>
 	)
 }
 

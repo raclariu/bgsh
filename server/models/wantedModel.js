@@ -26,7 +26,7 @@ const wantedGamesSchema = mongoose.Schema(
 	},
 	{
 		timestamps : true,
-		collection : 'wantedGames'
+		collection : 'wanted'
 	}
 )
 

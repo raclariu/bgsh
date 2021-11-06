@@ -19,12 +19,14 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import Avatar from '@material-ui/core/Avatar'
 import Collapse from '@material-ui/core/Collapse'
+import Dialog from '@material-ui/core/Dialog'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
 // @ Icons
 import MenuIcon from '@material-ui/icons/Menu'
 import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
-import PersonOutlineTwoToneIcon from '@material-ui/icons/PersonOutlineTwoTone'
 import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
 import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
 import MonetizationOnTwoToneIcon from '@material-ui/icons/MonetizationOnTwoTone'
@@ -40,6 +42,7 @@ import InboxTwoToneIcon from '@material-ui/icons/InboxTwoTone'
 import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
 import SendTwoToneIcon from '@material-ui/icons/SendTwoTone'
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone'
+import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone'
 
 // @ Components
 import MessagesBadge from './MessagesBadge'
@@ -68,8 +71,8 @@ const useStyles = makeStyles((theme) => ({
 		textDecoration : 'none'
 	},
 	avatar   : {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
+		width           : theme.spacing(5),
+		height          : theme.spacing(5),
 		backgroundColor : theme.palette.primary.main
 	},
 	nested   : {
@@ -80,6 +83,9 @@ const useStyles = makeStyles((theme) => ({
 		marginTop    : '2vh',
 		marginRight  : '1vh',
 		height       : '96vh'
+	},
+	ml       : {
+		marginLeft : theme.spacing(2)
 	}
 }))
 
@@ -93,12 +99,14 @@ const Header = () => {
 	const [ openHistory, setOpenHistory ] = useState(false)
 	const [ openInbox, setOpenInbox ] = useState(false)
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
+	const [ openDialog, setOpenDialog ] = useState(false)
 
 	const userAuth = useSelector((state) => state.userAuth)
 	const { userData } = userAuth
 
 	const signOutHandler = () => {
 		dispatch(signOut())
+		setOpenDialog(false)
 		setIsOpen(false)
 	}
 
@@ -119,6 +127,14 @@ const Header = () => {
 		setIsOpen(false)
 	}
 
+	const handleOpenDialog = () => {
+		setOpenDialog(true)
+	}
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false)
+	}
+
 	return (
 		<div className={classes.root}>
 			<AppBar elevation={2} position="static" color="inherit">
@@ -126,6 +142,12 @@ const Header = () => {
 					<Typography variant="h6" className={classes.title}>
 						BoardGames
 					</Typography>
+
+					{!userData && (
+						<Box mr={1}>
+							<Theme />
+						</Box>
+					)}
 
 					{userData ? (
 						<Fragment>
@@ -149,25 +171,28 @@ const Header = () => {
 								open={isOpen}
 								onClose={() => setIsOpen(!isOpen)}
 							>
-								<Box
-									display="flex"
-									alignItems="center"
-									justifyContent="space-between"
-									m={2}
-									p={1}
-									boxShadow={2}
-									borderRadius={8}
-								>
-									<CustomAvatar size="large" user={userData.username} />
-									<IconButton onClick={() => setIsOpen(false)} component={RouterLink} to="/settings">
+								<Box display="flex" alignItems="center" justifyContent="flex-end" m={2}>
+									<Box display="flex" alignItems="center">
+										<Box fontWeight="fontWeightMedium" mr={1}>
+											{userData.username}
+										</Box>
+										<Avatar className={classes.avatar}>
+											<Box fontSize={14}>{userData.username.substring(0, 2).toUpperCase()}</Box>
+										</Avatar>
+									</Box>
+									{/* <IconButton
+										color="primary"
+										onClick={() => setIsOpen(false)}
+										component={RouterLink}
+										to="/settings"
+									>
 										<SettingsTwoToneIcon />
-									</IconButton>
+									</IconButton> */}
 								</Box>
 
 								<Box>
+									<Divider />
 									<List disablePadding className={classes.list}>
-										<Divider />
-
 										<ListItem
 											button
 											onClick={(e) => handleClick(e, 1)}
@@ -181,7 +206,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 1 ? 'primary.main' : 'text.secondary'}
 													>
@@ -198,7 +223,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
@@ -231,7 +256,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 2 ? (
@@ -263,7 +288,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 3 ? (
@@ -295,7 +320,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 13 ? (
@@ -321,14 +346,14 @@ const Header = () => {
 											to="/profile"
 										>
 											<ListItemIcon>
-												<PersonOutlineTwoToneIcon
+												<AccountCircleTwoToneIcon
 													color={selectedIndex === 4 ? 'primary' : 'inherit'}
 												/>
 											</ListItemIcon>
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 4 ? 'primary.main' : 'text.secondary'}
 													>
@@ -353,7 +378,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 5 ? 'primary.main' : 'text.secondary'}
 													>
@@ -378,7 +403,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 6 ? 'primary.main' : 'text.secondary'}
 													>
@@ -403,7 +428,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 7 ? 'primary.main' : 'text.secondary'}
 													>
@@ -420,7 +445,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
@@ -453,7 +478,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 8 ? (
@@ -485,7 +510,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 9 ? (
@@ -518,7 +543,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color={selectedIndex === 10 ? 'primary.main' : 'text.secondary'}
 													>
@@ -535,7 +560,7 @@ const Header = () => {
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
@@ -567,7 +592,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 11 ? (
@@ -599,7 +624,7 @@ const Header = () => {
 													<ListItemText
 														primary={
 															<Box
-																fontWeight={500}
+																fontWeight="fontWeightMedium"
 																fontSize="subtitle2.fontSize"
 																color={
 																	selectedIndex === 12 ? (
@@ -617,14 +642,39 @@ const Header = () => {
 											</List>
 										</Collapse>
 
-										<ListItem button component={RouterLink} to="/signout" onClick={signOutHandler}>
+										<ListItem
+											button
+											onClick={(e) => handleClick(e, 14)}
+											selected={selectedIndex === 14}
+											component={RouterLink}
+											to="/settings"
+										>
+											<ListItemIcon>
+												<SettingsTwoToneIcon
+													color={selectedIndex === 14 ? 'primary' : 'inherit'}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												primary={
+													<Box
+														fontWeight="fontWeightMedium"
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 14 ? 'primary.main' : 'text.secondary'}
+													>
+														Settings
+													</Box>
+												}
+											/>
+										</ListItem>
+
+										<ListItem button onClick={handleOpenDialog}>
 											<ListItemIcon>
 												<MeetingRoomTwoToneIcon />
 											</ListItemIcon>
 											<ListItemText
 												primary={
 													<Box
-														fontWeight={500}
+														fontWeight="fontWeightMedium"
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
@@ -636,6 +686,25 @@ const Header = () => {
 									</List>
 								</Box>
 							</Drawer>
+
+							<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
+								<DialogTitle disableTypography>
+									<Typography variant="subtitle2" align="center">
+										Are you sure you want to logout?
+									</Typography>
+								</DialogTitle>
+
+								<DialogContent>
+									<Box display="flex" justifyContent="center" alignItems="center">
+										<Button onClick={signOutHandler} variant="contained" color="primary">
+											Yes
+										</Button>
+										<Button className={classes.ml} onClick={handleCloseDialog} color="primary">
+											No
+										</Button>
+									</Box>
+								</DialogContent>
+							</Dialog>
 						</Fragment>
 					) : (
 						<Fragment>

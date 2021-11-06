@@ -7,6 +7,7 @@ const wishlistSchema = mongoose.Schema(
 			required : true,
 			ref      : 'User'
 		},
+
 		wishlist      : [
 			{
 				bggId     : {

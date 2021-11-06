@@ -7,26 +7,38 @@ import { makeStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
 import Box from '@material-ui/core/Box'
 import Popover from '@material-ui/core/Popover'
+import IconButton from '@material-ui/core/IconButton'
+
+// @ Components
+import SendMessage from './SendMessage'
+
+// @ Icons
+import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	small  : {
+	small         : {
 		width           : theme.spacing(3),
 		height          : theme.spacing(3),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
 	},
-	medium : {
+	medium        : {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
 	},
-	large  : {
+	large         : {
 		width           : theme.spacing(5),
 		height          : theme.spacing(5),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
+	},
+	popoverAvatar : {
+		width           : theme.spacing(4),
+		height          : theme.spacing(4),
+		backgroundColor : theme.palette.primary.main
 	}
 }))
 
@@ -53,7 +65,6 @@ const CustomAvatar = ({ size, user }) => {
 				<Avatar
 					onClick={handleClick}
 					className={size === 'small' ? cls.small : size === 'medium' ? cls.medium : cls.large}
-					color="primary"
 				>
 					<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
 						{user.substring(0, 2).toUpperCase()}
@@ -75,7 +86,22 @@ const CustomAvatar = ({ size, user }) => {
 				}}
 			>
 				<Box p={1} display="flex" flexDirection="column">
-					Posted by {user}
+					<Box display="flex" alignItems="center" justifyContent="space-between">
+						<Box ml={1}>
+							<Avatar className={cls.popoverAvatar} color="primary">
+								<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
+							</Avatar>
+						</Box>
+						<Box ml={1} fontWeight="fontWeightMedium">
+							{user}
+						</Box>
+						<Box ml={2}>
+							<IconButton color="primary">
+								<AccountCircleTwoToneIcon />
+							</IconButton>
+						</Box>
+						<SendMessage recipientUsername={user} />
+					</Box>
 				</Box>
 			</Popover>
 		</Fragment>

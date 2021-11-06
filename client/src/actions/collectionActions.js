@@ -3,7 +3,6 @@ import {
 	BGG_COLLECTION_LIST_REQUEST,
 	BGG_COLLECTION_LIST_SUCCESS,
 	BGG_COLLECTION_LIST_FAIL,
-	BGG_COLLECTION_LIST_RESET,
 	DB_COLLECTION_LIST_REQUEST,
 	DB_COLLECTION_LIST_SUCCESS,
 	DB_COLLECTION_LIST_FAIL,
@@ -11,6 +10,7 @@ import {
 	WISHLIST_LIST_SUCCESS,
 	WISHLIST_LIST_FAIL
 } from '../constants/collectionConstants'
+import { SALE_LIST_RESET } from '../constants/gameConstants'
 
 export const bggGetCollection = (bggUsername) => async (dispatch, getState) => {
 	try {
@@ -32,7 +32,7 @@ export const bggGetCollection = (bggUsername) => async (dispatch, getState) => {
 		})
 
 		dispatch({
-			type : BGG_COLLECTION_LIST_RESET
+			type : SALE_LIST_RESET
 		})
 	} catch (error) {
 		dispatch({

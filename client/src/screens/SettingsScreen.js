@@ -1,6 +1,5 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -8,14 +7,13 @@ import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
-
-// @ Icons
-import VpnKeyIcon from '@material-ui/icons/VpnKey'
+import Divider from '@material-ui/core/Divider'
 
 // @ Components
-import CustomAlert from '../components/CustomAlert'
 import ChangePasswordForm from '../components/ChangePasswordForm'
+import CollectionFetchBox from '../components/CollectionFetchBox'
+import BggSearchGamesBox from '../components/BggSearchGamesBox'
+import UserSocialsForm from '../components/UserSocialsForm'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -23,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	tabTitle      : {
-		textTransform : 'none'
+	input         : {
+		minHeight : '90px'
 	}
 }))
 
@@ -32,10 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const SettingsScreen = () => {
 	const cls = useStyles()
 
-	const [ tab, setTab ] = useState('change-password')
-
-	const changePass = useSelector((state) => state.changePassword)
-	const { success } = changePass
+	const [ tab, setTab ] = useState('profile')
 
 	const handleTabChange = (event, newTab) => {
 		setTab(newTab)
@@ -43,35 +38,46 @@ const SettingsScreen = () => {
 
 	return (
 		<Fragment>
-			{success && <CustomAlert severity="success">Password changed successfully.</CustomAlert>}
-
-			<Grid
-				container
-				className={cls.gridContainer}
-				direction="column"
-				justifyContent="center"
+			<Box
+				display="flex"
 				alignItems="center"
+				justifyContent="center"
+				bgcolor="background.paper"
+				boxShadow={2}
+				borderRadius={4}
+				mt={4}
 			>
-				<Grid item>
-					<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
-						<Tab
-							value="change-password"
-							label={
-								<Box display="flex" alignItems="center">
-									<VpnKeyIcon />
-									<Box className={cls.tabTitle} ml={1}>
-										Change password
-									</Box>
-								</Box>
-							}
-						/>
-						<Tab value="test" label="Test" />
-					</Tabs>
+				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
+					<Tab value="profile" label="Profile" />
+					<Tab value="change-password" label="Change password" />
+				</Tabs>
+			</Box>
+
+			{tab === 'change-password' && (
+				<Grid className={cls.gridContainer} container justifyContent="center" alignItems="center">
+					<Grid item xs={12} sm={8} md={7}>
+						<ChangePasswordForm />
+					</Grid>
 				</Grid>
-				<Grid item md={5} sm={7} xs={11}>
-					{tab === 'change-password' && <ChangePasswordForm />}
+			)}
+
+			{tab === 'profile' && (
+				<Grid className={cls.gridContainer} spacing={10} container justifyContent="center" alignItems="center">
+					<Grid item xs={12} sm={8} md={7}>
+						<CollectionFetchBox />
+					</Grid>
+
+					<Grid item xs={12} sm={8} md={7}>
+						<BggSearchGamesBox />
+					</Grid>
+
+					<Divider style={{ width: '100%' }} />
+
+					<Grid item xs={12} sm={8} md={7}>
+						<UserSocialsForm />
+					</Grid>
 				</Grid>
-			</Grid>
+			)}
 		</Fragment>
 	)
 }

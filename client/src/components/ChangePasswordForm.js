@@ -8,6 +8,7 @@ import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import Box from '@material-ui/core/Box'
 
 // @ Icons
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
@@ -15,6 +16,7 @@ import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { changePassword } from '../actions/userActions'
@@ -22,10 +24,6 @@ import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	form  : {
-		width  : '100%',
-		margin : theme.spacing(4, 0, 0, 0)
-	},
 	input : {
 		minHeight : '90px'
 	}
@@ -53,12 +51,17 @@ const ChangePasswordForm = () => {
 				setPasswordNew('')
 				setPasswordNewConfirmation('')
 			}
+		},
+		[ success, dispatch ]
+	)
 
+	useEffect(
+		() => {
 			return () => {
 				dispatch({ type: USER_CHANGE_PASSWORD_RESET })
 			}
 		},
-		[ success, dispatch ]
+		[ dispatch ]
 	)
 
 	const handlePassVisibility = (type) => {
@@ -82,7 +85,13 @@ const ChangePasswordForm = () => {
 
 	return (
 		<Fragment>
-			<form onSubmit={submitHandler} className={cls.form} autoComplete="off">
+			{success && (
+				<Box mb={2}>
+					<CustomAlert severity="success">Password successfully changed</CustomAlert>
+				</Box>
+			)}
+
+			<form onSubmit={submitHandler} autoComplete="off">
 				<TextField
 					className={cls.input}
 					error={error && error.passwordCurrentError ? true : false}
@@ -110,7 +119,7 @@ const ChangePasswordForm = () => {
 				<TextField
 					className={cls.input}
 					error={error && error.passwordNewError ? true : false}
-					helperText={error ? error.passwordNewError : false}
+					helperText={error ? error.passwordNewError : ' '}
 					onChange={(e) => setPasswordNew(e.target.value)}
 					value={passwordNew}
 					variant="outlined"
@@ -159,9 +168,11 @@ const ChangePasswordForm = () => {
 					required
 				/>
 
-				<Button variant="contained" type="submit" color="primary" size="large" disabled={loading}>
-					{loading ? <Loader size={26} color="inherit" /> : 'Change password'}
-				</Button>
+				<Box display="flex" justifyContent="flex-end">
+					<Button variant="contained" type="submit" color="primary" size="large" disabled={loading}>
+						{loading ? <Loader size={26} color="inherit" /> : 'Change password'}
+					</Button>
+				</Box>
 			</form>
 		</Fragment>
 	)
