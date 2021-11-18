@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
-import { userAuth, userRegister, changePassword } from '../controllers/userController.js'
+import { userAuth, userRegister, changePassword, getUserProfileData } from '../controllers/userController.js'
 import {
 	validateEmail,
 	validateEmailDuplicate,
@@ -11,7 +11,8 @@ import {
 	validateUsername,
 	validatePasswordCurrent,
 	validatePasswordNew,
-	validatePasswordNewConfirmation
+	validatePasswordNewConfirmation,
+	validateUsernameExist
 } from '../validators/userValidators.js'
 
 // @route /api/users
@@ -25,5 +26,6 @@ router
 router
 	.route('/password')
 	.post([ protect, validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ], changePassword)
+router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
 
 export default router

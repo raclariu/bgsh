@@ -18,10 +18,11 @@ import CustomTooltip from './CustomTooltip'
 // @ Styles
 const useStyles = makeStyles((theme) => ({
 	media : {
-		margin    : theme.spacing(1, 0, 1, 0),
-		padding   : theme.spacing(0, 1, 0, 1),
-		objectFit : 'contain',
-		height    : '180px'
+		//margin    : theme.spacing(1, 0, 1, 0),
+		//padding   : theme.spacing(0, 1, 0, 1),
+		objectFit      : 'fill',
+		height         : '180px',
+		objectPosition : 'center 10%'
 	},
 	title : {
 		display         : '-webkit-box',
@@ -34,19 +35,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const HotGameCard = ({ bggId }) => {
+const KsCard = ({ ksId }) => {
 	const cls = useStyles()
 
-	const game = useSelector((state) => state.bggHotGames.hotList.find((obj) => obj.bggId === bggId))
+	const ks = useSelector((state) => state.kickstartersList.ksList.find((obj) => obj.ksId === ksId))
 
 	return (
 		<Card elevation={2}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				alt={game.title}
-				image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
-				title={game.title}
+				alt={ks.title}
+				image={ks.image ? ks.image : '/images/collCardPlaceholder.jpg'}
+				title={ks.title}
 			/>
 
 			<Divider />
@@ -59,9 +60,7 @@ const HotGameCard = ({ bggId }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={cls.title}>
-						{game.title} {game.year ? `(${game.year})` : ''}
-					</Box>
+					<Box className={cls.title}>{ks.title}</Box>
 				</Box>
 			</CardContent>
 
@@ -72,7 +71,7 @@ const HotGameCard = ({ bggId }) => {
 					<CustomTooltip title="See on BGG">
 						<Button
 							color="primary"
-							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+							href={`https://boardgamegeek.com/boardgame/${ks.ksId}`}
 							target="_blank"
 							rel="noopener"
 						>
@@ -85,4 +84,4 @@ const HotGameCard = ({ bggId }) => {
 	)
 }
 
-export default HotGameCard
+export default KsCard

@@ -184,7 +184,7 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle disableTypography>
 							<Typography variant="subtitle2" align="center">
-								Are you sure you want to delete this board game?
+								Are you sure you want to delete this game?
 							</Typography>
 						</DialogTitle>
 

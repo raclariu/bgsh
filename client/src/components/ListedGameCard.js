@@ -162,7 +162,7 @@ const ListedGameCard = ({ data }) => {
 			<Divider />
 
 			<CardActions>
-				<Box display="flex" justifyContent="center" alignItems="center" width="100%">
+				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">
 					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
 					<ActiveAddHistoryButton
 						games={data.games}

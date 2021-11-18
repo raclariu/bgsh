@@ -16,7 +16,7 @@ import {
 	validateMessageBody
 } from '../validators/messageValidator.js'
 
-// @ api/messages
+// @route /api/messages
 router.route('/').post([ protect, validateMessageRecipient, validateMessageSubject, validateMessageBody ], sendMessage)
 router.route('/delete').patch(protect, deleteMessages)
 router.route('/received').get(protect, getReceivedMessages)

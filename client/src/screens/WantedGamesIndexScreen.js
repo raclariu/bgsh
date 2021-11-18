@@ -79,7 +79,7 @@ const WantedGamesIndexScreen = () => {
 		<Fragment>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 

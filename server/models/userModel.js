@@ -1,34 +1,28 @@
 import mongoose from 'mongoose'
 
 const userSchema = mongoose.Schema({
-	email       : {
+	email      : {
 		type      : String,
 		lowercase : true,
 		trim      : true,
 		required  : true
 	},
-	username    : {
+	username   : {
 		type      : String,
 		lowercase : true,
 		trim      : true,
 		required  : true
 	},
-	bggUsername : {
-		type      : String,
-		lowercase : true,
-		trim      : true,
-		default   : ''
-	},
-	password    : {
+	password   : {
 		type     : String,
 		required : true
 	},
-	isAdmin     : {
+	isAdmin    : {
 		type     : Boolean,
 		required : true,
 		default  : false
 	},
-	savedGames  : [
+	savedGames : [
 		{
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,

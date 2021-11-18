@@ -21,27 +21,22 @@ import CustomTooltip from '../components/CustomTooltip'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	card   : {
+	card  : {
 		position : 'relative'
 	},
-	media  : {
+	media : {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	title  : {
+	title : {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
 		overflow        : 'hidden',
 		width           : '100%',
 		textAlign       : 'center'
-	},
-	avatar : {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main
 	}
 }))
 
@@ -84,11 +79,15 @@ const WantedGameCard = ({ gameId }) => {
 
 			<CardContent>
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-					<Box fontWeight="fontWeightMedium">
-						Preferred version: {`${data.prefVersion.title} (${data.prefVersion.year})`}
-					</Box>
+					<Chip
+						size="small"
+						label={`${data.prefVersion.title} (${data.prefVersion.year})`}
+						variant="outlined"
+					/>
 
-					<Box fontWeight="fontWeightMedium">Preferred shipping methods: {data.prefShipping.join(', ')}</Box>
+					<Box mt={0.5}>
+						<Chip size="small" label={data.prefShipping.join(', ')} variant="outlined" />
+					</Box>
 				</Box>
 			</CardContent>
 

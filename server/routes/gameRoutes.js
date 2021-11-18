@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import {
-	getGamesFromBGG,
+	getGamesDetailsFromBGG,
 	bggSearchGame,
 	bggGetHotGames,
 	bggGetGallery,
@@ -33,7 +33,7 @@ import {
 } from '../validators/sellGameValidator.js'
 import { validatePrefShipping } from '../validators/wantedValidator.js'
 
-// @ api/games
+// @route /api/games
 router.route('/').get(protect, getGames)
 router.route('/delete/:id').delete(protect, deleteGame)
 router.route('/user/:id').get(protect, getUserActiveGames)
@@ -42,7 +42,7 @@ router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/wanted').get(protect, getWantedGames).post([ protect, validatePrefShipping ], addWantedGames)
 router.route('/reactivate/:id').patch(protect, reactivateGame)
 router.route('/:altId').get(protect, getSingleGame)
-router.route('/bgg').post(protect, getGamesFromBGG)
+router.route('/bgg').post(protect, getGamesDetailsFromBGG)
 router.route('/bgg/search').post(protect, bggSearchGame)
 router.route('/bgg/hot').get(bggGetHotGames)
 router.route('/bgg/gallery').get(protect, bggGetGallery)

@@ -28,7 +28,7 @@ const ShippingSection = ({
 		<FormControl required error={shipError} fullWidth>
 			{/* Post shipping */}
 			{mode === 'sell' && <FormLabel>Shipping method</FormLabel>}
-			{mode === 'trade' && <FormLabel>My preffered shipping method</FormLabel>}
+			{mode === 'trade' && <FormLabel>Preffered trading method</FormLabel>}
 			<FormGroup>
 				<FormControlLabel
 					control={

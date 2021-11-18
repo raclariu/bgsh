@@ -8,21 +8,20 @@ import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
+import IconButton from '@material-ui/core/IconButton'
 
 // @ Icons
 import LockOpenIcon from '@material-ui/icons/LockOpen'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 
 // @ Components
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
+import Theme from '../components/Theme'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	gridContainer : {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-	tabTitle      : {
+	tabTitle : {
 		textTransform : 'none'
 	}
 }))
@@ -41,16 +40,17 @@ const AuthScreen = () => {
 	}
 
 	return (
-		<Grid container className={cls.gridContainer} direction="column" justifyContent="center" alignItems="center">
-			<Grid item md={4} sm={7} xs={11}>
-				<Tabs
-					className={cls.container}
-					value={selectedTab}
-					centered
-					indicatorColor="primary"
-					textColor="primary"
-					onChange={handleChange}
-				>
+		<Grid style={{ height: '100vh' }} container direction="column" justifyContent="center" alignItems="center">
+			<Box display="flex" alignItems="center" justifyContent="center">
+				<IconButton color="primary" onClick={() => history.push('/')}>
+					<ArrowBackIcon />
+				</IconButton>
+
+				<Theme />
+			</Box>
+
+			<Grid item md={4} sm={7} xs={12}>
+				<Tabs value={selectedTab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
 					<Tab
 						value="signin"
 						onClick={() => history.replace('/signin')}

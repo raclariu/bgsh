@@ -10,7 +10,7 @@ import { parseXML } from '../helpers/helpers.js'
 // * @desc    Get games from BGG by ID
 // * @route   POST  /api/games/bgg
 // * @access  Private route
-const getGamesFromBGG = asyncHandler(async (req, res) => {
+const getGamesDetailsFromBGG = asyncHandler(async (req, res) => {
 	try {
 		const { bggIds } = req.body
 
@@ -553,7 +553,7 @@ const getWantedGames = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all games up for sale for one single user
+// ~ @desc    Get all games listed for sale or trade for one single user
 // ~ @route   GET /api/games/user/:id
 // ~ @access  Private route
 const getUserActiveGames = asyncHandler(async (req, res) => {
@@ -670,7 +670,7 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	if (saleData.isActive === false) {
 		res.status(404)
 		throw {
-			message : 'Game is inactive'
+			message : 'Game is not up for sale anymore'
 		}
 	}
 
@@ -836,7 +836,7 @@ const deleteGame = asyncHandler(async (req, res) => {
 })
 
 export {
-	getGamesFromBGG,
+	getGamesDetailsFromBGG,
 	bggSearchGame,
 	bggGetHotGames,
 	bggGetGallery,

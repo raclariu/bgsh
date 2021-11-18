@@ -3,7 +3,12 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { checkTokenExpirationMiddleware } from './middlewares/middlewares'
 
-import { userAuthReducer, userChangePasswordReducer, setThemeReducer } from './reducers/userReducers'
+import {
+	userAuthReducer,
+	userChangePasswordReducer,
+	setThemeReducer,
+	getUserProfileDataReducer
+} from './reducers/userReducers'
 import { bggGetCollectionReducer, dbGetCollectionReducer, getWishlistReducer } from './reducers/collectionReducers'
 import {
 	bggGetGamesDetailsReducer,
@@ -36,10 +41,12 @@ import {
 	getNewMessagesCountReducer,
 	deleteMessagesReducer
 } from './reducers/messageReducers'
+import { getKickstartersReducer } from './reducers/miscReducers'
 
 const reducer = combineReducers({
 	userAuth         : userAuthReducer,
 	userPreferences  : setThemeReducer,
+	userProfileData  : getUserProfileDataReducer,
 	sendMessage      : sendMessageReducer,
 	updateMessage    : updateMessageReducer,
 	messagesReceived : getReceivedMessagesReducer,
@@ -68,7 +75,8 @@ const reducer = combineReducers({
 	soldHistory      : getSoldGamesHistoryReducer,
 	tradedHistory    : getTradedGamesHistoryReducer,
 	deleteGame       : deleteGameReducer,
-	reactivateGame   : reactivateGameReducer
+	reactivateGame   : reactivateGameReducer,
+	kickstartersList : getKickstartersReducer
 })
 
 const userDataFromStorage = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData')) : null

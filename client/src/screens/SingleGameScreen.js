@@ -7,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
 import LazyLoad from 'react-lazyload'
 import Zoom from 'react-medium-image-zoom'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
 
 // @ Mui
@@ -41,7 +42,6 @@ import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import CachedIcon from '@material-ui/icons/Cached'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -52,6 +52,7 @@ import Loader from '../components/Loader'
 import SendMessage from '../components/SendMessage'
 import HelmetComponent from '../components/HelmetComponent'
 import CustomAlert from '../components/CustomAlert'
+import CustomTooltip from '../components/CustomTooltip'
 
 // @ Others
 import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
@@ -114,9 +115,8 @@ const useStyles = makeStyles((theme) => ({
 		cursor    : 'zoom-in'
 	},
 	dialogImg          : {
-		maxHeight : '100%',
-		width     : '100%',
-		objectFit : 'contain'
+		maxWidth  : '100%',
+		maxHeight : '70vh'
 	},
 	fab                : {
 		position  : 'fixed',
@@ -134,8 +134,6 @@ const SingleGameScreen = () => {
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
-	const [ index, setIndex ] = useState(0)
-
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
 			return image ? image : '/images/gameImgPlaceholder.jpg'
@@ -144,9 +142,10 @@ const SingleGameScreen = () => {
 		}
 	}
 
-	const [ open, setOpen ] = useState(false)
+	const [ index, setIndex ] = useState(0)
 	const [ imgIndex, setImgIndex ] = useState(0)
-	const [ load, setLoad ] = useState(false)
+	const [ open, setOpen ] = useState(false)
+	const [ imgLoaded, setImgLoaded ] = useState(false)
 
 	const gameForSale = useSelector((state) => state.gameForSale)
 	const { loading, success, error, saleData: data } = gameForSale
@@ -185,11 +184,11 @@ const SingleGameScreen = () => {
 
 	const handleCloseImage = () => {
 		setOpen(false)
-		setLoad(false)
+		setImgLoaded(false)
 	}
 
 	const onImgLoad = () => {
-		setLoad(true)
+		setImgLoaded(true)
 	}
 
 	const cycleGames = (type) => {
@@ -201,6 +200,21 @@ const SingleGameScreen = () => {
 		if (type === 'forward') {
 			if (data.games.length > index + 1) {
 				setIndex(index + 1)
+			}
+		}
+	}
+
+	const cycleImages = (type) => {
+		if (type === 'back') {
+			if (imgIndex > 0) {
+				setImgLoaded(false)
+				setImgIndex(imgIndex - 1)
+			}
+		}
+		if (type === 'forward') {
+			if (gallery[index].length > imgIndex + 1) {
+				setImgLoaded(false)
+				setImgIndex(imgIndex + 1)
 			}
 		}
 	}
@@ -540,72 +554,91 @@ const SingleGameScreen = () => {
 					{successGallery && (
 						<Fragment>
 							{gallery[index].length > 0 && (
-								<Fragment>
-									<Grid className={cls.mainGrid} container alignItems="center" spacing={2}>
+								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
+									<Masonry gutter="10px">
 										{gallery[index].map((obj, i) => (
-											<Grid item key={obj.imageid} xs={12} sm={6} md={4} lg={3}>
-												<LazyLoad offset={200} once>
-													<Box
-														display="flex"
-														justifyContent="center"
-														height="220px"
-														bgcolor="background.paper"
-														borderRadius={4}
-														boxShadow={1}
-														p={1.5}
-													>
-														<img
-															onClick={() => handleOpenImage(i)}
-															className={cls.galleryImg}
-															src={obj.thumbnail}
-															alt={obj.caption}
-														/>
-													</Box>
-												</LazyLoad>
-											</Grid>
-										))}
-									</Grid>
-
-									<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
-										<DialogTitle disableTypography>
-											<Box display="flex" flexDirection="column">
-												<Box fontSize="1rem">{gallery[index][imgIndex].caption}</Box>
-												<Box mt={0.5} fontSize="0.70rem" color="grey.500">
-													{`Posted on BGG by ${gallery[index][imgIndex].postedBy}`}
-												</Box>
-											</Box>
-										</DialogTitle>
-
-										<DialogContent dividers>
-											<img
-												alt={gallery[index][imgIndex].caption}
-												src={gallery[index][imgIndex].image}
-												hidden={!load}
-												onLoad={onImgLoad}
-												style={{ maxWidth: '100%', maxHeight: 'calc(100vh - 64px)' }}
-											/>
-
-											{!load && (
-												<Box p={10} display="flex" justifyContent="center" alignItems="center">
-													<Loader />
-												</Box>
-											)}
-										</DialogContent>
-
-										<DialogActions>
-											<Button
-												color="primary"
-												variant="outlined"
-												href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
-												target="_blank"
-												rel="noopener"
+											<Box
+												key={obj.imageid}
+												borderRadius={4}
+												boxShadow={2}
+												p={1.5}
+												bgcolor="background.paper"
 											>
-												See on BGG
-											</Button>
-										</DialogActions>
-									</Dialog>
-								</Fragment>
+												<LazyLoad offset={200} once>
+													<img
+														onClick={() => handleOpenImage(i)}
+														className={cls.galleryImg}
+														src={obj.thumbnail}
+														alt={obj.caption}
+													/>
+												</LazyLoad>
+											</Box>
+										))}
+									</Masonry>
+								</ResponsiveMasonry>
 							)}
+
+							<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
+								<DialogTitle disableTypography>
+									<Box display="flex" flexDirection="column">
+										<Box fontSize="1rem">{gallery[index][imgIndex].caption}</Box>
+										<Box mt={0.5} fontSize="0.70rem" color="grey.500">
+											{`Posted on BGG by ${gallery[index][imgIndex].postedBy}`}
+										</Box>
+									</Box>
+								</DialogTitle>
+
+								<DialogContent dividers>
+									<Box display="flex" justifyContent="center" alignItems="center">
+										<img
+											className={cls.dialogImg}
+											alt={gallery[index][imgIndex].caption}
+											src={gallery[index][imgIndex].image}
+											hidden={!imgLoaded}
+											onLoad={onImgLoad}
+										/>
+									</Box>
+
+									{!imgLoaded && (
+										<Box p={10} display="flex" justifyContent="center" alignItems="center">
+											<Loader />
+										</Box>
+									)}
+								</DialogContent>
+
+								<DialogActions>
+									<Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+										<Box flexGrow={1}>
+											<CustomTooltip title="Previous image">
+												<IconButton
+													disabled={imgIndex === 0}
+													onClick={() => cycleImages('back')}
+												>
+													<ArrowBackIcon />
+												</IconButton>
+											</CustomTooltip>
+											<CustomTooltip title="Next image">
+												<IconButton
+													disabled={gallery[index].length === imgIndex + 1}
+													onClick={() => cycleImages('forward')}
+												>
+													<ArrowForwardIcon />
+												</IconButton>
+											</CustomTooltip>
+										</Box>
+
+										<Button
+											color="primary"
+											variant="outlined"
+											href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
+											target="_blank"
+											rel="noopener"
+										>
+											See on BGG
+										</Button>
+									</Box>
+								</DialogActions>
+							</Dialog>
 
 							{gallery[index].length === 0 && (
 								<CustomAlert severity="warning">{`${data.games[index].title}`}</CustomAlert>

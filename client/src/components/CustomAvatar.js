@@ -1,6 +1,7 @@
 // @ Libraries
 import React, { useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const CustomAvatar = ({ size, user }) => {
 	const cls = useStyles()
+	const history = useHistory()
 
 	const userAuth = useSelector((state) => state.userAuth)
 	const { userData } = userAuth
@@ -57,6 +59,10 @@ const CustomAvatar = ({ size, user }) => {
 
 	const handleClose = () => {
 		setAnchorEl(null)
+	}
+
+	const handleProfileClick = () => {
+		history.push(`/user/${user}`)
 	}
 
 	return (
@@ -96,7 +102,7 @@ const CustomAvatar = ({ size, user }) => {
 							{user}
 						</Box>
 						<Box ml={2}>
-							<IconButton color="primary">
+							<IconButton color="primary" onClick={handleProfileClick}>
 								<AccountCircleTwoToneIcon />
 							</IconButton>
 						</Box>

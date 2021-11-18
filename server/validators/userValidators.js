@@ -1,6 +1,6 @@
 import { check } from 'express-validator'
 import User from '../models/userModel.js'
-import { comparePasswords, hashPassword, generateToken } from '../helpers/helpers.js'
+import { comparePasswords } from '../helpers/helpers.js'
 
 const validateEmail = check('email')
 	.trim()
@@ -100,6 +100,29 @@ const validateUsername = check('username')
 		}
 	})
 
+const validateUsernameExist = check('username')
+	.trim()
+	.notEmpty()
+	.withMessage('Username is required')
+	.bail()
+	.isLength({ min: 4, max: 20 })
+	.withMessage('Username must have between 4 and 20 characters')
+	.bail()
+	.isAlphanumeric()
+	.withMessage('Username can only contain letters and numbers')
+	.bail()
+	.custom(async (username, { req }) => {
+		const usernameExists = await User.findOne({ username }).select('_id').lean()
+
+		if (!usernameExists) {
+			throw new Error(`User '${username}' not found`)
+		} else {
+			req.userId = usernameExists
+
+			return true
+		}
+	})
+
 const validatePasswordCurrent = check('passwordCurrent')
 	.trim()
 	.notEmpty()
@@ -156,5 +179,6 @@ export {
 	validatePasswordConfirmation,
 	validatePasswordCurrent,
 	validatePasswordNew,
-	validatePasswordNewConfirmation
+	validatePasswordNewConfirmation,
+	validateUsernameExist
 }

@@ -13,7 +13,6 @@ import Divider from '@material-ui/core/Divider'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
-import UserSocialsForm from '../components/UserSocialsForm'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -72,10 +71,6 @@ const SettingsScreen = () => {
 					</Grid>
 
 					<Divider style={{ width: '100%' }} />
-
-					<Grid item xs={12} sm={8} md={7}>
-						<UserSocialsForm />
-					</Grid>
 				</Grid>
 			)}
 		</Fragment>

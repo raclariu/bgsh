@@ -84,7 +84,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
-					<CustomTooltip title="Check on BGG">
+					<CustomTooltip title="See on BGG">
 						<Button
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}

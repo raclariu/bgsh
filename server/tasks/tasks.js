@@ -2,6 +2,7 @@ import cron from 'node-cron'
 import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
 import Sale from '../models/gameModel.js'
+import Kickstarter from '../models/ksModel.js'
 
 const options = {
 	scheduled : false,
@@ -23,32 +24,51 @@ const setInactiveTask = cron.schedule(
 const getKickstarters = cron.schedule(
 	'*/10 * * * * *',
 	async () => {
-		console.log('asd')
-		const browser = await puppeteer.launch({ headless: false })
+		const browser = await puppeteer.launch({ headless: false }) //
 		const page = await browser.newPage()
 		await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
+
 		await page.waitForSelector('#projects_list')
+
 		const data = await page.evaluate(() => {
+			let kickstartersRaw = []
+
 			let documents = [ ...document.querySelectorAll('[data-pid]') ]
-			let games = []
-			for (let game of documents) {
-				const doc = {
-					image       : game.children[0].children[0].children[0].children[0].childNodes[0].children[0].src,
-					title       :
-						game.children[0].children[0].children[0].children[2].children[0].children[0].children[0]
-							.children[0].innerText,
-					description :
-						game.children[0].children[0].children[0].children[2].children[0].children[0].children[0]
-							.children[1].innerText
-				}
-				games.push(doc)
+			console.log(documents)
+
+			for (let ks of documents) {
+				kickstartersRaw.push(JSON.parse(ks.dataset.project))
 			}
 
-			return games
+			const kickstarters = kickstartersRaw.map((ks) => {
+				return {
+					ksId             : ks.id,
+					title            : ks.name,
+					shortDescription : ks.blurb,
+					backers          : ks.backers_count,
+					currencySymbol   : ks.currency_symbol,
+					pledged          : ks.pledged,
+					goal             : ks.goal,
+					percentFunded    : ks.percent_funded,
+					urls             : {
+						project : ks.urls.web.project,
+						rewards : ks.urls.web.rewards
+					},
+					creator          : ks.creator.name,
+					country          : ks.country,
+					launched         : ks.launched_at,
+					deadline         : ks.deadline,
+					image            : ks.photo.ed
+				}
+			})
+
+			return kickstarters
 		})
 
-		console.log(data)
 		await browser.close()
+
+		await Kickstarter.deleteMany({})
+		await Kickstarter.insertMany(data)
 	},
 	options
 )

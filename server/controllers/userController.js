@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
+import Game from '../models/gameModel.js'
+import Wanted from '../models/wantedModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 
 // * @desc    Sign in user & get token
@@ -62,7 +64,7 @@ const userRegister = asyncHandler(async (req, res) => {
 				_id      : user._id,
 				email    : user.email,
 				username : user.username,
-				messages : { received: [], send: [] },
+				isAdmin  : user.isAdmin,
 				token    : generateToken(user._id)
 			})
 		}
@@ -88,11 +90,48 @@ const changePassword = asyncHandler(async (req, res) => {
 			}
 		}
 	} else {
-		const pw = await hashPassword(passwordNew)
-		await User.updateOne({ _id: req.user._id }, { password: pw })
+		const hashed = await hashPassword(passwordNew)
+		await User.updateOne({ _id: req.user._id }, { password: hashed })
 
 		res.status(200).end()
 	}
 })
 
-export { userAuth, userRegister, changePassword }
+// ~ @desc    Get single user profile data
+// ~ @route   GET  /api/users/:username
+// ~ @access  Private route
+const getUserProfileData = asyncHandler(async (req, res) => {
+	const { username } = req.params
+	const { _id: userId } = req.userId
+
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+		res.status(404)
+		throw {
+			message : err.username.msg
+		}
+	}
+
+	const saleGamesData = await Game.find({ seller: userId, isActive: true, mode: 'sell' })
+		.select('_id mode games type altId totalPrice')
+		.limit(6)
+		.sort({ updatedAt: -1 })
+		.lean()
+
+	const tradeGamesData = await Game.find({ seller: userId, isActive: true, mode: 'trade' })
+		.select('_id mode games type altId')
+		.limit(6)
+		.sort({ updatedAt: -1 })
+		.lean()
+
+	const wantedGamesData = await Wanted.find({ wantedBy: userId, isActive: true })
+		.limit(6)
+		.sort({ updatedAt: -1 })
+		.lean()
+
+	console.log(username)
+	res.status(200).json({ saleGamesData, tradeGamesData, wantedGamesData })
+})
+
+export { userAuth, userRegister, changePassword, getUserProfileData }
