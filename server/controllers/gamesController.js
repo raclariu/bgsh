@@ -272,7 +272,7 @@ const sellGames = asyncHandler(async (req, res) => {
 
 	const {
 		games,
-		type,
+		isPack,
 		shipPost,
 		shipPostPayer,
 		shipCourier,
@@ -283,12 +283,12 @@ const sellGames = asyncHandler(async (req, res) => {
 		totalPrice
 	} = req.body
 
-	if (type === 'pack') {
+	if (isPack) {
 		await Game.create({
 			mode             : 'sell',
 			seller           : req.user._id,
 			games,
-			type,
+			isPack,
 			shipPost,
 			shipPostPayer,
 			shipCourier,
@@ -305,7 +305,7 @@ const sellGames = asyncHandler(async (req, res) => {
 				mode             : 'sell',
 				seller           : req.user._id,
 				games            : [ game ],
-				type,
+				isPack,
 				shipPost,
 				shipPostPayer,
 				shipCourier,
@@ -336,14 +336,14 @@ const tradeGames = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const { games, type, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
+	const { games, isPack, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
 
-	if (type === 'pack') {
+	if (isPack) {
 		await Game.create({
 			mode          : 'trade',
 			seller        : req.user._id,
 			games,
-			type,
+			isPack,
 			shipPost,
 			shipCourier,
 			shipPersonal,
@@ -357,7 +357,7 @@ const tradeGames = asyncHandler(async (req, res) => {
 				mode          : 'trade',
 				seller        : req.user._id,
 				games         : [ game ],
-				type,
+				isPack,
 				shipPost,
 				shipCourier,
 				shipPersonal,
@@ -406,7 +406,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	if (search) {
-		const gamesData = await Game.find({ isActive: true, mode: mode }).populate('seller', 'username _id').lean()
+		const gamesData = await Game.find({ isActive: true, mode }).populate('seller', 'username _id').lean()
 
 		const fuse = new Fuse(gamesData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
@@ -553,10 +553,10 @@ const getWantedGames = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all games listed for sale or trade for one single user
+// ~ @desc    Get all active games listed for sale or trade for one single user
 // ~ @route   GET /api/games/user/:id
 // ~ @access  Private route
-const getUserActiveGames = asyncHandler(async (req, res) => {
+const getUserListedGames = asyncHandler(async (req, res) => {
 	const { id } = req.params
 	const page = +req.query.page
 	const search = req.query.search
@@ -602,7 +602,7 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({
-			activeGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			listedGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
 	} else {
@@ -627,7 +627,87 @@ const getUserActiveGames = asyncHandler(async (req, res) => {
 		}
 
 		res.status(200).json({
-			activeGames : games,
+			listedGames : games,
+			pagination
+		})
+	}
+})
+
+// ~ @desc    Get all active wanted games for one user
+// ~ @route   GET /api/games/user/:id/wanted
+// ~ @access  Private route
+const getUserWantedGames = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	const page = +req.query.page
+	const search = req.query.search
+	const resultsPerPage = 24
+
+	const userWantedGames = await Wanted.find({ wantedBy: id }).lean()
+
+	if (userWantedGames.length === 0) {
+		res.status(404)
+		throw {
+			message : 'No wanted games found'
+		}
+	}
+
+	if (search) {
+		const fuse = new Fuse(userWantedGames, {
+			keys      : [ 'title', 'designers' ],
+			threshold : 0.3,
+			distance  : 200
+		})
+
+		const results = fuse.search(search).map((game) => game.item)
+
+		if (results.length === 0) {
+			res.status(404)
+			throw {
+				message : 'No results found'
+			}
+		}
+
+		const pagination = {
+			page       : page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No wanted games found'
+			}
+		}
+
+		res.status(200).json({
+			wantedGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const games = await Wanted.find({ wantedBy: id })
+			.skip(resultsPerPage * (page - 1))
+			.limit(resultsPerPage)
+			.sort({ createdAt: -1 })
+			.lean()
+
+		const pagination = {
+			page         : page,
+			totalPages   : Math.ceil(userWantedGames.length / resultsPerPage),
+			totalItems   : userWantedGames.length,
+			itemsPerPage : resultsPerPage
+		}
+
+		if (pagination.totalPages < page) {
+			res.status(404)
+			throw {
+				message : 'No wanted games found'
+			}
+		}
+
+		res.status(200).json({
+			wantedGames : games,
 			pagination
 		})
 	}
@@ -670,7 +750,7 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	if (saleData.isActive === false) {
 		res.status(404)
 		throw {
-			message : 'Game is not up for sale anymore'
+			message : 'Game is no longer available'
 		}
 	}
 
@@ -835,6 +915,23 @@ const deleteGame = asyncHandler(async (req, res) => {
 	res.status(204).end()
 })
 
+// ! @desc    Delete one wanted game
+// ! @route   DELETE /api/games/wanted/delete/:id
+// ! @access  Private route
+const deleteWantedGame = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	const game = await Wanted.findOneAndDelete({ _id: id })
+
+	if (!game) {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+
+	res.status(204).end()
+})
+
 export {
 	getGamesDetailsFromBGG,
 	bggSearchGame,
@@ -849,7 +946,9 @@ export {
 	switchSaveGame,
 	getSavedGames,
 	getSingleSavedGame,
-	getUserActiveGames,
+	getUserListedGames,
+	getUserWantedGames,
 	deleteGame,
+	deleteWantedGame,
 	reactivateGame
 }

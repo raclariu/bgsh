@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDebounce } from 'use-debounce'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import TextField from '@material-ui/core/TextField'
@@ -16,6 +17,7 @@ import Loader from './Loader'
 // @ Others
 import { bggSearchGames, addToSaleList } from '../actions/gameActions'
 import { BGG_GAMES_SEARCH_RESET } from '../constants/gameConstants'
+import { apiBggSearchGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -28,37 +30,44 @@ const useStyles = makeStyles((theme) => ({
 const BggSearchGamesBox = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
+	const queryClient = useQueryClient()
 
 	const [ inputText, setInputText ] = useState('')
 	const [ debKeyword ] = useDebounce(inputText.trim(), 1500)
 	const [ options, setOptions ] = useState([])
 	const [ selectedOption, setSelectedOption ] = useState(null)
 
-	const bggSearch = useSelector((state) => state.bggSearchGames)
-	const { loading, error, success, games } = bggSearch
+	// const bggSearch = useSelector((state) => state.bggSearchGames)
+	// const { loading, error, success, games } = bggSearch
+
+	const mutation = useMutation((debKeyword) => apiBggSearchGames(debKeyword), {
+		onSuccess : () => {
+			queryClient.invalidateQueries()
+		}
+	})
+	const { mutate } = mutation
 
 	useEffect(
 		() => {
 			if (debKeyword.length > 2) {
-				dispatch(bggSearchGames(debKeyword))
+				mutate(debKeyword)
 			}
 
 			return () => {
 				setOptions([])
 				setSelectedOption(null)
-				dispatch({ type: BGG_GAMES_SEARCH_RESET })
 			}
 		},
-		[ dispatch, debKeyword ]
+		[ dispatch, debKeyword, mutate ]
 	)
 
 	useEffect(
 		() => {
-			if (success) {
-				setOptions(games)
+			if (mutation.isSuccess) {
+				setOptions(mutation.data)
 			}
 		},
-		[ games, success, dispatch ]
+		[ mutation ]
 	)
 
 	const changeInputHandler = (e) => {
@@ -69,11 +78,11 @@ const BggSearchGamesBox = () => {
 
 	const resetHandler = () => {
 		setOptions([])
-		dispatch({ type: BGG_GAMES_SEARCH_RESET })
 		setSelectedOption(null)
+		mutation.reset()
 	}
 
-	const submitHandler = () => {
+	const addToSaleListHandler = () => {
 		if (selectedOption) {
 			dispatch(addToSaleList(selectedOption))
 			resetHandler()
@@ -89,8 +98,10 @@ const BggSearchGamesBox = () => {
 			<Autocomplete
 				fullWidth
 				value={selectedOption}
-				loading={loading}
-				noOptionsText={error ? error : 'Board games will show up here'}
+				loading={mutation.isLoading}
+				noOptionsText={
+					mutation.isError ? mutation.error.response.data.message : 'Board games will show up here'
+				}
 				onChange={(e, value) => setSelectedOption(value)}
 				getOptionLabel={(option) => `${option.title} (${option.year})`}
 				options={options}
@@ -99,15 +110,15 @@ const BggSearchGamesBox = () => {
 						{...params}
 						onChange={(e) => changeInputHandler(e)}
 						label="Search for board game"
-						error={error ? true : false}
-						helperText={error ? error : false}
+						error={mutation.isError ? true : false}
+						helperText={mutation.isError ? mutation.error.response.data.message : false}
 						placeholder="Enter game title"
 						variant="outlined"
 						InputProps={{
 							...params.InputProps,
 							endAdornment : (
 								<Fragment>
-									{loading ? <Loader color="secondary" size={20} /> : null}
+									{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}
 									{params.InputProps.endAdornment}
 								</Fragment>
 							)
@@ -123,7 +134,7 @@ const BggSearchGamesBox = () => {
 				<Button
 					className={cls.button}
 					variant="contained"
-					onClick={submitHandler}
+					onClick={addToSaleListHandler}
 					disabled={!selectedOption}
 					color="secondary"
 				>

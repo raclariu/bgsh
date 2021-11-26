@@ -2,6 +2,7 @@ import cron from 'node-cron'
 import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
 import Sale from '../models/gameModel.js'
+import Wanted from '../models/wantedModel.js'
 import Kickstarter from '../models/ksModel.js'
 
 const options = {
@@ -15,8 +16,8 @@ const setInactiveTask = cron.schedule(
 	async () => {
 		const lookback = subDays(new Date(), 7)
 
-		const games = await Sale.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
-		console.log(`Set ${games.nModified}/${games.n} games to inactive`)
+		await Sale.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
+		await Wanted.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
 	},
 	options
 )
@@ -50,10 +51,7 @@ const getKickstarters = cron.schedule(
 					pledged          : ks.pledged,
 					goal             : ks.goal,
 					percentFunded    : ks.percent_funded,
-					urls             : {
-						project : ks.urls.web.project,
-						rewards : ks.urls.web.rewards
-					},
+					url              : ks.urls.web.project,
 					creator          : ks.creator.name,
 					country          : ks.country,
 					launched         : ks.launched_at,

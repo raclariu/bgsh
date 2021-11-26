@@ -1,7 +1,7 @@
 import { check } from 'express-validator'
 import User from '../models/userModel.js'
 
-const validateMessageRecipient = check('recipientUsername')
+const validateMessageRecipient = check('recipient')
 	.trim()
 	.notEmpty()
 	.withMessage('Username is required')

@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import { format, formatDistance, parseISO } from 'date-fns'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -23,11 +24,12 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
-import WantedGameCard from '../components/WantedGameCard'
+import WantedGameIndexCard from '../components/WantedGameIndexCard'
 
 // @ Others
 import { getWantedGames } from '../actions/gameActions'
 import { WANTED_GAMES_INDEX_RESET } from '../constants/gameConstants'
+import { apiFetchWantedGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -46,18 +48,10 @@ const WantedGamesIndexScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const wantedGamesIndex = useSelector((state) => state.wantedGamesIndex)
-	const { loading, error, success, gamesData, pagination } = wantedGamesIndex
-
-	useEffect(
-		() => {
-			dispatch(getWantedGames(page, search))
-
-			return () => {
-				dispatch({ type: WANTED_GAMES_INDEX_RESET })
-			}
-		},
-		[ dispatch, page, search ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'wantedGames', { search, page } ],
+		() => apiFetchWantedGames(search, page),
+		{ staleTime: 1000 * 60 * 5 }
 	)
 
 	const handleFilters = (filter, type) => {
@@ -86,32 +80,32 @@ const WantedGamesIndexScreen = () => {
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
 
-			{error && <CustomAlert>{error}</CustomAlert>}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{success && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{gamesData.map((game) => (
-						<Grid item key={game._id} xs={12} sm={6} md={4}>
+					{data.gamesData.map((data) => (
+						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<WantedGameCard gameId={game._id} />
+								<WantedGameIndexCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>
 			)}
 
-			{success &&
-				(pagination.totalPages > 1 && (
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -121,7 +115,7 @@ const WantedGamesIndexScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</Fragment>

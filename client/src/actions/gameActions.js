@@ -39,9 +39,9 @@ import {
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
 	SAVED_GAMES_SINGLE_FAIL,
-	USER_ACTIVE_GAMES_REQUEST,
-	USER_ACTIVE_GAMES_SUCCESS,
-	USER_ACTIVE_GAMES_FAIL,
+	USER_LISTED_GAMES_REQUEST,
+	USER_LISTED_GAMES_SUCCESS,
+	USER_LISTED_GAMES_FAIL,
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
 	GAME_DELETE_FAIL,
@@ -51,7 +51,10 @@ import {
 	saleListLimit,
 	ADD_WANTED_GAMES_REQUEST,
 	ADD_WANTED_GAMES_SUCCESS,
-	ADD_WANTED_GAMES_FAIL
+	ADD_WANTED_GAMES_FAIL,
+	USER_WANTED_GAMES_REQUEST,
+	USER_WANTED_GAMES_SUCCESS,
+	USER_WANTED_GAMES_FAIL
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetails = (bggIds) => async (dispatch, getState) => {
@@ -294,7 +297,7 @@ export const getGames = (search, page, sort, mode) => async (dispatch, getState)
 	}
 }
 
-export const getWantedGames = (page, search) => async (dispatch, getState) => {
+export const getWantedGames = (search, page) => async (dispatch, getState) => {
 	try {
 		dispatch({ type: WANTED_GAMES_INDEX_REQUEST })
 
@@ -324,9 +327,9 @@ export const getWantedGames = (page, search) => async (dispatch, getState) => {
 	}
 }
 
-export const getUserActiveGames = (search, page) => async (dispatch, getState) => {
+export const getUserListedGames = (search, page) => async (dispatch, getState) => {
 	try {
-		dispatch({ type: USER_ACTIVE_GAMES_REQUEST })
+		dispatch({ type: USER_LISTED_GAMES_REQUEST })
 
 		const { userAuth: { userData } } = getState()
 
@@ -343,12 +346,42 @@ export const getUserActiveGames = (search, page) => async (dispatch, getState) =
 		const { data } = await axios.get(`/api/games/user/${userData._id}`, config)
 
 		dispatch({
-			type    : USER_ACTIVE_GAMES_SUCCESS,
+			type    : USER_LISTED_GAMES_SUCCESS,
 			payload : data
 		})
 	} catch (error) {
 		dispatch({
-			type    : USER_ACTIVE_GAMES_FAIL,
+			type    : USER_LISTED_GAMES_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const getUserWantedGames = (search, page) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: USER_WANTED_GAMES_REQUEST })
+
+		const { userAuth: { userData } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userData.token}`
+			},
+			params  : {
+				search : search ? search.trim() : null,
+				page   : +page ? +page : 1
+			}
+		}
+
+		const { data } = await axios.get(`/api/games/user/${userData._id}/wanted`, config)
+
+		dispatch({
+			type    : USER_WANTED_GAMES_SUCCESS,
+			payload : data
+		})
+	} catch (error) {
+		dispatch({
+			type    : USER_WANTED_GAMES_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
@@ -500,6 +533,31 @@ export const deleteGame = (id) => async (dispatch, getState) => {
 		}
 
 		await axios.delete(`/api/games/delete/${id}`, config)
+
+		dispatch({
+			type : GAME_DELETE_SUCCESS
+		})
+	} catch (error) {
+		dispatch({
+			type    : GAME_DELETE_FAIL,
+			payload : error.response && error.response.data ? error.response.data.message : error.message
+		})
+	}
+}
+
+export const deleteWantedGame = (id) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: GAME_DELETE_REQUEST })
+
+		const { userAuth: { userData } } = getState()
+
+		const config = {
+			headers : {
+				Authorization : `Bearer ${userData.token}`
+			}
+		}
+
+		await axios.delete(`/api/games/wanted/delete/${id}`, config)
 
 		dispatch({
 			type : GAME_DELETE_SUCCESS

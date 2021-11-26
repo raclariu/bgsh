@@ -62,12 +62,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const SavedGameCard = ({ gameId }) => {
+const SavedGameCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
-
-	const data = useSelector((state) => state.savedGamesList.list.find((obj) => obj._id === gameId))
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -83,7 +81,7 @@ const SavedGameCard = ({ gameId }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={2}>
+		<Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
@@ -92,7 +90,7 @@ const SavedGameCard = ({ gameId }) => {
 				title={data.games[index].title}
 			/>
 
-			{data.type === 'pack' && (
+			{data.isPack && (
 				<Fragment>
 					<Chip
 						size="small"
@@ -119,7 +117,7 @@ const SavedGameCard = ({ gameId }) => {
 				</Fragment>
 			)}
 
-			{data.type === 'individual' &&
+			{!data.isPack &&
 			data.mode === 'sell' && (
 				<CustomTooltip title="For sale">
 					<Box className={cls.overlayTop}>
@@ -128,7 +126,7 @@ const SavedGameCard = ({ gameId }) => {
 				</CustomTooltip>
 			)}
 
-			{data.type === 'individual' &&
+			{!data.isPack &&
 			data.mode === 'trade' && (
 				<CustomTooltip title="For trade">
 					<Box className={cls.overlayTop}>
@@ -142,12 +140,12 @@ const SavedGameCard = ({ gameId }) => {
 			<CardContent>
 				<Box
 					display="flex"
-					justifyContent={data.type === 'pack' ? 'space-between' : 'center'}
+					justifyContent={data.isPack ? 'space-between' : 'center'}
 					alignItems="center"
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					{data.type === 'pack' ? (
+					{data.isPack ? (
 						<Fragment>
 							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />

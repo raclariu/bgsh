@@ -98,10 +98,10 @@ const AddWantedGamesScreen = () => {
 			})
 		}
 
+		console.log(gamesData)
+
 		dispatch(addWantedGames(gamesData))
 	}
-
-	console.log(values)
 
 	return (
 		<form onSubmit={handleSubmit}>

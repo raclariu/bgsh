@@ -41,27 +41,27 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
+const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 	const cls = useStyles()
 
-	const game = useSelector((state) => {
-		if (page === 'collection') {
-			return state.dbCollection.owned.find((obj) => obj.bggId === bggId)
-		}
+	// const game = useSelector((state) => {
+	// 	if (page === 'collection') {
+	// 		return state.dbCollection.owned.find((obj) => obj.bggId === bggId)
+	// 	}
 
-		if (page === 'wishlist') {
-			return state.wishlist.wishlist.find((obj) => obj.bggId === bggId)
-		}
-	})
+	// 	if (page === 'wishlist') {
+	// 		return state.wishlist.wishlist.find((obj) => obj.bggId === bggId)
+	// 	}
+	// })
 
 	return (
-		<Card elevation={2}>
+		<Card elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				alt={game.title}
-				image={game.thumbnail ? game.thumbnail : '/images/collCardPlaceholder.jpg'}
-				title={game.title}
+				alt={data.title}
+				image={data.thumbnail ? data.thumbnail : '/images/collCardPlaceholder.jpg'}
+				title={data.title}
 			/>
 
 			<Divider />
@@ -75,7 +75,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 					minHeight="3rem"
 				>
 					<Box className={cls.title}>
-						{game.title} ({game.year})
+						{data.title} ({data.year})
 					</Box>
 				</Box>
 			</CardContent>
@@ -87,7 +87,7 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 					<CustomTooltip title="See on BGG">
 						<Button
 							color="primary"
-							href={`https://boardgamegeek.com/boardgame/${game.bggId}`}
+							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
 							target="_blank"
 							rel="noopener"
 						>
@@ -108,12 +108,12 @@ const GameCard = ({ bggId, saleListHandler, isChecked, isDisabled, page }) => {
 					)} */}
 
 					<CustomTooltip
-						title={isChecked ? `Remove "${game.title}" from list` : `Add "${game.title}" to list`}
+						title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}
 					>
 						<Checkbox
 							checked={isChecked}
 							disabled={isDisabled}
-							onChange={(e) => saleListHandler(e, game.bggId)}
+							onChange={(e) => saleListHandler(e, data.bggId)}
 							icon={<AddBoxOutlinedIcon />}
 						/>
 					</CustomTooltip>

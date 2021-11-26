@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider'
 // @ Main
 const GameCardSkeleton = () => {
 	return (
-		<Grid item md={4} sm={6} xs={12}>
+		<Grid item xs={12} sm={6} md={4}>
 			<Box
 				display="flex"
 				flexDirection="column"

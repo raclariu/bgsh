@@ -3,6 +3,7 @@ import React, { Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import IconButton from '@material-ui/core/IconButton'
@@ -11,6 +12,7 @@ import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 
 // @ Others
 import { getNewMessagesCount } from '../actions/messageActions'
+import { apiGetNewMessagesCount } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -24,33 +26,44 @@ const MessagesBadge = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
-	const newMessagesCount = useSelector((state) => state.newMessagesCount)
-	const { success, error, count } = newMessagesCount
-
-	useEffect(
-		() => {
-			const intervalId = setInterval(() => {
-				dispatch(getNewMessagesCount())
-			}, 120000)
-
-			return () => {
-				clearInterval(intervalId)
-			}
-		},
-		[ dispatch ]
+	const { isLoading, isError, error, isSuccess, data: count } = useQuery(
+		[ 'receivedMsgCount' ],
+		apiGetNewMessagesCount,
+		{
+			refetchInterval      : 1000 * 60 * 2,
+			refetchOnWindowFocus : false,
+			refetchOnMount       : false,
+			refetchOnReconnect   : false
+		}
 	)
 
-	useEffect(
-		() => {
-			dispatch(getNewMessagesCount())
-		},
-		[ dispatch ]
-	)
+	// const newMessagesCount = useSelector((state) => state.newMessagesCount)
+	// const { success, error, count } = newMessagesCount
+
+	// useEffect(
+	// 	() => {
+	// 		const intervalId = setInterval(() => {
+	// 			dispatch(getNewMessagesCount())
+	// 		}, 120000)
+
+	// 		return () => {
+	// 			clearInterval(intervalId)
+	// 		}
+	// 	},
+	// 	[ dispatch ]
+	// )
+
+	// useEffect(
+	// 	() => {
+	// 		dispatch(getNewMessagesCount())
+	// 	},
+	// 	[ dispatch ]
+	// )
 
 	return (
 		<Fragment>
 			<IconButton component={RouterLink} to="/received" color="primary">
-				<Badge color="secondary" badgeContent={success ? count : 0}>
+				<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
 					<EmailTwoToneIcon />
 				</Badge>
 			</IconButton>

@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -20,6 +21,7 @@ import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { getSoldGamesHistory } from '../actions/historyActions'
+import { apiFetchSoldGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,15 +50,23 @@ const HistorySoldGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const soldHistory = useSelector((state) => state.soldHistory)
-	const { loading, success, error, soldList, pagination, sum } = soldHistory
-
-	useEffect(
-		() => {
-			dispatch(getSoldGamesHistory(page, search))
-		},
-		[ dispatch, page, search ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'soldGames', { search, page } ],
+		() => apiFetchSoldGames(search, page),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
+
+	// const soldHistory = useSelector((state) => state.soldHistory)
+	// const { loading, success, error, soldList, pagination, sum } = soldHistory
+
+	// useEffect(
+	// 	() => {
+	// 		dispatch(getSoldGamesHistory(page, search))
+	// 	},
+	// 	[ dispatch, page, search ]
+	// )
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -81,46 +91,46 @@ const HistorySoldGamesScreen = () => {
 				</Grid>
 			</Grid>
 
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{error && (
+			{isError && (
 				<Box mt={2}>
-					<CustomAlert>{error}</CustomAlert>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</Box>
 			)}
 
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
 
-			{success && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{soldList.map((data) => (
+					{data.soldList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<HistoryGameCard gameId={data._id} page="sold" />
+								<HistoryGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>
 			)}
 
-			{success &&
+			{isSuccess &&
 			!search && (
 				<Box mt={2} fontWeight="fontWeightMedium" fontStyle="italic">
-					You've sold {pagination.totalItems} board games worth a total of {sum} RON
+					You've sold {data.pagination.totalItems} board games worth a total of {data.sum} RON
 				</Box>
 			)}
 
-			{success &&
-				(pagination.totalPages > 1 && (
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -130,7 +140,7 @@ const HistorySoldGamesScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

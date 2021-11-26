@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
+const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
 	const cls = useStyles()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
@@ -52,7 +52,7 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 	}
 
 	return (
-		<Card elevation={2}>
+		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
@@ -147,7 +147,7 @@ const SellGameCard = ({ game, type, mode, data, removeFromSaleListHandler, handl
 						/>
 					</Grid>
 					{mode === 'sell' &&
-					type === 'individual' && (
+					!isPack && (
 						<Grid item xs={6}>
 							<TextField
 								onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'price')}

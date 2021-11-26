@@ -112,6 +112,7 @@ const validateUsernameExist = check('username')
 	.withMessage('Username can only contain letters and numbers')
 	.bail()
 	.custom(async (username, { req }) => {
+		console.log(username)
 		const usernameExists = await User.findOne({ username }).select('_id').lean()
 
 		if (!usernameExists) {

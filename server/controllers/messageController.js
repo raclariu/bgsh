@@ -16,9 +16,9 @@ const sendMessage = asyncHandler(async (req, res) => {
 		res.status(400)
 		throw {
 			message : {
-				recipientUsernameError : err.recipientUsername ? err.recipientUsername.msg : null,
-				subjectError           : err.subject ? err.subject.msg : null,
-				messageError           : err.message ? err.message.msg : null
+				recipientError : err.recipient ? err.recipient.msg : null,
+				subjectError   : err.subject ? err.subject.msg : null,
+				messageError   : err.message ? err.message.msg : null
 			}
 		}
 	} else {
@@ -29,7 +29,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 			message
 		})
 
-		res.status(200).end()
+		res.status(204).end()
 	}
 })
 
@@ -142,9 +142,12 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 const deleteMessages = asyncHandler(async (req, res) => {
 	const { ids, type } = req.body
 
+	console.log(ids, type)
+
 	if (type === 'received') {
 		await Message.updateMany({ _id: { $in: ids } }, { delRecipient: true })
-	} else {
+	}
+	if (type === 'sent') {
 		await Message.updateMany({ _id: { $in: ids } }, { delSender: true })
 	}
 

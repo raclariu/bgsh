@@ -2,7 +2,6 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { format, formatDistance, parseISO } from 'date-fns'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -18,6 +17,9 @@ import IconButton from '@material-ui/core/IconButton'
 import CustomAvatar from './CustomAvatar'
 import SendMessage from '../components/SendMessage'
 import CustomTooltip from '../components/CustomTooltip'
+
+// @ Others
+import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -40,17 +42,17 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-const WantedGameCard = ({ gameId }) => {
+const WantedGameIndexCard = ({ data }) => {
 	const cls = useStyles()
 
-	const data = useSelector((state) => state.wantedGamesIndex.gamesData.find((obj) => obj._id === gameId))
+	// const data = useSelector((state) => state.wantedGamesIndex.gamesData.find((obj) => obj._id === gameId))
 
 	return (
-		<Card className={cls.card} elevation={2}>
+		<Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				image={data.thumbnail ? data.thumbnail : '/images/collCardPlaceholder.jpg'}
+				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.title}
 				title={data.title}
 			/>
@@ -65,13 +67,7 @@ const WantedGameCard = ({ gameId }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					{data.title.length > 50 ? (
-						<CustomTooltip title={data.title}>
-							<Box className={cls.title}>{data.title}</Box>
-						</CustomTooltip>
-					) : (
-						<Box className={cls.title}>{data.title}</Box>
-					)}
+					<Box className={cls.title}>{data.title}</Box>
 				</Box>
 			</CardContent>
 
@@ -81,7 +77,7 @@ const WantedGameCard = ({ gameId }) => {
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 					<Chip
 						size="small"
-						label={`${data.prefVersion.title} (${data.prefVersion.year})`}
+						label={`${data.prefVersion.title} • ${data.prefVersion.year}`}
 						variant="outlined"
 					/>
 
@@ -99,7 +95,7 @@ const WantedGameCard = ({ gameId }) => {
 						<CustomAvatar size="medium" user={data.wantedBy.username} />
 
 						<Box fontSize={12} ml={1}>
-							{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
+							{calculateTimeAgo(data.createdAt)}
 						</Box>
 					</Box>
 
@@ -110,4 +106,4 @@ const WantedGameCard = ({ gameId }) => {
 	)
 }
 
-export default WantedGameCard
+export default WantedGameIndexCard

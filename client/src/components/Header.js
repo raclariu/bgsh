@@ -137,7 +137,7 @@ const Header = () => {
 
 	return (
 		<div className={classes.root}>
-			<AppBar elevation={2} position="static" color="inherit">
+			<AppBar elevation={1} position="static" color="transparent">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
 						BoardGames
@@ -533,7 +533,7 @@ const Header = () => {
 											onClick={(e) => handleClick(e, 10)}
 											selected={selectedIndex === 10}
 											component={RouterLink}
-											to="/listed"
+											to="/user/listed"
 										>
 											<ListItemIcon>
 												<LocalActivityTwoToneIcon
@@ -548,6 +548,31 @@ const Header = () => {
 														color={selectedIndex === 10 ? 'primary.main' : 'text.secondary'}
 													>
 														My listed games
+													</Box>
+												}
+											/>
+										</ListItem>
+
+										<ListItem
+											button
+											onClick={(e) => handleClick(e, 15)}
+											selected={selectedIndex === 15}
+											component={RouterLink}
+											to="/user/wanted"
+										>
+											<ListItemIcon>
+												<AddCircleTwoToneIcon
+													color={selectedIndex === 15 ? 'primary' : 'inherit'}
+												/>
+											</ListItemIcon>
+											<ListItemText
+												primary={
+													<Box
+														fontWeight="fontWeightMedium"
+														fontSize="subtitle2.fontSize"
+														color={selectedIndex === 15 ? 'primary.main' : 'text.secondary'}
+													>
+														My wanted games
 													</Box>
 												}
 											/>
@@ -582,7 +607,7 @@ const Header = () => {
 													onClick={(e) => handleClick(e, 11)}
 													selected={selectedIndex === 11}
 													component={RouterLink}
-													to="/history/sold"
+													to="/user/history/sold"
 												>
 													<ListItemIcon>
 														<MonetizationOnTwoToneIcon
@@ -614,7 +639,7 @@ const Header = () => {
 													onClick={(e) => handleClick(e, 12)}
 													selected={selectedIndex === 12}
 													component={RouterLink}
-													to="/history/traded"
+													to="/user/history/traded"
 												>
 													<ListItemIcon>
 														<SwapHorizontalCircleTwoToneIcon
@@ -647,7 +672,7 @@ const Header = () => {
 											onClick={(e) => handleClick(e, 14)}
 											selected={selectedIndex === 14}
 											component={RouterLink}
-											to="/settings"
+											to="/user/settings"
 										>
 											<ListItemIcon>
 												<SettingsTwoToneIcon

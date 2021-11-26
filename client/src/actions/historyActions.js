@@ -3,7 +3,6 @@ import {
 	HISTORY_ADD_REQUEST,
 	HISTORY_ADD_SUCCESS,
 	HISTORY_ADD_FAIL,
-	HISTORY_ADD_RESET,
 	HISTORY_SOLD_LIST_REQUEST,
 	HISTORY_SOLD_LIST_SUCCESS,
 	HISTORY_SOLD_LIST_FAIL,
@@ -16,10 +15,6 @@ export const addGamesToHistory = (games, username, price, gameId) => async (disp
 	try {
 		dispatch({ type: HISTORY_ADD_REQUEST })
 
-		const simplifyGames = games.map((game) => {
-			return { title: game.title, thumbnail: game.thumbnail }
-		})
-
 		const { userAuth: { userData } } = getState()
 
 		const config = {
@@ -28,7 +23,7 @@ export const addGamesToHistory = (games, username, price, gameId) => async (disp
 			}
 		}
 
-		await axios.post('/api/history/add', { games: simplifyGames, username, price, gameId }, config)
+		await axios.post('/api/history', { games, username, price, gameId }, config)
 
 		dispatch({
 			type : HISTORY_ADD_SUCCESS

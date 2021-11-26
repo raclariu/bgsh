@@ -37,7 +37,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 		<Paper
 			component="form"
 			className={cls.paper}
-			elevation={2}
+			elevation={1}
 			onSubmit={submitSearchHandler}
 			noValidate
 			autoComplete="off"

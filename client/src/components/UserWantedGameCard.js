@@ -1,22 +1,29 @@
 // @ Libraries
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
+import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
-import Box from '@material-ui/core/Box'
+import Chip from '@material-ui/core/Chip'
 import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 
 // @ Components
-import CustomTooltip from './CustomTooltip'
+import CustomAvatar from './CustomAvatar'
+import SendMessage from '../components/SendMessage'
+import CustomTooltip from '../components/CustomTooltip'
+import ActiveAddHistoryButton from '../components/ActiveAddHistoryButton'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
+	card  : {
+		position : 'relative'
+	},
 	media : {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
@@ -33,19 +40,16 @@ const useStyles = makeStyles((theme) => ({
 	}
 }))
 
-// @ Main
-const HotGameCard = ({ data }) => {
+const WantedGameCard = ({ data }) => {
 	const cls = useStyles()
 
-	// const data = useSelector((state) => state.bggHotGames.hotList.find((obj) => obj.bggId === bggId))
-
 	return (
-		<Card elevation={1}>
+		<Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				alt={data.title}
 				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
+				alt={data.title}
 				title={data.title}
 			/>
 
@@ -59,8 +63,24 @@ const HotGameCard = ({ data }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={cls.title}>
-						{data.title} ({data.year})
+					<CustomTooltip title={data.title}>
+						<Box className={cls.title}>{data.title}</Box>
+					</CustomTooltip>
+				</Box>
+			</CardContent>
+
+			<Divider />
+
+			<CardContent>
+				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+					<Chip
+						size="small"
+						label={`${data.prefVersion.title} • ${data.prefVersion.year}`}
+						variant="outlined"
+					/>
+
+					<Box mt={0.5}>
+						<Chip size="small" label={data.prefShipping.join(', ')} variant="outlined" />
 					</Box>
 				</Box>
 			</CardContent>
@@ -68,21 +88,12 @@ const HotGameCard = ({ data }) => {
 			<Divider />
 
 			<CardActions>
-				<Box display="flex" justifyContent="flex-end" width="100%">
-					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
-							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
-							target="_blank"
-							rel="noopener"
-						>
-							BGG
-						</Button>
-					</CustomTooltip>
+				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">
+					<ActiveAddHistoryButton mode="wanted" gameId={data._id} display="delete" />
 				</Box>
 			</CardActions>
 		</Card>
 	)
 }
 
-export default HotGameCard
+export default WantedGameCard

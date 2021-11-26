@@ -62,7 +62,7 @@ const CustomAvatar = ({ size, user }) => {
 	}
 
 	const handleProfileClick = () => {
-		history.push(`/user/${user}`)
+		history.push(`/profile/${user}`)
 	}
 
 	return (

@@ -51,7 +51,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 	}
 
 	return (
-		<Card elevation={2}>
+		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}

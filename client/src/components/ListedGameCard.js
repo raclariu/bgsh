@@ -1,6 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
@@ -59,6 +60,8 @@ const useStyles = makeStyles((theme) => ({
 const ListedGameCard = ({ data }) => {
 	const cls = useStyles()
 
+	// const data = useSelector((state) => state.userListedGames.listedGames.find((obj) => obj._id === gameId))
+
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -75,16 +78,16 @@ const ListedGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={2}>
+		<Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/collCardPlaceholder.jpg'}
+				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.games[index].title}
 				title={data.games[index].title}
 			/>
 
-			{data.type === 'pack' && (
+			{data.isPack && (
 				<Fragment>
 					<Chip
 						size="small"
@@ -111,7 +114,7 @@ const ListedGameCard = ({ data }) => {
 				</Fragment>
 			)}
 
-			{data.type === 'individual' &&
+			{!data.isPack &&
 			data.mode === 'sell' && (
 				<CustomTooltip title="For sale">
 					<Box className={cls.overlayTop}>
@@ -120,7 +123,7 @@ const ListedGameCard = ({ data }) => {
 				</CustomTooltip>
 			)}
 
-			{data.type === 'individual' &&
+			{!data.isPack &&
 			data.mode === 'trade' && (
 				<CustomTooltip title="For trade">
 					<Box className={cls.overlayTop}>
@@ -134,12 +137,12 @@ const ListedGameCard = ({ data }) => {
 			<CardContent>
 				<Box
 					display="flex"
-					justifyContent={data.type === 'pack' ? 'space-between' : 'center'}
+					justifyContent={data.isPack ? 'space-between' : 'center'}
 					alignItems="center"
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					{data.type === 'pack' ? (
+					{data.isPack ? (
 						<Fragment>
 							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />
@@ -164,8 +167,10 @@ const ListedGameCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">
 					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
+
 					<ActiveAddHistoryButton
 						games={data.games}
+						isActive={data.isActive}
 						price={data.totalPrice}
 						gameId={data._id}
 						mode={data.mode}

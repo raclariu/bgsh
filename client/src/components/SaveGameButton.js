@@ -1,6 +1,7 @@
 // @ Libraries
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import IconButton from '@material-ui/core/IconButton'
@@ -14,18 +15,32 @@ import Loader from './Loader'
 
 // @ Others
 import { switchSaveGame } from '../actions/gameActions'
+import { apiFetchGameSavedStatus, apiUpdateSavedStatus } from '../api/api'
 
 // @ Main
 const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
-
-	const savedGameStatus = useSelector((state) => state.savedGameStatus)
-	const { loading, success, error, isSaved } = savedGameStatus
+	const queryClient = useQueryClient()
 
 	const userId = useSelector((state) => state.userAuth.userData._id)
 
+	const { isLoading, isError, error, data: isSaved, isSuccess } = useQuery(
+		[ 'savedStatus', altId ],
+		() => apiFetchGameSavedStatus(altId),
+		{
+			staleTime : 1000 * 60 * 60
+		}
+	)
+
+	const mutation = useMutation((altId) => apiUpdateSavedStatus(altId), {
+		onSuccess : () => {
+			queryClient.invalidateQueries([ 'savedStatus', altId ])
+			queryClient.invalidateQueries([ 'savedGames' ])
+		}
+	})
+
 	const saveGameHandler = () => {
-		dispatch(switchSaveGame(altId))
+		mutation.mutate(altId)
 	}
 
 	const renderButtonHandler = () => {
@@ -38,12 +53,11 @@ const SaveGameButton = ({ altId, sellerId }) => {
 
 	return (
 		<Fragment>
-			{loading && (
+			{isLoading || mutation.isLoading ? (
 				<IconButton disabled disableRipple>
 					<Loader size={20} />
 				</IconButton>
-			)}
-			{success && (
+			) : (
 				// disabled={sellerId === userId}
 				<IconButton onClick={saveGameHandler} color="secondary">
 					{renderButtonHandler()}

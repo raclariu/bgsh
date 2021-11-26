@@ -1,10 +1,11 @@
 // @ Libraries
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
@@ -19,10 +20,9 @@ import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 
 // @ Others
-import { getWishlist } from '../actions/collectionActions'
-import { WISHLIST_LIST_RESET } from '../constants/collectionConstants'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
+import { apiFetchWishlist } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,19 +48,13 @@ const WishlistScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const saleList = useSelector((state) => state.saleList)
-	const { loading, success, error, wishlist, pagination } = useSelector((state) => state.wishlist)
-
-	useEffect(
-		() => {
-			dispatch(getWishlist(search, page))
-
-			return () => {
-				dispatch({ type: WISHLIST_LIST_RESET })
-			}
-		},
-		[ dispatch, search, page ]
+	const { isLoading, isError, error, isSuccess, data } = useQuery(
+		[ 'wishlist', { search, page } ],
+		() => apiFetchWishlist(search, page),
+		{ staleTime: 1000 * 60 * 60 }
 	)
+
+	const saleList = useSelector((state) => state.saleList)
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -79,7 +73,7 @@ const WishlistScreen = () => {
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, image, _id } = wishlist.find((el) => el.bggId === id)
+			const { bggId, title, year, thumbnail, image, _id } = data.wishlist.find((el) => el.bggId === id)
 			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
 		} else {
 			dispatch(removeFromSaleList(id))
@@ -88,46 +82,41 @@ const WishlistScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			{search && (
-				<Grid container>
-					<Box display="flex" alignItems="center" width="100%">
-						<BackButton />
-						{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
-					</Box>
-				</Grid>
-			)}
-
 			<Grid container justifyContent="center" spacing={2}>
-				<Grid item md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search wishlist" handleFilters={handleFilters} />
+				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 
-			{error && (
+			{search && (
+				<Box display="flex" alignItems="center" width="100%">
+					<BackButton />
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+				</Box>
+			)}
+			{isError && (
 				<div className={cls.error}>
-					<CustomAlert>{error}</CustomAlert>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</div>
 			)}
-
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{success && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{wishlist.map((game) => (
-						<Grid item key={game._id} xl={4} lg={4} md={4} sm={6} xs={12}>
+					{data.wishlist.map((data) => (
+						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard
-									bggId={game.bggId}
-									page="wishlist"
+									data={data}
 									saleListHandler={saleListHandler}
-									isChecked={saleList.some((el) => el.bggId === game.bggId)}
+									isChecked={saleList.some((el) => el.bggId === data.bggId)}
 									isDisabled={
 										saleList.length === saleListLimit ? saleList.some(
-											(el) => el.bggId === game.bggId
+											(el) => el.bggId === data.bggId
 										) ? (
 											false
 										) : (
@@ -143,8 +132,8 @@ const WishlistScreen = () => {
 				</Grid>
 			)}
 
-			{success &&
-				(pagination.totalPages > 1 && (
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -154,7 +143,7 @@ const WishlistScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery } from 'react-query'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 
@@ -20,7 +21,9 @@ import Paginate from '../components/Paginate'
 
 // @ Others
 import { HISTORY_ADD_RESET } from '../constants/historyConstants'
-import { getUserActiveGames } from '../actions/gameActions'
+import { getUserListedGames } from '../actions/gameActions'
+import { GAME_DELETE_RESET } from '../constants/gameConstants'
+import { apiFetchListedGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const ListedGamesScreen = () => {
+const UserListedGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
@@ -43,28 +46,12 @@ const ListedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const userGames = useSelector((state) => state.userActiveGames)
-	const { loading, error, success, pagination, activeGames } = userGames
-
-	const { success: successAdd, loading: loadingAdd } = useSelector((state) => state.addToHistory)
-	const { success: successDelete } = useSelector((state) => state.deleteGame)
-	const { success: successReactivate } = useSelector((state) => state.reactivateGame)
-
-	useEffect(
-		() => {
-			dispatch(getUserActiveGames(search, page))
-		},
-		[ dispatch, search, page, successDelete, successReactivate ]
-	)
-
-	useEffect(
-		() => {
-			if (loadingAdd === false && successAdd) {
-				dispatch(getUserActiveGames(search, page))
-				dispatch({ type: HISTORY_ADD_RESET })
-			}
-		},
-		[ dispatch, search, page, successAdd, loadingAdd ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'listedGames', { search, page } ],
+		() => apiFetchListedGames(search, page),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
 
 	const handleFilters = (filter, type) => {
@@ -90,16 +77,22 @@ const ListedGamesScreen = () => {
 				</Grid>
 			</Grid>
 
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
+			)}
+
+			{isError && (
+				<Box mt={2}>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
+				</Box>
 			)}
 
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
 
@@ -109,9 +102,9 @@ const ListedGamesScreen = () => {
 				</Box>
 			)}
 
-			{success && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{activeGames.map((data) => (
+					{data.listedGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<ListedGameCard data={data} />
@@ -121,8 +114,8 @@ const ListedGamesScreen = () => {
 				</Grid>
 			)}
 
-			{success &&
-				(pagination.totalPages > 1 && (
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -132,11 +125,11 @@ const ListedGamesScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>
 	)
 }
 
-export default ListedGamesScreen
+export default UserListedGamesScreen

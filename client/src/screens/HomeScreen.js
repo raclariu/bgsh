@@ -3,6 +3,8 @@ import React, { useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import LazyLoad from 'react-lazyload'
+import axios from 'axios'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
@@ -13,28 +15,40 @@ import Button from '@material-ui/core/Button'
 import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { bggGetHotGames } from '../actions/gameActions'
 import { getKickstarters } from '../actions/miscActions'
+import { apiFetchHotGames, fetchKickstarters } from '../api/api'
 
 // @ Main
 const HomeScreen = () => {
 	const dispatch = useDispatch()
 
-	const hotGames = useSelector((state) => state.bggHotGames)
-	const { loading, success, error, hotList } = hotGames
+	const options = {
+		refetchOnWindowFocus : false,
+		refetchOnMount       : false,
+		refetchOnReconnect   : false,
+		staleTime            : 1000 * 60 * 60
+	}
 
-	const kickstarters = useSelector((state) => state.kickstartersList)
-	const { loading: loadingKs, success: successKs, error: errorKs, ksList } = kickstarters
+	const {
+		isLoading : isLoadingHotGames,
+		error     : errorHotGames,
+		data      : hotGamesList,
+		isSuccess : isSuccessHotGames
+	} = useQuery([ 'hotGames' ], apiFetchHotGames, options)
 
-	useEffect(
-		() => {
-			dispatch(bggGetHotGames())
-			dispatch(getKickstarters())
-		},
-		[ dispatch ]
+	const { isLoading: isLoadingKs, error: errorKs, data: ksList, isSuccess: isSuccessKs } = useQuery(
+		[ 'kickstarters' ],
+		fetchKickstarters,
+		options
 	)
+
+	if (errorHotGames) {
+		console.log(errorHotGames.response)
+	}
 
 	return (
 		<Fragment>
@@ -47,41 +61,67 @@ const HomeScreen = () => {
 				color="primary.contrastText"
 				fontWeight="fontWeightMedium"
 				fontSize={14}
-				p={2}
+				p={1}
 				borderRadius={4}
-				boxShadow={2}
 				my={4}
 			>
 				<Box>BGG Hot games</Box>
-				<Button component={RouterLink} to="/hot" variant="outlined" color="inherit">
-					See all
-				</Button>
+				{!errorHotGames && (
+					<Button component={RouterLink} to="/hot" variant="outlined" size="small" color="inherit">
+						See all
+					</Button>
+				)}
 			</Box>
 
-			{loading && (
+			{errorHotGames && <CustomAlert>{errorHotGames.response.data.message}</CustomAlert>}
+
+			{isLoadingHotGames && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{success && (
+			{isSuccessHotGames && (
 				<Grid container spacing={2}>
-					{hotList.slice(0, 6).map((game) => (
-						<Grid key={game.bggId} item xs={6} md={4}>
+					{hotGamesList.slice(0, 6).map((data) => (
+						<Grid key={data.bggId} item xs={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<HotGameCard bggId={game.bggId} />
+								<HotGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>
 			)}
 
-			{successKs && (
+			<Box
+				display="flex"
+				alignItems="center"
+				width="100%"
+				bgcolor="primary.main"
+				color="primary.contrastText"
+				fontWeight="fontWeightMedium"
+				fontSize={14}
+				p={1}
+				borderRadius={4}
+				my={4}
+			>
+				<Box>Popular kickstarters</Box>
+			</Box>
+
+			{errorKs && <CustomAlert>{errorKs.response.data.message}</CustomAlert>}
+
+			{isLoadingKs && (
+				<Grid container spacing={3} direction="row">
+					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+				</Grid>
+			)}
+
+			{isSuccessKs && (
 				<Grid container spacing={2}>
-					{ksList.map((ks) => (
-						<Grid key={ks.bggId} item xs={12} md={4}>
+					{ksList.map((data) => (
+						<Grid key={data.ksId} item xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<KsCard ksId={ks.ksId} />
+								<KsCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}

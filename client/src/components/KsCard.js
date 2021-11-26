@@ -35,19 +35,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const KsCard = ({ ksId }) => {
+const KsCard = ({ data }) => {
 	const cls = useStyles()
 
-	const ks = useSelector((state) => state.kickstartersList.ksList.find((obj) => obj.ksId === ksId))
+	// const ks = useSelector((state) => state.kickstartersList.ksList.find((obj) => obj.ksId === ksId))
 
 	return (
-		<Card elevation={2}>
+		<Card elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				alt={ks.title}
-				image={ks.image ? ks.image : '/images/collCardPlaceholder.jpg'}
-				title={ks.title}
+				alt={data.title}
+				image={data.image ? data.image : '/images/gameImgPlaceholder.jpg'}
+				title={data.title}
 			/>
 
 			<Divider />
@@ -60,7 +60,7 @@ const KsCard = ({ ksId }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={cls.title}>{ks.title}</Box>
+					<Box className={cls.title}>{data.title}</Box>
 				</Box>
 			</CardContent>
 
@@ -68,14 +68,15 @@ const KsCard = ({ ksId }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
-					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
-							href={`https://boardgamegeek.com/boardgame/${ks.ksId}`}
-							target="_blank"
-							rel="noopener"
-						>
-							BGG
+					<CustomTooltip title="See on Kickstarter">
+						<Button color="primary" href={`${data.url}`} target="_blank" rel="noopener">
+							Page
+						</Button>
+					</CustomTooltip>
+
+					<CustomTooltip title="Rewards page">
+						<Button color="primary" href={`${data.url}/rewards`} target="_blank" rel="noopener">
+							Rewards
 						</Button>
 					</CustomTooltip>
 				</Box>

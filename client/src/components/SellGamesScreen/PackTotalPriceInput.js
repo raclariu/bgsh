@@ -21,7 +21,7 @@ const PackTotalPriceInput = ({ totalPrice, handleTotalPrice }) => {
 			name="pack-price"
 			variant="outlined"
 			label="Price for the entire pack"
-			type="text"
+			type="number"
 			size="small"
 			fullWidth
 			required

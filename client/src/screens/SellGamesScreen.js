@@ -40,7 +40,10 @@ const SellGamesScreen = () => {
 	const location = useLocation()
 	const history = useHistory()
 
-	const { type = 'individual' } = queryString.parse(location.search)
+	let { pack: isPack = false } = queryString.parse(location.search)
+	isPack = !!isPack
+
+	console.log(isPack)
 
 	const saleList = useSelector((state) => state.saleList)
 	const slRef = useRef(
@@ -66,11 +69,11 @@ const SellGamesScreen = () => {
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState(slRef.current)
 
-	if (type !== 'individual' && type !== 'pack') {
+	if (isPack !== false && isPack !== true) {
 		history.push('/sell')
 	}
 
-	if (saleList.length === 1 && type === 'pack') {
+	if (saleList.length === 1 && isPack) {
 		history.push('/sell')
 	}
 
@@ -172,7 +175,7 @@ const SellGamesScreen = () => {
 				gamesCopy[index] = {
 					...gamesCopy[index],
 					version   : val.version,
-					price     : type === 'individual' ? +val.price : null,
+					price     : !isPack ? +val.price : null,
 					condition : val.condition,
 					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : '',
 					isSleeved : val.isSleeved
@@ -182,15 +185,15 @@ const SellGamesScreen = () => {
 
 		const gamesData = {
 			games            : gamesCopy,
-			type,
+			isPack,
 			shipPost,
 			shipPostPayer,
 			shipCourier,
 			shipCourierPayer,
 			shipPersonal,
 			shipCities,
-			extraInfoPack    : type === 'pack' ? extraInfoPack.trim() : '',
-			totalPrice       : type === 'pack' ? +totalPrice : null
+			extraInfoPack    : isPack ? extraInfoPack.trim() : '',
+			totalPrice       : isPack ? +totalPrice : null
 		}
 
 		dispatch(sellGames(gamesData))
@@ -221,7 +224,7 @@ const SellGamesScreen = () => {
 									<Grid item key={game.bggId} md={6} xs={12}>
 										<SellGameCard
 											game={game}
-											type={type}
+											isPack={isPack}
 											mode="sell"
 											data={values.find((val) => val.bggId === game.bggId)}
 											removeFromSaleListHandler={removeFromSaleListHandler}
@@ -254,7 +257,7 @@ const SellGamesScreen = () => {
 
 						<Grid item sm={6} xs={12}>
 							<Grid container direction="column">
-								{type === 'pack' && (
+								{isPack && (
 									<Fragment>
 										<Grid item>
 											<PackTotalPriceInput

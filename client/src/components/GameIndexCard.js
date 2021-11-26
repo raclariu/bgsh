@@ -3,7 +3,6 @@ import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { formatDistance, parseISO } from 'date-fns'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -24,6 +23,9 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
 import GameDetailsButton from './GameDetailsButton'
 import CustomAvatar from './CustomAvatar'
+
+// @ Other
+import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -55,12 +57,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const GameIndexCard = ({ gameId }) => {
+const GameIndexCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
-
-	const data = useSelector((state) => state.gamesIndex.gamesData.find((obj) => obj._id === gameId))
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -76,7 +76,7 @@ const GameIndexCard = ({ gameId }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={2}>
+		<Card className={cls.card} elevation={1}>
 			<Box py={1}>
 				<CardMedia
 					className={cls.media}
@@ -116,7 +116,7 @@ const GameIndexCard = ({ gameId }) => {
 				</Box>
 			</Box>
 
-			{data.type === 'pack' && (
+			{data.isPack && (
 				<Chip size="small" color="secondary" className={cls.overlayChip} label={`${data.games.length} pack`} />
 			)}
 
@@ -125,12 +125,12 @@ const GameIndexCard = ({ gameId }) => {
 			<CardContent>
 				<Box
 					display="flex"
-					justifyContent={data.type === 'pack' ? 'space-between' : 'center'}
+					justifyContent={data.isPack ? 'space-between' : 'center'}
 					alignItems="center"
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					{data.type === 'pack' ? (
+					{data.isPack ? (
 						<Fragment>
 							<IconButton disabled={index === 0} color="inherit" onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />
@@ -181,7 +181,7 @@ const GameIndexCard = ({ gameId }) => {
 						<CustomAvatar size="medium" user={data.seller.username} />
 
 						<Box fontSize={12} ml={1}>
-							{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
+							{calculateTimeAgo(data.createdAt)}
 						</Box>
 					</Box>
 

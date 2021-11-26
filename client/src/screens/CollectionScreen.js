@@ -1,10 +1,11 @@
 // @ Libraries
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
@@ -19,10 +20,9 @@ import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
 // @ Others
-import { dbGetCollection } from '../actions/collectionActions'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
-import { DB_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
 import { saleListLimit } from '../constants/gameConstants'
+import { apiFetchCollection } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,20 +48,12 @@ const CollectionScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const dbCollection = useSelector((state) => state.dbCollection)
-	const { loading: dbLoading, error: dbError, success: dbSuccess, owned, pagination } = dbCollection
-
 	const saleList = useSelector((state) => state.saleList)
 
-	useEffect(
-		() => {
-			dispatch(dbGetCollection(search, page))
-
-			return () => {
-				dispatch({ type: DB_COLLECTION_LIST_RESET })
-			}
-		},
-		[ dispatch, search, page ]
+	const { isLoading, isError, error, isSuccess, data } = useQuery(
+		[ 'collection', { search, page } ],
+		() => apiFetchCollection(search, page),
+		{ staleTime: 1000 * 60 * 60 }
 	)
 
 	const handleFilters = (filter, type) => {
@@ -81,8 +73,7 @@ const CollectionScreen = () => {
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
-			console.log(owned.find((el) => el.bggId === id))
-			const { bggId, title, year, thumbnail, image, _id } = owned.find((el) => el.bggId === id)
+			const { bggId, title, year, thumbnail, image, _id } = data.owned.find((el) => el.bggId === id)
 			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
 		} else {
 			dispatch(removeFromSaleList(id))
@@ -100,32 +91,31 @@ const CollectionScreen = () => {
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
-			{dbError && (
+			{isError && (
 				<div className={cls.error}>
-					<CustomAlert>{dbError}</CustomAlert>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</div>
 			)}
-			{dbLoading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
-			{dbSuccess && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{owned.map((game) => (
-						<Grid item key={game._id} xs={12} sm={6} md={4}>
+					{data.owned.map((data) => (
+						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard
-									bggId={game.bggId}
-									page="collection"
+									data={data}
 									saleListHandler={saleListHandler}
-									isChecked={saleList.some((el) => el.bggId === game.bggId)}
+									isChecked={saleList.some((el) => el.bggId === data.bggId)}
 									isDisabled={
 										saleList.length === saleListLimit ? saleList.some(
-											(el) => el.bggId === game.bggId
+											(el) => el.bggId === data.bggId
 										) ? (
 											false
 										) : (
@@ -140,8 +130,9 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
-			{dbSuccess &&
-				(pagination.totalPages > 1 && (
+
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -151,7 +142,7 @@ const CollectionScreen = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

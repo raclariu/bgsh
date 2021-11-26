@@ -15,9 +15,11 @@ import CenterFocusWeakTwoToneIcon from '@material-ui/icons/CenterFocusWeakTwoTon
 const GameDetailsButton = ({ altId }) => {
 	return (
 		<CustomTooltip title="Details">
-			<IconButton component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary">
-				<CenterFocusWeakTwoToneIcon fontSize="small" />
-			</IconButton>
+			<span>
+				<IconButton component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary">
+					<CenterFocusWeakTwoToneIcon fontSize="small" />
+				</IconButton>
+			</span>
 		</CustomTooltip>
 	)
 }

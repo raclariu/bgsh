@@ -1,6 +1,7 @@
 // @ Libraries
 import React, { useState, useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Button from '@material-ui/core/Button'
@@ -14,44 +15,31 @@ import CustomAlert from '../components/CustomAlert'
 // @ Others
 import { bggGetCollection } from '../actions/collectionActions'
 import { BGG_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
+import { apiFetchBggCollection } from '../api/api'
 
 // @ Main
 const CollectionFetchBox = () => {
 	const dispatch = useDispatch()
+	const queryClient = useQueryClient()
 
 	const [ bggUsername, setBggUsername ] = useState('')
 
-	const bggCollection = useSelector((state) => state.bggCollection)
-	const { loading, error, success } = bggCollection
-
-	useEffect(
-		() => {
-			if (success) {
-				setBggUsername('')
-			}
-		},
-		[ success ]
-	)
-
-	useEffect(
-		() => {
-			return () => {
-				dispatch({ type: BGG_COLLECTION_LIST_RESET })
-			}
-		},
-		[ dispatch ]
-	)
+	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
+		onSuccess : () => {
+			queryClient.invalidateQueries([ 'collection' ])
+		}
+	})
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()
 		if (bggUsername.trim().length > 3) {
-			dispatch(bggGetCollection(bggUsername))
+			mutation.mutate(bggUsername)
 		}
 	}
 
 	return (
 		<form onSubmit={submitToBGGHandler} autoComplete="off">
-			{success && (
+			{mutation.isSuccess && (
 				<Box mb={2}>
 					<CustomAlert severity="success">
 						<Box>Collection successfully imported.</Box>
@@ -67,8 +55,8 @@ const CollectionFetchBox = () => {
 			<TextField
 				onChange={(e) => setBggUsername(e.target.value)}
 				value={bggUsername}
-				error={error ? true : false}
-				helperText={error ? error : false}
+				error={mutation.isError ? true : false}
+				helperText={mutation.isError ? mutation.error.response.data.message : false}
 				id="bggUsername"
 				name="bggUsername"
 				label="Import collection"
@@ -77,7 +65,9 @@ const CollectionFetchBox = () => {
 				variant="outlined"
 				fullWidth
 				InputProps={{
-					endAdornment : <Fragment>{loading ? <Loader color="secondary" size={20} /> : null}</Fragment>
+					endAdornment : (
+						<Fragment>{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}</Fragment>
+					)
 				}}
 			/>
 
@@ -85,7 +75,7 @@ const CollectionFetchBox = () => {
 				<Button
 					type="submit"
 					variant="contained"
-					disabled={loading || bggUsername.trim().length < 4}
+					disabled={mutation.isLoading || bggUsername.trim().length < 4}
 					color="primary"
 				>
 					Import collection

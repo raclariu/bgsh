@@ -7,8 +7,6 @@ const validateUsername = check('username').trim().custom(async (username, { req 
 		return true
 	}
 
-	console.log(req.user)
-
 	if (username === req.user.username) {
 		throw new Error('You cannot buy your own games')
 	}

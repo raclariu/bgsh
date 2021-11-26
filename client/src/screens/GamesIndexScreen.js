@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+import axios from 'axios'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -23,6 +25,7 @@ import DrawerFilter from '../components/Filters/DrawerFilter'
 // @ Others
 import { getGames } from '../actions/gameActions'
 import { GAMES_INDEX_RESET } from '../constants/gameConstants'
+import { fetchGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -45,19 +48,34 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const gamesIndex = useSelector((state) => state.gamesIndex)
-	const { loading, error, success, gamesData, pagination } = gamesIndex
+	// const gamesIndex = useSelector((state) => state.gamesIndex)
+	// const { loading, error, success, gamesData, pagination } = gamesIndex
 
-	useEffect(
+	// useEffect(
+	// 	() => {
+	// 		const mode = location.pathname === '/games' ? 'sell' : 'trade'
+	// 		dispatch(getGames(search, page, sort, mode))
+
+	// 		return () => {
+	// 			dispatch({ type: GAMES_INDEX_RESET })
+	// 		}
+	// 	},
+	// 	[ dispatch, search, page, sort, location ]
+	// )
+
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ location.pathname === '/games' ? 'saleGames' : 'tradeGames', { sort, search, page } ],
 		() => {
-			const mode = location.pathname === '/games' ? 'sell' : 'trade'
-			dispatch(getGames(search, page, sort, mode))
-
-			return () => {
-				dispatch({ type: GAMES_INDEX_RESET })
+			const params = {
+				search,
+				page,
+				sort,
+				mode   : location.pathname === '/games' ? 'sell' : 'trade'
 			}
+
+			return fetchGames(params)
 		},
-		[ dispatch, search, page, sort, location ]
+		{ staleTime: 1000 * 60 * 5 }
 	)
 
 	const handleFilters = (filter, type) => {
@@ -98,26 +116,34 @@ const GamesIndexScreen = () => {
 				<SortGames handleFilters={handleFilters} />
 			</Box>
 
-			{error && <CustomAlert severity="warning">{error}</CustomAlert>}
+			{isError && <CustomAlert severity="warning">{error.response.data.message}</CustomAlert>}
 
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
 			<Grid container spacing={3} className={cls.gridContainer}>
-				{success &&
-					gamesData.map((data) => (
-						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
-							<LazyLoad offset={200} once placeholder={<GameIndexCardSkeleton />}>
-								<GamesIndexCard gameId={data._id} />
+				{isSuccess &&
+					data.gamesData.map((data) => (
+						<Grid item key={data._id} md={4} sm={6} xs={12}>
+							<LazyLoad
+								offset={200}
+								once
+								placeholder={
+									<Box width="100%">
+										<GameIndexCardSkeleton />
+									</Box>
+								}
+							>
+								<GamesIndexCard data={data} sort={sort} />
 							</LazyLoad>
 						</Grid>
 					))}
 			</Grid>
 
-			{success && (
+			{isSuccess && (
 				<Box
 					display="flex"
 					alignItems="center"
@@ -127,7 +153,7 @@ const GamesIndexScreen = () => {
 					borderRadius={4}
 					mt={4}
 				>
-					<Paginate pagination={pagination} handleFilters={handleFilters} />
+					<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 				</Box>
 			)}
 		</div>

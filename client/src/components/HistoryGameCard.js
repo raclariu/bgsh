@@ -2,7 +2,6 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { format, formatDistance, parseISO } from 'date-fns'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -21,6 +20,9 @@ import CustomTooltip from './CustomTooltip'
 import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+
+// @ Others
+import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -54,20 +56,20 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const HistoryGameCard = ({ gameId, page }) => {
+const HistoryGameCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
 
-	const data = useSelector((state) => {
-		if (page === 'sold') {
-			return state.soldHistory.soldList.find((obj) => obj._id === gameId)
-		}
+	// const data = useSelector((state) => {
+	// 	if (page === 'sold') {
+	// 		return state.soldHistory.soldList.find((obj) => obj._id === gameId)
+	// 	}
 
-		if (page === 'traded') {
-			return state.tradedHistory.tradedList.find((obj) => obj._id === gameId)
-		}
-	})
+	// 	if (page === 'traded') {
+	// 		return state.tradedHistory.tradedList.find((obj) => obj._id === gameId)
+	// 	}
+	// })
 
 	const handleIndex = (type) => {
 		if (type === 'minus') {
@@ -83,11 +85,11 @@ const HistoryGameCard = ({ gameId, page }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={2}>
+		<Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/collCardPlaceholder.jpg'}
+				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.games[index].title}
 				title={data.games[index].title}
 			/>
@@ -101,23 +103,27 @@ const HistoryGameCard = ({ gameId, page }) => {
 			<CardContent>
 				<Box
 					display="flex"
-					justifyContent={data.type === 'pack' ? 'space-between' : 'center'}
+					justifyContent={data.isPack ? 'space-between' : 'center'}
 					alignItems="center"
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					{data.type === 'pack' ? (
+					{data.isPack ? (
 						<Fragment>
 							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={cls.title}>{data.games[index].title}</Box>
+							<Box className={cls.title}>
+								{data.games[index].title} ({data.games[index].year})
+							</Box>
 							<IconButton disabled={data.games.length === index + 1} onClick={() => handleIndex('plus')}>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={cls.title}>{data.games[index].title}</Box>
+						<Box className={cls.title}>
+							{data.games[index].title} ({data.games[index].year})
+						</Box>
 					)}
 				</Box>
 			</CardContent>
@@ -142,16 +148,12 @@ const HistoryGameCard = ({ gameId, page }) => {
 					)}
 
 					<Box display="flex" alignItems="center">
-						<CustomTooltip
-							title={format(parseISO(data.createdAt), 'iiii i MMMM y, H:mm', {
-								weekStartsOn : 1
-							})}
-						>
+						<CustomTooltip title={formatDate(data.createdAt)}>
 							<EventAvailableOutlinedIcon fontSize="small" />
 						</CustomTooltip>
 
 						<Box textAlign="center" ml={0.5}>
-							{formatDistance(parseISO(data.createdAt), new Date(), { addSuffix: true })}
+							{calculateTimeAgo(data.createdAt)}
 						</Box>
 					</Box>
 				</Box>

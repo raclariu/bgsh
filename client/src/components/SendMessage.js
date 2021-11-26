@@ -2,6 +2,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import IconButton from '@material-ui/core/IconButton'
@@ -20,6 +21,7 @@ import CustomTooltip from './CustomTooltip'
 // @ Others
 import { sendMessage } from '../actions/messageActions'
 import { SEND_MESSAGE_RESET } from '../constants/messageConstants'
+import { apiSendMessage } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -36,28 +38,25 @@ const useStyles = makeStyles((theme) => ({
 const SendMessage = ({ recipientUsername = '' }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
-
-	const [ open, setOpen ] = useState(false)
-
-	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')
-	const [ subject, setSubject ] = useState('')
-	const [ message, setMessage ] = useState('')
-
-	const sendMessageSelector = useSelector((state) => state.sendMessage)
-	const { success, error, loading } = sendMessageSelector
+	const queryClient = useQueryClient()
 
 	const username = useSelector((state) => state.userAuth.userData.username)
 
-	useEffect(
-		() => {
-			return () => {
-				if (success) {
-					dispatch({ type: SEND_MESSAGE_RESET })
-				}
-			}
+	const mutation = useMutation(
+		({ subject, message, recipient }) => {
+			return apiSendMessage(subject, message, recipient)
 		},
-		[ dispatch, success ]
+		{
+			onSuccess : () => {
+				queryClient.invalidateQueries([ 'sentMessages' ])
+			}
+		}
 	)
+
+	const [ open, setOpen ] = useState(false)
+	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')
+	const [ subject, setSubject ] = useState('')
+	const [ message, setMessage ] = useState('')
 
 	const handleOpenDialog = () => {
 		setOpen(true)
@@ -69,7 +68,8 @@ const SendMessage = ({ recipientUsername = '' }) => {
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		dispatch(sendMessage(subject, message, recipient))
+
+		mutation.mutate({ subject, message, recipient })
 	}
 
 	return (
@@ -87,8 +87,10 @@ const SendMessage = ({ recipientUsername = '' }) => {
 					<DialogContent>
 						<TextField
 							className={cls.input}
-							error={error && error.recipientUsernameError ? true : false}
-							helperText={error ? error.recipientUsernameError : false}
+							error={
+								mutation.isError && mutation.error.response.data.message.recipientError ? true : false
+							}
+							helperText={mutation.isError ? mutation.error.response.data.message.recipientError : false}
 							onChange={(e) => setRecipient(e.target.value)}
 							value={recipient}
 							inputProps={{
@@ -107,8 +109,8 @@ const SendMessage = ({ recipientUsername = '' }) => {
 
 						<TextField
 							className={cls.input}
-							error={error && error.subjectError ? true : false}
-							helperText={error ? error.subjectError : false}
+							error={mutation.isError && mutation.error.response.data.message.subjectError ? true : false}
+							helperText={mutation.isError ? mutation.error.response.data.message.subjectError : false}
 							onChange={(e) => setSubject(e.target.value)}
 							value={subject}
 							inputProps={{
@@ -125,8 +127,8 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						/>
 
 						<TextField
-							error={error && error.messageError ? true : false}
-							helperText={error ? error.messageError : false}
+							error={mutation.isError && mutation.error.response.data.message.messageError ? true : false}
+							helperText={mutation.isError ? mutation.error.response.data.message.messageError : false}
 							onChange={(e) => setMessage(e.target.value)}
 							value={message}
 							inputProps={{

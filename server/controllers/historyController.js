@@ -6,12 +6,14 @@ import Game from '../models/gameModel.js'
 import History from '../models/historyModel.js'
 
 // * @desc    Add game(s) to history as a result of user selling or trading
-// * @route   POST  /api/history/add
+// * @route   POST  /api/history
 // * @access  Private route
 const addGamesToHistory = asyncHandler(async (req, res) => {
 	const { games, username, price, gameId } = req.body
 
-	console.log(games, username, price, gameId)
+	const simplifyGames = games.map((game) => {
+		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+	})
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
@@ -25,21 +27,28 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const gameExists = await Game.findOne({ _id: gameId }).select('type mode').lean()
+	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
 
 	if (gameExists) {
+		if (gameExists.isActive === false) {
+			res.status(404)
+			throw {
+				message : 'Game is no longer available'
+			}
+		}
+
 		const history = await History.create({
 			mode       : gameExists.mode,
-			type       : gameExists.type,
+			isPack     : gameExists.isPack,
 			seller     : req.user._id,
 			buyer      : username ? username : null,
-			games,
+			games      : simplifyGames,
 			finalPrice : price ? price : null
 		})
 
 		if (history) {
 			await Game.findOneAndDelete({ _id: gameId })
-			res.status(200).json('success')
+			res.status(204).end()
 		} else {
 			res.status(500)
 			throw {

@@ -93,7 +93,7 @@ const changePassword = asyncHandler(async (req, res) => {
 		const hashed = await hashPassword(passwordNew)
 		await User.updateOne({ _id: req.user._id }, { password: hashed })
 
-		res.status(200).end()
+		res.status(204).end()
 	}
 })
 

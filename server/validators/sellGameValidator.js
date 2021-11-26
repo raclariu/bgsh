@@ -16,9 +16,8 @@ const validateExtraInfoPackTxt = check('extraInfoPack')
 	.isString()
 	.withMessage('Can only contain letters and numbers')
 
-const validateType = check('type')
-	.trim()
-	.isIn([ 'individual', 'pack' ])
+const validateIsPack = check('isPack')
+	.isIn([ true, false ])
 	.withMessage('You can only sell games individually or as a pack')
 
 const validateIsSleeved = check('games.*.isSleeved').isBoolean().withMessage('Sleeved option error')
@@ -70,7 +69,7 @@ const validateGameCondition = check('games').custom((games, { req }) => {
 })
 
 const validateGamePrice = check('games').custom((games, { req }) => {
-	if (req.body.type === 'pack') return true
+	if (req.body.isPack) return true
 
 	try {
 		for (let i = 0; i < req.body.games.length; i++) {
@@ -89,7 +88,7 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 })
 
 const validateGameTotalPrice = check('totalPrice').custom((totalPrice, { req }) => {
-	if (req.body.type === 'individual') return true
+	if (!req.body.isPack) return true
 
 	if (totalPrice > 0 && totalPrice < 10001) {
 		return true
@@ -116,7 +115,7 @@ const validateShipCities = check('shipCities').custom((data, { req }) => {
 })
 
 export {
-	validateType,
+	validateIsPack,
 	validateGameVersion,
 	validateGameCondition,
 	validateIsSleeved,

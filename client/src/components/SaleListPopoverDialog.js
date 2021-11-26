@@ -29,7 +29,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 						<Button
 							onClick={handleCloseDialog}
 							component={Link}
-							to={mode === 'sell' ? '/sell?type=pack' : '/trade?type=pack'}
+							to={mode === 'sell' ? '/sell?pack=true' : '/trade?pack=true'}
 						>
 							Pack
 						</Button>

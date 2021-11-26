@@ -3,6 +3,7 @@ import React, { Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import LazyLoad from 'react-lazyload'
+import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from 'react-query'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
@@ -10,9 +11,11 @@ import Grid from '@material-ui/core/Grid'
 // @ Components
 import HotGameCard from '../components/HotGameCard'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { bggGetHotGames } from '../actions/gameActions'
+import { apiFetchHotGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -27,32 +30,26 @@ const HotGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 
-	const hotGames = useSelector((state) => state.bggHotGames)
-	const { loading, success, error, hotList } = hotGames
-
-	useEffect(
-		() => {
-			if (!hotList) {
-				dispatch(bggGetHotGames())
-			}
-		},
-		[ hotList, dispatch ]
-	)
+	const { isLoading, error, data, isSuccess } = useQuery([ 'hotGames' ], apiFetchHotGames, {
+		staleTime : 1000 * 60 * 60
+	})
 
 	return (
 		<Fragment>
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.grid} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{success && (
+			{error && <CustomAlert>{error.response.data.message}</CustomAlert>}
+
+			{isSuccess && (
 				<Grid container className={cls.grid} spacing={2}>
-					{hotList.map((game) => (
-						<Grid key={game.bggId} item xs={12} sm={6} md={4}>
+					{data.map((data) => (
+						<Grid key={data.bggId} item xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<HotGameCard bggId={game.bggId} />
+								<HotGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}

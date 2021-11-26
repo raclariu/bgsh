@@ -10,17 +10,19 @@ import {
 	addWantedGames,
 	getGames,
 	getWantedGames,
-	getUserActiveGames,
+	getUserListedGames,
+	getUserWantedGames,
 	getSingleGame,
 	switchSaveGame,
 	getSavedGames,
 	getSingleSavedGame,
 	deleteGame,
+	deleteWantedGame,
 	reactivateGame
 } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
 import {
-	validateType,
+	validateIsPack,
 	validateGameVersion,
 	validateGameCondition,
 	validateIsSleeved,
@@ -36,7 +38,9 @@ import { validatePrefShipping } from '../validators/wantedValidator.js'
 // @route /api/games
 router.route('/').get(protect, getGames)
 router.route('/delete/:id').delete(protect, deleteGame)
-router.route('/user/:id').get(protect, getUserActiveGames)
+router.route('/wanted/delete/:id').delete(protect, deleteWantedGame)
+router.route('/user/:id/wanted').get(protect, getUserWantedGames)
+router.route('/user/:id').get(protect, getUserListedGames)
 router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
 router.route('/saved/:altId').get(protect, getSingleSavedGame)
 router.route('/wanted').get(protect, getWantedGames).post([ protect, validatePrefShipping ], addWantedGames)
@@ -51,7 +55,7 @@ router
 	.post(
 		[
 			protect,
-			validateType,
+			validateIsPack,
 			validateGameVersion,
 			validateGameCondition,
 			validateIsSleeved,
@@ -67,7 +71,7 @@ router
 	.post(
 		[
 			protect,
-			validateType,
+			validateIsPack,
 			validateGameVersion,
 			validateGameCondition,
 			validateIsSleeved,

@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -20,6 +21,7 @@ import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { getTradedGamesHistory } from '../actions/historyActions'
+import { apiFetchTradedGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,14 +50,12 @@ const HistorySoldGames = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const tradedHistory = useSelector((state) => state.tradedHistory)
-	const { loading, success, error, tradedList, pagination } = tradedHistory
-
-	useEffect(
-		() => {
-			dispatch(getTradedGamesHistory(page, search))
-		},
-		[ dispatch, page, search ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'tradedGames', { search, page } ],
+		() => apiFetchTradedGames(search, page),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
 
 	const handleFilters = (filter, type) => {
@@ -81,39 +81,39 @@ const HistorySoldGames = () => {
 				</Grid>
 			</Grid>
 
-			{loading && (
+			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(16).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			{error && (
+			{isError && (
 				<Box mt={2}>
-					<CustomAlert>{error}</CustomAlert>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</Box>
 			)}
 
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{pagination && <Box fontSize={12}>Found {pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
 
-			{success && (
+			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{tradedList.map((data) => (
+					{data.tradedList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<HistoryGameCard gameId={data._id} page="traded" />
+								<HistoryGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
 				</Grid>
 			)}
 
-			{success &&
-				(pagination.totalPages > 1 && (
+			{isSuccess &&
+				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
 						alignItems="center"
@@ -123,7 +123,7 @@ const HistorySoldGames = () => {
 						borderRadius={4}
 						mt={4}
 					>
-						<Paginate pagination={pagination} handleFilters={handleFilters} />
+						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>

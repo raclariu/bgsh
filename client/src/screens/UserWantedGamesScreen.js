@@ -1,59 +1,54 @@
 // @ Libraries
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery } from 'react-query'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
-import { useQuery } from 'react-query'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Grid from '@material-ui/core/Grid'
+import Card from '@material-ui/core/Card'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import Chip from '@material-ui/core/Chip'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
 
 // @ Components
-import SavedGameCard from '../components/SavedGameCard'
+import Paginate from '../components/Paginate'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import UserWantedGameCard from '../components/UserWantedGameCard'
 
-// @ Others
-import { getSavedGames } from '../actions/gameActions'
-import { SAVED_GAMES_RESET } from '../constants/gameConstants'
-import { apiFetchSavedGames } from '../api/api'
+// @ Other
+import { getUserWantedGames } from '../actions/gameActions'
+import { apiFetchUserWantedGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	root          : {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
 	gridContainer : {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
-	},
-	title         : {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden'
 	}
 }))
 
 // @ Main
-const SavedGamesScreen = () => {
+const UserWantedGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
-	const history = useHistory()
 	const location = useLocation()
+	const history = useHistory()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'savedGames', { search, page } ],
-		() => apiFetchSavedGames(search, page),
+		[ 'myWantedGames', { search, page } ],
+		() => apiFetchUserWantedGames(search, page),
 		{
 			staleTime : 1000 * 60 * 60
 		}
@@ -75,24 +70,12 @@ const SavedGamesScreen = () => {
 	}
 
 	return (
-		<div className={cls.root}>
+		<Fragment>
 			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+				<Grid item md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
-
-			{isLoading && (
-				<Grid container className={cls.gridContainer} spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
-				</Grid>
-			)}
-
-			{isError && (
-				<Box mt={2}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</Box>
-			)}
 
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
@@ -101,12 +84,20 @@ const SavedGamesScreen = () => {
 				</Box>
 			)}
 
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
+
+			{isLoading && (
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+				</Grid>
+			)}
+
 			{isSuccess && (
-				<Grid container className={cls.gridContainer} spacing={3}>
-					{data.list.map((data) => (
+				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+					{data.wantedGames.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-								<SavedGameCard data={data} />
+								<UserWantedGameCard data={data} />
 							</LazyLoad>
 						</Grid>
 					))}
@@ -127,8 +118,8 @@ const SavedGamesScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</div>
+		</Fragment>
 	)
 }
 
-export default SavedGamesScreen
+export default UserWantedGamesScreen

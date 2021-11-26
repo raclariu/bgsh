@@ -3,6 +3,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery } from 'react-query'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
 import LazyLoad from 'react-lazyload'
@@ -57,6 +58,7 @@ import CustomTooltip from '../components/CustomTooltip'
 // @ Others
 import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
 import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
+import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -134,6 +136,37 @@ const SingleGameScreen = () => {
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'singleGame', altId ],
+		() => apiFetchSingleGame(altId),
+		{
+			staleTime : 1000 * 60 * 60
+		}
+	)
+
+	const {
+		isLoading : isLoadingGallery,
+		isError   : isErrorGallery,
+		error     : errorGallery,
+		data      : galleryData,
+		isSuccess : isSuccessGallery
+	} = useQuery(
+		[ 'gallery', altId ],
+		() => {
+			const bggIds = data.games.map((game) => game.bggId)
+			return apiFetchGallery(bggIds)
+		},
+		{
+			enabled   : isSuccess,
+			staleTime : 1000 * 60 * 60
+		}
+	)
+
+	const [ index, setIndex ] = useState(0)
+	const [ imgIndex, setImgIndex ] = useState(0)
+	const [ open, setOpen ] = useState(false)
+	const [ imgLoaded, setImgLoaded ] = useState(false)
+
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
 			return image ? image : '/images/gameImgPlaceholder.jpg'
@@ -141,41 +174,6 @@ const SingleGameScreen = () => {
 			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
 		}
 	}
-
-	const [ index, setIndex ] = useState(0)
-	const [ imgIndex, setImgIndex ] = useState(0)
-	const [ open, setOpen ] = useState(false)
-	const [ imgLoaded, setImgLoaded ] = useState(false)
-
-	const gameForSale = useSelector((state) => state.gameForSale)
-	const { loading, success, error, saleData: data } = gameForSale
-
-	const bggGallery = useSelector((state) => state.bggGallery)
-	const { loading: loadingGallery, success: successGallery, error: errorGallery, gallery } = bggGallery
-
-	useEffect(
-		() => {
-			dispatch(getSingleGame(altId))
-
-			dispatch(getSingleSavedGame(altId))
-
-			return () => {
-				dispatch({ type: FOR_SALE_SINGLE_GAME_RESET })
-			}
-		},
-		[ dispatch, altId ]
-	)
-
-	useEffect(
-		() => {
-			if (success) {
-				const mappedBggIds = data.games.map((game) => game.bggId)
-
-				dispatch(bggGetGallery(mappedBggIds))
-			}
-		},
-		[ dispatch, success, data ]
-	)
 
 	const handleOpenImage = (imgIndexClicked) => {
 		setImgIndex(imgIndexClicked)
@@ -212,7 +210,7 @@ const SingleGameScreen = () => {
 			}
 		}
 		if (type === 'forward') {
-			if (gallery[index].length > imgIndex + 1) {
+			if (galleryData[index].length > imgIndex + 1) {
 				setImgLoaded(false)
 				setImgIndex(imgIndex + 1)
 			}
@@ -221,11 +219,24 @@ const SingleGameScreen = () => {
 
 	return (
 		<div className={cls.root}>
-			{success && (
-				<Fragment>
-					<HelmetComponent title={success ? data.games[index].title : 'Boardgame'} />
+			{isLoading && (
+				<Box display="flex" justifyContent="center">
+					{' '}
+					<Loader />
+				</Box>
+			)}
 
-					{data.type === 'pack' && (
+			{isError && (
+				<Box>
+					<CustomAlert>{error.response.data.message}</CustomAlert>
+				</Box>
+			)}
+
+			{isSuccess && (
+				<Fragment>
+					<HelmetComponent title={isSuccess ? data.games[index].title : 'Boardgame'} />
+
+					{data.isPack && (
 						<Box display="flex" className={cls.fab}>
 							<Fab
 								size="small"
@@ -542,21 +553,27 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					<Box display="flex" alignItems="center">
-						{loadingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" fontSize="small" />}
+						{isLoadingGallery ? (
+							<Loader size={20} />
+						) : (
+							<ImageTwoToneIcon color="primary" fontSize="small" />
+						)}
 
 						<Box ml={1} className={cls.mainGrid} fontSize={16}>
 							Gallery
 						</Box>
 					</Box>
 
-					{errorGallery && <CustomAlert severity="warning">{errorGallery}</CustomAlert>}
+					{isErrorGallery && (
+						<CustomAlert severity="warning">{errorGallery.data.response.message}</CustomAlert>
+					)}
 
-					{successGallery && (
+					{isSuccessGallery && (
 						<Fragment>
-							{gallery[index].length > 0 && (
+							{galleryData[index].length > 0 && (
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 									<Masonry gutter="10px">
-										{gallery[index].map((obj, i) => (
+										{galleryData[index].map((obj, i) => (
 											<Box
 												key={obj.imageid}
 												borderRadius={4}
@@ -581,9 +598,9 @@ const SingleGameScreen = () => {
 							<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
 								<DialogTitle disableTypography>
 									<Box display="flex" flexDirection="column">
-										<Box fontSize="1rem">{gallery[index][imgIndex].caption}</Box>
+										<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
 										<Box mt={0.5} fontSize="0.70rem" color="grey.500">
-											{`Posted on BGG by ${gallery[index][imgIndex].postedBy}`}
+											{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
 										</Box>
 									</Box>
 								</DialogTitle>
@@ -592,8 +609,8 @@ const SingleGameScreen = () => {
 									<Box display="flex" justifyContent="center" alignItems="center">
 										<img
 											className={cls.dialogImg}
-											alt={gallery[index][imgIndex].caption}
-											src={gallery[index][imgIndex].image}
+											alt={galleryData[index][imgIndex].caption}
+											src={galleryData[index][imgIndex].image}
 											hidden={!imgLoaded}
 											onLoad={onImgLoad}
 										/>
@@ -619,7 +636,7 @@ const SingleGameScreen = () => {
 											</CustomTooltip>
 											<CustomTooltip title="Next image">
 												<IconButton
-													disabled={gallery[index].length === imgIndex + 1}
+													disabled={galleryData[index].length === imgIndex + 1}
 													onClick={() => cycleImages('forward')}
 												>
 													<ArrowForwardIcon />
@@ -630,7 +647,7 @@ const SingleGameScreen = () => {
 										<Button
 											color="primary"
 											variant="outlined"
-											href={`https://boardgamegeek.com${gallery[index][imgIndex].extLink}`}
+											href={`https://boardgamegeek.com${galleryData[index][imgIndex].extLink}`}
 											target="_blank"
 											rel="noopener"
 										>
@@ -640,7 +657,7 @@ const SingleGameScreen = () => {
 								</DialogActions>
 							</Dialog>
 
-							{gallery[index].length === 0 && (
+							{galleryData[index].length === 0 && (
 								<CustomAlert severity="warning">{`${data.games[index].title}`}</CustomAlert>
 							)}
 						</Fragment>

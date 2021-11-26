@@ -41,9 +41,9 @@ import {
 	SAVED_GAMES_SINGLE_REQUEST,
 	SAVED_GAMES_SINGLE_SUCCESS,
 	SAVED_GAMES_SINGLE_FAIL,
-	USER_ACTIVE_GAMES_REQUEST,
-	USER_ACTIVE_GAMES_SUCCESS,
-	USER_ACTIVE_GAMES_FAIL,
+	USER_LISTED_GAMES_REQUEST,
+	USER_LISTED_GAMES_SUCCESS,
+	USER_LISTED_GAMES_FAIL,
 	GAME_DELETE_REQUEST,
 	GAME_DELETE_SUCCESS,
 	GAME_DELETE_FAIL,
@@ -56,7 +56,11 @@ import {
 	WANTED_GAMES_INDEX_REQUEST,
 	WANTED_GAMES_INDEX_SUCCESS,
 	WANTED_GAMES_INDEX_FAIL,
-	WANTED_GAMES_INDEX_RESET
+	WANTED_GAMES_INDEX_RESET,
+	USER_WANTED_GAMES_REQUEST,
+	USER_WANTED_GAMES_SUCCESS,
+	USER_WANTED_GAMES_FAIL,
+	GAME_DELETE_RESET
 } from '../constants/gameConstants'
 
 export const bggGetGamesDetailsReducer = (state = {}, action) => {
@@ -247,20 +251,41 @@ export const getWantedGamesReducer = (state = {}, action) => {
 	}
 }
 
-export const getUserActiveGamesReducer = (state = {}, action) => {
+export const getUserListedGamesReducer = (state = {}, action) => {
 	switch (action.type) {
-		case USER_ACTIVE_GAMES_REQUEST:
+		case USER_LISTED_GAMES_REQUEST:
 			return { loading: true }
 
-		case USER_ACTIVE_GAMES_SUCCESS:
+		case USER_LISTED_GAMES_SUCCESS:
 			return {
 				loading     : false,
 				success     : true,
-				activeGames : action.payload.activeGames,
+				listedGames : action.payload.listedGames,
 				pagination  : action.payload.pagination
 			}
 
-		case USER_ACTIVE_GAMES_FAIL:
+		case USER_LISTED_GAMES_FAIL:
+			return { loading: false, error: action.payload }
+
+		default:
+			return state
+	}
+}
+
+export const getUserWantedGamesReducer = (state = {}, action) => {
+	switch (action.type) {
+		case USER_WANTED_GAMES_REQUEST:
+			return { loading: true }
+
+		case USER_WANTED_GAMES_SUCCESS:
+			return {
+				loading     : false,
+				success     : true,
+				wantedGames : action.payload.wantedGames,
+				pagination  : action.payload.pagination
+			}
+
+		case USER_WANTED_GAMES_FAIL:
 			return { loading: false, error: action.payload }
 
 		default:
@@ -360,6 +385,9 @@ export const deleteGameReducer = (state = {}, action) => {
 
 		case GAME_DELETE_FAIL:
 			return { loading: false, error: action.payload }
+
+		case GAME_DELETE_RESET:
+			return {}
 
 		default:
 			return state

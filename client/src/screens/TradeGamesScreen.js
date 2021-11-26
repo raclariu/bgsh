@@ -39,7 +39,8 @@ const TradeGamesScreen = () => {
 	const location = useLocation()
 	const history = useHistory()
 
-	const { type = 'individual' } = queryString.parse(location.search)
+	let { pack: isPack = false } = queryString.parse(location.search)
+	isPack = !!isPack
 
 	const saleList = useSelector((state) => state.saleList)
 	const slRef = useRef(
@@ -61,11 +62,7 @@ const TradeGamesScreen = () => {
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ values, setValues ] = useState(slRef.current)
 
-	if (type !== 'individual' && type !== 'pack') {
-		history.push('/trade')
-	}
-
-	if (saleList.length === 1 && type === 'pack') {
+	if (saleList.length === 1 && isPack) {
 		history.push('/trade')
 	}
 
@@ -154,12 +151,12 @@ const TradeGamesScreen = () => {
 
 		const gamesData = {
 			games         : gamesCopy,
-			type,
+			isPack,
 			shipPost,
 			shipCourier,
 			shipPersonal,
 			shipCities,
-			extraInfoPack : type === 'pack' ? extraInfoPack.trim() : ''
+			extraInfoPack : isPack ? extraInfoPack.trim() : ''
 		}
 		console.log({ values, gamesData, games, saleList })
 
@@ -187,7 +184,7 @@ const TradeGamesScreen = () => {
 									<Grid item key={game.bggId} md={6} xs={12}>
 										<SellGameCard
 											game={game}
-											type={type}
+											isPack={isPack}
 											mode="trade"
 											data={values.find((val) => val.bggId === game.bggId)}
 											removeFromSaleListHandler={removeFromSaleListHandler}
@@ -211,7 +208,7 @@ const TradeGamesScreen = () => {
 							/>
 						</Grid>
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-							{type === 'pack' && (
+							{isPack && (
 								<Fragment>
 									<Grid item>
 										<PackInfoTextarea

@@ -24,7 +24,8 @@ import {
 	getSingleGameReducer,
 	savedGameStatusReducer,
 	savedGamesListReducer,
-	getUserActiveGamesReducer,
+	getUserListedGamesReducer,
+	getUserWantedGamesReducer,
 	deleteGameReducer,
 	reactivateGameReducer
 } from './reducers/gameReducers'
@@ -63,7 +64,8 @@ const reducer = combineReducers({
 	gamesIndex       : getGamesReducer,
 	wantedGamesIndex : getWantedGamesReducer,
 	gameForSale      : getSingleGameReducer,
-	userActiveGames  : getUserActiveGamesReducer,
+	userListedGames  : getUserListedGamesReducer,
+	userWantedGames  : getUserWantedGamesReducer,
 	wishlist         : getWishlistReducer,
 	saleList         : saleListReducer,
 	sellGames        : sellGamesReducer,

@@ -13,10 +13,9 @@ const gameSchema = mongoose.Schema(
 			type    : String,
 			default : () => genNanoId(8)
 		},
-
 		games            : [ Object ],
 		shipCities       : [ String ],
-		type             : String,
+		isPack           : Boolean,
 		shipCourier      : Boolean,
 		shipPost         : Boolean,
 		shipPersonal     : Boolean,

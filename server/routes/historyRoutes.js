@@ -5,7 +5,7 @@ import { addGamesToHistory, getSoldGamesHistory, getTradedGamesHistory } from '.
 import { validateUsername } from '../validators/historyValidator.js'
 
 // @route /api/history
-router.route('/add').post([ protect, validateUsername ], addGamesToHistory)
+router.route('/').post([ protect, validateUsername ], addGamesToHistory)
 router.route('/sold').get(protect, getSoldGamesHistory)
 router.route('/traded').get(protect, getTradedGamesHistory)
 

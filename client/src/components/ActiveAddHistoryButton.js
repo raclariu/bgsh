@@ -2,6 +2,7 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -23,10 +24,12 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 // @ Components
 import Loader from './Loader'
 import CustomTooltip from './CustomTooltip'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { deleteGame, reactivateGame } from '../actions/gameActions'
+import { deleteGame, reactivateGame, deleteWantedGame } from '../actions/gameActions'
 import { addGamesToHistory } from '../actions/historyActions'
+import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -52,19 +55,47 @@ const useStyles = makeStyles((theme) => ({
 const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
+	const queryClient = useQueryClient()
 
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ buyerUsername, setBuyerUsername ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState(price ? price : '')
 
-	const { loading, success, error } = useSelector((state) => state.addToHistory)
+	// const addGame = useSelector((state) => state.addToHistory)
+	// const { loading, success, error } = addGame
 
-	const { loading: loadingDelete, success: successDelete, error: errorDelete } = useSelector(
-		(state) => state.deleteGame
+	// const delGame = useSelector((state) => state.deleteGame)
+	// const { loading: loadingDelete, success: successDelete, error: errorDelete } = delGame
+
+	// const reactivateGame = useSelector((state) => state.reactivateGame)
+	// const { loading: loadingReactivate, success: successReactivate, error: errorReactivate } = reactivateGame
+
+	const addGame = useMutation(
+		({ games, buyerUsername, finalPrice, gameId }) =>
+			apiAddGameToHistory(games, buyerUsername.trim().toLowerCase(), finalPrice, gameId)
+		// {
+		// 	onSuccess : () => {
+		// 		queryClient.invalidateQueries('listedGames')
+		// 	}
+		// }
 	)
 
-	const { loading: loadingReactivate, success: successReactivate, error: errorReactivate } = useSelector(
-		(state) => state.reactivateGame
+	const deleteGame = useMutation(
+		(gameId) => apiDeleteListedGame(gameId)
+		// {
+		// 	onSuccess : () => {
+		// 		queryClient.invalidateQueries('listedGames')
+		// 	}
+		// }
+	)
+
+	const reactivateGame = useMutation(
+		(gameId) => apiReactivateListedGame(gameId)
+		// {
+		// 	onSuccess : () => {
+		// 		queryClient.invalidateQueries('listedGames')
+		// 	}
+		// }
 	)
 
 	const handleOpenDialog = () => {
@@ -73,20 +104,30 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 	const handleCloseDialog = () => {
 		setOpenDialog(false)
+		if (addGame.isSuccess || deleteGame.isSuccess || reactivateGame.isSuccess) {
+			queryClient.invalidateQueries('listedGames')
+			addGame.reset()
+			deleteGame.reset()
+			reactivateGame.reset()
+		}
 	}
 
 	const deleteGameHandler = () => {
-		dispatch(deleteGame(gameId))
+		if (mode === 'wanted') {
+			dispatch(deleteWantedGame(gameId))
+		} else {
+			deleteGame.mutate(gameId)
+		}
 	}
 
 	const reactivateGameHandler = () => {
-		dispatch(reactivateGame(gameId))
+		reactivateGame.mutate(gameId)
 	}
 
 	const submitHandler = (e) => {
 		e.preventDefault()
 
-		dispatch(addGamesToHistory(games, buyerUsername.trim().toLowerCase(), finalPrice, gameId))
+		addGame.mutate({ games, buyerUsername, finalPrice, gameId })
 	}
 
 	return (
@@ -94,9 +135,11 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
-						<IconButton onClick={handleOpenDialog} color="primary">
-							<CheckCircleOutlineOutlinedIcon fontSize="small" />
-						</IconButton>
+						<span>
+							<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary">
+								<CheckCircleOutlineOutlinedIcon fontSize="small" />
+							</IconButton>
+						</span>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
@@ -112,11 +155,20 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<form onSubmit={submitHandler} autoComplete="off">
+								{addGame.isSuccess && (
+									<Box mb={2}>
+										<CustomAlert severity="success">
+											Success. You can now close this window.
+										</CustomAlert>
+									</Box>
+								)}
 								<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 									<TextField
 										className={cls.input}
-										error={error && error.usernameError ? true : false}
-										helperText={error ? error.usernameError : false}
+										error={addGame.isError ? true : false}
+										helperText={
+											addGame.isError ? addGame.error.response.data.message.usernameError : false
+										}
 										onChange={(e) => setBuyerUsername(e.target.value)}
 										value={buyerUsername}
 										inputProps={{
@@ -151,21 +203,23 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 										/>
 									)}
 
-									<Button
-										className={cls.button}
-										disabled={loading}
-										type="submit"
-										variant="contained"
-										color="primary"
-									>
-										{loading ? (
-											<Loader color="inherit" size={24} />
-										) : mode === 'sell' ? (
-											'Sell'
-										) : (
-											'Trade'
-										)}
-									</Button>
+									{!addGame.isSuccess && (
+										<Button
+											className={cls.button}
+											disabled={addGame.isLoading}
+											type="submit"
+											variant="contained"
+											color="primary"
+										>
+											{addGame.isLoading ? (
+												<Loader color="inherit" size={24} />
+											) : mode === 'sell' ? (
+												'Sell'
+											) : (
+												'Trade'
+											)}
+										</Button>
+									)}
 								</Box>
 							</form>
 						</DialogContent>
@@ -190,17 +244,27 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
-								<Button
-									disabled={loadingDelete}
-									onClick={deleteGameHandler}
-									variant="contained"
-									color="primary"
-								>
-									{loadingDelete ? <Loader color="inherit" size={24} /> : 'Delete'}
-								</Button>
-								<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
-									Go back
-								</Button>
+								{deleteGame.isSuccess ? (
+									<Box mb={2}>
+										<CustomAlert severity="success">
+											Success. You can now close this window.
+										</CustomAlert>
+									</Box>
+								) : (
+									<Fragment>
+										<Button
+											disabled={deleteGame.isLoading}
+											onClick={deleteGameHandler}
+											variant="contained"
+											color="primary"
+										>
+											{deleteGame.isLoading ? <Loader color="inherit" size={24} /> : 'Delete'}
+										</Button>
+										<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
+											Go back
+										</Button>
+									</Fragment>
+								)}
 							</Box>
 						</DialogContent>
 					</Dialog>
@@ -226,17 +290,27 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
-								<Button
-									disabled={loadingReactivate}
-									onClick={reactivateGameHandler}
-									variant="contained"
-									color="primary"
-								>
-									{loadingReactivate ? <Loader color="inherit" size={24} /> : 'Yes'}
-								</Button>
-								<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
-									Go back
-								</Button>
+								{reactivateGame.isSuccess ? (
+									<Box mb={2}>
+										<CustomAlert severity="success">
+											Success. You can now close this window.
+										</CustomAlert>
+									</Box>
+								) : (
+									<Fragment>
+										<Button
+											disabled={reactivateGame.isLoading}
+											onClick={reactivateGameHandler}
+											variant="contained"
+											color="primary"
+										>
+											{reactivateGame.isLoading ? <Loader color="inherit" size={24} /> : 'Yes'}
+										</Button>
+										<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
+											Go back
+										</Button>
+									</Fragment>
+								)}
 							</Box>
 						</DialogContent>
 					</Dialog>
