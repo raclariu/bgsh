@@ -47,7 +47,7 @@ const UserListedGamesScreen = () => {
 	const { search, page = 1 } = queryString.parse(location.search)
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'listedGames', { search, page } ],
+		[ 'myListedGames', { search, page } ],
 		() => apiFetchListedGames(search, page),
 		{
 			staleTime : 1000 * 60 * 60

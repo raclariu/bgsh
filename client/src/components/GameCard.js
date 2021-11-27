@@ -44,16 +44,6 @@ const useStyles = makeStyles((theme) => ({
 const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 	const cls = useStyles()
 
-	// const game = useSelector((state) => {
-	// 	if (page === 'collection') {
-	// 		return state.dbCollection.owned.find((obj) => obj.bggId === bggId)
-	// 	}
-
-	// 	if (page === 'wishlist') {
-	// 		return state.wishlist.wishlist.find((obj) => obj.bggId === bggId)
-	// 	}
-	// })
-
 	return (
 		<Card elevation={1}>
 			<CardMedia
@@ -94,18 +84,6 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 							BGG
 						</Button>
 					</CustomTooltip>
-
-					{/* {page === 'wishlist' && (
-						<CustomTooltip title="Search this game on market">
-							<IconButton
-								color="primary"
-								component={RouterLink}
-								to={`/games?search=${game.title.toLowerCase()}`}
-							>
-								<SearchIcon fontSize="small" />
-							</IconButton>
-						</CustomTooltip>
-					)} */}
 
 					<CustomTooltip
 						title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}

@@ -51,7 +51,9 @@ const WishlistScreen = () => {
 	const { isLoading, isError, error, isSuccess, data } = useQuery(
 		[ 'wishlist', { search, page } ],
 		() => apiFetchWishlist(search, page),
-		{ staleTime: 1000 * 60 * 60 }
+		{
+			staleTime : Infinity
+		}
 	)
 
 	const saleList = useSelector((state) => state.saleList)
@@ -73,8 +75,8 @@ const WishlistScreen = () => {
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, image, _id } = data.wishlist.find((el) => el.bggId === id)
-			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
+			const { bggId, title, year, thumbnail, image } = data.wishlist.find((el) => el.bggId === id)
+			dispatch(addToSaleList({ bggId, title, year, thumbnail, image }))
 		} else {
 			dispatch(removeFromSaleList(id))
 		}
@@ -108,7 +110,7 @@ const WishlistScreen = () => {
 			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{data.wishlist.map((data) => (
-						<Grid item key={data._id} xl={4} lg={4} md={4} sm={6} xs={12}>
+						<Grid item key={data.bggId} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard
 									data={data}

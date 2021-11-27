@@ -703,7 +703,7 @@ const Header = () => {
 														fontSize="subtitle2.fontSize"
 														color="text.secondary"
 													>
-														Log out
+														Sign Out
 													</Box>
 												}
 											/>
@@ -715,7 +715,7 @@ const Header = () => {
 							<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 								<DialogTitle disableTypography>
 									<Typography variant="subtitle2" align="center">
-										Are you sure you want to logout?
+										Are you sure you want to sign out?
 									</Typography>
 								</DialogTitle>
 

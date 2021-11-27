@@ -60,8 +60,6 @@ const useStyles = makeStyles((theme) => ({
 const ListedGameCard = ({ data }) => {
 	const cls = useStyles()
 
-	// const data = useSelector((state) => state.userListedGames.listedGames.find((obj) => obj._id === gameId))
-
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {

@@ -14,7 +14,9 @@ import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { bggGetCollection } from '../actions/collectionActions'
+import { clearSaleList } from '../actions/gameActions'
 import { BGG_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
+import { SALE_LIST_RESET } from '../constants/gameConstants'
 import { apiFetchBggCollection } from '../api/api'
 
 // @ Main
@@ -27,6 +29,8 @@ const CollectionFetchBox = () => {
 	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
 		onSuccess : () => {
 			queryClient.invalidateQueries([ 'collection' ])
+			queryClient.invalidateQueries([ 'wishlist' ])
+			dispatch(clearSaleList())
 		}
 	})
 

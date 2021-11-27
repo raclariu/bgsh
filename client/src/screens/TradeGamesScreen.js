@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui
@@ -20,6 +21,7 @@ import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 // @ Others
 import { bggGetGamesDetails, removeFromSaleList, tradeGames } from '../actions/gameActions'
 import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
+import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +40,7 @@ const TradeGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
+	const queryClient = useQueryClient()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
@@ -62,32 +65,31 @@ const TradeGamesScreen = () => {
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ values, setValues ] = useState(slRef.current)
 
+	if (isPack !== false && isPack !== true) {
+		history.push('/sell')
+	}
+
 	if (saleList.length === 1 && isPack) {
 		history.push('/trade')
 	}
 
-	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
-	const { loading: detailsLoading, error: detailsError, success: detailsSuccess, games } = bggGamesDetails
-
-	const trade = useSelector((state) => state.tradeGames)
-	const { loading: tradeLoading, error: tradeError, success: tradeSuccess } = trade
-
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
+	const mapped = slRef.current.map((el) => el.bggId)
 
-	useEffect(
-		() => {
-			const mapped = slRef.current.map((el) => el.bggId)
-
-			if (mapped.length > 0) {
-				dispatch(bggGetGamesDetails(mapped))
-			}
-
-			return () => {
-				dispatch({ type: BGG_GAMES_DETAILS_RESET })
-			}
-		},
-		[ dispatch, location.key ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'bggGamesDetails' ],
+		() => apiFetchGameDetails(mapped),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
+
+	const mutation = useMutation((gamesData) => apiListGamesForTrade(gamesData), {
+		onSuccess : () => {
+			queryClient.invalidateQueries('saleGames')
+			queryClient.invalidateQueries('myListedGames')
+		}
+	})
 
 	useEffect(
 		() => {
@@ -96,6 +98,15 @@ const TradeGamesScreen = () => {
 			}
 		},
 		[ saleList ]
+	)
+
+	useEffect(
+		() => {
+			return () => {
+				queryClient.invalidateQueries('bggGamesDetails')
+			}
+		},
+		[ queryClient ]
 	)
 
 	const removeFromSaleListHandler = (id) => {
@@ -132,10 +143,12 @@ const TradeGamesScreen = () => {
 		}
 	}
 
+	console.log({ values, data, saleList })
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesCopy = games.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
+		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
 			if (index !== -1) {
@@ -158,27 +171,28 @@ const TradeGamesScreen = () => {
 			shipCities,
 			extraInfoPack : isPack ? extraInfoPack.trim() : ''
 		}
-		console.log({ values, gamesData, games, saleList })
+		console.log({ values, gamesCopy, gamesData, data, saleList })
 
-		dispatch(tradeGames(gamesData))
+		mutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className={cls.error}>
-				{detailsError && <CustomAlert>{detailsError}</CustomAlert>}
+				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-				{tradeError && tradeError.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+				{mutation.isError &&
+					mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
 
 				{saleList.length === 0 && <CustomAlert severity="warning">Your trade list is empty</CustomAlert>}
 			</div>
 
-			{detailsLoading && <Loader />}
+			{isLoading && <Loader />}
 
-			{detailsSuccess && (
+			{isSuccess && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
-						{games.map(
+						{data.map(
 							(game) =>
 								values.find((val) => val.bggId === game.bggId) && (
 									<Grid item key={game.bggId} md={6} xs={12}>

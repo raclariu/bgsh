@@ -17,7 +17,8 @@ const collectionSchema = mongoose.Schema(
 				year      : Number,
 				thumbnail : String,
 				image     : String,
-				added     : Date
+				added     : Date,
+				_id       : false
 			}
 		],
 		ownedCount : Number

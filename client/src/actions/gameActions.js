@@ -12,6 +12,7 @@ import {
 	BGG_GAME_GALLERY_FAIL,
 	SALE_LIST_ADD,
 	SALE_LIST_REMOVE,
+	SALE_LIST_RESET,
 	SELL_GAMES_REQUEST,
 	SELL_GAMES_SUCCESS,
 	SELL_GAMES_FAIL,
@@ -162,6 +163,12 @@ export const removeFromSaleList = (id) => (dispatch, getState) => {
 		type    : SALE_LIST_REMOVE,
 		payload : filtered
 	})
+}
+
+export const clearSaleList = () => (dispatch) => {
+	localStorage.removeItem('saleList')
+
+	dispatch({ type: SALE_LIST_RESET })
 }
 
 export const bggSearchGames = (keyword) => async (dispatch, getState) => {

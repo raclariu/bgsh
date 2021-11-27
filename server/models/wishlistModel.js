@@ -19,7 +19,8 @@ const wishlistSchema = mongoose.Schema(
 				thumbnail : String,
 				image     : String,
 				priority  : Number,
-				added     : Date
+				added     : Date,
+				_id       : false
 			}
 		],
 

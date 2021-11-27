@@ -107,19 +107,28 @@ const ComplexityBox = ({ variant, complexity }) => {
 		<Fragment>
 			{variant === 'mini' ? (
 				<Box bgcolor={handleComplexityBgColor()} {...defaultMiniBox}>
-					{(Math.round(complexity.weight * 100) / 100).toFixed(2)}
+					{complexity.weight === 'N/A' ? (
+						<Box color="grey.200">N/A</Box>
+					) : (
+						<Box color="grey.200">{(Math.round(complexity.weight * 100) / 100).toFixed(2)}</Box>
+					)}
 				</Box>
 			) : (
 				<Box bgcolor={handleComplexityBgColor()} {...defaultBigBox}>
-					{(Math.round(complexity.weight * 100) / 100).toFixed(2)}
 					{complexity.weight === 'N/A' ? (
-						<Box fontSize={11} color="grey.200">
-							weight
-						</Box>
+						<Fragment>
+							<Box>N/A</Box>
+							<Box fontSize={11} color="grey.200">
+								weight
+							</Box>
+						</Fragment>
 					) : (
-						<Box fontSize={11} color="grey.200">
-							{approx(complexity.votes)} votes
-						</Box>
+						<Fragment>
+							{(Math.round(complexity.weight * 100) / 100).toFixed(2)}
+							<Box fontSize={11} color="grey.200">
+								{approx(complexity.votes)} votes
+							</Box>
+						</Fragment>
 					)}
 				</Box>
 			)}

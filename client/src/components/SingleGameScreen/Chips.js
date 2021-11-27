@@ -11,11 +11,11 @@ const Chips = ({ categories, mechanics }) => {
 	return (
 		<Fragment>
 			{categories.map((ctg) => (
-				<Chip key={ctg.name} icon={<CategoryOutlinedIcon />} label={ctg.name} color="secondary" size="small" />
+				<Chip key={ctg.id} icon={<CategoryOutlinedIcon />} label={ctg.name} color="secondary" size="small" />
 			))}
 
 			{mechanics.map((mec) => (
-				<Chip key={mec.name} icon={<SettingsOutlinedIcon />} label={mec.name} color="primary" size="small" />
+				<Chip key={mec.id} icon={<SettingsOutlinedIcon />} label={mec.name} color="primary" size="small" />
 			))}
 		</Fragment>
 	)

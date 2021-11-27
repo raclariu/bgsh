@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 
 // @ Mui
 import Grid from '@material-ui/core/Grid'
@@ -11,9 +12,11 @@ import Button from '@material-ui/core/Button'
 // @ Components
 import CustomAlert from '../components/CustomAlert'
 import AddWantedCard from '../components/AddWantedCard'
+import Loader from '../components/Loader'
 
 // @ Others
 import { bggGetGamesDetails, removeFromSaleList, addWantedGames } from '../actions/gameActions'
+import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -27,12 +30,12 @@ const useStyles = makeStyles((theme) => ({
 const AddWantedGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
+	const queryClient = useQueryClient()
 
 	const saleList = useSelector((state) => state.saleList)
 
 	const slRef = useRef(
 		saleList.map((game) => {
-			delete game._id
 			return {
 				...game,
 				prefVersion  : null,
@@ -43,22 +46,22 @@ const AddWantedGamesScreen = () => {
 
 	const [ values, setValues ] = useState(slRef.current)
 
-	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
-	const { loading: detailsLoading, error: detailsError, success: detailsSuccess, games } = bggGamesDetails
+	const mapped = slRef.current.map((el) => el.bggId)
 
-	const addWanted = useSelector((state) => state.addWantedGames)
-	const { loading: loadingAdd, error: errorAdd, success: successAdd } = addWanted
-
-	useEffect(
-		() => {
-			const mapped = slRef.current.map((el) => el.bggId)
-
-			if (mapped.length > 0) {
-				dispatch(bggGetGamesDetails(mapped))
-			}
-		},
-		[ dispatch ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'bggGamesDetails' ],
+		() => apiFetchGameDetails(mapped),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
+
+	const mutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
+		onSuccess : () => {
+			queryClient.invalidateQueries('wantedGames')
+			queryClient.invalidateQueries('myWantedGames')
+		}
+	})
 
 	useEffect(
 		() => {
@@ -67,6 +70,15 @@ const AddWantedGamesScreen = () => {
 			}
 		},
 		[ saleList ]
+	)
+
+	useEffect(
+		() => {
+			return () => {
+				queryClient.invalidateQueries('bggGamesDetails')
+			}
+		},
+		[ queryClient ]
 	)
 
 	const handleGameInfo = (e, value, id, key) => {
@@ -87,7 +99,7 @@ const AddWantedGamesScreen = () => {
 		const gamesData = []
 		const valuesCopy = [ ...values ]
 		for (let val of valuesCopy) {
-			const [ { thumbnail, image, designers, type } ] = games.filter((game) => game.bggId === val.bggId)
+			const [ { thumbnail, image, designers, type } ] = data.filter((game) => game.bggId === val.bggId)
 
 			gamesData.push({
 				...val,
@@ -100,21 +112,23 @@ const AddWantedGamesScreen = () => {
 
 		console.log(gamesData)
 
-		dispatch(addWantedGames(gamesData))
+		mutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit}>
-			{detailsError && <CustomAlert>{detailsError}</CustomAlert>}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{errorAdd && errorAdd.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+			{mutation.isError && mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
 
 			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 
-			{detailsSuccess && (
+			{isLoading && <Loader />}
+
+			{isSuccess && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
-						{games.map(
+						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
 								// user deleted 3, we need to only render a list of the ones that are in values

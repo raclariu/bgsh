@@ -37,14 +37,7 @@ const BggSearchGamesBox = () => {
 	const [ options, setOptions ] = useState([])
 	const [ selectedOption, setSelectedOption ] = useState(null)
 
-	// const bggSearch = useSelector((state) => state.bggSearchGames)
-	// const { loading, error, success, games } = bggSearch
-
-	const mutation = useMutation((debKeyword) => apiBggSearchGames(debKeyword), {
-		onSuccess : () => {
-			queryClient.invalidateQueries()
-		}
-	})
+	const mutation = useMutation((debKeyword) => apiBggSearchGames(debKeyword))
 	const { mutate } = mutation
 
 	useEffect(

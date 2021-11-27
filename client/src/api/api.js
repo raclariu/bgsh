@@ -32,8 +32,7 @@ export const fetchGames = async ({ search, page, sort, mode }) => {
 export const apiGetSentMessages = async (page) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		},
 		params  : {
 			page : +page ? +page : 1
@@ -47,8 +46,7 @@ export const apiGetSentMessages = async (page) => {
 export const apiGetReceivedMessages = async (page) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		},
 		params  : {
 			page : +page ? +page : 1
@@ -73,8 +71,7 @@ export const apiUpdateMessageStatus = async (id) => {
 export const apiGetNewMessagesCount = async () => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		}
 	}
 	const { data } = await axios.get('/api/messages/new', config)
@@ -142,8 +139,7 @@ export const apiFetchWishlist = async (search, page) => {
 export const apiFetchSingleGame = async (altId) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		}
 	}
 
@@ -170,8 +166,7 @@ export const apiFetchSavedGames = async (search, page) => {
 export const apiFetchGameSavedStatus = async (altId) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		}
 	}
 
@@ -194,8 +189,7 @@ export const apiUpdateSavedStatus = async (altId) => {
 export const apiFetchGallery = async (bggIds) => {
 	const config = {
 		headers          : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		},
 		params           : {
 			bggIds
@@ -212,8 +206,7 @@ export const apiFetchGallery = async (bggIds) => {
 export const apiFetchSoldGames = async (search, page) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		},
 		params  : {
 			search : search ? search.trim() : null,
@@ -228,8 +221,7 @@ export const apiFetchSoldGames = async (search, page) => {
 export const apiFetchTradedGames = async (search, page) => {
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
+			Authorization : getBearer()
 		},
 		params  : {
 			search : search ? search.trim() : null,
@@ -256,8 +248,7 @@ export const apiFetchUserWantedGames = async (search, page) => {
 	const { userAuth: { userData } } = store.getState()
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : `Bearer ${userData.token}`
+			Authorization : `Bearer ${userData.token}`
 		},
 		params  : {
 			search : search ? search.trim() : null,
@@ -296,8 +287,7 @@ export const apiFetchListedGames = async (search, page) => {
 	const { userAuth: { userData } } = store.getState()
 	const config = {
 		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : `Bearer ${userData.token}`
+			Authorization : `Bearer ${userData.token}`
 		},
 		params  : {
 			search : search ? search.trim() : null,
@@ -331,6 +321,17 @@ export const apiDeleteListedGame = async (id) => {
 	await axios.delete(`/api/games/delete/${id}`, config)
 }
 
+export const apiDeleteWantedGame = async (id) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	await axios.delete(`/api/games/wanted/delete/${id}`, config)
+}
+
 export const apiReactivateListedGame = async (id) => {
 	const config = {
 		headers : {
@@ -345,4 +346,49 @@ export const apiReactivateListedGame = async (id) => {
 export const apiFetchHotGames = async () => {
 	const { data } = await axios.get('/api/games/bgg/hot')
 	return data
+}
+
+export const apiFetchGameDetails = async (bggIds) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	const { data } = await axios.post('/api/games/bgg', { bggIds }, config)
+	return data
+}
+
+export const apiListGamesForTrade = async (gamesData) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	await axios.post('/api/games/trade', gamesData, config)
+}
+
+export const apiListGamesForSale = async (gamesData) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	await axios.post('/api/games/sell', gamesData, config)
+}
+
+export const apiAddWantedGames = async (gamesData) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	await axios.post('/api/games/wanted', gamesData, config)
 }

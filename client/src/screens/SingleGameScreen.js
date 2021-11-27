@@ -140,7 +140,7 @@ const SingleGameScreen = () => {
 		[ 'singleGame', altId ],
 		() => apiFetchSingleGame(altId),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 3
 		}
 	)
 
@@ -158,7 +158,7 @@ const SingleGameScreen = () => {
 		},
 		{
 			enabled   : isSuccess,
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 3
 		}
 	)
 

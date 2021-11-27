@@ -93,18 +93,6 @@ const initialState = {
 	userPreferences : { theme: currentThemeFromStorage }
 }
 
-// const checkTokenExpirationMiddleware = (store) => (next) => (action) => {
-// 	// const token =
-// 	//   JSON.parse(localStorage.getItem("user")) &&
-// 	//   JSON.parse(localStorage.getItem("user"))["token"];
-// 	// if (jwtDecode(token).exp < Date.now() / 1000) {
-// 	//   next(action);
-// 	//   localStorage.clear();
-// 	// }
-// 	// next(action);
-// 	console.log('asd')
-// }
-
 const middleware = [ thunk, checkTokenExpirationMiddleware ]
 
 const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(...middleware)))

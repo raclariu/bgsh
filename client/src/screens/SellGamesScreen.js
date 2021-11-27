@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui
@@ -21,6 +22,7 @@ import Loader from '../components/Loader'
 // @ Others
 import { bggGetGamesDetails, removeFromSaleList, sellGames } from '../actions/gameActions'
 import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
+import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +41,7 @@ const SellGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
+	const queryClient = useQueryClient()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
@@ -59,6 +62,8 @@ const SellGamesScreen = () => {
 		})
 	)
 
+	console.log(slRef.current)
+
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
@@ -77,28 +82,23 @@ const SellGamesScreen = () => {
 		history.push('/sell')
 	}
 
-	const bggGamesDetails = useSelector((state) => state.bggGamesDetails)
-	const { loading: detailsLoading, error: detailsError, success: detailsSuccess, games } = bggGamesDetails
-
-	const sell = useSelector((state) => state.sellGames)
-	const { loading: sellLoading, error: sellError, success: sellSuccess } = sell
-
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
+	const mapped = slRef.current.map((el) => el.bggId)
 
-	useEffect(
-		() => {
-			const mapped = slRef.current.map((el) => el.bggId)
-
-			if (mapped.length > 0) {
-				dispatch(bggGetGamesDetails(mapped))
-			}
-
-			return () => {
-				dispatch({ type: BGG_GAMES_DETAILS_RESET })
-			}
-		},
-		[ dispatch, location.key ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'bggGamesDetails' ],
+		() => apiFetchGameDetails(mapped),
+		{
+			staleTime : 1000 * 60 * 60
+		}
 	)
+
+	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
+		onSuccess : () => {
+			queryClient.invalidateQueries('saleGames')
+			queryClient.invalidateQueries('myListedGames')
+		}
+	})
 
 	useEffect(
 		() => {
@@ -107,6 +107,15 @@ const SellGamesScreen = () => {
 			}
 		},
 		[ saleList ]
+	)
+
+	useEffect(
+		() => {
+			return () => {
+				queryClient.invalidateQueries('bggGamesDetails')
+			}
+		},
+		[ queryClient ]
 	)
 
 	const removeFromSaleListHandler = (id) => {
@@ -168,7 +177,7 @@ const SellGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesCopy = games.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
+		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
 			if (index !== -1) {
@@ -196,27 +205,28 @@ const SellGamesScreen = () => {
 			totalPrice       : isPack ? +totalPrice : null
 		}
 
-		dispatch(sellGames(gamesData))
+		mutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className={cls.error}>
-				{detailsError && <CustomAlert>{detailsError}</CustomAlert>}
+				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-				{sellError && sellError.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+				{mutation.isError &&
+					mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
 
 				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 			</div>
 
 			{console.count('Renders')}
 
-			{detailsLoading && <Loader />}
+			{isLoading && <Loader />}
 
-			{detailsSuccess && (
+			{isSuccess && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
-						{games.map(
+						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
 								// user deleted 3, we need to only render a list of the ones that are in values

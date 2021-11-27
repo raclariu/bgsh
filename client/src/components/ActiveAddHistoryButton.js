@@ -29,7 +29,7 @@ import CustomAlert from '../components/CustomAlert'
 // @ Others
 import { deleteGame, reactivateGame, deleteWantedGame } from '../actions/gameActions'
 import { addGamesToHistory } from '../actions/historyActions'
-import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
+import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame, apiDeleteWantedGame } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -61,42 +61,19 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 	const [ buyerUsername, setBuyerUsername ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState(price ? price : '')
 
-	// const addGame = useSelector((state) => state.addToHistory)
-	// const { loading, success, error } = addGame
-
-	// const delGame = useSelector((state) => state.deleteGame)
-	// const { loading: loadingDelete, success: successDelete, error: errorDelete } = delGame
-
-	// const reactivateGame = useSelector((state) => state.reactivateGame)
-	// const { loading: loadingReactivate, success: successReactivate, error: errorReactivate } = reactivateGame
-
-	const addGame = useMutation(
-		({ games, buyerUsername, finalPrice, gameId }) =>
-			apiAddGameToHistory(games, buyerUsername.trim().toLowerCase(), finalPrice, gameId)
-		// {
-		// 	onSuccess : () => {
-		// 		queryClient.invalidateQueries('listedGames')
-		// 	}
-		// }
+	const addGame = useMutation(({ games, buyerUsername, finalPrice, gameId }) =>
+		apiAddGameToHistory(games, buyerUsername.trim().toLowerCase(), finalPrice, gameId)
 	)
 
-	const deleteGame = useMutation(
-		(gameId) => apiDeleteListedGame(gameId)
-		// {
-		// 	onSuccess : () => {
-		// 		queryClient.invalidateQueries('listedGames')
-		// 	}
-		// }
-	)
+	const deleteGame = useMutation((gameId) => {
+		if (mode === 'wanted') {
+			apiDeleteWantedGame(gameId)
+		} else {
+			apiDeleteListedGame(gameId)
+		}
+	})
 
-	const reactivateGame = useMutation(
-		(gameId) => apiReactivateListedGame(gameId)
-		// {
-		// 	onSuccess : () => {
-		// 		queryClient.invalidateQueries('listedGames')
-		// 	}
-		// }
-	)
+	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId))
 
 	const handleOpenDialog = () => {
 		setOpenDialog(true)
@@ -105,19 +82,22 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 	const handleCloseDialog = () => {
 		setOpenDialog(false)
 		if (addGame.isSuccess || deleteGame.isSuccess || reactivateGame.isSuccess) {
-			queryClient.invalidateQueries('listedGames')
-			addGame.reset()
-			deleteGame.reset()
-			reactivateGame.reset()
+			if (mode === 'wanted') {
+				queryClient.invalidateQueries('myWantedGames')
+				queryClient.invalidateQueries('wantedGames')
+			} else {
+				queryClient.invalidateQueries('myListedGames')
+				queryClient.invalidateQueries('saleGames')
+				queryClient.invalidateQueries('tradeGames')
+				addGame.reset()
+				deleteGame.reset()
+				reactivateGame.reset()
+			}
 		}
 	}
 
 	const deleteGameHandler = () => {
-		if (mode === 'wanted') {
-			dispatch(deleteWantedGame(gameId))
-		} else {
-			deleteGame.mutate(gameId)
-		}
+		deleteGame.mutate(gameId)
 	}
 
 	const reactivateGameHandler = () => {
@@ -155,6 +135,12 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<form onSubmit={submitHandler} autoComplete="off">
+								{addGame.isError && (
+									<Box mb={2}>
+										<CustomAlert>{addGame.error.response.data.message}</CustomAlert>
+									</Box>
+								)}
+
 								{addGame.isSuccess && (
 									<Box mb={2}>
 										<CustomAlert severity="success">
@@ -244,6 +230,12 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
+								{deleteGame.isError && (
+									<Box mb={2}>
+										<CustomAlert>{deleteGame.error.response.data.message}</CustomAlert>
+									</Box>
+								)}
+
 								{deleteGame.isSuccess ? (
 									<Box mb={2}>
 										<CustomAlert severity="success">
@@ -290,6 +282,12 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 						<DialogContent>
 							<Box display="flex" justifyContent="center" alignItems="center">
+								{reactivateGame.isError && (
+									<Box mb={2}>
+										<CustomAlert>{reactivateGame.error.response.data.message}</CustomAlert>
+									</Box>
+								)}
+
 								{reactivateGame.isSuccess ? (
 									<Box mb={2}>
 										<CustomAlert severity="success">

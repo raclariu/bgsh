@@ -22,13 +22,11 @@ const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
-	const userId = useSelector((state) => state.userAuth.userData._id)
-
 	const { isLoading, isError, error, data: isSaved, isSuccess } = useQuery(
 		[ 'savedStatus', altId ],
 		() => apiFetchGameSavedStatus(altId),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 3
 		}
 	)
 

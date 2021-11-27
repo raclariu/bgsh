@@ -10,6 +10,7 @@ import { useQuery } from 'react-query'
 // @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Divider from '@material-ui/core/Divider'
 
 // @ Components
 import GameCard from '../components/GameCard'
@@ -53,7 +54,9 @@ const CollectionScreen = () => {
 	const { isLoading, isError, error, isSuccess, data } = useQuery(
 		[ 'collection', { search, page } ],
 		() => apiFetchCollection(search, page),
-		{ staleTime: 1000 * 60 * 60 }
+		{
+			staleTime : Infinity
+		}
 	)
 
 	const handleFilters = (filter, type) => {
@@ -73,8 +76,8 @@ const CollectionScreen = () => {
 
 	const saleListHandler = (e, id) => {
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, image, _id } = data.owned.find((el) => el.bggId === id)
-			dispatch(addToSaleList({ bggId, title, year, thumbnail, image, _id }))
+			const { bggId, title, year, thumbnail, image } = data.owned.find((el) => el.bggId === id)
+			dispatch(addToSaleList({ bggId, title, year, thumbnail, image }))
 		} else {
 			dispatch(removeFromSaleList(id))
 		}
@@ -94,20 +97,23 @@ const CollectionScreen = () => {
 					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
+
 			{isError && (
 				<div className={cls.error}>
 					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</div>
 			)}
+
 			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
+
 			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{data.owned.map((data) => (
-						<Grid item key={data._id} xs={12} sm={6} md={4}>
+						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<GameCard
 									data={data}
@@ -130,6 +136,8 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
+
+			<Divider />
 
 			{isSuccess &&
 				(data.pagination.totalPages > 1 && (
