@@ -392,3 +392,14 @@ export const apiAddWantedGames = async (gamesData) => {
 
 	await axios.post('/api/games/wanted', gamesData, config)
 }
+
+export const apiGetProfileData = async (username) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+	const { data } = await axios.get(`/api/users/${username}`, config)
+	return data
+}

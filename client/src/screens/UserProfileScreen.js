@@ -3,6 +3,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import LazyLoad from 'react-lazyload'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@material-ui/core/Box'
@@ -17,23 +18,24 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 
 // @ Others
 import { getUserProfileData } from '../actions/userActions'
+import { apiGetProfileData } from '../api/api'
 
 // @ Main
 const UserProfileScreen = () => {
 	const dispatch = useDispatch()
 	const { username } = useParams()
 
-	const [ tab, setTab ] = useState('sale')
-
-	const userProfileData = useSelector((state) => state.userProfileData)
-	const { loading, success, error, saleGames, tradeGames, wantedGames } = userProfileData
-
-	useEffect(
-		() => {
-			dispatch(getUserProfileData(username))
-		},
-		[ dispatch, username ]
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
+		[ 'profile', { username } ],
+		() => apiGetProfileData(username),
+		{
+			staleTime : 1000 * 60 * 5
+		}
 	)
+
+	console.log(data)
+
+	const [ tab, setTab ] = useState('sale')
 
 	const handleChange = (e, val) => {
 		setTab(val)
@@ -41,7 +43,7 @@ const UserProfileScreen = () => {
 
 	return (
 		<Fragment>
-			{error && <Box>{error}</Box>}
+			{isError && <Box>{error.response.data.message}</Box>}
 
 			<Box borderRadius={4} boxShadow={2} my={2} bgcolor="background.paper">
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
@@ -51,7 +53,7 @@ const UserProfileScreen = () => {
 				</Tabs>
 			</Box>
 
-			{loading && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
@@ -59,13 +61,14 @@ const UserProfileScreen = () => {
 
 			{tab === 'sale' && (
 				<Fragment>
-					{success && saleGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
+					{isSuccess &&
+					data.saleGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
 					<Grid container spacing={3}>
-						{success &&
-							saleGames.map((listedGame) => (
-								<Grid item key={listedGame._id} md={4} sm={6} xs={12}>
+						{isSuccess &&
+							data.saleGames.map((data) => (
+								<Grid item key={data._id} md={4} sm={6} xs={12}>
 									<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-										<UserProfileGameCard gameId={listedGame._id} slice="sale" />
+										<UserProfileGameCard data={data} slice="sale" />
 									</LazyLoad>
 								</Grid>
 							))}
@@ -75,12 +78,13 @@ const UserProfileScreen = () => {
 
 			{tab === 'trade' && (
 				<Fragment>
-					{success && tradeGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
+					{isSuccess &&
+					data.tradeGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
 					<Grid container spacing={3}>
-						{success &&
-							tradeGames.map((listedGame) => (
-								<Grid item key={listedGame._id} md={4} sm={6} xs={12}>
-									<UserProfileGameCard gameId={listedGame._id} slice="trade" />
+						{isSuccess &&
+							data.tradeGames.map((data) => (
+								<Grid item key={data._id} md={4} sm={6} xs={12}>
+									<UserProfileGameCard data={data} slice="trade" />
 								</Grid>
 							))}
 					</Grid>
@@ -89,14 +93,14 @@ const UserProfileScreen = () => {
 
 			{tab === 'wanted' && (
 				<Fragment>
-					{success &&
-					wantedGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
+					{isSuccess &&
+					data.wantedGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
 
 					<Grid container spacing={3}>
-						{success &&
-							wantedGames.map((listedGame) => (
-								<Grid item key={listedGame._id} md={4} sm={6} xs={12}>
-									<UserProfileGameCard gameId={listedGame._id} slice="wanted" />
+						{isSuccess &&
+							data.wantedGames.map((data) => (
+								<Grid item key={data._id} md={4} sm={6} xs={12}>
+									<UserProfileGameCard data={data} slice="wanted" />
 								</Grid>
 							))}
 					</Grid>

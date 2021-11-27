@@ -565,7 +565,10 @@ const SingleGameScreen = () => {
 					</Box>
 
 					{isErrorGallery && (
-						<CustomAlert severity="warning">{errorGallery.data.response.message}</CustomAlert>
+						<Fragment>
+							{console.log(errorGallery.response.data)}
+							<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
+						</Fragment>
 					)}
 
 					{isSuccessGallery && (

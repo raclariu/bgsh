@@ -113,25 +113,22 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const saleGamesData = await Game.find({ seller: userId, isActive: true, mode: 'sell' })
-		.select('_id mode games type altId totalPrice')
+	const saleGames = await Game.find({ seller: userId, isActive: true, mode: 'sell' })
+		.select('_id mode games isPack altId totalPrice')
 		.limit(6)
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	const tradeGamesData = await Game.find({ seller: userId, isActive: true, mode: 'trade' })
-		.select('_id mode games type altId')
+	const tradeGames = await Game.find({ seller: userId, isActive: true, mode: 'trade' })
+		.select('_id mode games isPack altId')
 		.limit(6)
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	const wantedGamesData = await Wanted.find({ wantedBy: userId, isActive: true })
-		.limit(6)
-		.sort({ updatedAt: -1 })
-		.lean()
+	const wantedGames = await Wanted.find({ wantedBy: userId, isActive: true }).limit(6).sort({ updatedAt: -1 }).lean()
 
 	console.log(username)
-	res.status(200).json({ saleGamesData, tradeGamesData, wantedGamesData })
+	res.status(200).json({ saleGames, tradeGames, wantedGames })
 })
 
 export { userAuth, userRegister, changePassword, getUserProfileData }

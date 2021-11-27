@@ -49,22 +49,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const UserProfileGameCard = ({ gameId, slice }) => {
+const UserProfileGameCard = ({ data, slice }) => {
 	const cls = useStyles()
-
-	const data = useSelector((state) => {
-		if (slice === 'sale') {
-			return state.userProfileData.saleGames.find((obj) => obj._id === gameId)
-		}
-
-		if (slice === 'trade') {
-			return state.userProfileData.tradeGames.find((obj) => obj._id === gameId)
-		}
-
-		if (slice === 'wanted') {
-			return state.userProfileData.wantedGames.find((obj) => obj._id === gameId)
-		}
-	})
 
 	const [ index, setIndex ] = useState(0)
 

@@ -161,18 +161,18 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 		for (let id of bggIds) {
 			const { data } = await axios.get('https://api.geekdo.com/api/images', {
 				params : {
-					ajax       : 1,
-					date       : 'alltime',
-					gallery    : 'game',
-					nosession  : 1,
-					objectid   : id,
-					objecttype : 'thing',
-					pageid     : 1,
-					showcount  : 12,
-					size       : 'thumb',
-					sort       : 'hot'
-					//licensefilter : 'reuse'
-					// tag        : 'Play,Components'
+					ajax          : 1,
+					date          : 'alltime',
+					gallery       : 'all',
+					nosession     : 1,
+					objectid      : id,
+					objecttype    : 'thing',
+					pageid        : 1,
+					showcount     : 12,
+					size          : 'thumb',
+					sort          : 'hot',
+					licensefilter : 'reuse'
+					//tag        : 'Play,Components'
 				}
 			})
 
