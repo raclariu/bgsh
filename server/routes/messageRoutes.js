@@ -8,7 +8,10 @@ import {
 	getSentMessages,
 	getNewMessagesCount,
 	deleteMessages,
-	updateMessageStatus
+	updateMessageStatus,
+	getConversations,
+	addMessageToConversation,
+	getSingleConversation
 } from '../controllers/messageController.js'
 import {
 	validateMessageRecipient,
@@ -23,5 +26,7 @@ router.route('/received').get(protect, getReceivedMessages)
 router.route('/sent').get(protect, getSentMessages)
 router.route('/new').get(protect, getNewMessagesCount)
 router.route('/update/:id').patch(protect, updateMessageStatus)
+router.route('/conversations').get(protect, getConversations)
+router.route('/conversations/:id').get(protect, getSingleConversation).post(protect, addMessageToConversation)
 
 export default router

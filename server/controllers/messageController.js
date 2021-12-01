@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Message from '../models/messageModel.js'
+import Conversation from '../models/conversationModel.js'
 
 // * @desc    Send message
 // * @route   POST  /api/messages
@@ -163,4 +164,98 @@ const getNewMessagesCount = asyncHandler(async (req, res) => {
 	res.status(200).json(count)
 })
 
-export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount, deleteMessages, updateMessageStatus }
+// ~ @desc    Get conversations
+// ~ @route   GET  /api/messages/conversations
+// ~ @access  Private route
+const getConversations = asyncHandler(async (req, res) => {
+	const { _id: userId } = req.user
+
+	let conversations = await Conversation.find({ participants: { $in: userId } })
+		.populate({
+			path   : 'participants',
+			select : '_id username'
+		})
+		.select('participants')
+		.lean()
+
+	const messages = await Message.find(
+		{ convId: { $in: conversations.map((conv) => conv._id) }, read: false, sender: { $nin: userId } },
+		'_id convId'
+	)
+
+	let arr = []
+	conversations.forEach((conv) => {
+		const unreadCount = messages.filter((msg) => msg.convId.toString() === conv._id.toString()).length
+		arr.push({
+			_id          : conv._id,
+			participants : conv.participants,
+			unreadCount
+		})
+	})
+
+	const sorted = arr.sort((a, b) => b.unreadCount - a.unreadCount)
+
+	res.status(200).json(sorted)
+})
+
+// ~ @desc    Get messages for one single conversation
+// ~ @route   GET  /api/messages/conversations/:id
+// ~ @access  Private route
+const getSingleConversation = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	const page = +req.query.page
+	const resultsPerPage = 24
+
+	const count = await Message.countDocuments({ convId: id })
+
+	const messages = await Message.find({ convId: id })
+		.sort({ createdAt: -1 })
+		.skip(resultsPerPage * (page - 1))
+		.limit(resultsPerPage)
+		.lean()
+
+	const pagination = {
+		page         : page,
+		totalPages   : Math.ceil(count / resultsPerPage),
+		totalItems   : count,
+		itemsPerPage : resultsPerPage
+	}
+
+	res.status(200).json({ messages, pagination })
+})
+
+// * @desc    Add message to conversation
+// * @route   POST  /api/messages/conversations/:id
+// * @access  Private route
+const addMessageToConversation = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	const { text } = req.body
+	const { _id: userId } = req.user
+
+	const message = Message.create({
+		message : text,
+		sender  : userId,
+		convId  : id
+	})
+
+	if (message) {
+		res.end()
+	} else {
+		res.status(500)
+		throw {
+			message : 'Error. Please try again'
+		}
+	}
+})
+
+export {
+	sendMessage,
+	getReceivedMessages,
+	getSentMessages,
+	getNewMessagesCount,
+	deleteMessages,
+	updateMessageStatus,
+	getConversations,
+	addMessageToConversation,
+	getSingleConversation
+}
