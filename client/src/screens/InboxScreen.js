@@ -29,13 +29,6 @@ import Paginate from '../components/Paginate'
 import CustomAvatar from '../components/CustomAvatar'
 
 // @ Others
-import {
-	getReceivedMessages,
-	getSentMessages,
-	deleteMessages,
-	updateMessageStatus,
-	getNewMessagesCount
-} from '../actions/messageActions'
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
 
@@ -145,76 +138,6 @@ const InboxScreen = () => {
 	const [ isChecked, setIsChecked ] = useState(false)
 	const [ indexClicked, setIndexClicked ] = useState(null)
 
-	// const { loading, success, error, messages, pagination } = useSelector((state) => {
-	// 	if (pathname === '/received') {
-	// 		return state.messagesReceived
-	// 	}
-	// 	if (pathname === '/sent') {
-	// 		return state.messagesSent
-	// 	}
-	// })
-
-	// const { loading: loadingDelete, success: successDelete, error: errorDelete } = useSelector(
-	// 	(state) => state.deleteMessages
-	// )
-
-	// const sendMessageSelector = useSelector((state) => state.sendMessage)
-	// const { success: successSend } = sendMessageSelector
-
-	// useEffect(
-	// 	() => {
-	// 		if (pathname === '/received') {
-	// 			dispatch(getNewMessagesCount())
-	// 			dispatch(getReceivedMessages(page))
-	// 		}
-	// 		if (pathname === '/sent') {
-	// 			dispatch(getSentMessages(page))
-	// 		}
-
-	// 		return () => {
-	// 			setSelected([])
-	// 			setIndexClicked(null)
-	// 		}
-	// 	},
-	// 	[ dispatch, pathname, page ]
-	// )
-
-	// useEffect(
-	// 	() => {
-	// 		if (successDelete) {
-	// 			if (pathname === '/received') {
-	// 				dispatch(getNewMessagesCount())
-	// 				dispatch(getReceivedMessages(page))
-	// 			}
-	// 			if (pathname === '/sent') {
-	// 				dispatch(getSentMessages(page))
-	// 			}
-	// 		}
-
-	// 		return () => {
-	// 			setSelected([])
-	// 			setIndexClicked(null)
-	// 		}
-	// 	},
-	// 	[ dispatch, pathname, successDelete, page ]
-	// )
-
-	// useEffect(
-	// 	() => {
-	// 		if (successSend) {
-	// 			if (pathname === '/sent') {
-	// 				dispatch(getSentMessages(page))
-	// 			}
-	// 		}
-
-	// 		return () => {
-	// 			setSelected([])
-	// 			setIndexClicked(null)
-	// 		}
-	// 	},
-	// 	[ dispatch, pathname, successSend, page ]
-	// )
-
 	useEffect(
 		() => {
 			if (isChecked) {
@@ -250,7 +173,7 @@ const InboxScreen = () => {
 
 	const handleSelect = (e, id) => {
 		if (e.target.checked) {
-			setSelected([ ...selected, id ])
+			setSelected((selected) => [ ...selected, id ])
 		} else {
 			setSelected(selected.filter((selectedId) => selectedId !== id))
 		}
@@ -295,12 +218,6 @@ const InboxScreen = () => {
 			{mutation.isError && (
 				<Box my={2}>
 					<CustomAlert>{mutation.error.response.data.message}</CustomAlert>
-				</Box>
-			)}
-
-			{isLoading && (
-				<Box mt={2} display="flex" width="100%" justifyContent="center">
-					<Loader />
 				</Box>
 			)}
 

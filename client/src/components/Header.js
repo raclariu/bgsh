@@ -530,31 +530,6 @@ const Header = () => {
 
 										<ListItem
 											button
-											onClick={(e) => handleClick(e, 18)}
-											selected={selectedIndex === 18}
-											component={RouterLink}
-											to="/newinbox"
-										>
-											<ListItemIcon>
-												<LocalActivityTwoToneIcon
-													color={selectedIndex === 18 ? 'primary' : 'inherit'}
-												/>
-											</ListItemIcon>
-											<ListItemText
-												primary={
-													<Box
-														fontWeight="fontWeightMedium"
-														fontSize="subtitle2.fontSize"
-														color={selectedIndex === 18 ? 'primary.main' : 'text.secondary'}
-													>
-														New Inbox
-													</Box>
-												}
-											/>
-										</ListItem>
-
-										<ListItem
-											button
 											onClick={(e) => handleClick(e, 10)}
 											selected={selectedIndex === 10}
 											component={RouterLink}
