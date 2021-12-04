@@ -48,7 +48,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 		},
 		{
 			onSuccess : () => {
-				queryClient.invalidateQueries([ 'sentMessages' ])
+				queryClient.invalidateQueries([ 'msgSent' ])
 			}
 		}
 	)

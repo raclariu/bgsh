@@ -27,6 +27,7 @@ import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
 import CustomAvatar from '../components/CustomAvatar'
+import SearchBox from '../components/SearchBox'
 
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
@@ -86,23 +87,35 @@ const InboxScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
-	const { pathname, search } = useLocation()
+	const location = useLocation()
 	const queryClient = useQueryClient()
 
-	const { page = 1 } = queryString.parse(search)
+	const { search, page = 1 } = queryString.parse(location.search)
+
+	const { isLoading, isError, error, isSuccess, data } = useQuery(
+		[ location.pathname === '/received' ? 'msgReceived' : 'msgSent', { search, page } ],
+		() => {
+			if (location.pathname === '/received') {
+				return apiGetReceivedMessages(search, page)
+			}
+			if (location.pathname === '/sent') {
+				return apiGetSentMessages(search, page)
+			}
+		}
+	)
 
 	const mutation = useMutation(
 		({ ids, type }) => {
-			console.log('in component', ids, type)
 			return apiDeleteMessages(ids, type)
 		},
 		{
 			onSuccess : () => {
-				if (pathname === '/received') {
-					queryClient.invalidateQueries([ 'receivedMessages', page ])
+				if (location.pathname === '/received') {
+					console.log('invalidatind')
+					queryClient.invalidateQueries([ 'msgReceived' ])
 				}
-				if (pathname === '/sent') {
-					queryClient.invalidateQueries([ 'sentMessages', page ])
+				if (location.pathname === '/sent') {
+					queryClient.invalidateQueries([ 'msgSent' ])
 				}
 				setSelected([])
 				setIndexClicked(null)
@@ -110,29 +123,23 @@ const InboxScreen = () => {
 		}
 	)
 
-	const statusMutation = useMutation(
-		(id) => {
-			return apiUpdateMessageStatus(id)
-		},
-		{
-			onSuccess : () => {
-				queryClient.invalidateQueries([ 'receivedMessages', page ])
-				queryClient.invalidateQueries([ 'receivedMsgCount' ])
-			}
-		}
-	)
+	const statusMutation = useMutation((id) => apiUpdateMessageStatus(id), {
+		// onMutate  : async () => {
+		// 	await queryClient.cancelQueries([ 'msgReceived' ])
+		// 	await queryClient.cancelQueries([ 'msgReceivedCount' ])
+		// 	const count = queryClient.getQueryData([ 'msgReceivedCount' ])
+		// 	console.log(count)
+		// 	queryClient.setQueryData([ 'msgReceivedCount' ], (oldCount) => (oldCount -= 1))
 
-	const { isLoading, isError, error, isSuccess, data } = useQuery(
-		[ pathname === '/received' ? 'receivedMessages' : 'sentMessages', page ],
-		() => {
-			if (pathname === '/received') {
-				return apiGetReceivedMessages(page)
-			}
-			if (pathname === '/sent') {
-				return apiGetSentMessages(page)
-			}
+		// 	console.log(queryClient.getQueryData([ 'msgReceivedCount' ]))
+
+		// 	return { count }
+		// },
+		onSuccess : () => {
+			queryClient.invalidateQueries([ 'msgReceived' ])
+			queryClient.invalidateQueries([ 'msgReceivedCount' ])
 		}
-	)
+	})
 
 	const [ selected, setSelected ] = useState([])
 	const [ isChecked, setIsChecked ] = useState(false)
@@ -163,12 +170,15 @@ const InboxScreen = () => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
 
 		let query
-
-		if (type === 'page') {
-			query = queryString.stringify({ page: filter }, options)
+		if (type === 'search') {
+			query = queryString.stringify({ search: filter, page: 1 }, options)
 		}
 
-		history.push(`${pathname}?${query}`)
+		if (type === 'page') {
+			query = queryString.stringify({ search, page: filter }, options)
+		}
+
+		history.push(`${location.pathname}?${query}`)
 	}
 
 	const handleSelect = (e, id) => {
@@ -185,7 +195,7 @@ const InboxScreen = () => {
 
 	const handleClick = (e, i, msg) => {
 		if (!msg.read && i !== indexClicked) {
-			if (pathname === '/received') {
+			if (location.pathname === '/received') {
 				statusMutation.mutate(msg._id)
 			}
 		}
@@ -199,16 +209,22 @@ const InboxScreen = () => {
 	const handleDelete = () => {
 		setIsChecked(false)
 
-		if (pathname === '/received') {
+		if (location.pathname === '/received') {
 			mutation.mutate({ ids: selected, type: 'received' })
 		}
-		if (pathname === '/sent') {
+		if (location.pathname === '/sent') {
 			mutation.mutate({ ids: selected, type: 'sent' })
 		}
 	}
 
 	return (
 		<Fragment>
+			<Grid container justifyContent="center" spacing={2}>
+				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+					<SearchBox placeholder="Search users" handleFilters={handleFilters} />
+				</Grid>
+			</Grid>
+
 			{isError && (
 				<Box my={2}>
 					<CustomAlert>{error.response.data.message}</CustomAlert>
@@ -218,12 +234,6 @@ const InboxScreen = () => {
 			{mutation.isError && (
 				<Box my={2}>
 					<CustomAlert>{mutation.error.response.data.message}</CustomAlert>
-				</Box>
-			)}
-
-			{mutation.isLoading && (
-				<Box mt={2} display="flex" width="100%" justifyContent="center">
-					<Loader />
 				</Box>
 			)}
 
@@ -287,7 +297,7 @@ const InboxScreen = () => {
 									</Box>
 
 									<Box mr={1}>
-										{pathname === '/received' ? (
+										{location.pathname === '/received' ? (
 											<CustomAvatar size="medium" user={msg.sender.username} />
 										) : (
 											<CustomAvatar size="medium" user={msg.recipient.username} />
@@ -359,7 +369,7 @@ const InboxScreen = () => {
 										<Box mt={2} alignSelf="flex-end">
 											<SendMessage
 												recipientUsername={
-													pathname === '/received' ? (
+													location.pathname === '/received' ? (
 														msg.sender.username
 													) : (
 														msg.recipient.username

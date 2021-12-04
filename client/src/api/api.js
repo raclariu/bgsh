@@ -29,13 +29,14 @@ export const fetchGames = async ({ search, page, sort, mode }) => {
 	return data
 }
 
-export const apiGetSentMessages = async (page) => {
+export const apiGetSentMessages = async (search, page) => {
 	const config = {
 		headers : {
 			Authorization : getBearer()
 		},
 		params  : {
-			page : +page ? +page : 1
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
 		}
 	}
 
@@ -43,13 +44,14 @@ export const apiGetSentMessages = async (page) => {
 	return data
 }
 
-export const apiGetReceivedMessages = async (page) => {
+export const apiGetReceivedMessages = async (search, page) => {
 	const config = {
 		headers : {
 			Authorization : getBearer()
 		},
 		params  : {
-			page : +page ? +page : 1
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
 		}
 	}
 

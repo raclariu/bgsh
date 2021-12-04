@@ -33,6 +33,7 @@ const gameSchema = mongoose.Schema(
 	}
 )
 
+gameSchema.index({ createdAt: -1 })
 const Game = mongoose.model('Game', gameSchema)
 
 export default Game

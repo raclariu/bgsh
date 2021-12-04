@@ -33,6 +33,7 @@ const messageSchema = mongoose.Schema(
 	}
 )
 
+messageSchema.index({ createdAt: -1 })
 const Message = mongoose.model('Message', messageSchema)
 
 export default Message

@@ -422,6 +422,8 @@ const getGames = asyncHandler(async (req, res) => {
 				return a.games[0].stats.rank - b.games[0].stats.rank
 			} else if (sortBy === 'year') {
 				return b.games[0].year - a.games[0].year
+			} else {
+				return b.createdAt - a.createdAt
 			}
 		})
 
@@ -446,17 +448,19 @@ const getGames = asyncHandler(async (req, res) => {
 	} else {
 		const checkSort = () => {
 			if (sortBy === 'new') {
-				return { createdAt: 'desc' }
+				return { createdAt: -1 }
 			} else if (sortBy === 'old') {
-				return { createdAt: 'asc' }
+				return { createdAt: 1 }
 			} else if (sortBy === 'price-low') {
-				return { totalPrice: 'asc' }
+				return { totalPrice: 1 }
 			} else if (sortBy === 'price-high') {
-				return { totalPrice: 'desc' }
+				return { totalPrice: -1 }
 			} else if (sortBy === 'rank') {
-				return { 'games.stats.rank': 'asc' }
+				return { 'games.stats.rank': 1 }
 			} else if (sortBy === 'year') {
-				return { 'games.year': 'desc' }
+				return { 'games.year': -1 }
+			} else {
+				return { createdAt: -1 }
 			}
 		}
 

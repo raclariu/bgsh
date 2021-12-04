@@ -27,7 +27,7 @@ const MessagesBadge = () => {
 	const dispatch = useDispatch()
 
 	const { isLoading, isError, error, isSuccess, data: count } = useQuery(
-		[ 'receivedMsgCount' ],
+		[ 'msgReceivedCount' ],
 		apiGetNewMessagesCount,
 		{
 			refetchInterval      : 1000 * 60 * 2,
@@ -36,29 +36,6 @@ const MessagesBadge = () => {
 			refetchOnReconnect   : false
 		}
 	)
-
-	// const newMessagesCount = useSelector((state) => state.newMessagesCount)
-	// const { success, error, count } = newMessagesCount
-
-	// useEffect(
-	// 	() => {
-	// 		const intervalId = setInterval(() => {
-	// 			dispatch(getNewMessagesCount())
-	// 		}, 120000)
-
-	// 		return () => {
-	// 			clearInterval(intervalId)
-	// 		}
-	// 	},
-	// 	[ dispatch ]
-	// )
-
-	// useEffect(
-	// 	() => {
-	// 		dispatch(getNewMessagesCount())
-	// 	},
-	// 	[ dispatch ]
-	// )
 
 	return (
 		<Fragment>

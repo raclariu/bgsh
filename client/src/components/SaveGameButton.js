@@ -14,7 +14,6 @@ import BookmarkIcon from '@material-ui/icons/Bookmark'
 import Loader from './Loader'
 
 // @ Others
-import { switchSaveGame } from '../actions/gameActions'
 import { apiFetchGameSavedStatus, apiUpdateSavedStatus } from '../api/api'
 
 // @ Main
@@ -31,6 +30,15 @@ const SaveGameButton = ({ altId, sellerId }) => {
 	)
 
 	const mutation = useMutation((altId) => apiUpdateSavedStatus(altId), {
+		onMutate  : async () => {
+			await queryClient.cancelQueries([ 'savedStatus', altId ])
+			const isSaved = queryClient.getQueryData([ 'savedStatus', altId ])
+			queryClient.setQueryData([ 'savedStatus', altId ], (old) => {
+				return !old
+			})
+
+			return { isSaved }
+		},
 		onSuccess : () => {
 			queryClient.invalidateQueries([ 'savedStatus', altId ])
 			queryClient.invalidateQueries([ 'savedGames' ])
@@ -51,7 +59,7 @@ const SaveGameButton = ({ altId, sellerId }) => {
 
 	return (
 		<Fragment>
-			{isLoading || mutation.isLoading ? (
+			{isLoading ? (
 				<IconButton disabled disableRipple>
 					<Loader size={20} />
 				</IconButton>
