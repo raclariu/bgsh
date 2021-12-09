@@ -11,10 +11,6 @@ import History from '../models/historyModel.js'
 const addGamesToHistory = asyncHandler(async (req, res) => {
 	const { games, username, price, gameId } = req.body
 
-	const simplifyGames = games.map((game) => {
-		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
-	})
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
@@ -26,6 +22,10 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 			}
 		}
 	}
+
+	const simplifyGames = games.map((game) => {
+		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+	})
 
 	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
 
@@ -48,7 +48,7 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 
 		if (history) {
 			await Game.findOneAndDelete({ _id: gameId })
-			res.status(204).end()
+			return res.status(204).end()
 		} else {
 			res.status(500)
 			throw {
@@ -73,15 +73,8 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 
 	const completeList = await History.find({ seller: req.user._id, mode: 'sell' }).sort({ createdAt: -1 }).lean()
 
-	const sum = completeList.reduce((acc, { finalPrice }) => {
-		return acc + finalPrice
-	}, 0)
-
 	if (completeList.length === 0) {
-		res.status(404)
-		throw {
-			message : 'No games found'
-		}
+		return res.status(200).json({ soldList: [] })
 	}
 
 	if (search) {
@@ -93,6 +86,10 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((game) => game.item)
 
+		if (results.length === 0) {
+			return res.status(200).json({ soldList: [] })
+		}
+
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -100,7 +97,7 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			soldList   : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -111,6 +108,10 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 			.limit(resultsPerPage)
 			.lean()
 
+		if (soldList.length === 0) {
+			return res.status(200).json({ soldList: [] })
+		}
+
 		const pagination = {
 			page         : page,
 			totalPages   : Math.ceil(completeList.length / resultsPerPage),
@@ -118,10 +119,9 @@ const getSoldGamesHistory = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			soldList,
-			pagination,
-			sum
+			pagination
 		})
 	}
 })

@@ -14,12 +14,13 @@ export const light = createTheme({
 	}
 })
 
-// @ Dark
+// // @ Dark
 // export const dark = createTheme({
 // 	palette : {
 // 		type       : 'dark',
 // 		primary    : {
-// 			main : '#bb86fc'
+// 			main         : '#bb86fc',
+// 			contrastText : '#fff'
 // 		},
 // 		secondary  : {
 // 			main : '#03dac5'

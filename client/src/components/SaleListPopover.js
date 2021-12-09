@@ -30,6 +30,7 @@ import SaleListPopoverDialog from './SaleListPopoverDialog'
 // @ Others
 import { removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +64,7 @@ const SaleListPopover = () => {
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ mode, setMode ] = useState('')
+	const [ showSnackbar ] = useNotification()
 
 	const saleList = useSelector((state) => state.saleList)
 
@@ -76,8 +78,9 @@ const SaleListPopover = () => {
 		setAnchorEl(null)
 	}
 
-	const removeFromSaleListHandler = (id) => {
+	const removeFromSaleListHandler = (id, title) => {
 		dispatch(removeFromSaleList(id))
+		showSnackbar.info({ text: `${title} removed from list` })
 	}
 
 	const handleCloseDialog = () => {
@@ -164,7 +167,9 @@ const SaleListPopover = () => {
 											}}
 										/>
 										<ListItemSecondaryAction>
-											<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
+											<IconButton
+												onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
+											>
 												<HighlightOffIcon color="error" />
 											</IconButton>
 										</ListItemSecondaryAction>

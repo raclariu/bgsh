@@ -19,6 +19,10 @@ const messageSchema = mongoose.Schema(
 			type    : Boolean,
 			default : false
 		},
+		readAt       : {
+			type    : Date,
+			default : null
+		},
 		delRecipient : {
 			type    : Boolean,
 			default : false

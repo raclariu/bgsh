@@ -1,4 +1,4 @@
-import { format, formatDistance, parseISO } from 'date-fns'
+import { format, formatDistance, parseISO, formatISO } from 'date-fns'
 
 export const calculateTimeAgo = (date) => {
 	return formatDistance(parseISO(date), new Date(), { addSuffix: true })

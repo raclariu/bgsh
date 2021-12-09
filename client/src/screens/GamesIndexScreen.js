@@ -26,6 +26,7 @@ import DrawerFilter from '../components/Filters/DrawerFilter'
 import { getGames } from '../actions/gameActions'
 import { GAMES_INDEX_RESET } from '../constants/gameConstants'
 import { fetchGames } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,20 +49,7 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	// const gamesIndex = useSelector((state) => state.gamesIndex)
-	// const { loading, error, success, gamesData, pagination } = gamesIndex
-
-	// useEffect(
-	// 	() => {
-	// 		const mode = location.pathname === '/games' ? 'sell' : 'trade'
-	// 		dispatch(getGames(search, page, sort, mode))
-
-	// 		return () => {
-	// 			dispatch({ type: GAMES_INDEX_RESET })
-	// 		}
-	// 	},
-	// 	[ dispatch, search, page, sort, location ]
-	// )
+	const [ showSnackbar ] = useNotification()
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ location.pathname === '/games' ? 'saleGames' : 'tradeGames', { sort, search, page } ],
@@ -75,7 +63,16 @@ const GamesIndexScreen = () => {
 
 			return fetchGames(params)
 		},
-		{ staleTime: 1000 * 60 * 5 }
+		{
+			staleTime : 1000 * 60 * 5,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching games'
+				showSnackbar.error({ text })
+			},
+			onSuccess : (data) => {
+				data.gamesData.length === 0 && showSnackbar.warning({ text: 'Games not found' })
+			}
+		}
 	)
 
 	const handleFilters = (filter, type) => {
@@ -116,8 +113,6 @@ const GamesIndexScreen = () => {
 				<SortGames handleFilters={handleFilters} />
 			</Box>
 
-			{isError && <CustomAlert severity="warning">{error.response.data.message}</CustomAlert>}
-
 			{isLoading && (
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
@@ -143,7 +138,8 @@ const GamesIndexScreen = () => {
 					))}
 			</Grid>
 
-			{isSuccess && (
+			{isSuccess &&
+			data.pagination && (
 				<Box
 					display="flex"
 					alignItems="center"

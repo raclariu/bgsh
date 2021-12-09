@@ -15,11 +15,14 @@ import Loader from './Loader'
 
 // @ Others
 import { apiFetchGameSavedStatus, apiUpdateSavedStatus } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Main
 const SaveGameButton = ({ altId, sellerId }) => {
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
+
+	const [ showSnackbar ] = useNotification()
 
 	const { isLoading, isError, error, data: isSaved, isSuccess } = useQuery(
 		[ 'savedStatus', altId ],
@@ -39,9 +42,18 @@ const SaveGameButton = ({ altId, sellerId }) => {
 
 			return { isSaved }
 		},
-		onSuccess : () => {
+		onError   : (err, id, context) => {
+			console.log('cont', context)
+			const text = err.response.data.message || 'Could not be added to my saved list'
+			showSnackbar.error({ text })
+			queryClient.setQueryData([ 'savedStatus', altId ], context.isSaved)
+		},
+		onSuccess : (data) => {
 			queryClient.invalidateQueries([ 'savedStatus', altId ])
 			queryClient.invalidateQueries([ 'savedGames' ])
+			data
+				? showSnackbar.success({ text: 'Added to my saved list' })
+				: showSnackbar.success({ text: 'Removed from my saved list' })
 		}
 	})
 

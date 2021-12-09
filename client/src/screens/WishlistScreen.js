@@ -23,6 +23,7 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
 import { apiFetchWishlist } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -48,11 +49,20 @@ const WishlistScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
+	const [ showSnackbar ] = useNotification()
+
 	const { isLoading, isError, error, isSuccess, data } = useQuery(
 		[ 'wishlist', { search, page } ],
 		() => apiFetchWishlist(search, page),
 		{
-			staleTime : Infinity
+			staleTime : Infinity,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching wishlist'
+				showSnackbar.error({ text })
+			},
+			onSuccess : (data) => {
+				data.wishlist.length === 0 && showSnackbar.warning({ text: 'Wishlist not found' })
+			}
 		}
 	)
 
@@ -74,11 +84,13 @@ const WishlistScreen = () => {
 	}
 
 	const saleListHandler = (e, id) => {
+		const { bggId, title, year, thumbnail, image } = data.wishlist.find((el) => el.bggId === id)
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, image } = data.wishlist.find((el) => el.bggId === id)
 			dispatch(addToSaleList({ bggId, title, year, thumbnail, image }))
+			showSnackbar.info({ text: `${title} added to list` })
 		} else {
 			dispatch(removeFromSaleList(id))
+			showSnackbar.info({ text: `${title} removed from list` })
 		}
 	}
 

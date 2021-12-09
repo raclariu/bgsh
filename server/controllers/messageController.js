@@ -30,7 +30,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 			message
 		})
 
-		res.status(204).end()
+		return res.status(204).end()
 	}
 })
 
@@ -40,7 +40,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 const getReceivedMessages = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const page = +req.query.page
-	const resultsPerPage = 24
+	const resultsPerPage = 12
 
 	if (search) {
 		const receivedList = await Message.find({ recipient: req.user._id, delRecipient: false })
@@ -56,6 +56,12 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((msg) => msg.item)
 
+		if (results.length === 0) {
+			return res.status(200).json({
+				messages : []
+			})
+		}
+
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -63,17 +69,16 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res
+		return res
 			.status(200)
 			.json({ messages: results.slice((page - 1) * resultsPerPage, page * resultsPerPage), pagination })
 	} else {
 		const count = await Message.countDocuments({ recipient: req.user._id, delRecipient: false })
 
 		if (count === 0) {
-			res.status(404)
-			throw {
-				message : 'No messages found'
-			}
+			return res.status(200).json({
+				messages : []
+			})
 		}
 
 		const receivedMessages = await Message.find({ recipient: req.user._id, delRecipient: false })
@@ -84,10 +89,9 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 			.lean()
 
 		if (receivedMessages.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No messages found'
-			}
+			return res.status(200).json({
+				messages : []
+			})
 		}
 
 		const pagination = {
@@ -97,7 +101,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		res.status(200).json({ messages: receivedMessages, pagination })
+		return res.status(200).json({ messages: receivedMessages, pagination })
 	}
 })
 
@@ -107,7 +111,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 const getSentMessages = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const page = +req.query.page
-	const resultsPerPage = 24
+	const resultsPerPage = 12
 
 	if (search) {
 		const sentList = await Message.find({ sender: req.user._id, delSender: false })
@@ -123,6 +127,10 @@ const getSentMessages = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((msg) => msg.item)
 
+		if (results.length === 0) {
+			return res.status(200).json({ messages: [] })
+		}
+
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -130,17 +138,14 @@ const getSentMessages = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res
+		return res
 			.status(200)
 			.json({ messages: results.slice((page - 1) * resultsPerPage, page * resultsPerPage), pagination })
 	} else {
 		const count = await Message.countDocuments({ sender: req.user._id, delSender: false })
 
 		if (count === 0) {
-			res.status(404)
-			throw {
-				message : 'No sent messages found'
-			}
+			return res.status(200).json({ messages: [] })
 		}
 
 		const sentMessages = await Message.find({ sender: req.user._id, delSender: false })
@@ -151,9 +156,8 @@ const getSentMessages = asyncHandler(async (req, res) => {
 			.lean()
 
 		if (sentMessages.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No sent messages found'
+			if (results.length === 0) {
+				return res.status(200).json({ messages: [] })
 			}
 		}
 
@@ -164,7 +168,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		res.status(200).json({ messages: sentMessages, pagination })
+		return res.status(200).json({ messages: sentMessages, pagination })
 	}
 })
 
@@ -178,10 +182,10 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 
 	if (messageExists) {
 		if (messageExists.read) {
-			res.status(204).end()
+			return res.status(204).end()
 		} else {
-			await Message.updateOne({ _id: id }, { read: true })
-			res.status(204).end()
+			await Message.updateOne({ _id: id }, { read: true, readAt: Date.now() })
+			return res.status(204).end()
 		}
 	} else {
 		res.status(404)
@@ -197,16 +201,15 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 const deleteMessages = asyncHandler(async (req, res) => {
 	const { ids, type } = req.body
 
-	console.log(ids, type)
-
 	if (type === 'received') {
 		await Message.updateMany({ _id: { $in: ids } }, { delRecipient: true })
 	}
 	if (type === 'sent') {
 		await Message.updateMany({ _id: { $in: ids } }, { delSender: true })
+		await Message.deleteMany({ _id: { $in: ids }, delSender: true, read: false })
 	}
 
-	res.status(204).end()
+	return res.status(204).end()
 })
 
 // ~ @desc    Get new messages count
@@ -215,7 +218,7 @@ const deleteMessages = asyncHandler(async (req, res) => {
 const getNewMessagesCount = asyncHandler(async (req, res) => {
 	const count = await Message.countDocuments({ read: false, recipient: req.user._id, delRecipient: false })
 
-	res.status(200).json(count)
+	return res.status(200).json(count)
 })
 
 export { sendMessage, getReceivedMessages, getSentMessages, getNewMessagesCount, deleteMessages, updateMessageStatus }

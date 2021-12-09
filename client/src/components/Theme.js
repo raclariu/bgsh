@@ -11,15 +11,20 @@ import Brightness7Icon from '@material-ui/icons/Brightness7'
 
 // @ Others
 import { setCurrentTheme } from '../actions/userActions'
+import { useNotification } from '../hooks/hooks'
 
 // @ Main
 const Theme = () => {
 	const dispatch = useDispatch()
 
+	const [ showSnackbar ] = useNotification()
+
 	const theme = useSelector((state) => state.userPreferences.theme)
 
 	const changeHandler = (e, current) => {
+		const text = current === 'light' ? 'Switched to dark theme' : 'Switched to light theme'
 		dispatch(setCurrentTheme(current === 'light' ? 'dark' : 'light'))
+		showSnackbar.info({ text })
 	}
 
 	return (

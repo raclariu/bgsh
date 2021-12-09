@@ -103,7 +103,7 @@ const getGamesDetailsFromBGG = asyncHandler(async (req, res) => {
 			gamesArr.push(item)
 		}
 
-		res.status(200).json(gamesArr)
+		return res.status(200).json(gamesArr)
 	} catch (error) {
 		res.status(503)
 		throw {
@@ -139,7 +139,7 @@ const bggGetHotGames = asyncHandler(async (req, res) => {
 			hotArr.push(hotGame)
 		}
 
-		res.status(200).json(hotArr)
+		return res.status(200).json(hotArr)
 	} catch (error) {
 		res.status(503)
 		throw {
@@ -189,8 +189,6 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 					return { imageid, image, caption, thumbnail, extLink, postedBy }
 				})
 				images.push(mapImages)
-			} else {
-				images.push([])
 			}
 		}
 
@@ -200,7 +198,8 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 				message : 'No images found'
 			}
 		} else {
-			res.status(200).json(images)
+			console.log(images)
+			return res.status(200).json(images)
 		}
 	} catch (error) {
 		res.status(503)
@@ -248,7 +247,7 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 			gamesArr.push(item)
 		}
 
-		res.status(200).json(gamesArr)
+		return res.status(200).json(gamesArr)
 	} catch (error) {
 		res.status(503)
 		throw {
@@ -321,7 +320,7 @@ const sellGames = asyncHandler(async (req, res) => {
 		await Game.insertMany(sellList)
 	}
 
-	res.status(204).end()
+	return res.status(204).end()
 })
 
 // * @desc    Put up games for trade
@@ -370,7 +369,7 @@ const tradeGames = asyncHandler(async (req, res) => {
 		await Game.insertMany(tradeList)
 	}
 
-	res.status(204).end()
+	return res.status(204).end()
 })
 
 // * @desc    Add wanted games
@@ -392,7 +391,7 @@ const addWantedGames = asyncHandler(async (req, res) => {
 
 	await Wanted.insertMany(wantedList)
 
-	res.status(204).end()
+	return res.status(204).end()
 })
 
 // ~ @desc    Get games that are up for sale or trade
@@ -427,13 +426,6 @@ const getGames = asyncHandler(async (req, res) => {
 			}
 		})
 
-		if (results.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No results found'
-			}
-		}
-
 		const pagination = {
 			page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -441,7 +433,7 @@ const getGames = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -480,14 +472,7 @@ const getGames = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
-		}
-
-		res.status(200).json({ gamesData, pagination })
+		return res.status(200).json({ gamesData, pagination })
 	}
 })
 
@@ -501,15 +486,9 @@ const getWantedGames = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const gamesData = await Wanted.find({ isActive: true }).populate('wantedBy', 'username _id').lean()
+
 		const fuse = new Fuse(gamesData, { keys: [ 'title', 'designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item)
-
-		if (results.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No results found'
-			}
-		}
 
 		const pagination = {
 			page,
@@ -518,19 +497,12 @@ const getWantedGames = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
 	} else {
 		const count = await Wanted.countDocuments({ isActive: true })
-
-		if (count === 0) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
-		}
 
 		const gamesData = await Wanted.find({ isActive: true })
 			.skip(resultsPerPage * (page - 1))
@@ -553,7 +525,7 @@ const getWantedGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		res.status(200).json({ gamesData, pagination })
+		return res.status(200).json({ gamesData, pagination })
 	}
 })
 
@@ -568,13 +540,6 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 
 	const allUserGames = await Game.find({ seller: id }).lean()
 
-	if (allUserGames.length === 0) {
-		res.status(404)
-		throw {
-			message : 'No games found'
-		}
-	}
-
 	if (search) {
 		const fuse = new Fuse(allUserGames, {
 			keys      : [ 'games.title', 'games.designers' ],
@@ -584,13 +549,6 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((game) => game.item)
 
-		if (results.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No results found'
-			}
-		}
-
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -598,14 +556,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
-		}
-
-		res.status(200).json({
+		return res.status(200).json({
 			listedGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -621,13 +572,6 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			totalPages   : Math.ceil(allUserGames.length / resultsPerPage),
 			totalItems   : allUserGames.length,
 			itemsPerPage : resultsPerPage
-		}
-
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
 		}
 
 		res.status(200).json({
@@ -648,13 +592,6 @@ const getUserWantedGames = asyncHandler(async (req, res) => {
 
 	const userWantedGames = await Wanted.find({ wantedBy: id }).lean()
 
-	if (userWantedGames.length === 0) {
-		res.status(404)
-		throw {
-			message : 'No wanted games found'
-		}
-	}
-
 	if (search) {
 		const fuse = new Fuse(userWantedGames, {
 			keys      : [ 'title', 'designers' ],
@@ -664,13 +601,6 @@ const getUserWantedGames = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((game) => game.item)
 
-		if (results.length === 0) {
-			res.status(404)
-			throw {
-				message : 'No results found'
-			}
-		}
-
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
@@ -678,14 +608,7 @@ const getUserWantedGames = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No wanted games found'
-			}
-		}
-
-		res.status(200).json({
+		return res.status(200).json({
 			wantedGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -703,14 +626,7 @@ const getUserWantedGames = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No wanted games found'
-			}
-		}
-
-		res.status(200).json({
+		return res.status(200).json({
 			wantedGames : games,
 			pagination
 		})
@@ -728,7 +644,7 @@ const reactivateGame = asyncHandler(async (req, res) => {
 	if (gameExists) {
 		await Game.updateOne({ _id: id }, { isActive: true })
 
-		res.status(204).end()
+		return res.status(204).end()
 	} else {
 		res.status(404)
 		throw {
@@ -758,7 +674,7 @@ const getSingleGame = asyncHandler(async (req, res) => {
 		}
 	}
 
-	res.status(200).json(saleData)
+	return res.status(200).json(saleData)
 })
 
 // * @desc    Save game
@@ -908,6 +824,7 @@ const getSavedGames = asyncHandler(async (req, res) => {
 const deleteGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
 	const game = await Game.findOneAndDelete({ _id: id })
+	console.log(game)
 
 	if (!game) {
 		res.status(404)

@@ -11,6 +11,7 @@ const gameSchema = mongoose.Schema(
 		},
 		altId            : {
 			type    : String,
+			unique  : true,
 			default : () => genNanoId(8)
 		},
 		games            : [ Object ],

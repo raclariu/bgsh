@@ -19,6 +19,7 @@ import Loader from './Loader'
 
 // @ Others
 import { signIn } from '../actions/userActions'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -40,9 +41,10 @@ const SignIn = () => {
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
+	const [ showSnackbar ] = useNotification()
 
 	const userAuth = useSelector((state) => state.userAuth)
-	const { loading, error, userData } = userAuth
+	const { loading, error, success, userData } = userAuth
 
 	useEffect(
 		() => {
@@ -51,6 +53,15 @@ const SignIn = () => {
 			}
 		},
 		[ history, userData ]
+	)
+
+	useEffect(
+		() => {
+			if (success && userData) {
+				showSnackbar.success({ text: `You are now logged in as 👉 ${userData.username}` })
+			}
+		},
+		[ success, showSnackbar, userData ]
 	)
 
 	const handleShowHidePass = () => {

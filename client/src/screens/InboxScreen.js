@@ -2,6 +2,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -17,9 +18,19 @@ import IconButton from '@material-ui/core/IconButton'
 import Fade from '@material-ui/core/Fade'
 import Divider from '@material-ui/core/Divider'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardMedia from '@material-ui/core/CardMedia'
+import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Collapse from '@material-ui/core/Collapse'
+import Typography from '@material-ui/core/Typography'
+import Chip from '@material-ui/core/Chip'
 
 // @ Icons
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import EventIcon from '@material-ui/icons/Event'
 
 // @ Components
 import SendMessage from '../components/SendMessage'
@@ -28,15 +39,19 @@ import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
 import CustomAvatar from '../components/CustomAvatar'
 import SearchBox from '../components/SearchBox'
+import CustomTooltip from '../components/CustomTooltip'
+import MessageCard from '../components/MessageCard'
 
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
 	grid       : {
-		marginTop : theme.spacing(4)
+		marginTop    : theme.spacing(4),
+		marginBottom : theme.spacing(4)
 	},
 	buttonBase : {
 		width : '100%'
@@ -85,14 +100,18 @@ const MessageSkeleton = () => {
 // @ Main
 const InboxScreen = () => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
 	const queryClient = useQueryClient()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isLoading, isError, error, isSuccess, data } = useQuery(
+	const [ selected, setSelected ] = useState([])
+	const [ isChecked, setIsChecked ] = useState(false)
+	const [ expanded, setExpanded ] = useState([])
+	const [ showSnackbar ] = useNotification()
+
+	const { isLoading, isSuccess, data } = useQuery(
 		[ location.pathname === '/received' ? 'msgReceived' : 'msgSent', { search, page } ],
 		() => {
 			if (location.pathname === '/received') {
@@ -101,49 +120,67 @@ const InboxScreen = () => {
 			if (location.pathname === '/sent') {
 				return apiGetSentMessages(search, page)
 			}
+		},
+		{
+			refetchOnWindowFocus : false,
+			onError              : (err) => {
+				const text = err.response.data.message || 'Error occured when fetching messages'
+				showSnackbar.error({ text })
+			},
+			onSuccess            : (data) => {
+				data.messages.length === 0 && showSnackbar.warning({ text: 'No messages found' })
+			}
 		}
 	)
 
-	const mutation = useMutation(
+	const deleteMutation = useMutation(
 		({ ids, type }) => {
 			return apiDeleteMessages(ids, type)
 		},
 		{
+			onError   : (err) => {
+				const text = err.response.data.message || 'Message could not be deleted'
+				showSnackbar.error({ text })
+			},
 			onSuccess : () => {
 				if (location.pathname === '/received') {
-					console.log('invalidatind')
 					queryClient.invalidateQueries([ 'msgReceived' ])
+					queryClient.invalidateQueries([ 'msgReceivedCount' ])
 				}
 				if (location.pathname === '/sent') {
 					queryClient.invalidateQueries([ 'msgSent' ])
 				}
+				const text = selected.length > 1 ? 'Messages deleted successfully' : 'Message deleted successfully'
+				showSnackbar.success({ text })
 				setSelected([])
-				setIndexClicked(null)
 			}
 		}
 	)
 
 	const statusMutation = useMutation((id) => apiUpdateMessageStatus(id), {
-		// onMutate  : async () => {
-		// 	await queryClient.cancelQueries([ 'msgReceived' ])
-		// 	await queryClient.cancelQueries([ 'msgReceivedCount' ])
-		// 	const count = queryClient.getQueryData([ 'msgReceivedCount' ])
-		// 	console.log(count)
-		// 	queryClient.setQueryData([ 'msgReceivedCount' ], (oldCount) => (oldCount -= 1))
+		onMutate  : async (id) => {
+			await queryClient.cancelQueries([ 'msgReceived', { page, search } ])
+			const data = queryClient.getQueryData([ 'msgReceived', { page, search } ])
+			queryClient.setQueryData([ 'msgReceived', { page, search } ], (oldMsg) => {
+				const index = oldMsg.messages.findIndex((msg) => msg._id === id)
+				oldMsg.messages[index].read = true
+				oldMsg.messages[index].readAt = new Date().toISOString()
+				return oldMsg
+			})
 
-		// 	console.log(queryClient.getQueryData([ 'msgReceivedCount' ]))
-
-		// 	return { count }
-		// },
+			return { data }
+		},
+		onError   : (err, id, context) => {
+			const text = err.response.data.message || 'Message could not be updated'
+			showSnackbar.error({ text })
+			queryClient.setQueryData([ 'msgReceived', { page } ], context.data)
+		},
 		onSuccess : () => {
-			queryClient.invalidateQueries([ 'msgReceived' ])
+			showSnackbar.info({ text: 'Message has been read' })
+			queryClient.invalidateQueries([ 'msgReceived', { page } ])
 			queryClient.invalidateQueries([ 'msgReceivedCount' ])
 		}
 	})
-
-	const [ selected, setSelected ] = useState([])
-	const [ isChecked, setIsChecked ] = useState(false)
-	const [ indexClicked, setIndexClicked ] = useState(null)
 
 	useEffect(
 		() => {
@@ -185,7 +222,7 @@ const InboxScreen = () => {
 		if (e.target.checked) {
 			setSelected((selected) => [ ...selected, id ])
 		} else {
-			setSelected(selected.filter((selectedId) => selectedId !== id))
+			setSelected((selected) => selected.filter((selectedId) => selectedId !== id))
 		}
 	}
 
@@ -193,198 +230,79 @@ const InboxScreen = () => {
 		setIsChecked(e.target.checked)
 	}
 
-	const handleClick = (e, i, msg) => {
-		if (!msg.read && i !== indexClicked) {
-			if (location.pathname === '/received') {
-				statusMutation.mutate(msg._id)
-			}
-		}
-		if (i === indexClicked) {
-			setIndexClicked(null)
-		} else {
-			setIndexClicked(i)
-		}
-	}
-
 	const handleDelete = () => {
 		setIsChecked(false)
 
 		if (location.pathname === '/received') {
-			mutation.mutate({ ids: selected, type: 'received' })
+			deleteMutation.mutate({ ids: selected, type: 'received' })
 		}
 		if (location.pathname === '/sent') {
-			mutation.mutate({ ids: selected, type: 'sent' })
+			deleteMutation.mutate({ ids: selected, type: 'sent' })
+		}
+	}
+
+	const handleExpandClick = (id, read) => {
+		if (expanded[0] && expanded[0].id === id) {
+			setExpanded((expanded) => expanded.filter((obj) => obj.id !== id))
+		} else {
+			setExpanded([ { id, open: true } ])
+			if (!read) {
+				if (location.pathname === '/received') {
+					statusMutation.mutate(id)
+				}
+			}
 		}
 	}
 
 	return (
-		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+		<Grid container spacing={2} justifyContent="center" className={cls.grid}>
+			<Grid container justifyContent="center">
+				<Grid item xs={12} sm={5} md={4}>
 					<SearchBox placeholder="Search users" handleFilters={handleFilters} />
 				</Grid>
 			</Grid>
 
-			{isError && (
-				<Box my={2}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
+			<Grid item xs={12} sm={9} md={7}>
+				<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={60}>
+					<FormControlLabel
+						label="Select all"
+						disabled={!isSuccess}
+						control={
+							<Checkbox
+								label="Select all"
+								indeterminate={isChecked && data && data.messages.length !== selected.length}
+								checked={isChecked}
+								onChange={(e) => handleSelectAll(e)}
+							/>
+						}
+					/>
+
+					{selected.length > 0 && (
+						<IconButton onClick={handleDelete}>
+							<DeleteOutlineIcon color="error" />
+						</IconButton>
+					)}
 				</Box>
-			)}
-
-			{mutation.isError && (
-				<Box my={2}>
-					<CustomAlert>{mutation.error.response.data.message}</CustomAlert>
-				</Box>
-			)}
-
-			{mutation.isSuccess && (
-				<Box my={2}>
-					<CustomAlert severity="success">Sucessfully deleted</CustomAlert>
-				</Box>
-			)}
-
-			<Grid
-				container
-				direction="column"
-				justifyContent="center"
-				alignItems="center"
-				className={cls.grid}
-				spacing={1}
-			>
-				<Grid item container xs={12} sm={9} md={7}>
-					<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={60}>
-						<FormControlLabel
-							label="Select all"
-							disabled={!isSuccess}
-							control={
-								<Checkbox
-									label="Select all"
-									indeterminate={isChecked && data && data.messages.length !== selected.length}
-									checked={isChecked}
-									onChange={(e) => handleSelectAll(e)}
-								/>
-							}
-						/>
-
-						{selected.length > 0 && (
-							<IconButton onClick={handleDelete}>
-								<DeleteOutlineIcon color="error" />
-							</IconButton>
-						)}
-					</Box>
-				</Grid>
-
-				{isLoading && [ ...Array(12).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
-
-				{isSuccess &&
-					data.messages.map((msg, i) => (
-						<Grid item container key={msg._id} xs={12} sm={9} md={7}>
-							<ButtonBase className={cls.buttonBase}>
-								<Box
-									display="flex"
-									boxShadow={selected.some((id) => id === msg._id) ? 6 : 2}
-									borderRadius={4}
-									bgcolor="background.paper"
-									alignItems="center"
-									width="100%"
-								>
-									<Box my={1} mr={1}>
-										<Checkbox
-											checked={selected.some((el) => el === msg._id)}
-											onChange={(e) => handleSelect(e, msg._id, 'received')}
-											size="small"
-										/>
-									</Box>
-
-									<Box mr={1}>
-										{location.pathname === '/received' ? (
-											<CustomAvatar size="medium" user={msg.sender.username} />
-										) : (
-											<CustomAvatar size="medium" user={msg.recipient.username} />
-										)}
-									</Box>
-
-									<Divider orientation="vertical" flexItem />
-
-									<Box
-										display="flex"
-										flexDirection="column"
-										justifyContent="center"
-										alignItems="flex-start"
-										minWidth={0}
-										pl={1}
-										py={2}
-										onClick={(e) => handleClick(e, i, msg)}
-										width="100%"
-									>
-										<Box
-											className={cls.subject}
-											width="100%"
-											textAlign="left"
-											color={msg.read ? 'inherit' : 'primary.main'}
-											fontWeight={msg.read ? 'fontWeightRegular' : 'fontWeightBold'}
-											fontSize="subtitle2.fontSize"
-										>
-											{msg.subject}
-										</Box>
-
-										<Box mt={1} fontSize={11} color="grey.500" fontStyle="italic" textAlign="left">
-											{calculateTimeAgo(msg.createdAt)}
-										</Box>
-									</Box>
-								</Box>
-							</ButtonBase>
-
-							{indexClicked === i && (
-								<Fade in={indexClicked >= 0}>
-									<Box
-										width="100%"
-										display="flex"
-										flexDirection="column"
-										justifyContent="center"
-										borderRadius={4}
-										bgcolor="background.paper"
-										boxShadow={selected.some((id) => id === msg._id) ? 6 : 2}
-										my={1}
-										p={2}
-									>
-										<Box alignSelf="flex-end" fontSize={12} my={2} fontStyle="italic">
-											{formatDate(msg.createdAt)}
-										</Box>
-
-										<Box fontStyle="italic" fontSize={12} mb={1}>
-											Subject
-										</Box>
-										<Box borderRadius={4} boxShadow={2} p={1} style={{ wordWrap: 'break-word' }}>
-											{msg.subject}
-										</Box>
-
-										<Box mt={2} fontStyle="italic" fontSize={12} mb={1}>
-											Message
-										</Box>
-										<Box borderRadius={4} boxShadow={1} p={1} style={{ wordWrap: 'break-word' }}>
-											{msg.message}
-										</Box>
-										<Divider />
-										<Box mt={2} alignSelf="flex-end">
-											<SendMessage
-												recipientUsername={
-													location.pathname === '/received' ? (
-														msg.sender.username
-													) : (
-														msg.recipient.username
-													)
-												}
-											/>
-										</Box>
-									</Box>
-								</Fade>
-							)}
-						</Grid>
-					))}
 			</Grid>
 
+			{isLoading && [ ...Array(12).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
+
 			{isSuccess &&
+				data.messages.map((msg) => (
+					<Grid item key={msg._id} xs={12} sm={9} md={7}>
+						<MessageCard
+							msg={msg}
+							expanded={expanded.some((obj) => obj.id === msg._id)}
+							isChecked={selected.some((el) => el === msg._id)}
+							handleExpandClick={handleExpandClick}
+							handleSelect={handleSelect}
+							path={location.pathname === '/received' ? 'received' : 'sent'}
+						/>
+					</Grid>
+				))}
+
+			{isSuccess &&
+				data.pagination &&
 				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
@@ -398,7 +316,7 @@ const InboxScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</Fragment>
+		</Grid>
 	)
 }
 

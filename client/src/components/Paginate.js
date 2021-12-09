@@ -7,7 +7,11 @@ import Pagination from '@material-ui/lab/Pagination'
 // @ Main
 const Paginate = ({ pagination, handleFilters }) => {
 	const onPageChangeHandler = (e, page) => {
-		window.scrollTo(0, 0)
+		window.scrollTo({
+			top      : 0,
+			left     : 0,
+			behavior : 'smooth'
+		})
 		handleFilters(page, 'page')
 	}
 

@@ -73,6 +73,8 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 		}
 	})
 
+	console.log('delete success', deleteGame.isSuccess)
+
 	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId))
 
 	const handleOpenDialog = () => {
@@ -89,6 +91,8 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 				queryClient.invalidateQueries('myListedGames')
 				queryClient.invalidateQueries('saleGames')
 				queryClient.invalidateQueries('tradeGames')
+				queryClient.invalidateQueries('soldGames')
+				queryClient.invalidateQueries('tradedGames')
 				addGame.reset()
 				deleteGame.reset()
 				reactivateGame.reset()
@@ -115,11 +119,9 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
-						<span>
-							<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary">
-								<CheckCircleOutlineOutlinedIcon fontSize="small" />
-							</IconButton>
-						</span>
+						<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary">
+							<CheckCircleOutlineOutlinedIcon fontSize="small" />
+						</IconButton>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
@@ -266,11 +268,9 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 			{display === 'reactivate' && (
 				<Fragment>
 					<CustomTooltip title="Reactivate">
-						<span>
-							<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
-								<RefreshIcon fontSize="small" />
-							</IconButton>
-						</span>
+						<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
+							<RefreshIcon fontSize="small" />
+						</IconButton>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">

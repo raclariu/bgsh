@@ -24,6 +24,7 @@ import Paginate from '../components/Paginate'
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
 import { apiFetchCollection } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -51,11 +52,20 @@ const CollectionScreen = () => {
 
 	const saleList = useSelector((state) => state.saleList)
 
-	const { isLoading, isError, error, isSuccess, data } = useQuery(
+	const [ showSnackbar ] = useNotification()
+
+	const { isLoading, isSuccess, data } = useQuery(
 		[ 'collection', { search, page } ],
 		() => apiFetchCollection(search, page),
 		{
-			staleTime : Infinity
+			staleTime : Infinity,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching collection'
+				showSnackbar.error({ text })
+			},
+			onSuccess : (data) => {
+				data.owned.length === 0 && showSnackbar.warning({ text: 'Collection not found' })
+			}
 		}
 	)
 
@@ -75,11 +85,13 @@ const CollectionScreen = () => {
 	}
 
 	const saleListHandler = (e, id) => {
+		const { bggId, title, year, thumbnail, image } = data.owned.find((el) => el.bggId === id)
 		if (e.target.checked) {
-			const { bggId, title, year, thumbnail, image } = data.owned.find((el) => el.bggId === id)
 			dispatch(addToSaleList({ bggId, title, year, thumbnail, image }))
+			showSnackbar.info({ text: `${title} added to list` })
 		} else {
 			dispatch(removeFromSaleList(id))
+			showSnackbar.info({ text: `${title} removed from list` })
 		}
 	}
 
@@ -96,12 +108,6 @@ const CollectionScreen = () => {
 					<BackButton />
 					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
-			)}
-
-			{isError && (
-				<div className={cls.error}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</div>
 			)}
 
 			{isLoading && (

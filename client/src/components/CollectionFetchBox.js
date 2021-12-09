@@ -13,11 +13,9 @@ import Loader from './Loader'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { bggGetCollection } from '../actions/collectionActions'
 import { clearSaleList } from '../actions/gameActions'
-import { BGG_COLLECTION_LIST_RESET } from '../constants/collectionConstants'
-import { SALE_LIST_RESET } from '../constants/gameConstants'
 import { apiFetchBggCollection } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Main
 const CollectionFetchBox = () => {
@@ -25,12 +23,19 @@ const CollectionFetchBox = () => {
 	const queryClient = useQueryClient()
 
 	const [ bggUsername, setBggUsername ] = useState('')
+	const [ showSnackbar ] = useNotification()
 
 	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
 		onSuccess : () => {
 			queryClient.invalidateQueries([ 'collection' ])
 			queryClient.invalidateQueries([ 'wishlist' ])
 			dispatch(clearSaleList())
+			showSnackbar.info({
+				text : 'Your list was cleared'
+			})
+			showSnackbar.success({
+				text : `Collection data from BGG for user ${bggUsername} was successfully fetched`
+			})
 		}
 	})
 

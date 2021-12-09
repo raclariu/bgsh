@@ -58,16 +58,6 @@ const HistorySoldGamesScreen = () => {
 		}
 	)
 
-	// const soldHistory = useSelector((state) => state.soldHistory)
-	// const { loading, success, error, soldList, pagination, sum } = soldHistory
-
-	// useEffect(
-	// 	() => {
-	// 		dispatch(getSoldGamesHistory(page, search))
-	// 	},
-	// 	[ dispatch, page, search ]
-	// )
-
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
 
@@ -97,6 +87,13 @@ const HistorySoldGamesScreen = () => {
 				</Grid>
 			)}
 
+			{isSuccess &&
+			data.soldList.length === 0 && (
+				<Box mt={2}>
+					<CustomAlert severity="warning">No sold games found</CustomAlert>
+				</Box>
+			)}
+
 			{isError && (
 				<Box mt={2}>
 					<CustomAlert>{error.response.data.message}</CustomAlert>
@@ -106,7 +103,7 @@ const HistorySoldGamesScreen = () => {
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.soldList.length} games</Box>}
 				</Box>
 			)}
 
@@ -123,13 +120,7 @@ const HistorySoldGamesScreen = () => {
 			)}
 
 			{isSuccess &&
-			!search && (
-				<Box mt={2} fontWeight="fontWeightMedium" fontStyle="italic">
-					You've sold {data.pagination.totalItems} board games worth a total of {data.sum} RON
-				</Box>
-			)}
-
-			{isSuccess &&
+				data.pagination &&
 				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"

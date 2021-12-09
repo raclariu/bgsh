@@ -8,7 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 const CustomTooltip = ({ title, children }) => {
 	return (
 		<Tooltip disableFocusListener title={title}>
-			{children}
+			<span>{children}</span>
 		</Tooltip>
 	)
 }

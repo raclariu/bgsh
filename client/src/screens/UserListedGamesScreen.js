@@ -69,6 +69,8 @@ const UserListedGamesScreen = () => {
 		history.push(`${location.pathname}?${query}`)
 	}
 
+	console.log(error && error.response.data.message)
+
 	return (
 		<div className={cls.root}>
 			<Grid container justifyContent="center" spacing={2}>
@@ -92,17 +94,11 @@ const UserListedGamesScreen = () => {
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					{data && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
 
-			{error && (
-				<Box mt={2}>
-					<CustomAlert>{error}</CustomAlert>
-				</Box>
-			)}
-
-			{isSuccess && (
+			{data && (
 				<Grid container className={cls.gridContainer} spacing={3}>
 					{data.listedGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
