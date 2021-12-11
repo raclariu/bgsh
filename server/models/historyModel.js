@@ -5,7 +5,7 @@ const historySchema = mongoose.Schema(
 	{
 		mode       : String,
 		isPack     : Boolean,
-		seller     : {
+		addedBy    : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
@@ -16,7 +16,7 @@ const historySchema = mongoose.Schema(
 	},
 	{
 		timestamps : true,
-		collection : 'gamesHistory'
+		collection : 'histories'
 	}
 )
 

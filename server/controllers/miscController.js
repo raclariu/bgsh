@@ -1,5 +1,253 @@
+import axios from 'axios'
 import asyncHandler from 'express-async-handler'
 import Kickstarter from '../models/ksModel.js'
+import { parseXML } from '../helpers/helpers.js'
+
+// ~ @desc    Get games from BGG by ID
+// ~ @route   GET  /api/misc/bgg/games
+// ~ @access  Private route
+const bggGetGamesDetails = asyncHandler(async (req, res) => {
+	try {
+		const { bggIds } = req.query
+
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
+			params : {
+				id       : bggIds.join(','),
+				versions : 1,
+				stats    : 1
+			}
+		})
+
+		let gamesArr = []
+		let { item } = await parseXML(data)
+		const ensureArray = Array.isArray(item) ? item : [ item ]
+
+		for (let game of ensureArray) {
+			const item = {
+				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
+				bggId              : game.id,
+				thumbnail          : game.thumbnail || null,
+				image              : game.image || null,
+				title              : Array.isArray(game.name)
+					? game.name.find((obj) => obj.type === 'primary').value
+					: game.name.value,
+				year               : +game.yearpublished.value,
+				designers          : game.link
+					.filter((link) => link.type === 'boardgamedesigner')
+					.map((designer) => designer.value),
+				minPlayers         : +game.minplayers.value,
+				maxPlayers         : +game.maxplayers.value,
+				suggestedPlayers   :
+					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes > 15
+						? Array.isArray(game.poll.find((obj) => obj.name === 'suggested_numplayers').results)
+							? +game.poll
+									.find((obj) => obj.name === 'suggested_numplayers')
+									.results.sort(
+										(a, b) =>
+											+b.result.find((obj) => obj.value === 'Best').numvotes -
+											+a.result.find((obj) => obj.value === 'Best').numvotes
+									)[0].numplayers
+							: null
+						: null,
+				languageDependence : game.poll
+					? +game.poll.find((obj) => obj.name === 'language_dependence').totalvotes > 10
+						? game.poll
+								.find((obj) => obj.name === 'language_dependence')
+								.results.result.sort((a, b) => +b.numvotes - +a.numvotes)[0].value
+						: 'Not enough votes'
+					: null,
+				playTime           :
+					+game.playingtime.value === 0
+						? null
+						: game.minplaytime.value === game.maxplaytime.value
+							? game.maxplaytime.value
+							: `${game.minplaytime.value} - ${game.maxplaytime.value}`,
+				minAge             : +game.minage.value === 0 ? null : +game.minage.value,
+				categories         : game.link.filter((link) => link.type === 'boardgamecategory').map((ctg) => {
+					return { id: +ctg.id, name: ctg.value }
+				}),
+				mechanics          : game.link.filter((link) => link.type === 'boardgamemechanic').map((mec) => {
+					return { id: +mec.id, name: mec.value }
+				}),
+				versions           : Array.isArray(game.versions.item)
+					? game.versions.item.map((v) => {
+							return {
+								title : v.name.value,
+								year  : +v.yearpublished.value
+							}
+						})
+					: [ { title: game.versions.item.name.value, year: +game.versions.item.yearpublished.value } ],
+				stats              : {
+					ratings   : +game.statistics.ratings.usersrated.value,
+					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
+					rank      :
+						game.type === 'boardgame'
+							? Array.isArray(game.statistics.ratings.ranks.rank)
+								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
+								: 'N/A'
+							: 'N/A'
+				},
+				complexity         : {
+					weight :
+						+game.statistics.ratings.numweights.value > 0
+							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
+							: 'N/A',
+					votes  : +game.statistics.ratings.numweights.value
+				}
+			}
+
+			gamesArr.push(item)
+		}
+
+		return res.status(200).json(gamesArr)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
+// ~ @desc    Get BGG hot games
+// ~ @route   GET /api/misc/bgg/hot
+// ~ @access  Public route
+const bggGetHotGamesList = asyncHandler(async (req, res) => {
+	try {
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/hot', {
+			params : {
+				type : 'boardgame'
+			}
+		})
+
+		const hotArr = []
+		let { item } = await parseXML(data)
+		const ensureArray = Array.isArray(item) ? item : [ item ]
+		for (let game of ensureArray) {
+			const hotGame = {
+				bggId     : game.id,
+				// rank      : game.rank ? +game.rank : null,
+				thumbnail : game.thumbnail ? game.thumbnail.value : null,
+				title     : game.name ? game.name.value : '',
+				year      : game.yearpublished ? +game.yearpublished.value : null
+			}
+
+			hotArr.push(hotGame)
+		}
+
+		return res.status(200).json(hotArr)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
+// ~ @desc Get gallery of images for single game from BGG
+// ~ @route  GET /api/misc/bgg/gallery
+// ~ @access Private route
+const bggGetGallery = asyncHandler(async (req, res) => {
+	try {
+		const { bggIds } = req.query
+
+		let images = []
+
+		for (let id of bggIds) {
+			const { data } = await axios.get('https://api.geekdo.com/api/images', {
+				params : {
+					ajax          : 1,
+					date          : 'alltime',
+					gallery       : 'all',
+					nosession     : 1,
+					objectid      : id,
+					objecttype    : 'thing',
+					pageid        : 1,
+					showcount     : 12,
+					size          : 'thumb',
+					sort          : 'hot',
+					licensefilter : 'reuse'
+					//tag        : 'Play,Components'
+				}
+			})
+
+			if (data.images.length !== 0) {
+				const mapImages = data.images.map((obj) => {
+					const {
+						imageid,
+						imageurl_lg : image,
+						caption,
+						imageurl    : thumbnail,
+						href        : extLink,
+						user        : { username: postedBy }
+					} = obj
+					return { imageid, image, caption, thumbnail, extLink, postedBy }
+				})
+				images.push(mapImages)
+			}
+		}
+
+		if (images.length !== bggIds.length) {
+			res.status(404)
+			throw {
+				message : 'No images found'
+			}
+		} else {
+			return res.status(200).json(images)
+		}
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve images from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
+// ~ @desc    Search BGG for games
+// ~ @route   GET  /api/misc/bgg/search
+// ~ @access  Private route
+const bggSearchGame = asyncHandler(async (req, res) => {
+	try {
+		const { search } = req.query
+
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/search', {
+			params : {
+				query : search.split(' ').join('+'),
+				type  : 'boardgame,boardgameexpansion'
+			}
+		})
+
+		let parsedSearch = await parseXML(data)
+
+		if (parsedSearch.total === '0') {
+			return res.status(200).json([])
+		}
+
+		const ensureArray = Array.isArray(parsedSearch.item) ? parsedSearch.item : [ parsedSearch.item ]
+
+		const gamesArr = []
+		for (let game of ensureArray) {
+			const item = {
+				bggId     : game.id,
+				title     : game.name.value,
+				year      : game.yearpublished ? +game.yearpublished.value : '-',
+				thumbnail : null,
+				image     : null
+			}
+			gamesArr.push(item)
+		}
+
+		return res.status(200).json(gamesArr)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
 
 // ~ @desc    Get all kickstarters
 // ~ @route   GET  /api/misc/kickstarters
@@ -17,4 +265,4 @@ const getKickstarters = asyncHandler(async (req, res) => {
 	res.status(200).json(kickstarters)
 })
 
-export { getKickstarters }
+export { bggGetGamesDetails, bggGetHotGamesList, bggGetGallery, bggSearchGame, getKickstarters }

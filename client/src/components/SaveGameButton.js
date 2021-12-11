@@ -14,11 +14,11 @@ import BookmarkIcon from '@material-ui/icons/Bookmark'
 import Loader from './Loader'
 
 // @ Others
-import { apiFetchGameSavedStatus, apiUpdateSavedStatus } from '../api/api'
+import { apiFetchGameSavedStatus, apiUpdateSavedGameStatus } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
 // @ Main
-const SaveGameButton = ({ altId, sellerId }) => {
+const SaveGameButton = ({ altId, addedById }) => {
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
@@ -32,7 +32,7 @@ const SaveGameButton = ({ altId, sellerId }) => {
 		}
 	)
 
-	const mutation = useMutation((altId) => apiUpdateSavedStatus(altId), {
+	const mutation = useMutation((altId) => apiUpdateSavedGameStatus(altId), {
 		onMutate  : async () => {
 			await queryClient.cancelQueries([ 'savedStatus', altId ])
 			const isSaved = queryClient.getQueryData([ 'savedStatus', altId ])
@@ -76,7 +76,7 @@ const SaveGameButton = ({ altId, sellerId }) => {
 					<Loader size={20} />
 				</IconButton>
 			) : (
-				// disabled={sellerId === userId}
+				// disabled={addedById === userId}
 				<IconButton onClick={saveGameHandler} color="secondary">
 					{renderButtonHandler()}
 				</IconButton>

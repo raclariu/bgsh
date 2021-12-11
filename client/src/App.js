@@ -4,6 +4,7 @@ import { SnackbarProvider } from 'notistack'
 import { useSelector } from 'react-redux'
 import { Route, Redirect, Switch, useLocation } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/core/styles'
+import { isMobile } from 'react-device-detect'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 // @ CSS
@@ -36,14 +37,11 @@ const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
 const AddWantedGames = lazy(() => import('./screens/AddWantedGamesScreen'))
 const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
-const WantedGamesIndex = lazy(() => import('./screens/WantedGamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
 const Inbox = lazy(() => import('./screens/InboxScreen'))
 const UserListedGames = lazy(() => import('./screens/UserListedGamesScreen'))
-const UserWantedGames = lazy(() => import('./screens/UserWantedGamesScreen'))
-const HistorySoldGames = lazy(() => import('./screens/HistorySoldGamesScreen'))
-const HistoryTradedGames = lazy(() => import('./screens/HistoryTradedGamesScreen'))
+const GamesHistory = lazy(() => import('./screens/GamesHistoryScreen'))
 const HotGames = lazy(() => import('./screens/HotGamesScreen'))
 const UserProfile = lazy(() => import('./screens/UserProfileScreen'))
 const NotFound = lazy(() => import('./screens/NotFoundScreen'))
@@ -61,6 +59,7 @@ const App = () => {
 		<ThemeProvider theme={theme === 'light' ? light : dark}>
 			<SnackbarProvider
 				maxSnack={3}
+				dense={isMobile ? true : false}
 				ref={notistackRef}
 				action={(key) => (
 					<IconButton color="inherit" size="small" onClick={onClickDismiss(key)}>
@@ -99,7 +98,7 @@ const App = () => {
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/wanted" exact>
-								<WantedGamesIndex />
+								<GamesIndex />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/games/:altId" exact>
@@ -142,16 +141,12 @@ const App = () => {
 								<UserListedGames />
 							</ProtectedRoute>
 
-							<ProtectedRoute path="/user/wanted" exact>
-								<UserWantedGames />
-							</ProtectedRoute>
-
 							<ProtectedRoute path="/user/history/sold" exact>
-								<HistorySoldGames />
+								<GamesHistory />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/user/history/traded" exact>
-								<HistoryTradedGames />
+								<GamesHistory />
 							</ProtectedRoute>
 
 							<ProtectedRoute path="/hot" exact>

@@ -8,7 +8,8 @@ import {
 import { protect } from '../middlewares/authMiddleware.js'
 
 // @route /api/collections
-router.route('/').post(protect, getBggCollectionAndWishlist).get(protect, getCollectionFromDB)
+router.route('/').post(protect, getBggCollectionAndWishlist)
+router.route('/owned').get(protect, getCollectionFromDB)
 router.route('/wishlist').get(protect, getWishlistFromDB)
 
 export default router

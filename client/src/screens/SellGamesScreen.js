@@ -49,6 +49,7 @@ const SellGamesScreen = () => {
 	console.log(isPack)
 
 	const saleList = useSelector((state) => state.saleList)
+
 	const slRef = useRef(
 		saleList.map((game) => {
 			return {
@@ -204,6 +205,8 @@ const SellGamesScreen = () => {
 			extraInfoPack    : isPack ? extraInfoPack.trim() : '',
 			totalPrice       : isPack ? +totalPrice : null
 		}
+
+		console.log(gamesData)
 
 		mutation.mutate(gamesData)
 	}

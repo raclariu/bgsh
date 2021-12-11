@@ -29,7 +29,7 @@ import CustomAlert from '../components/CustomAlert'
 // @ Others
 import { deleteGame, reactivateGame, deleteWantedGame } from '../actions/gameActions'
 import { addGamesToHistory } from '../actions/historyActions'
-import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame, apiDeleteWantedGame } from '../api/api'
+import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -66,11 +66,7 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 	)
 
 	const deleteGame = useMutation((gameId) => {
-		if (mode === 'wanted') {
-			apiDeleteWantedGame(gameId)
-		} else {
-			apiDeleteListedGame(gameId)
-		}
+		apiDeleteListedGame(gameId)
 	})
 
 	console.log('delete success', deleteGame.isSuccess)

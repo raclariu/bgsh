@@ -2,7 +2,6 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
-import Wanted from '../models/wantedModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 
 // * @desc    Sign in user & get token
@@ -113,13 +112,13 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const saleGames = await Game.find({ seller: userId, isActive: true, mode: 'sell' })
+	const saleGames = await Game.find({ addedBy: userId, isActive: true, mode: 'sell' })
 		.select('_id mode games isPack altId totalPrice')
 		.limit(6)
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	const tradeGames = await Game.find({ seller: userId, isActive: true, mode: 'trade' })
+	const tradeGames = await Game.find({ addedBy: userId, isActive: true, mode: 'trade' })
 		.select('_id mode games isPack altId')
 		.limit(6)
 		.sort({ updatedAt: -1 })

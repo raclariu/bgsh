@@ -1,23 +1,16 @@
 import express from 'express'
 const router = express.Router()
 import {
-	getGamesDetailsFromBGG,
-	bggSearchGame,
-	bggGetHotGames,
-	bggGetGallery,
-	sellGames,
-	tradeGames,
-	addWantedGames,
+	listSaleGames,
+	listTradeGames,
+	listWantedGames,
 	getGames,
-	getWantedGames,
 	getUserListedGames,
-	getUserWantedGames,
 	getSingleGame,
 	switchSaveGame,
 	getSavedGames,
-	getSingleSavedGame,
-	deleteGame,
-	deleteWantedGame,
+	getSingleGameSavedStatus,
+	deleteOneGame,
 	reactivateGame
 } from '../controllers/gamesController.js'
 import { protect } from '../middlewares/authMiddleware.js'
@@ -37,19 +30,13 @@ import { validatePrefShipping } from '../validators/wantedValidator.js'
 
 // @route /api/games
 router.route('/').get(protect, getGames)
-router.route('/delete/:id').delete(protect, deleteGame)
-router.route('/wanted/delete/:id').delete(protect, deleteWantedGame)
-router.route('/user/:id/wanted').get(protect, getUserWantedGames)
+router.route('/:id/delete').delete(protect, deleteOneGame)
 router.route('/user/:id').get(protect, getUserListedGames)
-router.route('/saved').get(protect, getSavedGames).post(protect, switchSaveGame)
-router.route('/saved/:altId').get(protect, getSingleSavedGame)
-router.route('/wanted').get(protect, getWantedGames).post([ protect, validatePrefShipping ], addWantedGames)
-router.route('/reactivate/:id').patch(protect, reactivateGame)
+router.route('/saved').get(protect, getSavedGames)
+router.route('/:altId/save').get(protect, getSingleGameSavedStatus).patch(protect, switchSaveGame)
+router.route('/:id/reactivate').patch(protect, reactivateGame)
 router.route('/:altId').get(protect, getSingleGame)
-router.route('/bgg').post(protect, getGamesDetailsFromBGG)
-router.route('/bgg/search').post(protect, bggSearchGame)
-router.route('/bgg/hot').get(bggGetHotGames)
-router.route('/bgg/gallery').get(protect, bggGetGallery)
+router.route('/wanted').post([ protect, validatePrefShipping ], listWantedGames)
 router
 	.route('/trade')
 	.post(
@@ -64,7 +51,7 @@ router
 			validateShippingMethod,
 			validateShipCities
 		],
-		tradeGames
+		listTradeGames
 	)
 router
 	.route('/sell')
@@ -82,7 +69,7 @@ router
 			validateShippingMethod,
 			validateShipCities
 		],
-		sellGames
+		listSaleGames
 	)
 
 export default router

@@ -7,6 +7,9 @@ import { useQuery, useQueryClient, useMutation } from 'react-query'
 // @ Mui
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import TextField from '@material-ui/core/TextField'
+import Chip from '@material-ui/core/Chip'
 import Button from '@material-ui/core/Button'
 
 // @ Components
@@ -38,13 +41,13 @@ const AddWantedGamesScreen = () => {
 		saleList.map((game) => {
 			return {
 				...game,
-				prefVersion  : null,
-				prefShipping : []
+				prefVersion : null
 			}
 		})
 	)
 
 	const [ values, setValues ] = useState(slRef.current)
+	const [ shipPreffered, setShipPreffered ] = useState([])
 
 	const mapped = slRef.current.map((el) => el.bggId)
 
@@ -55,6 +58,8 @@ const AddWantedGamesScreen = () => {
 			staleTime : 1000 * 60 * 60
 		}
 	)
+
+	console.log(data && data)
 
 	const mutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
 		onSuccess : () => {
@@ -83,7 +88,6 @@ const AddWantedGamesScreen = () => {
 
 	const handleGameInfo = (e, value, id, key) => {
 		const index = values.findIndex((el) => el.bggId === id)
-		console.log(index)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
 		setValues(copy)
@@ -93,25 +97,30 @@ const AddWantedGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
+	const handleShipPreffered = (e, value) => {
+		setShipPreffered(value)
+	}
+
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesData = []
-		const valuesCopy = [ ...values ]
-		for (let val of valuesCopy) {
-			const [ { thumbnail, image, designers, type } ] = data.filter((game) => game.bggId === val.bggId)
+		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
+		for (let val of values) {
+			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
+			if (index !== -1) {
+				gamesCopy[index] = {
+					...gamesCopy[index],
+					prefVersion : val.prefVersion
+				}
+			}
+		}
 
-			gamesData.push({
-				...val,
-				type,
-				thumbnail,
-				image,
-				designers
-			})
+		const gamesData = {
+			games         : gamesCopy,
+			shipPreffered
 		}
 
 		console.log(gamesData)
-
 		mutation.mutate(gamesData)
 	}
 
@@ -143,6 +152,36 @@ const AddWantedGamesScreen = () => {
 									</Grid>
 								)
 						)}
+					</Grid>
+
+					<Grid container>
+						<Autocomplete
+							multiple
+							filterSelectedOptions
+							value={data.shipPreffered}
+							onChange={(e, selected) => handleShipPreffered(e, selected)}
+							limitTags={2}
+							options={[ 'Romanian Post', 'Courier', 'Personal' ]}
+							renderTags={(value, getTagProps) =>
+								value.map((option, index) => (
+									<Chip size="small" label={option} {...getTagProps({ index })} />
+								))}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									required
+									inputProps={{
+										...params.inputProps,
+										required : shipPreffered.length === 0
+									}}
+									label="Preferred shipping methods"
+									placeholder={'Select prefered shipping methods'}
+									name="shipping"
+									variant="outlined"
+									size="small"
+								/>
+							)}
+						/>
 					</Grid>
 
 					<Box display="flex">

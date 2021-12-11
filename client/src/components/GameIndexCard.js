@@ -151,19 +151,35 @@ const GameIndexCard = ({ data }) => {
 
 			<CardContent>
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-					<Chip
-						size="small"
-						variant="outlined"
-						label={`${data.games[index].type} • ${data.games[index].condition}`}
-					/>
+					{data.mode !== 'want' ? (
+						<Fragment>
+							<Chip
+								size="small"
+								variant="outlined"
+								label={`${data.games[index].type} • ${data.games[index].condition}`}
+							/>
 
-					<Box mt={0.5}>
-						<Chip
-							size="small"
-							variant="outlined"
-							label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
-						/>
-					</Box>
+							<Box mt={0.5}>
+								<Chip
+									size="small"
+									variant="outlined"
+									label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
+								/>
+							</Box>
+						</Fragment>
+					) : (
+						<Fragment>
+							<Chip
+								size="small"
+								variant="outlined"
+								label={`${data.games[index].prefVersion.title} • ${data.games[index].prefVersion.year}`}
+							/>
+
+							<Box mt={0.5}>
+								<Chip size="small" variant="outlined" label={`${data.shipping.shipPreffered}`} />
+							</Box>
+						</Fragment>
+					)}
 
 					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium" mt={0.5}>
@@ -178,14 +194,14 @@ const GameIndexCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Box display="flex" justifyContent="center" alignItems="center">
-						<CustomAvatar size="medium" user={data.seller.username} />
+						<CustomAvatar size="medium" user={data.addedBy.username} />
 
 						<Box fontSize={12} ml={1}>
 							{calculateTimeAgo(data.createdAt)}
 						</Box>
 					</Box>
 
-					<GameDetailsButton altId={data.altId} />
+					{data.mode !== 'want' && <GameDetailsButton altId={data.altId} />}
 				</Box>
 			</CardActions>
 		</Card>

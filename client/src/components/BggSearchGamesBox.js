@@ -102,10 +102,18 @@ const BggSearchGamesBox = () => {
 					<TextField
 						{...params}
 						onChange={(e) => changeInputHandler(e)}
-						label="Search for board game"
-						error={mutation.isError ? true : false}
-						helperText={mutation.isError ? mutation.error.response.data.message : false}
-						placeholder="Enter game title"
+						label="Enter board game title"
+						error={mutation.isError || (mutation.data && mutation.data.length === 0) ? true : false}
+						helperText={
+							mutation.isError ? (
+								mutation.error.response.data.message
+							) : mutation.data && mutation.data.length === 0 ? (
+								'No results found'
+							) : (
+								false
+							)
+						}
+						placeholder="Title"
 						variant="outlined"
 						InputProps={{
 							...params.InputProps,

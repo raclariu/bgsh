@@ -4,8 +4,8 @@ const validatePrefShipping = body().custom((games, { req }) => {
 	try {
 		for (let i = 0; i < games.length; i++) {
 			const shippingOk =
-				[ 'Romanian Post', 'Courier', 'Personal' ].filter((val) => games[i].prefShipping.includes(val)).length >
-				0
+				[ 'Romanian Post', 'Courier', 'Personal' ].filter((val) => games[i].shipPreffered.includes(val))
+					.length > 0
 
 			if (!shippingOk) {
 				throw {

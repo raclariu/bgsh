@@ -151,8 +151,8 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get collection from DB
-// ~ @route   GET  /api/collections
+// ~ @desc    Get owned games from DB
+// ~ @route   GET  /api/collections/owned
 // ~ @access  Private route
 const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const page = +req.query.page
@@ -168,13 +168,6 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 		}
 	}
 
-	// if (findCollection.ownedCount === 0) {
-	// 	res.status(404)
-	// 	throw {
-	// 		message : 'Collection is empty'
-	// 	}
-	// }
-
 	if (search) {
 		const { owned } = await Collection.findOne({ user: req.user._id }).select('owned').lean()
 
@@ -182,26 +175,12 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 
 		const results = fuse.search(search).map((game) => game.item)
 
-		// if (results.length === 0) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No results found'
-		// 	}
-		// }
-
 		const pagination = {
 			page       : page,
 			totalPages : Math.ceil(results.length / resultsPerPage),
 			totalItems : results.length,
 			perPage    : resultsPerPage
 		}
-
-		// if (pagination.totalPages < page) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No games found'
-		// 	}
-		// }
 
 		res.status(200).json({
 			owned      : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
@@ -220,13 +199,6 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 			totalItems   : ownedCount,
 			itemsPerPage : resultsPerPage
 		}
-
-		// if (pagination.totalPages < page) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No games found'
-		// 	}
-		// }
 
 		res.status(200).json({
 			owned,
@@ -252,26 +224,12 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 		}
 	}
 
-	// if (findWishlist.wishlistCount === 0) {
-	// 	res.status(404)
-	// 	throw {
-	// 		message : 'Wishlist is empty'
-	// 	}
-	// }
-
 	if (search) {
 		const { wishlist } = await Wishlist.findOne({ user: req.user._id }).select('wishlist').lean()
 
 		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.3, distance: 200 })
 
 		const results = fuse.search(search).map((game) => game.item)
-
-		// if (results.length === 0) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No results found'
-		// 	}
-		// }
 
 		const pagination = {
 			page       : page,
@@ -280,14 +238,7 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		// if (pagination.totalPages < page) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No games found'
-		// 	}
-		// }
-
-		res.status(200).json({
+		return res.status(200).json({
 			wishlist   : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -305,14 +256,7 @@ const getWishlistFromDB = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		// if (pagination.totalPages < page) {
-		// 	res.status(404)
-		// 	throw {
-		// 		message : 'No games found'
-		// 	}
-		// }
-
-		res.status(200).json({
+		return res.status(200).json({
 			wishlist,
 			pagination
 		})

@@ -553,31 +553,6 @@ const Header = () => {
 											/>
 										</ListItem>
 
-										<ListItem
-											button
-											onClick={(e) => handleClick(e, 15)}
-											selected={selectedIndex === 15}
-											component={RouterLink}
-											to="/user/wanted"
-										>
-											<ListItemIcon>
-												<AddCircleTwoToneIcon
-													color={selectedIndex === 15 ? 'primary' : 'inherit'}
-												/>
-											</ListItemIcon>
-											<ListItemText
-												primary={
-													<Box
-														fontWeight="fontWeightMedium"
-														fontSize="subtitle2.fontSize"
-														color={selectedIndex === 15 ? 'primary.main' : 'text.secondary'}
-													>
-														My wanted games
-													</Box>
-												}
-											/>
-										</ListItem>
-
 										<ListItem button onClick={() => handleExpandClick('history')}>
 											<ListItemIcon>
 												<ArchiveTwoToneIcon />

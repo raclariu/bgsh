@@ -162,6 +162,8 @@ const SingleGameScreen = () => {
 		}
 	)
 
+	console.log(isError && error)
+
 	const [ index, setIndex ] = useState(0)
 	const [ imgIndex, setImgIndex ] = useState(0)
 	const [ open, setOpen ] = useState(false)
@@ -433,8 +435,8 @@ const SingleGameScreen = () => {
 									</Box>
 								)}
 
-								<SendMessage recipientUsername={data.seller.username} />
-								<SaveGameButton altId={altId} sellerId={data.seller._id} />
+								<SendMessage recipientUsername={data.addedBy.username} />
+								<SaveGameButton altId={altId} addedById={data.addedBy._id} />
 							</Grid>
 						</Grid>
 					</Grid>

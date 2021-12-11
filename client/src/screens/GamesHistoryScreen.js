@@ -20,8 +20,8 @@ import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { getTradedGamesHistory } from '../actions/historyActions'
-import { apiFetchTradedGames } from '../api/api'
+import { apiFetchGamesHistory } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -42,19 +42,32 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const HistorySoldGames = () => {
+const GamesHistoryScreen = () => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
+	const currLoc =
+		location.pathname === '/user/history/sold'
+			? 'sell'
+			: location.pathname === '/user/history/traded' ? 'trade' : 'want'
+	const qryKey = currLoc === 'sell' ? 'soldHistory' : currLoc === 'trade' ? 'tradedHistory' : 'wantedHistory'
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'tradedGames', { search, page } ],
-		() => apiFetchTradedGames(search, page),
+	const [ showSnackbar ] = useNotification()
+
+	const { isLoading, data, isSuccess } = useQuery(
+		[ qryKey, { search, page } ],
+		() => apiFetchGamesHistory({ search, page, mode: currLoc }),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 60,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured when fetching history'
+				showSnackbar.error({ text })
+			},
+			onSuccess : (data) => {
+				data.historyList.length === 0 && showSnackbar.warning({ text: 'No games found' })
+			}
 		}
 	)
 
@@ -87,22 +100,16 @@ const HistorySoldGames = () => {
 				</Grid>
 			)}
 
-			{isError && (
-				<Box mt={2}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</Box>
-			)}
-
 			{search && (
 				<Box display="flex" alignItems="center" width="100%">
 					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					{isSuccess && <Box fontSize={12}>Found {data.historyList.length} games</Box>}
 				</Box>
 			)}
 
 			{isSuccess && (
 				<Grid container className={cls.gridContainer} spacing={3}>
-					{data.tradedList.map((data) => (
+					{data.historyList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<HistoryGameCard data={data} />
@@ -113,6 +120,7 @@ const HistorySoldGames = () => {
 			)}
 
 			{isSuccess &&
+				data.pagination &&
 				(data.pagination.totalPages > 1 && (
 					<Box
 						display="flex"
@@ -130,4 +138,4 @@ const HistorySoldGames = () => {
 	)
 }
 
-export default HistorySoldGames
+export default GamesHistoryScreen

@@ -2,7 +2,6 @@ import cron from 'node-cron'
 import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
 import Sale from '../models/gameModel.js'
-import Wanted from '../models/wantedModel.js'
 import Kickstarter from '../models/ksModel.js'
 
 const options = {

@@ -112,33 +112,6 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 						/>
 					)}
 				/>
-
-				<Autocomplete
-					className={cls.autocomplete}
-					multiple
-					filterSelectedOptions
-					value={data.prefShipping}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefShipping')}
-					limitTags={2}
-					options={[ 'Romanian Post', 'Courier', 'Personal' ]}
-					renderTags={(value, getTagProps) =>
-						value.map((option, index) => <Chip size="small" label={option} {...getTagProps({ index })} />)}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							required
-							inputProps={{
-								...params.inputProps,
-								required : data.prefShipping.length === 0
-							}}
-							label="Preferred shipping methods"
-							placeholder={'Select prefered shipping methods'}
-							name="shipping"
-							variant="outlined"
-							size="small"
-						/>
-					)}
-				/>
 			</CardContent>
 		</Card>
 	)

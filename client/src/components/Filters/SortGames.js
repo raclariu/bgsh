@@ -19,14 +19,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const SortGames = ({ handleFilters }) => {
+const SortGames = ({ handleFilters, mode }) => {
 	const cls = useStyles()
 	const location = useLocation()
 
 	return (
 		<FormControl className={cls.formControl}>
 			<InputLabel>Sort by</InputLabel>
-			{location.pathname === '/games' && (
+			{mode === 'sell' && (
 				<Select
 					MenuProps={{
 						anchorOrigin       : {
@@ -51,7 +51,30 @@ const SortGames = ({ handleFilters }) => {
 				</Select>
 			)}
 
-			{location.pathname === '/trades' && (
+			{mode === 'trade' && (
+				<Select
+					MenuProps={{
+						anchorOrigin       : {
+							vertical   : 'bottom',
+							horizontal : 'left'
+						},
+						transformOrigin    : {
+							vertical   : 'top',
+							horizontal : 'left'
+						},
+						getContentAnchorEl : null
+					}}
+					value={queryString.parse(location.search).sort || 'new'}
+					onChange={(e) => handleFilters(e.target.value, 'sort')}
+				>
+					<MenuItem value="new">Added newest</MenuItem>
+					<MenuItem value="old">Added oldest</MenuItem>
+					<MenuItem value="rank">Rank</MenuItem>
+					<MenuItem value="year">Release date</MenuItem>
+				</Select>
+			)}
+
+			{mode === 'want' && (
 				<Select
 					MenuProps={{
 						anchorOrigin       : {

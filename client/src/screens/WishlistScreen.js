@@ -22,7 +22,7 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
-import { apiFetchWishlist } from '../api/api'
+import { apiFetchWishlistCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
 // @ Styles
@@ -53,7 +53,7 @@ const WishlistScreen = () => {
 
 	const { isLoading, isError, error, isSuccess, data } = useQuery(
 		[ 'wishlist', { search, page } ],
-		() => apiFetchWishlist(search, page),
+		() => apiFetchWishlistCollection(search, page),
 		{
 			staleTime : Infinity,
 			onError   : (err) => {

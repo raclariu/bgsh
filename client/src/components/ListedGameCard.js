@@ -19,6 +19,7 @@ import MonetizationOnOutlinedIcon from '@material-ui/icons/MonetizationOnOutline
 import SwapHorizontalCircleOutlinedIcon from '@material-ui/icons/SwapHorizontalCircleOutlined'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 
 // @ Components
 import ActiveAddHistoryButton from './ActiveAddHistoryButton'
@@ -95,39 +96,48 @@ const ListedGameCard = ({ data }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<CustomTooltip title="For sale">
-							<Box className={cls.overlayBottom}>
+						<Box className={cls.overlayBottom}>
+							<CustomTooltip title="For sale">
 								<MonetizationOnOutlinedIcon color="secondary" />
-							</Box>
-						</CustomTooltip>
+							</CustomTooltip>
+						</Box>
 					)}
 
 					{data.mode === 'trade' && (
-						<CustomTooltip title="For trade">
-							<Box className={cls.overlayBottom}>
+						<Box className={cls.overlayBottom}>
+							<CustomTooltip title="For trade">
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
-							</Box>
-						</CustomTooltip>
+							</CustomTooltip>
+						</Box>
 					)}
 				</Fragment>
 			)}
 
 			{!data.isPack &&
 			data.mode === 'sell' && (
-				<CustomTooltip title="For sale">
-					<Box className={cls.overlayTop}>
+				<Box className={cls.overlayTop}>
+					<CustomTooltip title="For sale">
 						<MonetizationOnOutlinedIcon color="secondary" />
-					</Box>
-				</CustomTooltip>
+					</CustomTooltip>
+				</Box>
 			)}
 
 			{!data.isPack &&
 			data.mode === 'trade' && (
-				<CustomTooltip title="For trade">
-					<Box className={cls.overlayTop}>
+				<Box className={cls.overlayTop}>
+					<CustomTooltip title="For trade">
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
-					</Box>
-				</CustomTooltip>
+					</CustomTooltip>
+				</Box>
+			)}
+
+			{!data.isPack &&
+			data.mode === 'want' && (
+				<Box className={cls.overlayTop}>
+					<CustomTooltip title="Want to buy">
+						<AddCircleOutlineIcon color="secondary" />
+					</CustomTooltip>
+				</Box>
 			)}
 
 			<Divider />
@@ -166,16 +176,20 @@ const ListedGameCard = ({ data }) => {
 				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">
 					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
 
-					<ActiveAddHistoryButton
-						games={data.games}
-						isActive={data.isActive}
-						price={data.totalPrice}
-						gameId={data._id}
-						mode={data.mode}
-						display="add"
-					/>
+					{data.mode !== 'want' && (
+						<Fragment>
+							<ActiveAddHistoryButton
+								games={data.games}
+								isActive={data.isActive}
+								price={data.totalPrice}
+								gameId={data._id}
+								mode={data.mode}
+								display="add"
+							/>
 
-					<GameDetailsButton altId={data.altId} />
+							<GameDetailsButton altId={data.altId} />
+						</Fragment>
+					)}
 
 					<ActiveAddHistoryButton gameId={data._id} display="delete" />
 				</Box>

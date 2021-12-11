@@ -3,28 +3,37 @@ import { genNanoId } from '../helpers/helpers.js'
 
 const gameSchema = mongoose.Schema(
 	{
-		mode             : String,
-		seller           : {
+		mode          : String,
+		addedBy       : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		altId            : {
+		altId         : {
 			type    : String,
 			unique  : true,
 			default : () => genNanoId(8)
 		},
-		games            : [ Object ],
-		shipCities       : [ String ],
-		isPack           : Boolean,
-		shipCourier      : Boolean,
-		shipPost         : Boolean,
-		shipPersonal     : Boolean,
-		shipCourierPayer : String,
-		shipPostPayer    : String,
-		extraInfoPack    : String,
-		totalPrice       : Number,
-		isActive         : {
+		games         : [ Object ],
+		shipping      : {
+			shipCities       : {
+				type    : Array,
+				default : undefined
+			},
+			shipCourier      : Boolean,
+			shipPost         : Boolean,
+			shipPersonal     : Boolean,
+			shipCourierPayer : String,
+			shipPostPayer    : String,
+			shipPreffered    : {
+				type    : Array,
+				default : undefined
+			}
+		},
+		extraInfoPack : String,
+		totalPrice    : Number,
+		isPack        : Boolean,
+		isActive      : {
 			type    : Boolean,
 			default : true
 		}

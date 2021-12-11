@@ -23,6 +23,7 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import { getSavedGames } from '../actions/gameActions'
 import { SAVED_GAMES_RESET } from '../constants/gameConstants'
 import { apiFetchSavedGames } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -45,17 +46,25 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const SavedGamesScreen = () => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
+	const [ showSnackbar ] = useNotification()
+
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'savedGames', { search, page } ],
 		() => apiFetchSavedGames(search, page),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 60,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured when fetching saved games'
+				showSnackbar.error({ text })
+			},
+			onSuccess : (data) => {
+				data.list.length === 0 && showSnackbar.warning({ text: 'No saved games found' })
+			}
 		}
 	)
 
@@ -86,12 +95,6 @@ const SavedGamesScreen = () => {
 				<Grid container className={cls.gridContainer} spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
-			)}
-
-			{isError && (
-				<Box mt={2}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</Box>
 			)}
 
 			{search && (

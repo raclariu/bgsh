@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
-import User from '../models/userModel.js'
 import Message from '../models/messageModel.js'
 
 // * @desc    Send message
@@ -195,11 +194,11 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 	}
 })
 
-// <> @desc    Delete messages
-// <> @route   PATCH  /api/messages/delete
-// <> @access  Private route
+// ! @desc    Delete messages
+// ! @route   DELETE  /api/messages/delete
+// ! @access  Private route
 const deleteMessages = asyncHandler(async (req, res) => {
-	const { ids, type } = req.body
+	const { ids, type } = req.query
 
 	if (type === 'received') {
 		await Message.updateMany({ _id: { $in: ids } }, { delRecipient: true })
@@ -213,7 +212,7 @@ const deleteMessages = asyncHandler(async (req, res) => {
 })
 
 // ~ @desc    Get new messages count
-// ~ @route   GET  /api/messages/new
+// ~ @route   GET  /api/messages/new/count
 // ~ @access  Private route
 const getNewMessagesCount = asyncHandler(async (req, res) => {
 	const count = await Message.countDocuments({ read: false, recipient: req.user._id, delRecipient: false })

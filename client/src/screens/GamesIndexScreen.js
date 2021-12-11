@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
-import axios from 'axios'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -19,12 +18,9 @@ import BackButton from '../components/BackButton'
 import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
-import CustomAlert from '../components/CustomAlert'
 import DrawerFilter from '../components/Filters/DrawerFilter'
 
 // @ Others
-import { getGames } from '../actions/gameActions'
-import { GAMES_INDEX_RESET } from '../constants/gameConstants'
 import { fetchGames } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
@@ -46,19 +42,21 @@ const GamesIndexScreen = () => {
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
+	const currLoc = location.pathname === '/games' ? 'sell' : location.pathname === '/trades' ? 'trade' : 'want'
+	const qryKey = currLoc === 'sell' ? 'saleGames' : currLoc === 'trade' ? 'tradeGames' : 'wantedGames'
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
 	const [ showSnackbar ] = useNotification()
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ location.pathname === '/games' ? 'saleGames' : 'tradeGames', { sort, search, page } ],
+	const { isLoading, data, isSuccess } = useQuery(
+		[ qryKey, { sort, search, page } ],
 		() => {
 			const params = {
 				search,
 				page,
 				sort,
-				mode   : location.pathname === '/games' ? 'sell' : 'trade'
+				mode   : currLoc
 			}
 
 			return fetchGames(params)
@@ -110,7 +108,7 @@ const GamesIndexScreen = () => {
 				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
 					<BackButton />
 				</Box>
-				<SortGames handleFilters={handleFilters} />
+				<SortGames mode={currLoc} handleFilters={handleFilters} />
 			</Box>
 
 			{isLoading && (

@@ -76,24 +76,25 @@ export const apiGetNewMessagesCount = async () => {
 			Authorization : getBearer()
 		}
 	}
-	const { data } = await axios.get('/api/messages/new', config)
+	const { data } = await axios.get('/api/messages/new/count', config)
 	return data
 }
 
 export const apiDeleteMessages = async (ids, type) => {
-	console.log(ids, type)
-	return await axios.patch(
-		'/api/messages/delete',
-		{ ids, type },
-		{
-			headers : {
-				Authorization : getBearer()
-			}
-		}
-	)
+	const config = {
+		headers          : {
+			Authorization : getBearer()
+		},
+		params           : {
+			type,
+			ids
+		},
+		paramsSerializer : (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
+	}
+	return await axios.delete('/api/messages/delete', config)
 }
 
-export const apiFetchCollection = async (search, page) => {
+export const apiFetchOwnedCollection = async (search, page) => {
 	const config = {
 		headers : {
 			Authorization : getBearer()
@@ -104,7 +105,7 @@ export const apiFetchCollection = async (search, page) => {
 		}
 	}
 
-	const { data } = await axios.get('/api/collections', config)
+	const { data } = await axios.get('/api/collections/owned', config)
 	return data
 }
 
@@ -123,7 +124,7 @@ export const apiFetchWantedGames = async (search, page) => {
 	return data
 }
 
-export const apiFetchWishlist = async (search, page) => {
+export const apiFetchWishlistCollection = async (search, page) => {
 	const config = {
 		headers : {
 			Authorization : getBearer()
@@ -172,11 +173,11 @@ export const apiFetchGameSavedStatus = async (altId) => {
 		}
 	}
 
-	const { data } = await axios.get(`/api/games/saved/${altId}`, config)
+	const { data } = await axios.get(`/api/games/${altId}/save`, config)
 	return data
 }
 
-export const apiUpdateSavedStatus = async (altId) => {
+export const apiUpdateSavedGameStatus = async (altId) => {
 	const config = {
 		headers : {
 			'Content-Type' : 'application/json',
@@ -184,7 +185,7 @@ export const apiUpdateSavedStatus = async (altId) => {
 		}
 	}
 
-	const { data } = await axios.post('/api/games/saved', { altId }, config)
+	const { data } = await axios.patch(`/api/games/${altId}/save`, {}, config)
 	return data
 }
 
@@ -196,42 +197,26 @@ export const apiFetchGallery = async (bggIds) => {
 		params           : {
 			bggIds
 		},
-		paramsSerializer : (params) => {
-			return queryString.stringify(params, { arrayFormat: 'bracket' })
-		}
+		paramsSerializer : (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
 	}
 
-	const { data } = await axios.get('/api/games/bgg/gallery', config)
+	const { data } = await axios.get('/api/misc/bgg/gallery', config)
 	return data
 }
 
-export const apiFetchSoldGames = async (search, page) => {
+export const apiFetchGamesHistory = async ({ search, page, mode }) => {
 	const config = {
 		headers : {
 			Authorization : getBearer()
 		},
 		params  : {
 			search : search ? search.trim() : null,
-			page   : +page ? +page : 1
+			page   : +page ? +page : 1,
+			mode
 		}
 	}
 
-	const { data } = await axios.get('/api/history/sold', config)
-	return data
-}
-
-export const apiFetchTradedGames = async (search, page) => {
-	const config = {
-		headers : {
-			Authorization : getBearer()
-		},
-		params  : {
-			search : search ? search.trim() : null,
-			page   : +page ? +page : 1
-		}
-	}
-
-	const { data } = await axios.get('/api/history/traded', config)
+	const { data } = await axios.get('/api/history', config)
 	return data
 }
 
@@ -246,22 +231,6 @@ export const apiSendMessage = async (subject, message, recipient) => {
 	return await axios.post('/api/messages', { subject, message, recipient }, config)
 }
 
-export const apiFetchUserWantedGames = async (search, page) => {
-	const { userAuth: { userData } } = store.getState()
-	const config = {
-		headers : {
-			Authorization : `Bearer ${userData.token}`
-		},
-		params  : {
-			search : search ? search.trim() : null,
-			page   : +page ? +page : 1
-		}
-	}
-
-	const { data } = await axios.get(`/api/games/user/${userData._id}/wanted`, config)
-	return data
-}
-
 export const apiFetchBggCollection = async (bggUsername) => {
 	const config = {
 		headers : {
@@ -273,15 +242,18 @@ export const apiFetchBggCollection = async (bggUsername) => {
 	await axios.post('/api/collections', { bggUsername }, config)
 }
 
-export const apiBggSearchGames = async (keyword) => {
+export const apiBggSearchGames = async (search) => {
 	const config = {
 		headers : {
 			'Content-Type' : 'application/json',
 			Authorization  : getBearer()
+		},
+		params  : {
+			search : search ? search.trim() : null
 		}
 	}
 
-	const { data } = await axios.post('/api/games/bgg/search', { keyword }, config)
+	const { data } = await axios.get('/api/misc/bgg/search', config)
 	return data
 }
 
@@ -320,18 +292,7 @@ export const apiDeleteListedGame = async (id) => {
 		}
 	}
 
-	await axios.delete(`/api/games/delete/${id}`, config)
-}
-
-export const apiDeleteWantedGame = async (id) => {
-	const config = {
-		headers : {
-			'Content-Type' : 'application/json',
-			Authorization  : getBearer()
-		}
-	}
-
-	await axios.delete(`/api/games/wanted/delete/${id}`, config)
+	await axios.delete(`/api/games/${id}/delete`, config)
 }
 
 export const apiReactivateListedGame = async (id) => {
@@ -342,23 +303,27 @@ export const apiReactivateListedGame = async (id) => {
 		}
 	}
 
-	await axios.patch(`/api/games/reactivate/${id}`, {}, config)
+	await axios.patch(`/api/games/${id}/reactivate`, {}, config)
 }
 
 export const apiFetchHotGames = async () => {
-	const { data } = await axios.get('/api/games/bgg/hot')
+	const { data } = await axios.get('/api/misc/bgg/hot')
 	return data
 }
 
 export const apiFetchGameDetails = async (bggIds) => {
 	const config = {
-		headers : {
+		headers          : {
 			'Content-Type' : 'application/json',
 			Authorization  : getBearer()
-		}
+		},
+		params           : {
+			bggIds
+		},
+		paramsSerializer : (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
 	}
 
-	const { data } = await axios.post('/api/games/bgg', { bggIds }, config)
+	const { data } = await axios.get('/api/misc/bgg/games', config)
 	return data
 }
 

@@ -1,266 +1,13 @@
-import axios from 'axios'
 import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
-import Wanted from '../models/wantedModel.js'
-import { parseXML } from '../helpers/helpers.js'
 
-// * @desc    Get games from BGG by ID
-// * @route   POST  /api/games/bgg
-// * @access  Private route
-const getGamesDetailsFromBGG = asyncHandler(async (req, res) => {
-	try {
-		const { bggIds } = req.body
-
-		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
-			params : {
-				id       : bggIds.join(','),
-				versions : 1,
-				stats    : 1
-			}
-		})
-
-		let gamesArr = []
-		let { item } = await parseXML(data)
-		const ensureArray = Array.isArray(item) ? item : [ item ]
-
-		for (let game of ensureArray) {
-			const item = {
-				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
-				bggId              : game.id,
-				thumbnail          : game.thumbnail || null,
-				image              : game.image || null,
-				title              : Array.isArray(game.name)
-					? game.name.find((obj) => obj.type === 'primary').value
-					: game.name.value,
-				year               : +game.yearpublished.value,
-				designers          : game.link
-					.filter((link) => link.type === 'boardgamedesigner')
-					.map((designer) => designer.value),
-				minPlayers         : +game.minplayers.value,
-				maxPlayers         : +game.maxplayers.value,
-				suggestedPlayers   :
-					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes > 15
-						? Array.isArray(game.poll.find((obj) => obj.name === 'suggested_numplayers').results)
-							? +game.poll
-									.find((obj) => obj.name === 'suggested_numplayers')
-									.results.sort(
-										(a, b) =>
-											+b.result.find((obj) => obj.value === 'Best').numvotes -
-											+a.result.find((obj) => obj.value === 'Best').numvotes
-									)[0].numplayers
-							: null
-						: null,
-				languageDependence : game.poll
-					? +game.poll.find((obj) => obj.name === 'language_dependence').totalvotes > 10
-						? game.poll
-								.find((obj) => obj.name === 'language_dependence')
-								.results.result.sort((a, b) => +b.numvotes - +a.numvotes)[0].value
-						: 'Not enough votes'
-					: null,
-				playTime           :
-					+game.playingtime.value === 0
-						? null
-						: game.minplaytime.value === game.maxplaytime.value
-							? game.maxplaytime.value
-							: `${game.minplaytime.value} - ${game.maxplaytime.value}`,
-				minAge             : +game.minage.value === 0 ? null : +game.minage.value,
-				categories         : game.link.filter((link) => link.type === 'boardgamecategory').map((ctg) => {
-					return { id: +ctg.id, name: ctg.value }
-				}),
-				mechanics          : game.link.filter((link) => link.type === 'boardgamemechanic').map((mec) => {
-					return { id: +mec.id, name: mec.value }
-				}),
-				versions           : Array.isArray(game.versions.item)
-					? game.versions.item.map((v) => {
-							return {
-								title : v.name.value,
-								year  : +v.yearpublished.value
-							}
-						})
-					: [ { title: game.versions.item.name.value, year: +game.versions.item.yearpublished.value } ],
-				stats              : {
-					ratings   : +game.statistics.ratings.usersrated.value,
-					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
-					rank      :
-						game.type === 'boardgame'
-							? Array.isArray(game.statistics.ratings.ranks.rank)
-								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
-								: 'N/A'
-							: 'N/A'
-				},
-				complexity         : {
-					weight :
-						+game.statistics.ratings.numweights.value > 0
-							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
-							: 'N/A',
-					votes  : +game.statistics.ratings.numweights.value
-				}
-			}
-
-			gamesArr.push(item)
-		}
-
-		return res.status(200).json(gamesArr)
-	} catch (error) {
-		res.status(503)
-		throw {
-			message : 'Failed to retrieve data from BGG',
-			devErr  : error.stack
-		}
-	}
-})
-
-// ~ @desc    Get BGG hot games
-// ~ @route   GET /api/games/bgg/hot
-// ~ @access  Public route
-const bggGetHotGames = asyncHandler(async (req, res) => {
-	try {
-		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/hot', {
-			params : {
-				type : 'boardgame'
-			}
-		})
-
-		const hotArr = []
-		let { item } = await parseXML(data)
-		const ensureArray = Array.isArray(item) ? item : [ item ]
-		for (let game of ensureArray) {
-			const hotGame = {
-				bggId     : game.id,
-				// rank      : game.rank ? +game.rank : null,
-				thumbnail : game.thumbnail ? game.thumbnail.value : null,
-				title     : game.name ? game.name.value : '',
-				year      : game.yearpublished ? +game.yearpublished.value : null
-			}
-
-			hotArr.push(hotGame)
-		}
-
-		return res.status(200).json(hotArr)
-	} catch (error) {
-		res.status(503)
-		throw {
-			message : 'Failed to retrieve data from BGG',
-			devErr  : error.stack
-		}
-	}
-})
-
-// ~ @desc Get gallery of images for single game from BGG
-// ~ @route  GET /api/games/bgg/gallery
-// ~ @access Private route
-const bggGetGallery = asyncHandler(async (req, res) => {
-	try {
-		const { bggIds } = req.query
-
-		let images = []
-
-		for (let id of bggIds) {
-			const { data } = await axios.get('https://api.geekdo.com/api/images', {
-				params : {
-					ajax          : 1,
-					date          : 'alltime',
-					gallery       : 'all',
-					nosession     : 1,
-					objectid      : id,
-					objecttype    : 'thing',
-					pageid        : 1,
-					showcount     : 12,
-					size          : 'thumb',
-					sort          : 'hot',
-					licensefilter : 'reuse'
-					//tag        : 'Play,Components'
-				}
-			})
-
-			if (data.images.length !== 0) {
-				const mapImages = data.images.map((obj) => {
-					const {
-						imageid,
-						imageurl_lg : image,
-						caption,
-						imageurl    : thumbnail,
-						href        : extLink,
-						user        : { username: postedBy }
-					} = obj
-					return { imageid, image, caption, thumbnail, extLink, postedBy }
-				})
-				images.push(mapImages)
-			}
-		}
-
-		if (images.length !== bggIds.length) {
-			res.status(404)
-			throw {
-				message : 'No images found'
-			}
-		} else {
-			console.log(images)
-			return res.status(200).json(images)
-		}
-	} catch (error) {
-		res.status(503)
-		throw {
-			message : 'Failed to retrieve images from BGG',
-			devErr  : error.stack
-		}
-	}
-})
-
-// * @desc    Search BGG for games
-// * @route   POST  /api/games/bgg/search
-// * @access  Private route
-const bggSearchGame = asyncHandler(async (req, res) => {
-	try {
-		const { keyword } = req.body
-
-		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/search', {
-			params : {
-				query : keyword.split(' ').join('+'),
-				type  : 'boardgame,boardgameexpansion'
-			}
-		})
-
-		let parsedSearch = await parseXML(data)
-
-		if (parsedSearch.total === '0') {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
-		}
-
-		const ensureArray = Array.isArray(parsedSearch.item) ? parsedSearch.item : [ parsedSearch.item ]
-
-		const gamesArr = []
-		for (let game of ensureArray) {
-			const item = {
-				bggId     : game.id,
-				title     : game.name.value,
-				year      : game.yearpublished ? +game.yearpublished.value : '-',
-				thumbnail : null,
-				image     : null
-			}
-			gamesArr.push(item)
-		}
-
-		return res.status(200).json(gamesArr)
-	} catch (error) {
-		res.status(503)
-		throw {
-			message : 'Failed to retrieve data from BGG',
-			devErr  : error.stack
-		}
-	}
-})
-
-// * @desc    Put up games for sale
+// * @desc    Add games for sale
 // * @route   POST  /api/games/sell
 // * @access  Private route
-const sellGames = asyncHandler(async (req, res) => {
+const listSaleGames = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		res.status(400)
@@ -284,35 +31,39 @@ const sellGames = asyncHandler(async (req, res) => {
 
 	if (isPack) {
 		await Game.create({
-			mode             : 'sell',
-			seller           : req.user._id,
+			mode          : 'sell',
+			addedBy       : req.user._id,
 			games,
-			isPack,
-			shipPost,
-			shipPostPayer,
-			shipCourier,
-			shipCourierPayer,
-			shipPersonal,
-			shipCities,
-			extraInfoPack,
-			totalPrice
-		})
-	} else {
-		let sellList = []
-		games.forEach((game, index) => {
-			let data = {
-				mode             : 'sell',
-				seller           : req.user._id,
-				games            : [ game ],
-				isPack,
+			shipping      : {
 				shipPost,
 				shipPostPayer,
 				shipCourier,
 				shipCourierPayer,
 				shipPersonal,
-				shipCities,
+				shipCities
+			},
+			totalPrice,
+			extraInfoPack,
+			isPack
+		})
+	} else {
+		let sellList = []
+		games.forEach((game, index) => {
+			let data = {
+				mode          : 'sell',
+				addedBy       : req.user._id,
+				games         : [ game ],
+				shipping      : {
+					shipPost,
+					shipPostPayer,
+					shipCourier,
+					shipCourierPayer,
+					shipPersonal,
+					shipCities
+				},
+				totalPrice    : games[index].price,
 				extraInfoPack,
-				totalPrice       : games[index].price
+				isPack
 			}
 			sellList.push(data)
 		})
@@ -323,10 +74,10 @@ const sellGames = asyncHandler(async (req, res) => {
 	return res.status(204).end()
 })
 
-// * @desc    Put up games for trade
+// * @desc    Add games for trade
 // * @route   POST  /api/games/trade
 // * @access  Private route
-const tradeGames = asyncHandler(async (req, res) => {
+const listTradeGames = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		res.status(400)
@@ -340,28 +91,32 @@ const tradeGames = asyncHandler(async (req, res) => {
 	if (isPack) {
 		await Game.create({
 			mode          : 'trade',
-			seller        : req.user._id,
+			addedBy       : req.user._id,
 			games,
-			isPack,
-			shipPost,
-			shipCourier,
-			shipPersonal,
-			shipCities,
-			extraInfoPack
+			shipping      : {
+				shipPost,
+				shipCourier,
+				shipPersonal,
+				shipCities
+			},
+			extraInfoPack,
+			isPack
 		})
 	} else {
 		let tradeList = []
 		for (let game of games) {
 			let data = {
 				mode          : 'trade',
-				seller        : req.user._id,
+				addedBy       : req.user._id,
 				games         : [ game ],
-				isPack,
-				shipPost,
-				shipCourier,
-				shipPersonal,
-				shipCities,
-				extraInfoPack
+				shipping      : {
+					shipPost,
+					shipCourier,
+					shipPersonal,
+					shipCities
+				},
+				extraInfoPack,
+				isPack
 			}
 			tradeList.push(data)
 		}
@@ -375,7 +130,7 @@ const tradeGames = asyncHandler(async (req, res) => {
 // * @desc    Add wanted games
 // * @route   POST  /api/games/wanted
 // * @access  Private route
-const addWantedGames = asyncHandler(async (req, res) => {
+const listWantedGames = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		res.status(400)
@@ -384,17 +139,27 @@ const addWantedGames = asyncHandler(async (req, res) => {
 		}
 	}
 
-	let wantedList = []
-	for (let game of req.body) {
-		wantedList.push({ ...game, wantedBy: req.user._id })
-	}
+	const { games, shipPreffered } = req.body
 
-	await Wanted.insertMany(wantedList)
+	let wantedList = []
+	for (let game of games) {
+		let data = {
+			mode     : 'want',
+			addedBy  : req.user._id,
+			games    : [ game ],
+			shipping : {
+				shipPreffered
+			},
+			isPack   : false
+		}
+		wantedList.push(data)
+	}
+	await Game.insertMany(wantedList)
 
 	return res.status(204).end()
 })
 
-// ~ @desc    Get games that are up for sale or trade
+// ~ @desc    Get sale / trade / wanted games that are active
 // ~ @route   GET /api/games
 // ~ @access  Private route
 const getGames = asyncHandler(async (req, res) => {
@@ -405,7 +170,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 
 	if (search) {
-		const gamesData = await Game.find({ isActive: true, mode }).populate('seller', 'username _id').lean()
+		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id').lean()
 
 		const fuse = new Fuse(gamesData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
@@ -456,12 +221,12 @@ const getGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		const count = await Game.countDocuments({ isActive: true, mode: mode })
+		const count = await Game.countDocuments({ isActive: true, mode })
 
-		const gamesData = await Game.find({ isActive: true, mode: mode })
+		const gamesData = await Game.find({ isActive: true, mode })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
-			.populate('seller', 'username _id')
+			.populate('addedBy', 'username _id')
 			.sort(checkSort())
 			.lean()
 
@@ -470,59 +235,6 @@ const getGames = asyncHandler(async (req, res) => {
 			totalPages   : Math.ceil(count / resultsPerPage),
 			totalItems   : count,
 			itemsPerPage : resultsPerPage
-		}
-
-		return res.status(200).json({ gamesData, pagination })
-	}
-})
-
-// ~ @desc    Get all wanted games
-// ~ @route   GET /api/games/wanted
-// ~ @access  Private route
-const getWantedGames = asyncHandler(async (req, res) => {
-	const page = +req.query.page
-	const search = req.query.search
-	const resultsPerPage = 24
-
-	if (search) {
-		const gamesData = await Wanted.find({ isActive: true }).populate('wantedBy', 'username _id').lean()
-
-		const fuse = new Fuse(gamesData, { keys: [ 'title', 'designers' ], threshold: 0.3, distance: 200 })
-		const results = fuse.search(search).map((game) => game.item)
-
-		const pagination = {
-			page,
-			totalPages : Math.ceil(results.length / resultsPerPage),
-			totalItems : results.length,
-			perPage    : resultsPerPage
-		}
-
-		return res.status(200).json({
-			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
-			pagination
-		})
-	} else {
-		const count = await Wanted.countDocuments({ isActive: true })
-
-		const gamesData = await Wanted.find({ isActive: true })
-			.skip(resultsPerPage * (page - 1))
-			.limit(resultsPerPage)
-			.sort({ createdAt: -1 })
-			.populate('wantedBy', 'username _id')
-			.lean()
-
-		const pagination = {
-			page,
-			totalPages   : Math.ceil(count / resultsPerPage),
-			totalItems   : count,
-			itemsPerPage : resultsPerPage
-		}
-
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
 		}
 
 		return res.status(200).json({ gamesData, pagination })
@@ -538,7 +250,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 24
 
-	const allUserGames = await Game.find({ seller: id }).lean()
+	const allUserGames = await Game.find({ addedBy: id }).lean()
 
 	if (search) {
 		const fuse = new Fuse(allUserGames, {
@@ -561,7 +273,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
-		const games = await Game.find({ seller: id })
+		const games = await Game.find({ addedBy: id })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })
@@ -581,60 +293,8 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all active wanted games for one user
-// ~ @route   GET /api/games/user/:id/wanted
-// ~ @access  Private route
-const getUserWantedGames = asyncHandler(async (req, res) => {
-	const { id } = req.params
-	const page = +req.query.page
-	const search = req.query.search
-	const resultsPerPage = 24
-
-	const userWantedGames = await Wanted.find({ wantedBy: id }).lean()
-
-	if (search) {
-		const fuse = new Fuse(userWantedGames, {
-			keys      : [ 'title', 'designers' ],
-			threshold : 0.3,
-			distance  : 200
-		})
-
-		const results = fuse.search(search).map((game) => game.item)
-
-		const pagination = {
-			page       : page,
-			totalPages : Math.ceil(results.length / resultsPerPage),
-			totalItems : results.length,
-			perPage    : resultsPerPage
-		}
-
-		return res.status(200).json({
-			wantedGames : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
-			pagination
-		})
-	} else {
-		const games = await Wanted.find({ wantedBy: id })
-			.skip(resultsPerPage * (page - 1))
-			.limit(resultsPerPage)
-			.sort({ createdAt: -1 })
-			.lean()
-
-		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(userWantedGames.length / resultsPerPage),
-			totalItems   : userWantedGames.length,
-			itemsPerPage : resultsPerPage
-		}
-
-		return res.status(200).json({
-			wantedGames : games,
-			pagination
-		})
-	}
-})
-
 // <> @desc    Reactivate one game
-// <> @route   PATCH /api/games/reactivate/:id
+// <> @route   PATCH /api/games/:id/reactivate
 // <> @access  Private route
 const reactivateGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
@@ -653,12 +313,12 @@ const reactivateGame = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get single up for sale game
+// ~ @desc    Get single game details
 // ~ @route   GET /api/games/:altId
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const saleData = await Game.findOne({ altId }).populate('seller', 'username _id').lean()
+	const saleData = await Game.findOne({ altId }).populate('addedBy', 'username _id').lean()
 
 	if (!saleData) {
 		res.status(404)
@@ -677,21 +337,21 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	return res.status(200).json(saleData)
 })
 
-// * @desc    Save game
-// * @route   POST  /api/games/saved
-// * @access  Private route
+// <> @desc    Save game
+// <> @route   PATCH  /api/games/:altId/save
+// <> @access  Private route
 const switchSaveGame = asyncHandler(async (req, res) => {
-	const { altId } = req.body
-	const saleData = await Game.findOne({ altId }).select('_id').lean()
+	const { altId } = req.params
+	const game = await Game.findOne({ altId }).select('_id').lean()
 
-	if (!saleData) {
+	if (!game) {
 		res.status(404)
 		throw {
 			message : 'Game not found'
 		}
 	}
 
-	const user = await User.findOne({ _id: req.user._id }).select('savedGames').lean()
+	const user = await User.findById({ _id: req.user._id }).select('savedGames').lean()
 
 	if (!user) {
 		res.status(404)
@@ -700,24 +360,26 @@ const switchSaveGame = asyncHandler(async (req, res) => {
 		}
 	}
 
-	if (user.savedGames.map((id) => id.toString()).indexOf(saleData._id.toString()) === -1) {
-		user.savedGames.unshift(saleData._id)
+	if (user.savedGames.map((id) => id.toString()).indexOf(game._id.toString()) === -1) {
+		user.savedGames.unshift(game._id)
 		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
-		res.status(200).send(true)
+		console.log(true)
+		return res.status(200).send(true)
 	} else {
-		const filtered = user.savedGames.filter((id) => id.toString() !== saleData._id.toString())
+		const filtered = user.savedGames.filter((id) => id.toString() !== game._id.toString())
 		await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
-		res.status(200).send(false)
+		console.log(false)
+		return res.status(200).send(false)
 	}
 })
 
 // ~ @desc    Get one saved games
-// ~ @route   GET /api/games/saved/:altId
+// ~ @route   GET /api/games/:altId/save
 // ~ @access  Private route
-const getSingleSavedGame = asyncHandler(async (req, res) => {
-	const altId = req.params.altId
+const getSingleGameSavedStatus = asyncHandler(async (req, res) => {
+	const { altId } = req.params
 
-	const user = await User.findOne({ _id: req.user._id })
+	const user = await User.findById({ _id: req.user._id })
 		.select('savedGames -_id')
 		.populate({ path: 'savedGames', match: { altId: altId }, select: 'altId -_id' })
 		.lean()
@@ -744,19 +406,12 @@ const getSavedGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 24
 
-	const user = await User.findOne({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
+	const user = await User.findById({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
 
 	if (!user) {
 		res.status(404)
 		throw {
 			message : 'User not found'
-		}
-	}
-
-	if (user.savedGames.length === 0) {
-		res.status(404)
-		throw {
-			message : 'Your saved games list is empty'
 		}
 	}
 
@@ -774,13 +429,6 @@ const getSavedGames = asyncHandler(async (req, res) => {
 			totalPages : Math.ceil(results.length / resultsPerPage),
 			totalItems : results.length,
 			perPage    : resultsPerPage
-		}
-
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
 		}
 
 		res.status(200).json({
@@ -804,13 +452,6 @@ const getSavedGames = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		if (pagination.totalPages < page) {
-			res.status(404)
-			throw {
-				message : 'No games found'
-			}
-		}
-
 		res.status(200).json({
 			list       : savedGames,
 			pagination
@@ -819,29 +460,11 @@ const getSavedGames = asyncHandler(async (req, res) => {
 })
 
 // ! @desc    Delete one game
-// ! @route   DELETE /api/games/delete/:id
+// ! @route   DELETE /api/games/:id/delete
 // ! @access  Private route
-const deleteGame = asyncHandler(async (req, res) => {
+const deleteOneGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
 	const game = await Game.findOneAndDelete({ _id: id })
-	console.log(game)
-
-	if (!game) {
-		res.status(404)
-		throw {
-			message : 'Game not found'
-		}
-	}
-
-	res.status(204).end()
-})
-
-// ! @desc    Delete one wanted game
-// ! @route   DELETE /api/games/wanted/delete/:id
-// ! @access  Private route
-const deleteWantedGame = asyncHandler(async (req, res) => {
-	const { id } = req.params
-	const game = await Wanted.findOneAndDelete({ _id: id })
 
 	if (!game) {
 		res.status(404)
@@ -854,22 +477,15 @@ const deleteWantedGame = asyncHandler(async (req, res) => {
 })
 
 export {
-	getGamesDetailsFromBGG,
-	bggSearchGame,
-	bggGetHotGames,
-	bggGetGallery,
-	sellGames,
-	tradeGames,
-	addWantedGames,
+	listSaleGames,
+	listTradeGames,
+	listWantedGames,
 	getGames,
-	getWantedGames,
 	getSingleGame,
 	switchSaveGame,
 	getSavedGames,
-	getSingleSavedGame,
+	getSingleGameSavedStatus,
 	getUserListedGames,
-	getUserWantedGames,
-	deleteGame,
-	deleteWantedGame,
+	deleteOneGame,
 	reactivateGame
 }

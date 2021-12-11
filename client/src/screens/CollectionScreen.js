@@ -23,7 +23,7 @@ import Paginate from '../components/Paginate'
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
 import { saleListLimit } from '../constants/gameConstants'
-import { apiFetchCollection } from '../api/api'
+import { apiFetchOwnedCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
 // @ Styles
@@ -56,7 +56,7 @@ const CollectionScreen = () => {
 
 	const { isLoading, isSuccess, data } = useQuery(
 		[ 'collection', { search, page } ],
-		() => apiFetchCollection(search, page),
+		() => apiFetchOwnedCollection(search, page),
 		{
 			staleTime : Infinity,
 			onError   : (err) => {
