@@ -18,8 +18,6 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { bggGetHotGames } from '../actions/gameActions'
-import { getKickstarters } from '../actions/miscActions'
 import { apiFetchHotGames, fetchKickstarters } from '../api/api'
 
 // @ Main

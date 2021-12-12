@@ -11,7 +11,6 @@ import Badge from '@material-ui/core/Badge'
 import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 
 // @ Others
-import { getNewMessagesCount } from '../actions/messageActions'
 import { apiGetNewMessagesCount } from '../api/api'
 
 // @ Styles

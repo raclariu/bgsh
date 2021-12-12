@@ -4,13 +4,7 @@ import {
 	USER_AUTH_SUCCESS,
 	USER_AUTH_FAIL,
 	USER_SIGNOUT,
-	USER_PREFERENCES_SET_THEME,
-	USER_CHANGE_PASSWORD_REQUEST,
-	USER_CHANGE_PASSWORD_SUCCESS,
-	USER_CHANGE_PASSWORD_FAIL,
-	USER_PROFILE_DATA_REQUEST,
-	USER_PROFILE_DATA_SUCCESS,
-	USER_PROFILE_DATA_FAIL
+	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
 export const signIn = (email, password) => async (dispatch) => {
@@ -64,59 +58,6 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 	} catch (error) {
 		dispatch({
 			type    : USER_AUTH_FAIL,
-			payload : error.response && error.response.data ? error.response.data.message : error.message
-		})
-	}
-}
-
-export const changePassword = (passwordCurrent, passwordNew, passwordNewConfirmation) => async (dispatch, getState) => {
-	try {
-		dispatch({ type: USER_CHANGE_PASSWORD_REQUEST })
-
-		const { userAuth: { userData } } = getState()
-
-		const config = {
-			headers : {
-				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userData.token}`
-			}
-		}
-
-		await axios.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation }, config)
-
-		dispatch({
-			type : USER_CHANGE_PASSWORD_SUCCESS
-		})
-	} catch (error) {
-		dispatch({
-			type    : USER_CHANGE_PASSWORD_FAIL,
-			payload : error.response && error.response.data ? error.response.data.message : error.message
-		})
-	}
-}
-
-export const getUserProfileData = (username) => async (dispatch, getState) => {
-	try {
-		dispatch({ type: USER_PROFILE_DATA_REQUEST })
-
-		const { userAuth: { userData } } = getState()
-
-		const config = {
-			headers : {
-				'Content-Type' : 'application/json',
-				Authorization  : `Bearer ${userData.token}`
-			}
-		}
-
-		const { data } = await axios.get(`/api/users/${username}`, config)
-
-		dispatch({
-			type    : USER_PROFILE_DATA_SUCCESS,
-			payload : data
-		})
-	} catch (error) {
-		dispatch({
-			type    : USER_PROFILE_DATA_FAIL,
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}

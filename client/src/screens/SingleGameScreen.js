@@ -56,8 +56,6 @@ import CustomAlert from '../components/CustomAlert'
 import CustomTooltip from '../components/CustomTooltip'
 
 // @ Others
-import { getSingleGame, getSingleSavedGame, bggGetGallery } from '../actions/gameActions'
-import { FOR_SALE_SINGLE_GAME_RESET } from '../constants/gameConstants'
 import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
 
 // @ Styles
@@ -161,8 +159,6 @@ const SingleGameScreen = () => {
 			staleTime : 1000 * 60 * 3
 		}
 	)
-
-	console.log(isError && error)
 
 	const [ index, setIndex ] = useState(0)
 	const [ imgIndex, setImgIndex ] = useState(0)
@@ -325,26 +321,15 @@ const SingleGameScreen = () => {
 								spacing={1}
 							>
 								<Grid item>
-									<StatsBoxes
-										variant="full"
-										complexity={data.games[index].complexity}
-										stats={data.games[index].stats}
-										type="rating"
-									/>
+									<StatsBoxes variant="full" stats={data.games[index].stats} type="rating" />
+								</Grid>
+								<Grid item>
+									<StatsBoxes variant="full" stats={data.games[index].stats} type="rank" />
 								</Grid>
 								<Grid item>
 									<StatsBoxes
 										variant="full"
 										complexity={data.games[index].complexity}
-										stats={data.games[index].stats}
-										type="rank"
-									/>
-								</Grid>
-								<Grid item>
-									<StatsBoxes
-										variant="full"
-										complexity={data.games[index].complexity}
-										stats={data.games[index].stats}
 										type="complexity"
 									/>
 								</Grid>
@@ -568,7 +553,6 @@ const SingleGameScreen = () => {
 
 					{isErrorGallery && (
 						<Fragment>
-							{console.log(errorGallery.response.data)}
 							<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
 						</Fragment>
 					)}

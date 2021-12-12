@@ -81,9 +81,7 @@ const GameIndexCard = ({ data }) => {
 				<CardMedia
 					className={cls.media}
 					component="img"
-					image={
-						data.games[index].thumbnail ? data.games[index].thumbnail : '/images/collCardPlaceholder.jpg'
-					}
+					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
 					title={data.games[index].title}
 				/>

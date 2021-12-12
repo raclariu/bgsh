@@ -68,7 +68,7 @@ const UserProfileScreen = () => {
 							data.saleGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
 									<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
-										<UserProfileGameCard data={data} slice="sale" />
+										<UserProfileGameCard data={data} />
 									</LazyLoad>
 								</Grid>
 							))}
@@ -84,7 +84,7 @@ const UserProfileScreen = () => {
 						{isSuccess &&
 							data.tradeGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
-									<UserProfileGameCard data={data} slice="trade" />
+									<UserProfileGameCard data={data} />
 								</Grid>
 							))}
 					</Grid>
@@ -100,7 +100,7 @@ const UserProfileScreen = () => {
 						{isSuccess &&
 							data.wantedGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
-									<UserProfileGameCard data={data} slice="wanted" />
+									<UserProfileGameCard data={data} />
 								</Grid>
 							))}
 					</Grid>

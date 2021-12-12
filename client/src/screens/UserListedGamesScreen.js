@@ -20,9 +20,6 @@ import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
 // @ Others
-import { HISTORY_ADD_RESET } from '../constants/historyConstants'
-import { getUserListedGames } from '../actions/gameActions'
-import { GAME_DELETE_RESET } from '../constants/gameConstants'
 import { apiFetchListedGames } from '../api/api'
 
 // @ Styles

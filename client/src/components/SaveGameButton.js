@@ -24,34 +24,35 @@ const SaveGameButton = ({ altId, addedById }) => {
 
 	const [ showSnackbar ] = useNotification()
 
-	const { isLoading, isError, error, data: isSaved, isSuccess } = useQuery(
-		[ 'savedStatus', altId ],
-		() => apiFetchGameSavedStatus(altId),
-		{
-			staleTime : 1000 * 60 * 3
+	const { isLoading, data, isSuccess } = useQuery([ 'savedStatus', altId ], () => apiFetchGameSavedStatus(altId), {
+		staleTime : 1000 * 60 * 3,
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while fetching saved status'
+			showSnackbar.error({ text })
 		}
-	)
+	})
 
 	const mutation = useMutation((altId) => apiUpdateSavedGameStatus(altId), {
 		onMutate  : async () => {
 			await queryClient.cancelQueries([ 'savedStatus', altId ])
-			const isSaved = queryClient.getQueryData([ 'savedStatus', altId ])
-			queryClient.setQueryData([ 'savedStatus', altId ], (old) => {
-				return !old
+			const prevStatus = queryClient.getQueryData([ 'savedStatus', altId ])
+			queryClient.setQueryData([ 'savedStatus', altId ], (oldStatus) => {
+				const newStatus = { isSaved: !oldStatus.isSaved }
+				return newStatus
 			})
 
-			return { isSaved }
+			// return prevStatus in case mutation fails so that onError can use prevStatus to revert
+			return { prevStatus }
 		},
-		onError   : (err, id, context) => {
-			console.log('cont', context)
-			const text = err.response.data.message || 'Could not be added to my saved list'
+		onError   : (err, id, ctx) => {
+			const text = err.response.data.message || 'Error occured while trying to add game to my saved list'
 			showSnackbar.error({ text })
-			queryClient.setQueryData([ 'savedStatus', altId ], context.isSaved)
+			queryClient.setQueryData([ 'savedStatus', altId ], ctx.prevStatus)
 		},
 		onSuccess : (data) => {
 			queryClient.invalidateQueries([ 'savedStatus', altId ])
 			queryClient.invalidateQueries([ 'savedGames' ])
-			data
+			data.isSaved
 				? showSnackbar.success({ text: 'Added to my saved list' })
 				: showSnackbar.success({ text: 'Removed from my saved list' })
 		}
@@ -61,24 +62,20 @@ const SaveGameButton = ({ altId, addedById }) => {
 		mutation.mutate(altId)
 	}
 
-	const renderButtonHandler = () => {
-		if (isSaved) {
-			return <BookmarkIcon fontSize="small" />
-		} else {
-			return <BookmarkTwoToneIcon fontSize="small" />
-		}
-	}
+	console.log(isLoading, isSuccess)
 
 	return (
 		<Fragment>
-			{isLoading ? (
+			{isLoading && (
 				<IconButton disabled disableRipple>
 					<Loader size={20} />
 				</IconButton>
-			) : (
+			)}
+
+			{isSuccess && (
 				// disabled={addedById === userId}
 				<IconButton onClick={saveGameHandler} color="secondary">
-					{renderButtonHandler()}
+					{data.isSaved ? <BookmarkIcon fontSize="small" /> : <BookmarkTwoToneIcon fontSize="small" />}
 				</IconButton>
 			)}
 		</Fragment>

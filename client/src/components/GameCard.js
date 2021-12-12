@@ -50,7 +50,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 				className={cls.media}
 				component="img"
 				alt={data.title}
-				image={data.thumbnail ? data.thumbnail : '/images/collCardPlaceholder.jpg'}
+				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
 				title={data.title}
 			/>
 

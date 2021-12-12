@@ -20,8 +20,7 @@ import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 
 // @ Others
-import { bggGetGamesDetails, removeFromSaleList, sellGames } from '../actions/gameActions'
-import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
+import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
 
 // @ Styles
@@ -93,6 +92,8 @@ const SellGamesScreen = () => {
 			staleTime : 1000 * 60 * 60
 		}
 	)
+
+	console.log(data && data)
 
 	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {

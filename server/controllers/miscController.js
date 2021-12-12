@@ -22,6 +22,8 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
+		console.log(ensureArray)
+
 		for (let game of ensureArray) {
 			const item = {
 				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
@@ -31,7 +33,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 				title              : Array.isArray(game.name)
 					? game.name.find((obj) => obj.type === 'primary').value
 					: game.name.value,
-				year               : +game.yearpublished.value,
+				year               : +game.yearpublished.value || 'N/A',
 				designers          : game.link
 					.filter((link) => link.type === 'boardgamedesigner')
 					.map((designer) => designer.value),
@@ -54,7 +56,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 						? game.poll
 								.find((obj) => obj.name === 'language_dependence')
 								.results.result.sort((a, b) => +b.numvotes - +a.numvotes)[0].value
-						: 'Not enough votes'
+						: null
 					: null,
 				playTime           :
 					+game.playingtime.value === 0
@@ -69,14 +71,16 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 				mechanics          : game.link.filter((link) => link.type === 'boardgamemechanic').map((mec) => {
 					return { id: +mec.id, name: mec.value }
 				}),
-				versions           : Array.isArray(game.versions.item)
-					? game.versions.item.map((v) => {
-							return {
-								title : v.name.value,
-								year  : +v.yearpublished.value
-							}
-						})
-					: [ { title: game.versions.item.name.value, year: +game.versions.item.yearpublished.value } ],
+				versions           : game.versions
+					? Array.isArray(game.versions.item)
+						? game.versions.item.map((version) => {
+								return {
+									title : version.name.value,
+									year  : +version.yearpublished.value || 'N/A'
+								}
+							})
+						: [ { title: game.versions.item.name.value, year: +game.versions.item.yearpublished.value } ]
+					: [ { title: 'No version', year: 'N/A' } ],
 				stats              : {
 					ratings   : +game.statistics.ratings.usersrated.value,
 					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
@@ -84,14 +88,14 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 						game.type === 'boardgame'
 							? Array.isArray(game.statistics.ratings.ranks.rank)
 								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
-								: 'N/A'
-							: 'N/A'
+								: null
+							: null
 				},
 				complexity         : {
 					weight :
 						+game.statistics.ratings.numweights.value > 0
 							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
-							: 'N/A',
+							: null,
 					votes  : +game.statistics.ratings.numweights.value
 				}
 			}
@@ -232,7 +236,7 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 			const item = {
 				bggId     : game.id,
 				title     : game.name.value,
-				year      : game.yearpublished ? +game.yearpublished.value : '-',
+				year      : game.yearpublished ? +game.yearpublished.value : 'N/A',
 				thumbnail : null,
 				image     : null
 			}

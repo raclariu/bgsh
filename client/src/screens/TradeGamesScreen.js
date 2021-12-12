@@ -19,8 +19,7 @@ import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 
 // @ Others
-import { bggGetGamesDetails, removeFromSaleList, tradeGames } from '../actions/gameActions'
-import { BGG_GAMES_DETAILS_RESET } from '../constants/gameConstants'
+import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 
 // @ Styles

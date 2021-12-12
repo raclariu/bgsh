@@ -18,7 +18,7 @@ import AddWantedCard from '../components/AddWantedCard'
 import Loader from '../components/Loader'
 
 // @ Others
-import { bggGetGamesDetails, removeFromSaleList, addWantedGames } from '../actions/gameActions'
+import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
 
 // @ Styles

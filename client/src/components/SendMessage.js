@@ -19,8 +19,6 @@ import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
 import CustomTooltip from './CustomTooltip'
 
 // @ Others
-import { sendMessage } from '../actions/messageActions'
-import { SEND_MESSAGE_RESET } from '../constants/messageConstants'
 import { apiSendMessage } from '../api/api'
 
 // @ Styles

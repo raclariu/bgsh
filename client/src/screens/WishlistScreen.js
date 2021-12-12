@@ -20,8 +20,8 @@ import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 
 // @ Others
-import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
-import { saleListLimit } from '../constants/gameConstants'
+import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
+import { saleListLimit } from '../constants/saleListConstants'
 import { apiFetchWishlistCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 

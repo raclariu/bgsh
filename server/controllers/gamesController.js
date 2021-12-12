@@ -318,23 +318,23 @@ const reactivateGame = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const saleData = await Game.findOne({ altId }).populate('addedBy', 'username _id').lean()
+	const game = await Game.findOne({ altId }).where('mode').ne('want').populate('addedBy', 'username _id').lean()
 
-	if (!saleData) {
+	if (!game) {
 		res.status(404)
 		throw {
 			message : 'Game not found'
 		}
 	}
 
-	if (saleData.isActive === false) {
+	if (!game.isActive) {
 		res.status(404)
 		throw {
 			message : 'Game is no longer available'
 		}
 	}
 
-	return res.status(200).json(saleData)
+	return res.status(200).json(game)
 })
 
 // <> @desc    Save game
@@ -364,12 +364,12 @@ const switchSaveGame = asyncHandler(async (req, res) => {
 		user.savedGames.unshift(game._id)
 		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
 		console.log(true)
-		return res.status(200).send(true)
+		return res.status(200).send({ isSaved: true })
 	} else {
 		const filtered = user.savedGames.filter((id) => id.toString() !== game._id.toString())
 		await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
 		console.log(false)
-		return res.status(200).send(false)
+		return res.status(200).send({ isSaved: false })
 	}
 })
 
@@ -392,9 +392,9 @@ const getSingleGameSavedStatus = asyncHandler(async (req, res) => {
 	}
 
 	if (user.savedGames.length > 0) {
-		res.status(200).send(true)
+		res.status(200).send({ isSaved: true })
 	} else {
-		res.status(200).send(false)
+		res.status(200).send({ isSaved: false })
 	}
 })
 

@@ -72,18 +72,39 @@ const RatingBox = ({ variant, stats }) => {
 }
 
 const RankBox = ({ variant, stats }) => {
+	const handleRankBgColor = () => {
+		if (stats.rank && stats.rank <= 100) {
+			return '#cfb000'
+		} else {
+			return '#666e75'
+		}
+	}
+
 	return (
 		<Fragment>
-			{variant === 'mini' ? (
-				<Box bgcolor={stats.rank <= 100 ? '#cfb000' : '#666e75'} {...defaultMiniBox}>
-					{stats.rank}
+			{variant === 'mini' && (
+				<Box bgcolor={handleRankBgColor()} {...defaultMiniBox}>
+					{!stats.rank ? <Box color="grey.200">N/A</Box> : <Box color="grey.200">{stats.rank}</Box>}
 				</Box>
-			) : (
-				<Box bgcolor={stats.rank <= 100 ? '#cfb000' : '#666e75'} {...defaultBigBox}>
-					{stats.rank}
-					<Box fontSize={11} color="grey.200">
-						rank
-					</Box>
+			)}
+
+			{variant === 'full' && (
+				<Box bgcolor={handleRankBgColor()} {...defaultBigBox}>
+					{!stats.rank ? (
+						<Fragment>
+							<Box>N/A</Box>
+							<Box fontSize={11} color="grey.200">
+								rank
+							</Box>
+						</Fragment>
+					) : (
+						<Fragment>
+							{stats.rank}
+							<Box fontSize={11} color="grey.200">
+								rank
+							</Box>
+						</Fragment>
+					)}
 				</Box>
 			)}
 		</Fragment>
@@ -107,7 +128,7 @@ const ComplexityBox = ({ variant, complexity }) => {
 		<Fragment>
 			{variant === 'mini' ? (
 				<Box bgcolor={handleComplexityBgColor()} {...defaultMiniBox}>
-					{complexity.weight === 'N/A' ? (
+					{!complexity.weight ? (
 						<Box color="grey.200">N/A</Box>
 					) : (
 						<Box color="grey.200">{(Math.round(complexity.weight * 100) / 100).toFixed(2)}</Box>
@@ -115,7 +136,7 @@ const ComplexityBox = ({ variant, complexity }) => {
 				</Box>
 			) : (
 				<Box bgcolor={handleComplexityBgColor()} {...defaultBigBox}>
-					{complexity.weight === 'N/A' ? (
+					{!complexity.weight ? (
 						<Fragment>
 							<Box>N/A</Box>
 							<Box fontSize={11} color="grey.200">

@@ -2,6 +2,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
+import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import TextField from '@material-ui/core/TextField'
@@ -21,6 +22,8 @@ import CustomAlert from '../components/CustomAlert'
 // @ Others
 import { changePassword } from '../actions/userActions'
 import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
+import { useNotification } from '../hooks/hooks'
+import { apiUserChangePassword } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const ChangePasswordForm = () => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 
 	const [ passwordCurrent, setPasswordCurrent ] = useState('')
 	const [ passwordNew, setPasswordNew ] = useState('')
@@ -40,29 +42,27 @@ const ChangePasswordForm = () => {
 	const [ passCurrentVisibility, setPassCurrentVisibility ] = useState(false)
 	const [ passNewVisibility, setPassNewVisibility ] = useState(false)
 	const [ passNewConfirmationVisibility, setPassNewConfirmationVisibility ] = useState(false)
+	const [ showSnackbar ] = useNotification()
 
-	const changePass = useSelector((state) => state.changePassword)
-	const { loading, success, error } = changePass
-
-	useEffect(
-		() => {
-			if (success) {
+	const { isLoading, mutate, isError, error, isSuccess } = useMutation(
+		({ passwordCurrent, passwordNew, passwordNewConfirmation }) =>
+			apiUserChangePassword({ passwordCurrent, passwordNew, passwordNewConfirmation }),
+		{
+			onSuccess : () => {
 				setPasswordCurrent('')
 				setPasswordNew('')
 				setPasswordNewConfirmation('')
+				showSnackbar.success({ text: 'Password changed successfully' })
 			}
-		},
-		[ success, dispatch ]
+		}
 	)
 
-	useEffect(
-		() => {
-			return () => {
-				dispatch({ type: USER_CHANGE_PASSWORD_RESET })
-			}
-		},
-		[ dispatch ]
-	)
+	const passwordCurrentErrorMsg = isError && error?.response && error.response.data.message.passwordCurrentError
+	const passwordNewErrorMsg = isError && error.response && error.response.data.message.passwordNewError
+	const passwordNewConfirmationErrorMsg =
+		isError && error.response && error.response.data.message.passwordNewConfirmationError
+
+	console.log(isLoading, isSuccess)
 
 	const handlePassVisibility = (type) => {
 		if (type === 'passCurrent') {
@@ -80,22 +80,16 @@ const ChangePasswordForm = () => {
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		dispatch(changePassword(passwordCurrent, passwordNew, passwordNewConfirmation))
+		mutate({ passwordCurrent, passwordNew, passwordNewConfirmation })
 	}
 
 	return (
 		<Fragment>
-			{success && (
-				<Box mb={2}>
-					<CustomAlert severity="success">Password successfully changed</CustomAlert>
-				</Box>
-			)}
-
 			<form onSubmit={submitHandler} autoComplete="off">
 				<TextField
 					className={cls.input}
-					error={error && error.passwordCurrentError ? true : false}
-					helperText={error ? error.passwordCurrentError : false}
+					error={isError && passwordCurrentErrorMsg ? true : false}
+					helperText={isError ? passwordCurrentErrorMsg : false}
 					onChange={(e) => setPasswordCurrent(e.target.value)}
 					value={passwordCurrent}
 					variant="outlined"
@@ -118,8 +112,8 @@ const ChangePasswordForm = () => {
 
 				<TextField
 					className={cls.input}
-					error={error && error.passwordNewError ? true : false}
-					helperText={error ? error.passwordNewError : ' '}
+					error={isError && passwordNewErrorMsg ? true : false}
+					helperText={isError ? passwordNewErrorMsg : false}
 					onChange={(e) => setPasswordNew(e.target.value)}
 					value={passwordNew}
 					variant="outlined"
@@ -142,8 +136,8 @@ const ChangePasswordForm = () => {
 
 				<TextField
 					className={cls.input}
-					error={error && error.passwordNewConfirmationError ? true : false}
-					helperText={error ? error.passwordNewConfirmationError : false}
+					error={isError && passwordNewConfirmationErrorMsg ? true : false}
+					helperText={isError ? passwordNewConfirmationErrorMsg : false}
 					onChange={(e) => setPasswordNewConfirmation(e.target.value)}
 					value={passwordNewConfirmation}
 					variant="outlined"
@@ -169,8 +163,8 @@ const ChangePasswordForm = () => {
 				/>
 
 				<Box display="flex" justifyContent="flex-end">
-					<Button variant="contained" type="submit" color="primary" size="large" disabled={loading}>
-						{loading ? <Loader size={26} color="inherit" /> : 'Change password'}
+					<Button variant="contained" type="submit" color="primary" size="large" disabled={isLoading}>
+						{isLoading ? <Loader size={26} color="inherit" /> : 'Change password'}
 					</Button>
 				</Box>
 			</form>

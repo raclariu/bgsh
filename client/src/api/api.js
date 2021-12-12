@@ -12,6 +12,16 @@ export const fetchKickstarters = async () => {
 	return data
 }
 
+export const apiUserChangePassword = async ({ passwordCurrent, passwordNew, passwordNewConfirmation }) => {
+	const config = {
+		headers : {
+			Authorization : getBearer()
+		}
+	}
+
+	await axios.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation }, config)
+}
+
 export const fetchGames = async ({ search, page, sort, mode }) => {
 	const config = {
 		headers : {

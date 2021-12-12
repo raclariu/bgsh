@@ -13,7 +13,7 @@ import Loader from './Loader'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { clearSaleList } from '../actions/gameActions'
+import { clearSaleList } from '../actions/saleListActions'
 import { apiFetchBggCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 

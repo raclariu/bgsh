@@ -28,8 +28,8 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff'
 import SaleListPopoverDialog from './SaleListPopoverDialog'
 
 // @ Others
-import { removeFromSaleList } from '../actions/gameActions'
-import { saleListLimit } from '../constants/gameConstants'
+import { removeFromSaleList } from '../actions/saleListActions'
+import { saleListLimit } from '../constants/saleListConstants'
 import { useNotification } from '../hooks/hooks'
 
 // @ Styles

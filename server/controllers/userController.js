@@ -100,7 +100,6 @@ const changePassword = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/users/:username
 // ~ @access  Private route
 const getUserProfileData = asyncHandler(async (req, res) => {
-	const { username } = req.params
 	const { _id: userId } = req.userId
 
 	const validationErrors = validationResult(req)
@@ -124,10 +123,13 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	const wantedGames = await Wanted.find({ wantedBy: userId, isActive: true }).limit(6).sort({ updatedAt: -1 }).lean()
+	const wantedGames = await Game.find({ addedBy: userId, isActive: true, mode: 'want' })
+		.select('_id mode games isPack altId')
+		.limit(6)
+		.sort({ updatedAt: -1 })
+		.lean()
 
-	console.log(username)
-	res.status(200).json({ saleGames, tradeGames, wantedGames })
+	return res.status(200).json({ saleGames, tradeGames, wantedGames })
 })
 
 export { userAuth, userRegister, changePassword, getUserProfileData }

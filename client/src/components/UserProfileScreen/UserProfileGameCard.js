@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const UserProfileGameCard = ({ data, slice }) => {
+const UserProfileGameCard = ({ data }) => {
 	const cls = useStyles()
 
 	const [ index, setIndex ] = useState(0)
@@ -69,127 +69,73 @@ const UserProfileGameCard = ({ data, slice }) => {
 
 	return (
 		<Card className={cls.card} elevation={1}>
-			{slice === 'wanted' && (
+			<CardMedia
+				className={cls.media}
+				component="img"
+				alt={data.games[index].title}
+				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
+				title={data.games[index].title}
+			/>
+
+			{data.isPack && (
 				<Fragment>
-					<CardMedia
-						className={cls.media}
-						component="img"
-						image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
-						alt={data.title}
-						title={data.title}
+					<Chip
+						size="small"
+						color="secondary"
+						className={cls.overlayTop}
+						label={`${data.games.length} pack`}
 					/>
-
-					<Divider />
-
-					<CardContent>
-						<Box
-							display="flex"
-							justifyContent="center"
-							alignItems="center"
-							fontWeight="fontWeightMedium"
-							minHeight="3rem"
-						>
-							<CustomTooltip title={data.title}>
-								<Box className={cls.title}>{data.title}</Box>
-							</CustomTooltip>
-						</Box>
-					</CardContent>
-
-					<Divider />
-
-					<CardActions>
-						<Box display="flex" justifyContent="flex-end" width="100%">
-							<CustomTooltip title="See on BGG">
-								<Button
-									color="primary"
-									href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
-									target="_blank"
-									rel="noopener"
-								>
-									BGG
-								</Button>
-							</CustomTooltip>
-						</Box>
-					</CardActions>
 				</Fragment>
 			)}
 
-			{slice !== 'wanted' && (
-				<Fragment>
-					<CardMedia
-						className={cls.media}
-						component="img"
-						alt={data.games[index].title}
-						image={
-							data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'
-						}
-						title={data.games[index].title}
-					/>
+			<Divider />
 
-					{data.isPack && (
+			<CardContent>
+				<Box
+					display="flex"
+					justifyContent={data.isPack ? 'space-between' : 'center'}
+					alignItems="center"
+					fontWeight="fontWeightMedium"
+					minHeight="3rem"
+				>
+					{data.isPack ? (
 						<Fragment>
-							<Chip
-								size="small"
-								color="secondary"
-								className={cls.overlayTop}
-								label={`${data.games.length} pack`}
-							/>
+							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
+								<ArrowBackIcon fontSize="small" />
+							</IconButton>
+							<Box className={cls.title}>
+								{data.games[index].title} ({data.games[index].year})
+							</Box>
+							<IconButton disabled={data.games.length === index + 1} onClick={() => handleIndex('plus')}>
+								<ArrowForwardIcon fontSize="small" />
+							</IconButton>
 						</Fragment>
+					) : (
+						<Box className={cls.title}>
+							{data.games[index].title} ({data.games[index].year})
+						</Box>
 					)}
+				</Box>
+			</CardContent>
 
-					<Divider />
+			<Divider />
 
-					<CardContent>
-						<Box
-							display="flex"
-							justifyContent={data.isPack ? 'space-between' : 'center'}
-							alignItems="center"
-							fontWeight="fontWeightMedium"
-							minHeight="3rem"
+			<CardActions>
+				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+					<CustomTooltip title="See on BGG">
+						<Button
+							color="primary"
+							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
+							target="_blank"
+							rel="noopener"
 						>
-							{data.isPack ? (
-								<Fragment>
-									<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
-										<ArrowBackIcon fontSize="small" />
-									</IconButton>
-									<Box className={cls.title}>
-										{data.games[index].title} ({data.games[index].year})
-									</Box>
-									<IconButton
-										disabled={data.games.length === index + 1}
-										onClick={() => handleIndex('plus')}
-									>
-										<ArrowForwardIcon fontSize="small" />
-									</IconButton>
-								</Fragment>
-							) : (
-								<Box className={cls.title}>
-									{data.games[index].title} ({data.games[index].year})
-								</Box>
-							)}
-						</Box>
-					</CardContent>
+							BGG
+						</Button>
+					</CustomTooltip>
 
-					<Divider />
-
-					<CardActions>
-						<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-							<CustomTooltip title="See on BGG">
-								<Button
-									color="primary"
-									href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
-									target="_blank"
-									rel="noopener"
-								>
-									BGG
-								</Button>
-							</CustomTooltip>
-
-							<GameDetailsButton altId={data.altId} />
-						</Box>
-					</CardActions>
-				</Fragment>
-			)}
+					<GameDetailsButton altId={data.altId} />
+				</Box>
+			</CardActions>
 		</Card>
 	)
 }

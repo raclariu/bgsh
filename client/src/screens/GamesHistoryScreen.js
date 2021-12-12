@@ -62,7 +62,7 @@ const GamesHistoryScreen = () => {
 		{
 			staleTime : 1000 * 60 * 60,
 			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured when fetching history'
+				const text = err.response.data.message || 'Error occured while fetching history'
 				showSnackbar.error({ text })
 			},
 			onSuccess : (data) => {

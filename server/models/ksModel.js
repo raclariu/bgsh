@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { genNanoId } from '../helpers/helpers.js'
 
 const kickstarterSchema = mongoose.Schema(
 	{

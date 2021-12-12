@@ -15,8 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 import Loader from './Loader'
 
 // @ Others
-import { bggSearchGames, addToSaleList } from '../actions/gameActions'
-import { BGG_GAMES_SEARCH_RESET } from '../constants/gameConstants'
+import { addToSaleList } from '../actions/saleListActions'
 import { apiBggSearchGames } from '../api/api'
 
 // @ Styles

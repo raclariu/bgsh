@@ -20,8 +20,6 @@ import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 
 // @ Others
-import { getSavedGames } from '../actions/gameActions'
-import { SAVED_GAMES_RESET } from '../constants/gameConstants'
 import { apiFetchSavedGames } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
@@ -59,7 +57,7 @@ const SavedGamesScreen = () => {
 		{
 			staleTime : 1000 * 60 * 60,
 			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured when fetching saved games'
+				const text = err.response.data.message || 'Error occured while fetching saved games'
 				showSnackbar.error({ text })
 			},
 			onSuccess : (data) => {

@@ -124,7 +124,7 @@ const InboxScreen = () => {
 		{
 			refetchOnWindowFocus : false,
 			onError              : (err) => {
-				const text = err.response.data.message || 'Error occured when fetching messages'
+				const text = err.response.data.message || 'Error occured while fetching messages'
 				showSnackbar.error({ text })
 			},
 			onSuccess            : (data) => {

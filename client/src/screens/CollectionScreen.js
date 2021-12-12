@@ -21,8 +21,8 @@ import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 
 // @ Others
-import { addToSaleList, removeFromSaleList } from '../actions/gameActions'
-import { saleListLimit } from '../constants/gameConstants'
+import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
+import { saleListLimit } from '../constants/saleListConstants'
 import { apiFetchOwnedCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 

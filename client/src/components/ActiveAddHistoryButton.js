@@ -27,8 +27,6 @@ import CustomTooltip from './CustomTooltip'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { deleteGame, reactivateGame, deleteWantedGame } from '../actions/gameActions'
-import { addGamesToHistory } from '../actions/historyActions'
 import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
 
 // @ Styles
