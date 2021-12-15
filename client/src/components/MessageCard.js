@@ -70,7 +70,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 								<Chip
 									size="small"
 									color="secondary"
-									label={path === 'received' ? 'new' : 'unread'}
+									label={path === 'received' ? 'New' : 'Unread'}
 									// icon={<DoneAllIcon />}
 								/>
 							)}

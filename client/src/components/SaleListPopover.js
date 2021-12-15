@@ -19,6 +19,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
+import Divider from '@material-ui/core/Divider'
 
 // @ Icons
 import FeaturedPlayListTwoToneIcon from '@material-ui/icons/FeaturedPlayListTwoTone'
@@ -34,14 +35,12 @@ import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	grid      : {
-		[theme.breakpoints.up('sm')]: {
-			width : 400
-		}
-	},
 	popover   : {
 		[theme.breakpoints.down('xs')]: {
-			width : '90vw'
+			width : '100vw'
+		},
+		[theme.breakpoints.up('sm')]: {
+			width : 400
 		}
 	},
 	subheader : {
@@ -106,6 +105,7 @@ const SaleListPopover = () => {
 				open={open}
 				anchorEl={anchorEl}
 				onClose={handleClose}
+				transitionDuration={350}
 				anchorOrigin={{
 					vertical   : 'bottom',
 					horizontal : 'center'
@@ -116,104 +116,95 @@ const SaleListPopover = () => {
 				}}
 			>
 				{/* Content */}
-				{saleList && (
-					<Grid container className={cls.grid} justifyContent="flex-end">
-						<Grid item xs={12}>
-							<List disablePadding>
-								<Typography
-									className={cls.subheader}
-									align="center"
-									variant="subtitle2"
-									color="textSecondary"
+				<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
+					My list ({saleList.length}/{saleListLimit})
+				</Box>
+				<Divider />
+
+				{saleList.length === 0 && (
+					<Fragment>
+						<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
+							Add games
+						</Box>
+
+						<Box display="flex" justifyContent="center" my={1} color="primary">
+							<ButtonGroup color="primary" size="small">
+								<Button component={RouterLink} to="/profile" onClick={handleClose}>
+									Profile
+								</Button>
+								<Button component={RouterLink} to="/collection" onClick={handleClose}>
+									Collection
+								</Button>
+								<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
+									Wishlist
+								</Button>
+							</ButtonGroup>
+						</Box>
+					</Fragment>
+				)}
+
+				<List disablePadding>
+					{saleList.map((game) => (
+						<ListItem key={game.bggId} divider>
+							<ListItemAvatar>
+								<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
+									{game.title.substring(0, 2).toUpperCase()}
+								</Avatar>
+							</ListItemAvatar>
+							<ListItemText
+								primary={game.title}
+								secondary={game.year}
+								primaryTypographyProps={{
+									color   : 'primary',
+									variant : 'subtitle2'
+								}}
+								secondaryTypographyProps={{
+									variant : 'caption'
+								}}
+							/>
+							<ListItemSecondaryAction>
+								<IconButton
+									edge="end"
+									onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
 								>
-									My list ({saleList.length}/{saleListLimit})
-								</Typography>
+									<HighlightOffIcon color="error" />
+								</IconButton>
+							</ListItemSecondaryAction>
+						</ListItem>
+					))}
+				</List>
 
-								{saleList.length === 0 && (
-									<Fragment>
-										<Typography gutterBottom align="center" variant="body2" color="textSecondary">
-											To add games visit your
-										</Typography>
-										<ButtonGroup className={cls.btnGroup} size="small" color="primary">
-											<Button component={RouterLink} to="/profile" onClick={handleClose}>
-												Profile
-											</Button>
-											<Button component={RouterLink} to="/collection" onClick={handleClose}>
-												Collection
-											</Button>
-											<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
-												Wishlist
-											</Button>
-										</ButtonGroup>
-									</Fragment>
-								)}
+				<Divider />
 
-								{saleList.map((game) => (
-									<ListItem divider key={game.bggId}>
-										<ListItemAvatar>
-											<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
-												{game.title.substring(0, 2).toUpperCase()}
-											</Avatar>
-										</ListItemAvatar>
-										<ListItemText
-											primary={game.title}
-											secondary={game.year}
-											primaryTypographyProps={{
-												color   : 'primary',
-												variant : 'subtitle2'
-											}}
-											secondaryTypographyProps={{
-												variant : 'caption'
-											}}
-										/>
-										<ListItemSecondaryAction>
-											<IconButton
-												onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
-											>
-												<HighlightOffIcon color="error" />
-											</IconButton>
-										</ListItemSecondaryAction>
-									</ListItem>
-								))}
-							</List>
-						</Grid>
-						{saleList.length > 0 && (
-							<Grid item>
-								<Box m={1}>
-									{saleList.length === 1 && (
-										<ButtonGroup color="primary">
-											<Button component={RouterLink} to="/sell" onClick={handleClose}>
-												Sell
-											</Button>
-											<Button component={RouterLink} to="/trade" onClick={handleClose}>
-												Trade
-											</Button>
-											<Button component={RouterLink} to="/want" onClick={handleClose}>
-												Wanted
-											</Button>
-										</ButtonGroup>
-									)}
-
-									{saleList.length > 1 && (
-										<ButtonGroup color="primary">
-											<Button onClick={() => handleModeClick('sell')}>Sell</Button>
-											<Button onClick={() => handleModeClick('trade')}>Trade</Button>
-											<Button component={RouterLink} to="/want" onClick={handleClose}>
-												Wanted
-											</Button>
-										</ButtonGroup>
-									)}
-								</Box>
-							</Grid>
+				{saleList.length > 0 && (
+					<Box display="flex" justifyContent="flex-end" m={1}>
+						{saleList.length === 1 && (
+							<ButtonGroup color="primary" size="small">
+								<Button component={RouterLink} to="/sell" onClick={handleClose}>
+									Sell
+								</Button>
+								<Button component={RouterLink} to="/trade" onClick={handleClose}>
+									Trade
+								</Button>
+								<Button component={RouterLink} to="/want" onClick={handleClose}>
+									Wanted
+								</Button>
+							</ButtonGroup>
 						)}
 
-						<SaleListPopoverDialog
-							openDialog={openDialog}
-							handleCloseDialog={handleCloseDialog}
-							mode={mode}
-						/>
-					</Grid>
+						{saleList.length > 1 && (
+							<ButtonGroup color="primary" size="small">
+								<Button onClick={() => handleModeClick('sell')}>Sell</Button>
+								<Button onClick={() => handleModeClick('trade')}>Trade</Button>
+								<Button component={RouterLink} to="/want" onClick={handleClose}>
+									Wanted
+								</Button>
+							</ButtonGroup>
+						)}
+					</Box>
 				)}
+
+				<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
 			</Popover>
 		</Fragment>
 	)

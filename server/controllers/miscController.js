@@ -177,7 +177,7 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 			})
 
 			if (data.images.length !== 0) {
-				const mapImages = data.images.map((obj) => {
+				const mapImages = data.images.map((img) => {
 					const {
 						imageid,
 						imageurl_lg : image,
@@ -185,8 +185,8 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 						imageurl    : thumbnail,
 						href        : extLink,
 						user        : { username: postedBy }
-					} = obj
-					return { imageid, image, caption, thumbnail, extLink, postedBy }
+					} = img
+					return { imageid, image, caption: caption || 'No caption available', thumbnail, extLink, postedBy }
 				})
 				images.push(mapImages)
 			}

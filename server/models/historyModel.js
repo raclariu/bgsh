@@ -11,7 +11,7 @@ const historySchema = mongoose.Schema(
 			ref      : 'User'
 		},
 		buyer      : String,
-		games      : [ Object ],
+		games      : Array,
 		finalPrice : Number
 	},
 	{

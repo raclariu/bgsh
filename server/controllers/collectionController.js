@@ -2,7 +2,7 @@ import axios from 'axios'
 import asyncHandler from 'express-async-handler'
 import Fuse from 'fuse.js'
 import Collection from '../models/collectionModel.js'
-import Wishlist from '../models/WishlistModel.js'
+import Wishlist from '../models/wishlistModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get collection from BGG and add to DB

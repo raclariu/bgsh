@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
+import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 
 // * @desc    Sign in user & get token
@@ -132,4 +133,13 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 	return res.status(200).json({ saleGames, tradeGames, wantedGames })
 })
 
-export { userAuth, userRegister, changePassword, getUserProfileData }
+// ~ @desc    Get notifications
+// ~ @route   GET /api/notifications
+// ~ @access  Private route
+const getNotifications = asyncHandler(async (req, res) => {
+	const notifications = await Notification.find({ recipient: req.user._id }).sort({ createdAt: -1 }).lean()
+
+	res.status(200).json({ notifications })
+})
+
+export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications }

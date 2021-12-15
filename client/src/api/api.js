@@ -12,6 +12,16 @@ export const fetchKickstarters = async () => {
 	return data
 }
 
+export const apiGetNotifications = async () => {
+	const config = {
+		headers : {
+			Authorization : getBearer()
+		}
+	}
+	const { data } = await axios.get('/api/users/notifications', config)
+	return data
+}
+
 export const apiUserChangePassword = async ({ passwordCurrent, passwordNew, passwordNewConfirmation }) => {
 	const config = {
 		headers : {

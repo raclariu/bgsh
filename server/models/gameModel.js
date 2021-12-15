@@ -14,7 +14,7 @@ const gameSchema = mongoose.Schema(
 			unique  : true,
 			default : () => genNanoId(8)
 		},
-		games         : [ Object ],
+		games         : Array,
 		shipping      : {
 			shipCities       : {
 				type    : Array,

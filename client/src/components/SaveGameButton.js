@@ -62,8 +62,6 @@ const SaveGameButton = ({ altId, addedById }) => {
 		mutation.mutate(altId)
 	}
 
-	console.log(isLoading, isSuccess)
-
 	return (
 		<Fragment>
 			{isLoading && (

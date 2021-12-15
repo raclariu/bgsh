@@ -147,13 +147,17 @@ const SavedGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
+							<IconButton color="primary" disabled={index === 0} onClick={() => handleIndex('minus')}>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
-							<IconButton disabled={data.games.length === index + 1} onClick={() => handleIndex('plus')}>
+							<IconButton
+								color="primary"
+								disabled={data.games.length === index + 1}
+								onClick={() => handleIndex('plus')}
+							>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>

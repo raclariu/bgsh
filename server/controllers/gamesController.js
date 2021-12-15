@@ -3,6 +3,8 @@ import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
+import Notification from '../models/notificationModel.js'
+import Wishlist from '../models/wishlistModel.js'
 
 // * @desc    Add games for sale
 // * @route   POST  /api/games/sell
@@ -46,6 +48,8 @@ const listSaleGames = asyncHandler(async (req, res) => {
 			extraInfoPack,
 			isPack
 		})
+
+		return res.status(204).end()
 	} else {
 		let sellList = []
 		games.forEach((game, index) => {
@@ -68,10 +72,30 @@ const listSaleGames = asyncHandler(async (req, res) => {
 			sellList.push(data)
 		})
 
-		await Game.insertMany(sellList)
-	}
+		const insertedGames = await Game.insertMany(sellList)
+		res.status(204).end()
 
-	return res.status(204).end()
+		let notifArr = []
+		for (let data of insertedGames) {
+			const { bggId } = data.games[0]
+			const foundUserWishlist = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
+			if (foundUserWishlist.length > 0) {
+				for (let obj of foundUserWishlist) {
+					notifArr.push({
+						sender    : req.user._id,
+						recipient : obj.user,
+						type      : 'wishlist',
+						text      : `${data.games[0].title}`,
+						meta      : {
+							altId : data.altId
+						}
+					})
+				}
+				await Notification.insertMany(notifArr)
+				notifArr = []
+			}
+		}
+	}
 })
 
 // * @desc    Add games for trade
@@ -363,12 +387,10 @@ const switchSaveGame = asyncHandler(async (req, res) => {
 	if (user.savedGames.map((id) => id.toString()).indexOf(game._id.toString()) === -1) {
 		user.savedGames.unshift(game._id)
 		await User.updateOne({ _id: req.user._id }, { savedGames: user.savedGames })
-		console.log(true)
 		return res.status(200).send({ isSaved: true })
 	} else {
 		const filtered = user.savedGames.filter((id) => id.toString() !== game._id.toString())
 		await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
-		console.log(false)
 		return res.status(200).send({ isSaved: false })
 	}
 })

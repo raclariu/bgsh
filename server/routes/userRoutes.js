@@ -1,7 +1,13 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
-import { userAuth, userRegister, changePassword, getUserProfileData } from '../controllers/userController.js'
+import {
+	userAuth,
+	userRegister,
+	changePassword,
+	getUserProfileData,
+	getNotifications
+} from '../controllers/userController.js'
 import {
 	validateEmail,
 	validateEmailDuplicate,
@@ -17,6 +23,7 @@ import {
 
 // @route /api/users
 router.route('/signin').post([ validateEmail, validatePasswordSignIn ], userAuth)
+router.route('/notifications').get([ protect ], getNotifications)
 router
 	.route('/signup')
 	.post(

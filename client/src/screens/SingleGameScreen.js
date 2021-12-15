@@ -27,6 +27,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
+import Slide from '@material-ui/core/Slide'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
@@ -43,6 +44,7 @@ import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
 import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import CloseIcon from '@material-ui/icons/Close'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -108,20 +110,29 @@ const useStyles = makeStyles((theme) => ({
 	priceContainer     : {
 		marginTop : theme.spacing(2)
 	},
-	galleryImg         : {
+	galleryMasonryImg  : {
 		maxHeight : '100%',
 		width     : '100%',
 		objectFit : 'contain',
 		cursor    : 'zoom-in'
 	},
-	dialogImg          : {
-		maxWidth  : '100%',
-		maxHeight : '70vh'
+	dialogContent      : {
+		display        : 'flex',
+		justifyContent : 'center',
+		alignItems     : 'center'
+	},
+	dialogContentImg   : {
+		// maxWidth  : '100%',
+		// maxHeight : '100%'
+		maxHeight : '100%',
+		width     : '100%',
+		objectFit : 'contain'
 	},
 	fab                : {
+		display   : 'flex',
 		position  : 'fixed',
 		left      : '50%',
-		bottom    : theme.spacing(2),
+		bottom    : theme.spacing(3),
 		transform : 'translate(-50%, 0)'
 	}
 }))
@@ -129,7 +140,6 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const SingleGameScreen = () => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const params = useParams()
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -188,6 +198,7 @@ const SingleGameScreen = () => {
 	}
 
 	const cycleGames = (type) => {
+		setImgIndex(0)
 		if (type === 'back') {
 			if (index > 0) {
 				setIndex(index - 1)
@@ -219,7 +230,6 @@ const SingleGameScreen = () => {
 		<div className={cls.root}>
 			{isLoading && (
 				<Box display="flex" justifyContent="center">
-					{' '}
 					<Loader />
 				</Box>
 			)}
@@ -235,7 +245,7 @@ const SingleGameScreen = () => {
 					<HelmetComponent title={isSuccess ? data.games[index].title : 'Boardgame'} />
 
 					{data.isPack && (
-						<Box display="flex" className={cls.fab}>
+						<Box className={cls.fab}>
 							<Fab
 								size="small"
 								color="secondary"
@@ -244,7 +254,7 @@ const SingleGameScreen = () => {
 							>
 								<ArrowBackIcon />
 							</Fab>
-							<Box ml={1}>
+							<Box ml={2}>
 								<Fab
 									size="small"
 									color="secondary"
@@ -431,7 +441,7 @@ const SingleGameScreen = () => {
 					{/* Shipping */}
 					<Box display="flex" alignItems="center">
 						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
-						<Box ml={1} className={cls.mainGrid} fontSize={16}>
+						<Box ml={1} className={cls.mainGrid} fontSize="1rem">
 							Shipping
 						</Box>
 					</Box>
@@ -539,14 +549,14 @@ const SingleGameScreen = () => {
 
 					<Divider light />
 
-					<Box display="flex" alignItems="center">
+					<Box display="flex" alignItems="center" mt={2}>
 						{isLoadingGallery ? (
 							<Loader size={20} />
 						) : (
 							<ImageTwoToneIcon color="primary" fontSize="small" />
 						)}
 
-						<Box ml={1} className={cls.mainGrid} fontSize={16}>
+						<Box ml={1} fontSize="1rem">
 							Gallery
 						</Box>
 					</Box>
@@ -558,7 +568,7 @@ const SingleGameScreen = () => {
 					)}
 
 					{isSuccessGallery && (
-						<Fragment>
+						<Box className={cls.mainGrid}>
 							{galleryData[index].length > 0 && (
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 									<Masonry gutter="10px">
@@ -573,7 +583,7 @@ const SingleGameScreen = () => {
 												<LazyLoad offset={200} once>
 													<img
 														onClick={() => handleOpenImage(i)}
-														className={cls.galleryImg}
+														className={cls.galleryMasonryImg}
 														src={obj.thumbnail}
 														alt={obj.caption}
 													/>
@@ -584,26 +594,35 @@ const SingleGameScreen = () => {
 								</ResponsiveMasonry>
 							)}
 
-							<Dialog fullWidth maxWidth="md" open={open} onClose={handleCloseImage}>
+							<Dialog
+								fullScreen
+								open={open}
+								TransitionComponent={Slide}
+								transitionDuration={350}
+								TransitionProps={{ direction: 'up' }}
+							>
 								<DialogTitle disableTypography>
-									<Box display="flex" flexDirection="column">
-										<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
-										<Box mt={0.5} fontSize="0.70rem" color="grey.500">
-											{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
+									<Box display="flex" alignItems="center">
+										<Box display="flex" flexDirection="column" flexGrow={1}>
+											<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
+											<Box mt={0.5} fontSize="0.75rem" color="grey.500">
+												{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
+											</Box>
 										</Box>
+										<IconButton onClick={handleCloseImage} color="secondary">
+											<CloseIcon />
+										</IconButton>
 									</Box>
 								</DialogTitle>
 
-								<DialogContent dividers>
-									<Box display="flex" justifyContent="center" alignItems="center">
-										<img
-											className={cls.dialogImg}
-											alt={galleryData[index][imgIndex].caption}
-											src={galleryData[index][imgIndex].image}
-											hidden={!imgLoaded}
-											onLoad={onImgLoad}
-										/>
-									</Box>
+								<DialogContent dividers className={cls.dialogContent}>
+									<img
+										className={cls.dialogContentImg}
+										alt={galleryData[index][imgIndex].caption}
+										src={galleryData[index][imgIndex].image}
+										hidden={!imgLoaded}
+										onLoad={onImgLoad}
+									/>
 
 									{!imgLoaded && (
 										<Box p={10} display="flex" justifyContent="center" alignItems="center">
@@ -613,11 +632,12 @@ const SingleGameScreen = () => {
 								</DialogContent>
 
 								<DialogActions>
-									<Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+									<Box width="100%" display="flex" alignItems="center">
 										<Box flexGrow={1}>
 											<CustomTooltip title="Previous image">
 												<IconButton
 													disabled={imgIndex === 0}
+													color="primary"
 													onClick={() => cycleImages('back')}
 												>
 													<ArrowBackIcon />
@@ -626,6 +646,7 @@ const SingleGameScreen = () => {
 											<CustomTooltip title="Next image">
 												<IconButton
 													disabled={galleryData[index].length === imgIndex + 1}
+													color="primary"
 													onClick={() => cycleImages('forward')}
 												>
 													<ArrowForwardIcon />
@@ -649,7 +670,7 @@ const SingleGameScreen = () => {
 							{galleryData[index].length === 0 && (
 								<CustomAlert severity="warning">{`${data.games[index].title}`}</CustomAlert>
 							)}
-						</Fragment>
+						</Box>
 					)}
 
 					<Divider light />

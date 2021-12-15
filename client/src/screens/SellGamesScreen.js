@@ -89,11 +89,10 @@ const SellGamesScreen = () => {
 		[ 'bggGamesDetails' ],
 		() => apiFetchGameDetails(mapped),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : Infinity,
+			enabled   : saleList.length > 0
 		}
 	)
-
-	console.log(data && data)
 
 	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
@@ -179,6 +178,8 @@ const SellGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
+		if (saleList.length === 0) return
+
 		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
 		for (let val of values) {
 			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
@@ -223,11 +224,10 @@ const SellGamesScreen = () => {
 				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 			</div>
 
-			{console.count('Renders')}
-
 			{isLoading && <Loader />}
 
-			{isSuccess && (
+			{isSuccess &&
+			saleList.length > 0 && (
 				<Fragment>
 					<Grid container spacing={3} className={cls.section}>
 						{data.map(

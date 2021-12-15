@@ -2,30 +2,27 @@ import mongoose from 'mongoose'
 
 const notificationSchema = mongoose.Schema(
 	{
-		sender       : {
+		sender    : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		recipient    : {
+		recipient : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		type         : {
+		type      : {
 			type    : String,
 			default : 'general'
 		},
-		notification : String,
-		meta         : {
-			type    : Object,
-			default : undefined
-		},
-		read         : {
+		text      : String,
+		meta      : {},
+		read      : {
 			type    : Boolean,
 			default : false
 		},
-		readAt       : {
+		readAt    : {
 			type    : Date,
 			default : null
 		}
