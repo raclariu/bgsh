@@ -90,7 +90,7 @@ const validateGamePrice = check('games').custom((games, { req }) => {
 const validateGameTotalPrice = check('totalPrice').custom((totalPrice, { req }) => {
 	if (!req.body.isPack) return true
 
-	if (totalPrice > 0 && totalPrice < 10001) {
+	if (totalPrice >= 0 && totalPrice <= 10000) {
 		return true
 	} else {
 		throw new Error('Invalid price for the pack')

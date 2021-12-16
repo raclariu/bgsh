@@ -14,10 +14,6 @@ const PackTotalPriceInput = ({ totalPrice, handleTotalPrice }) => {
 			InputProps={{
 				startAdornment : <InputAdornment position="start">RON</InputAdornment>
 			}}
-			inputProps={{
-				min : 1,
-				max : 10000
-			}}
 			name="pack-price"
 			variant="outlined"
 			label="Price for the entire pack"

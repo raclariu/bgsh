@@ -155,10 +155,6 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 								InputProps={{
 									startAdornment : <InputAdornment position="start">RON</InputAdornment>
 								}}
-								inputProps={{
-									min : 1,
-									max : 10000
-								}}
 								name={`price-${game.bggId}`}
 								variant="outlined"
 								label="Price"

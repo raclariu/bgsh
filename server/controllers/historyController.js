@@ -9,16 +9,19 @@ import History from '../models/historyModel.js'
 // * @route   POST  /api/history
 // * @access  Private route
 const addGamesToHistory = asyncHandler(async (req, res) => {
-	const { games, username, price, gameId } = req.body
+	const { games, username, finalPrice, extraInfo, gameId } = req.body
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
+		console.log(err)
 
 		res.status(400)
 		throw {
 			message : {
-				usernameError : err.username ? err.username.msg : null
+				usernameError   : err.username ? err.username.msg : null,
+				finalPriceError : err.finalPrice ? err.finalPrice.msg : null,
+				extraInfoError  : err.extraInfo ? err.extraInfo.msg : null
 			}
 		}
 	}
@@ -43,7 +46,8 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 			addedBy    : req.user._id,
 			buyer      : username ? username : null,
 			games      : simplifyGames,
-			finalPrice : price ? price : null
+			finalPrice : finalPrice ? finalPrice : null,
+			extraInfo
 		})
 
 		if (history) {

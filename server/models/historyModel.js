@@ -12,7 +12,8 @@ const historySchema = mongoose.Schema(
 		},
 		buyer      : String,
 		games      : Array,
-		finalPrice : Number
+		finalPrice : Number,
+		extraInfo  : String
 	},
 	{
 		timestamps : true,

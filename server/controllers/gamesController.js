@@ -79,20 +79,24 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
 			const foundUserWishlist = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
+			console.log(foundUserWishlist)
+			console.log(req.user._id)
 			if (foundUserWishlist.length > 0) {
-				for (let obj of foundUserWishlist) {
-					notifArr.push({
-						sender    : req.user._id,
-						recipient : obj.user,
-						type      : 'wishlist',
-						text      : `${data.games[0].title}`,
-						meta      : {
-							altId : data.altId
-						}
-					})
+				if (!foundUserWishlist.some((obj) => obj.user.toString() === req.user._id.toString())) {
+					for (let obj of foundUserWishlist) {
+						notifArr.push({
+							sender    : req.user._id,
+							recipient : obj.user,
+							type      : 'wishlist',
+							text      : `${data.games[0].title}`,
+							meta      : {
+								altId : data.altId
+							}
+						})
+					}
+					await Notification.insertMany(notifArr)
+					notifArr = []
 				}
-				await Notification.insertMany(notifArr)
-				notifArr = []
 			}
 		}
 	}

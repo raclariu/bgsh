@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import DialogActions from '@material-ui/core/DialogActions'
 
 // @ Icons
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
@@ -28,48 +29,94 @@ import CustomAlert from '../components/CustomAlert'
 
 // @ Others
 import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
-	input  : {
+	input    : {
 		minHeight                      : '70px',
-		width                          : '50%',
+		width                          : '70%',
 		[theme.breakpoints.down('xs')]: {
-			width : '90%'
+			width : '100%'
 		}
 	},
-	button : {
-		width                          : '50%',
+	textarea : {
+		width                          : '70%',
 		[theme.breakpoints.down('xs')]: {
-			width : '90%'
+			width : '100%'
 		}
 	},
-	ml     : {
+	button   : {
+		// width                          : '50%',
+		// [theme.breakpoints.down('xs')]: {
+		// 	width : '90%'
+		// }
+	},
+	ml       : {
 		marginLeft : theme.spacing(2)
 	}
 }))
 
 // @ Main
-const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display }) => {
+const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
 	const [ openDialog, setOpenDialog ] = useState(false)
-	const [ buyerUsername, setBuyerUsername ] = useState('')
-	const [ finalPrice, setFinalPrice ] = useState(price ? price : '')
+	const [ otherUsername, setOtherUsername ] = useState('')
+	const [ finalPrice, setFinalPrice ] = useState(listedPrice ? listedPrice : '')
+	const [ extraInfo, setExtraInfo ] = useState('')
+	const [ showSnackbar ] = useNotification()
 
-	const addGame = useMutation(({ games, buyerUsername, finalPrice, gameId }) =>
-		apiAddGameToHistory(games, buyerUsername.trim().toLowerCase(), finalPrice, gameId)
+	const addGame = useMutation(
+		({ games, otherUsername, finalPrice, extraInfo, gameId }) =>
+			apiAddGameToHistory({
+				games,
+				username   : otherUsername.trim().toLowerCase(),
+				finalPrice,
+				extraInfo  : extraInfo.trim(),
+				gameId
+			}),
+		{
+			onSuccess : () => {
+				setOpenDialog(false)
+				addGame.reset()
+				showSnackbar.success({ text: 'Successfully added to history' })
+				invalidate()
+			}
+		}
 	)
 
-	const deleteGame = useMutation((gameId) => {
-		apiDeleteListedGame(gameId)
+	const deleteGame = useMutation((gameId) => apiDeleteListedGame(gameId), {
+		onSuccess : () => {
+			setOpenDialog(false)
+			deleteGame.reset()
+			showSnackbar.success({ text: 'Successfully deleted' })
+			invalidate()
+		}
 	})
 
-	console.log('delete success', deleteGame.isSuccess)
+	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId), {
+		onSuccess : () => {
+			setOpenDialog(false)
+			reactivateGame.reset()
+			showSnackbar.success({ text: 'Successfully reactivated' })
+			invalidate()
+		}
+	})
 
-	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId))
+	const invalidate = () => {
+		queryClient.invalidateQueries('myListedGames')
+		if (mode === 'sell') {
+			queryClient.invalidateQueries('saleGames')
+			queryClient.invalidateQueries('soldHistory')
+		}
+		if (mode === 'trade') {
+			queryClient.invalidateQueries('tradeGames')
+			queryClient.invalidateQueries('tradedHistory')
+		}
+	}
 
 	const handleOpenDialog = () => {
 		setOpenDialog(true)
@@ -77,21 +124,10 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 	const handleCloseDialog = () => {
 		setOpenDialog(false)
-		if (addGame.isSuccess || deleteGame.isSuccess || reactivateGame.isSuccess) {
-			if (mode === 'wanted') {
-				queryClient.invalidateQueries('myWantedGames')
-				queryClient.invalidateQueries('wantedGames')
-			} else {
-				queryClient.invalidateQueries('myListedGames')
-				queryClient.invalidateQueries('saleGames')
-				queryClient.invalidateQueries('tradeGames')
-				queryClient.invalidateQueries('soldHistory')
-				queryClient.invalidateQueries('tradedHistory')
-				addGame.reset()
-				deleteGame.reset()
-				reactivateGame.reset()
-			}
-		}
+	}
+
+	const addGameHandler = () => {
+		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId })
 	}
 
 	const deleteGameHandler = () => {
@@ -102,11 +138,17 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 		reactivateGame.mutate(gameId)
 	}
 
-	const submitHandler = (e) => {
-		e.preventDefault()
-
-		addGame.mutate({ games, buyerUsername, finalPrice, gameId })
+	const handleFinalPrice = (e) => {
+		setFinalPrice(e.target.value)
 	}
+
+	const handleExtraInfo = (e) => {
+		setExtraInfo(e.target.value)
+	}
+
+	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.usernameError : false
+	const finalPriceError = addGame.isError ? addGame.error.response.data.message.finalPriceError : false
+	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfoError : false
 
 	return (
 		<Fragment>
@@ -120,91 +162,93 @@ const ActiveAddHistoryButton = ({ games, price, mode, gameId, isActive, display 
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<DialogTitle disableTypography>
-							<Typography variant="subtitle2" align="center">
-								{mode === 'sell' && 'For history purposes, type the buyers username and final price'}
-								{mode === 'trade' && 'For history purposes, type the other traders username'}
+							<Typography variant="body2">
+								Fill in the form below for history purposes. Username is not required, but it is
+								recommended to be filled in.
 							</Typography>
-							<Typography variant="body2" color="textSecondary" align="center">
-								Username is not required, but it is recommended
+							<Typography variant="caption" color="textSecondary">
+								Note: once you press the button below, this listing will be deleted and added to your
+								history.
 							</Typography>
 						</DialogTitle>
 
-						<DialogContent>
-							<form onSubmit={submitHandler} autoComplete="off">
-								{addGame.isError && (
-									<Box mb={2}>
-										<CustomAlert>{addGame.error.response.data.message}</CustomAlert>
-									</Box>
-								)}
+						<DialogContent dividers>
+							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+								<TextField
+									className={cls.input}
+									error={!!otherUsernameError}
+									helperText={otherUsernameError}
+									onChange={(e) => setOtherUsername(e.target.value)}
+									value={otherUsername}
+									inputProps={{
+										maxLength : 20
+									}}
+									variant="outlined"
+									id="username"
+									name="username"
+									label="Username"
+									type="text"
+									size="small"
+									placeholder="Username of the other person"
+									autoFocus
+								/>
 
-								{addGame.isSuccess && (
-									<Box mb={2}>
-										<CustomAlert severity="success">
-											Success. You can now close this window.
-										</CustomAlert>
-									</Box>
-								)}
-								<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+								{mode === 'sell' && (
 									<TextField
 										className={cls.input}
-										error={addGame.isError ? true : false}
-										helperText={
-											addGame.isError ? addGame.error.response.data.message.usernameError : false
-										}
-										onChange={(e) => setBuyerUsername(e.target.value)}
-										value={buyerUsername}
-										inputProps={{
-											maxLength : 20
+										error={!!finalPriceError}
+										helperText={finalPriceError}
+										onChange={handleFinalPrice}
+										value={finalPrice}
+										InputProps={{
+											startAdornment : <InputAdornment position="start">RON</InputAdornment>
 										}}
 										variant="outlined"
-										id="username"
-										name="username"
-										label="Username"
-										type="text"
+										name="final-price"
+										label="Final price"
+										type="number"
 										size="small"
-										autoFocus
 									/>
+								)}
 
-									{mode === 'sell' && (
-										<TextField
-											className={cls.input}
-											onChange={(e) => setFinalPrice(e.target.value)}
-											value={finalPrice}
-											InputProps={{
-												startAdornment : <InputAdornment position="start">RON</InputAdornment>
-											}}
-											inputProps={{
-												min : 0,
-												max : 10000
-											}}
-											variant="outlined"
-											name="price"
-											label="Final Price"
-											type="number"
-											size="small"
-										/>
-									)}
-
-									{!addGame.isSuccess && (
-										<Button
-											className={cls.button}
-											disabled={addGame.isLoading}
-											type="submit"
-											variant="contained"
-											color="primary"
-										>
-											{addGame.isLoading ? (
-												<Loader color="inherit" size={24} />
-											) : mode === 'sell' ? (
-												'Sell'
-											) : (
-												'Trade'
-											)}
-										</Button>
-									)}
-								</Box>
-							</form>
+								<TextField
+									className={cls.textarea}
+									error={!!extraInfoError}
+									helperText={extraInfoError}
+									value={extraInfo}
+									onChange={handleExtraInfo}
+									inputProps={{
+										maxLength   : 500,
+										placeholder : 'Any other info goes in here (500 characters limit)'
+									}}
+									variant="outlined"
+									name="extra-info"
+									type="text"
+									label={`Extra info ${extraInfo.length}/500`}
+									multiline
+									minRows={3}
+									maxRows={10}
+									size="small"
+								/>
+							</Box>
 						</DialogContent>
+						<DialogActions>
+							<Button
+								className={cls.button}
+								onClick={addGameHandler}
+								disabled={addGame.isLoading}
+								variant="contained"
+								color="primary"
+							>
+								{addGame.isLoading ? (
+									<Loader color="inherit" size={24} />
+								) : mode === 'sell' ? (
+									'Sell'
+								) : (
+									'Trade'
+								)}
+							</Button>
+						</DialogActions>
 					</Dialog>
 				</Fragment>
 			)}
