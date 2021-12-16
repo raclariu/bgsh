@@ -79,8 +79,6 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
 			const foundUserWishlist = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
-			console.log(foundUserWishlist)
-			console.log(req.user._id)
 			if (foundUserWishlist.length > 0) {
 				if (!foundUserWishlist.some((obj) => obj.user.toString() === req.user._id.toString())) {
 					for (let obj of foundUserWishlist) {

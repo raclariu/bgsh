@@ -27,10 +27,11 @@ const validateUsername = check('username')
 	})
 
 const validateFinalPrice = check('finalPrice')
+	.optional({ nullable: true })
 	.isInt()
 	.withMessage('Final price must be a number')
-	.bail()
 	.custom((finalPrice, { req }) => {
+		console.log('testeeee', finalPrice)
 		if (finalPrice >= 0 && finalPrice <= 10000) {
 			return true
 		} else {

@@ -367,7 +367,13 @@ const SingleGameScreen = () => {
 
 										<Box display="flex">
 											<PublicTwoToneIcon fontSize="small" color="primary" />
-											<Box ml={0.5}>{data.games[index].languageDependence}</Box>
+											<Box ml={0.5}>
+												{data.games[index].languageDependence === null ? (
+													'Not enough votes'
+												) : (
+													data.games[index].languageDependence
+												)}
+											</Box>
 										</Box>
 									</Typography>
 								</Box>

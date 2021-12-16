@@ -16,6 +16,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import DialogActions from '@material-ui/core/DialogActions'
+import Divider from '@material-ui/core/Divider'
 
 // @ Icons
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
@@ -45,15 +46,6 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down('xs')]: {
 			width : '100%'
 		}
-	},
-	button   : {
-		// width                          : '50%',
-		// [theme.breakpoints.down('xs')]: {
-		// 	width : '90%'
-		// }
-	},
-	ml       : {
-		marginLeft : theme.spacing(2)
 	}
 }))
 
@@ -74,11 +66,15 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			apiAddGameToHistory({
 				games,
 				username   : otherUsername.trim().toLowerCase(),
-				finalPrice,
+				finalPrice : finalPrice === '' ? null : finalPrice,
 				extraInfo  : extraInfo.trim(),
 				gameId
 			}),
 		{
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while trying to add a listing to history'
+				showSnackbar.error({ text })
+			},
 			onSuccess : () => {
 				setOpenDialog(false)
 				addGame.reset()
@@ -89,6 +85,10 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	)
 
 	const deleteGame = useMutation((gameId) => apiDeleteListedGame(gameId), {
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while trying to delete a listing'
+			showSnackbar.error({ text })
+		},
 		onSuccess : () => {
 			setOpenDialog(false)
 			deleteGame.reset()
@@ -98,6 +98,10 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	})
 
 	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId), {
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while trying to reactivate a listing'
+			showSnackbar.error({ text })
+		},
 		onSuccess : () => {
 			setOpenDialog(false)
 			reactivateGame.reset()
@@ -233,8 +237,10 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							</Box>
 						</DialogContent>
 						<DialogActions>
+							<Button onClick={handleCloseDialog} color="primary">
+								Cancel
+							</Button>
 							<Button
-								className={cls.button}
 								onClick={addGameHandler}
 								disabled={addGame.isLoading}
 								variant="contained"
@@ -268,37 +274,21 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							</Typography>
 						</DialogTitle>
 
-						<DialogContent>
-							<Box display="flex" justifyContent="center" alignItems="center">
-								{deleteGame.isError && (
-									<Box mb={2}>
-										<CustomAlert>{deleteGame.error.response.data.message}</CustomAlert>
-									</Box>
-								)}
+						<Divider />
 
-								{deleteGame.isSuccess ? (
-									<Box mb={2}>
-										<CustomAlert severity="success">
-											Success. You can now close this window.
-										</CustomAlert>
-									</Box>
-								) : (
-									<Fragment>
-										<Button
-											disabled={deleteGame.isLoading}
-											onClick={deleteGameHandler}
-											variant="contained"
-											color="primary"
-										>
-											{deleteGame.isLoading ? <Loader color="inherit" size={24} /> : 'Delete'}
-										</Button>
-										<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
-											Go back
-										</Button>
-									</Fragment>
-								)}
-							</Box>
-						</DialogContent>
+						<DialogActions>
+							<Button onClick={handleCloseDialog} color="primary">
+								Cancel
+							</Button>
+							<Button
+								disabled={deleteGame.isLoading}
+								onClick={deleteGameHandler}
+								variant="contained"
+								color="primary"
+							>
+								{deleteGame.isLoading ? <Loader color="inherit" size={24} /> : 'Delete'}
+							</Button>
+						</DialogActions>
 					</Dialog>
 				</Fragment>
 			)}
@@ -318,37 +308,21 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							</Typography>
 						</DialogTitle>
 
-						<DialogContent>
-							<Box display="flex" justifyContent="center" alignItems="center">
-								{reactivateGame.isError && (
-									<Box mb={2}>
-										<CustomAlert>{reactivateGame.error.response.data.message}</CustomAlert>
-									</Box>
-								)}
+						<Divider />
 
-								{reactivateGame.isSuccess ? (
-									<Box mb={2}>
-										<CustomAlert severity="success">
-											Success. You can now close this window.
-										</CustomAlert>
-									</Box>
-								) : (
-									<Fragment>
-										<Button
-											disabled={reactivateGame.isLoading}
-											onClick={reactivateGameHandler}
-											variant="contained"
-											color="primary"
-										>
-											{reactivateGame.isLoading ? <Loader color="inherit" size={24} /> : 'Yes'}
-										</Button>
-										<Button className={cls.ml} onClick={handleCloseDialog} color="primary">
-											Go back
-										</Button>
-									</Fragment>
-								)}
-							</Box>
-						</DialogContent>
+						<DialogActions>
+							<Button onClick={handleCloseDialog} color="primary">
+								Cancel
+							</Button>
+							<Button
+								disabled={reactivateGame.isLoading}
+								onClick={reactivateGameHandler}
+								variant="contained"
+								color="primary"
+							>
+								{reactivateGame.isLoading ? <Loader color="inherit" size={24} /> : 'Reactivate'}
+							</Button>
+						</DialogActions>
 					</Dialog>
 				</Fragment>
 			)}

@@ -294,13 +294,14 @@ export const apiFetchListedGames = async (search, page) => {
 }
 
 export const apiAddGameToHistory = async ({ games, username, finalPrice, extraInfo, gameId }) => {
-	console.log(typeof finalPrice)
 	const config = {
 		headers : {
 			'Content-Type' : 'application/json',
 			Authorization  : getBearer()
 		}
 	}
+
+	console.log('finalprice', finalPrice)
 
 	return await axios.post('/api/history', { games, username, finalPrice, extraInfo, gameId }, config)
 }
