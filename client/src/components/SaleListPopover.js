@@ -186,6 +186,9 @@ const SaleListPopover = () => {
 								<Button component={RouterLink} to="/trade" onClick={handleClose}>
 									Trade
 								</Button>
+								<Button component={RouterLink} to="/buy" onClick={handleClose}>
+									Buy
+								</Button>
 								<Button component={RouterLink} to="/want" onClick={handleClose}>
 									Wanted
 								</Button>
@@ -196,6 +199,7 @@ const SaleListPopover = () => {
 							<ButtonGroup color="primary" size="small">
 								<Button onClick={() => handleModeClick('sell')}>Sell</Button>
 								<Button onClick={() => handleModeClick('trade')}>Trade</Button>
+								<Button onClick={() => handleModeClick('buy')}>Buy</Button>
 								<Button component={RouterLink} to="/want" onClick={handleClose}>
 									Wanted
 								</Button>

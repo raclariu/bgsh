@@ -3,17 +3,20 @@ import { genNanoId } from '../helpers/helpers.js'
 
 const historySchema = mongoose.Schema(
 	{
-		mode       : String,
-		isPack     : Boolean,
-		addedBy    : {
+		mode          : String,
+		isPack        : Boolean,
+		addedBy       : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		buyer      : String,
-		games      : Array,
-		finalPrice : Number,
-		extraInfo  : String
+		otherUser     : {
+			type : mongoose.Schema.Types.ObjectId,
+			ref  : 'User'
+		},
+		games         : Array,
+		finalPrice    : Number,
+		extraInfoPack : String
 	},
 	{
 		timestamps : true,

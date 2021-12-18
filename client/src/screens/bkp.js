@@ -10,6 +10,7 @@ import queryString from 'query-string'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
 
 // @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
@@ -21,7 +22,7 @@ import Loader from '../components/Loader'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
-import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
+import { apiFetchGameDetails, apiHistoryBuyGames } from '../api/api'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const SellGamesScreen = () => {
+const BuyGamesScreen = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const location = useLocation()
@@ -51,23 +52,18 @@ const SellGamesScreen = () => {
 		saleList.map((game) => {
 			return {
 				...game,
-				isSleeved : false,
-				version   : null,
-				condition : null,
-				extraInfo : '',
-				price     : ''
+				isSleeved     : false,
+				version       : null,
+				extraInfo     : '',
+				price         : '',
+				otherUsername : ''
 			}
 		})
 	)
 
-	const [ shipPost, setShipPost ] = useState(true)
-	const [ shipCourier, setShipCourier ] = useState(false)
-	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
-	const [ shipCourierPayer, setShipCourierPayer ] = useState(null)
-	const [ shipPersonal, setShipPersonal ] = useState(false)
-	const [ shipCities, setShipCities ] = useState([])
-	const [ extraInfoPack, setExtraInfoPack ] = useState('')
+	const [ extraInfo, setExtraInfo ] = useState('')
 	const [ totalPrice, setTotalPrice ] = useState('')
+	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ values, setValues ] = useState(slRef.current)
 
 	if (isPack !== false && isPack !== true) {
@@ -78,7 +74,6 @@ const SellGamesScreen = () => {
 		history.push('/sell')
 	}
 
-	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 	const mapped = slRef.current.map((el) => el.bggId)
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
@@ -90,12 +85,7 @@ const SellGamesScreen = () => {
 		}
 	)
 
-	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
-		onSuccess : () => {
-			queryClient.invalidateQueries('saleGames')
-			queryClient.invalidateQueries('myListedGames')
-		}
-	})
+	const mutation = useMutation((gamesData) => apiHistoryBuyGames(gamesData))
 
 	useEffect(
 		() => {
@@ -105,6 +95,8 @@ const SellGamesScreen = () => {
 		},
 		[ saleList ]
 	)
+
+	console.log(values)
 
 	useEffect(
 		() => {
@@ -126,49 +118,16 @@ const SellGamesScreen = () => {
 		setValues(copy)
 	}
 
-	const handleExtraInfoPack = (text) => {
-		setExtraInfoPack(text)
+	const handleExtraInfo = (text) => {
+		setExtraInfo(text)
 	}
 
 	const handleTotalPrice = (price) => {
 		setTotalPrice(price)
 	}
 
-	const handleShippingInfo = (data, type) => {
-		if (type === 'post') {
-			setShipPost(data)
-			if (data === false) {
-				setShipPostPayer(null)
-			} else {
-				setShipPostPayer('seller')
-			}
-		}
-
-		if (type === 'postPayer') {
-			setShipPostPayer(data)
-		}
-
-		if (type === 'courier') {
-			setShipCourier(data)
-			if (data === false) {
-				setShipCourierPayer(null)
-			} else {
-				setShipCourierPayer('buyer')
-			}
-		}
-
-		if (type === 'courierPayer') {
-			setShipCourierPayer(data)
-		}
-
-		if (type === 'personal') {
-			setShipPersonal(data)
-			setShipCities([])
-		}
-
-		if (type === 'cities') {
-			setShipCities(data)
-		}
+	const handleOtherUsername = (e) => {
+		setOtherUsername(e.target.value)
 	}
 
 	const handleSubmit = (e) => {
@@ -182,27 +141,24 @@ const SellGamesScreen = () => {
 			if (index !== -1) {
 				gamesCopy[index] = {
 					...gamesCopy[index],
-					version   : val.version,
-					price     : !isPack ? +val.price : null,
-					condition : val.condition,
-					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : '',
-					isSleeved : val.isSleeved
+					version       : val.version,
+					price         : !isPack ? +val.price : null,
+					extraInfo     : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : '',
+					isSleeved     : val.isSleeved,
+					otherUsername : !isPack ? val.otherUsername : null
 				}
 			}
 		}
 
 		const gamesData = {
-			games            : gamesCopy,
+			games         : gamesCopy,
 			isPack,
-			shipPost,
-			shipPostPayer,
-			shipCourier,
-			shipCourierPayer,
-			shipPersonal,
-			shipCities,
-			extraInfoPack    : isPack ? extraInfoPack.trim() : '',
-			totalPrice       : isPack ? +totalPrice : null
+			extraInfo     : isPack ? extraInfo.trim() : '',
+			totalPrice    : isPack ? +totalPrice : null,
+			otherUsername : isPack ? otherUsername : null
 		}
+
+		console.log(gamesData)
 
 		mutation.mutate(gamesData)
 	}
@@ -229,11 +185,11 @@ const SellGamesScreen = () => {
 								// Because we may have 6 fetched games, but values could have only 3 because
 								// user deleted 3, we need to only render a list of the ones that are in values
 								values.find((val) => val.bggId === game.bggId) && (
-									<Grid item key={game.bggId} md={6} xs={12}>
+									<Grid item key={game.bggId} xs={12} sm={6} md={4}>
 										<SellGameCard
 											game={game}
 											isPack={isPack}
-											mode="sell"
+											mode="buy"
 											data={values.find((val) => val.bggId === game.bggId)}
 											removeFromSaleListHandler={removeFromSaleListHandler}
 											handleGameInfo={handleGameInfo}
@@ -245,54 +201,44 @@ const SellGamesScreen = () => {
 
 					<Divider />
 
-					{/* Shipping Area */}
-					<Grid container className={cls.section} direction="row" spacing={2}>
-						<Grid item sm={6} xs={12}>
-							<ShippingSection
-								handleShippingInfo={handleShippingInfo}
-								mode="sell"
-								shipError={shipError}
-								shipData={{
-									shipPost,
-									shipCourier,
-									shipPersonal,
-									shipPostPayer,
-									shipCourierPayer,
-									shipCities
-								}}
-							/>
-						</Grid>
-
-						<Grid item sm={6} xs={12}>
-							<Grid container direction="column">
-								{isPack && (
-									<Fragment>
-										<Grid item>
-											<PackTotalPriceInput
-												totalPrice={totalPrice}
-												handleTotalPrice={handleTotalPrice}
-											/>
-										</Grid>
-										<Grid item>
-											<PackInfoTextarea
-												extraInfoPack={extraInfoPack}
-												handleExtraInfoPack={handleExtraInfoPack}
-											/>
-										</Grid>
-									</Fragment>
-								)}
-
-								<Grid item>
-									<Button
-										type="submit"
-										disabled={shipError}
-										variant="contained"
-										color="primary"
+					<Grid item sm={6} xs={12}>
+						<Grid container direction="column">
+							{isPack && (
+								<Fragment>
+									<TextField
+										value={data.otherUsername}
+										onChange={handleOtherUsername}
+										inputProps={{
+											maxLength : 20
+										}}
+										variant="outlined"
+										id="username"
+										name="username"
+										label="Username"
+										type="text"
+										size="small"
+										placeholder="Username of the person who sold you this game"
 										fullWidth
-									>
-										Sell
-									</Button>
-								</Grid>
+									/>
+									<Grid item>
+										<PackTotalPriceInput
+											totalPrice={totalPrice}
+											handleTotalPrice={handleTotalPrice}
+										/>
+									</Grid>
+									<Grid item>
+										<PackInfoTextarea
+											extraInfoPack={extraInfo}
+											handleExtraInfoPack={handleExtraInfo}
+										/>
+									</Grid>
+								</Fragment>
+							)}
+
+							<Grid item>
+								<Button type="submit" variant="contained" color="primary" fullWidth>
+									Buy
+								</Button>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -302,4 +248,4 @@ const SellGamesScreen = () => {
 	)
 }
 
-export default SellGamesScreen
+export default BuyGamesScreen

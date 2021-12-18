@@ -9,60 +9,122 @@ import History from '../models/historyModel.js'
 // * @route   POST  /api/history
 // * @access  Private route
 const addGamesToHistory = asyncHandler(async (req, res) => {
-	const { games, username, finalPrice, extraInfo, gameId } = req.body
+	const { games, isPack, extraInfoPack, extraInfo, otherUsername, finalPrice, gameId, mode } = req.body
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
+		console.log(err)
 
 		res.status(400)
 		throw {
 			message : {
-				usernameError   : err.username ? err.username.msg : null,
-				finalPriceError : err.finalPrice ? err.finalPrice.msg : null,
-				extraInfoError  : err.extraInfo ? err.extraInfo.msg : null
+				otherUsernameError : err.otherUsername ? err.otherUsername.msg : null,
+				finalPriceError    : err.finalPrice ? err.finalPrice.msg : null,
+				extraInfoError     : err.extraInfo ? err.extraInfo.msg : null
 			}
 		}
 	}
 
-	const simplifyGames = games.map((game) => {
-		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
-	})
-
-	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
-
-	if (gameExists) {
-		if (gameExists.isActive === false) {
-			res.status(404)
-			throw {
-				message : 'Game is no longer available'
-			}
-		}
-
-		const history = await History.create({
-			mode       : gameExists.mode,
-			isPack     : gameExists.isPack,
-			addedBy    : req.user._id,
-			buyer      : username ? username : null,
-			games      : simplifyGames,
-			finalPrice : finalPrice ? finalPrice : null,
-			extraInfo
+	if (mode !== 'buy') {
+		const simplifyGames = games.map((game) => {
+			return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
 		})
 
-		if (history) {
-			await Game.findOneAndDelete({ _id: gameId })
-			return res.status(204).end()
+		const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
+
+		if (gameExists) {
+			if (gameExists.isActive === false) {
+				res.status(404)
+				throw {
+					message : 'Game is no longer available'
+				}
+			}
+
+			const otherUserId = otherUsername
+				? await User.findOne({ username: otherUsername }).select('_id').lean()
+				: null
+
+			const history = await History.create({
+				mode       : gameExists.mode,
+				isPack     : gameExists.isPack,
+				addedBy    : req.user._id,
+				otherUser  : otherUserId ? otherUserId._id : null,
+				games      : simplifyGames,
+				finalPrice : finalPrice ? finalPrice : null,
+				extraInfo  : extraInfo ? extraInfo.trim() : null
+			})
+
+			if (history) {
+				await Game.findOneAndDelete({ _id: gameId })
+				return res.status(204).end()
+			} else {
+				res.status(500)
+				throw {
+					message : 'Error. Please try again'
+				}
+			}
 		} else {
-			res.status(500)
+			res.status(404)
 			throw {
-				message : 'Error. Please try again'
+				message : 'Game not found'
 			}
 		}
-	} else {
-		res.status(404)
-		throw {
-			message : 'Game not found'
+	}
+
+	if (mode === 'buy') {
+		if (isPack) {
+			const otherUserId = otherUsername
+				? await User.findOne({ username: otherUsername }).select('_id').lean()
+				: null
+			await History.create({
+				mode          : 'buy',
+				isPack        : true,
+				games         : games.map((game) => {
+					return {
+						title     : game.title,
+						thumbnail : game.thumbnail,
+						image     : game.image,
+						year      : game.year,
+						version   : game.version,
+						extraInfo : game.extraInfo ? game.extraInfo : null,
+						isSleeved : game.isSleeved
+					}
+				}),
+				addedBy       : req.user._id,
+				otherUser     : otherUserId ? otherUserId._id : null,
+				extraInfoPack : extraInfoPack ? extraInfoPack.trim() : null,
+				finalPrice    : finalPrice ? finalPrice : null
+			})
+		} else {
+			const buyList = []
+			for (let game of games) {
+				const otherUserId = game.otherUsername
+					? await User.findOne({ username: game.otherUsername }).select('_id').lean()
+					: null
+				const data = {
+					mode       : 'buy',
+					isPack     : false,
+					games      : [
+						{
+							title     : game.title,
+							thumbnail : game.thumbnail,
+							image     : game.image,
+							year      : game.year,
+							version   : game.version,
+							extraInfo : game.extraInfo ? game.extraInfo : null,
+							isSleeved : game.isSleeved
+						}
+					],
+					addedBy    : req.user._id,
+					otherUser  : otherUserId ? otherUserId._id : null,
+					finalPrice : game.price ? game.price : null
+				}
+				buyList.push(data)
+			}
+			await History.insertMany(buyList)
 		}
+		res.status(204).end()
 	}
 })
 

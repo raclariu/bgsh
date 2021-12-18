@@ -62,19 +62,16 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const [ showSnackbar ] = useNotification()
 
 	const addGame = useMutation(
-		({ games, otherUsername, finalPrice, extraInfo, gameId }) =>
+		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) =>
 			apiAddGameToHistory({
 				games,
-				username   : otherUsername.trim().toLowerCase(),
-				finalPrice : finalPrice === '' ? null : finalPrice,
-				extraInfo  : extraInfo.trim(),
+				mode,
+				otherUsername : otherUsername ? otherUsername.trim().toLowerCase() : null,
+				finalPrice    : finalPrice ? finalPrice : null,
+				extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
 				gameId
 			}),
 		{
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while trying to add a listing to history'
-				showSnackbar.error({ text })
-			},
 			onSuccess : () => {
 				setOpenDialog(false)
 				addGame.reset()
@@ -131,7 +128,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	}
 
 	const addGameHandler = () => {
-		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId })
+		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 	}
 
 	const deleteGameHandler = () => {
@@ -150,7 +147,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		setExtraInfo(e.target.value)
 	}
 
-	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.usernameError : false
+	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.otherUsernameError : false
 	const finalPriceError = addGame.isError ? addGame.error.response.data.message.finalPriceError : false
 	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfoError : false
 

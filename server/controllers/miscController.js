@@ -23,7 +23,6 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
 		for (let game of ensureArray) {
-			console.log(game.poll[2].results.result)
 			const item = {
 				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
 				bggId              : game.id,

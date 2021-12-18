@@ -17,19 +17,31 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle disableTypography>
 					<Typography variant="h6" align="center">
-						{mode === 'sell' ? 'Sell' : 'Trade'} games individually or as a pack?
+						{mode === 'sell' ? 'Sell' : mode === 'trade' ? 'Trade' : 'Buy'} games individually or as a pack?
 					</Typography>
 				</DialogTitle>
 
 				<DialogActions>
 					<ButtonGroup color="primary">
-						<Button onClick={handleCloseDialog} component={Link} to={mode === 'sell' ? '/sell' : '/trade'}>
+						<Button
+							onClick={handleCloseDialog}
+							component={Link}
+							to={mode === 'sell' ? '/sell' : mode === 'trade' ? '/trade' : '/buy'}
+						>
 							Individually
 						</Button>
 						<Button
 							onClick={handleCloseDialog}
 							component={Link}
-							to={mode === 'sell' ? '/sell?pack=true' : '/trade?pack=true'}
+							to={
+								mode === 'sell' ? (
+									'/sell?pack=true'
+								) : mode === 'trade' ? (
+									'/trade?pack=true'
+								) : (
+									'/buy?pack=true'
+								)
+							}
 						>
 							Pack
 						</Button>

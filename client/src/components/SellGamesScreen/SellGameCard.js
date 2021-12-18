@@ -77,6 +77,25 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				title={game.title}
 			/>
 			<CardContent>
+				{mode === 'buy' &&
+				!isPack && (
+					<TextField
+						value={data.otherUsername}
+						onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'otherUsername')}
+						inputProps={{
+							maxLength : 20
+						}}
+						variant="outlined"
+						id="username"
+						name="username"
+						label="Username"
+						type="text"
+						size="small"
+						placeholder="Username of the person who sold you this game"
+						fullWidth
+					/>
+				)}
+
 				<Autocomplete
 					value={data.version}
 					getOptionSelected={(option, value) => option.title === value.title}
@@ -96,25 +115,27 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					)}
 				/>
 
-				<Autocomplete
-					className={cls.autocomplete}
-					value={data.condition}
-					getOptionSelected={(option, value) => option === value}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'condition')}
-					// if options change, don't forget to also change the arr on the server validator
-					options={[ 'New', 'Opened, not played', 'Like new', 'Very Good', 'Good', 'Acceptable', 'Poor' ]}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							name={`condition-${game.bggId}`}
-							label="Condition"
-							placeholder="Select condition"
-							variant="outlined"
-							size="small"
-							required
-						/>
-					)}
-				/>
+				{mode !== 'buy' && (
+					<Autocomplete
+						className={cls.autocomplete}
+						value={data.condition}
+						getOptionSelected={(option, value) => option === value}
+						onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'condition')}
+						// if options change, don't forget to also change the arr on the server validator
+						options={[ 'New', 'Opened, not played', 'Like new', 'Very Good', 'Good', 'Acceptable', 'Poor' ]}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								name={`condition-${game.bggId}`}
+								label="Condition"
+								placeholder="Select condition"
+								variant="outlined"
+								size="small"
+								required
+							/>
+						)}
+					/>
+				)}
 
 				<TextField
 					className={cls.extraInfo}
@@ -146,7 +167,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 							label={<Typography variant="body2">Sleeved?</Typography>}
 						/>
 					</Grid>
-					{mode === 'sell' &&
+					{(mode === 'sell' || mode === 'buy') &&
 					!isPack && (
 						<Grid item xs={6}>
 							<TextField
