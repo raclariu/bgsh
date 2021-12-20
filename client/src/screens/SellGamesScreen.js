@@ -14,8 +14,7 @@ import Button from '@material-ui/core/Button'
 // @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
-import PackInfoTextarea from '../components/SellGamesScreen/PackInfoTextarea'
-import PackTotalPriceInput from '../components/SellGamesScreen/PackTotalPriceInput'
+import Input from '../components/Input'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 
@@ -268,15 +267,30 @@ const SellGamesScreen = () => {
 								{isPack && (
 									<Fragment>
 										<Grid item>
-											<PackTotalPriceInput
-												totalPrice={totalPrice}
-												handleTotalPrice={handleTotalPrice}
+											<Input
+												onChange={handleTotalPrice}
+												value={totalPrice}
+												name="total-price"
+												label="Total price"
+												type="number"
+												required={true}
 											/>
 										</Grid>
 										<Grid item>
-											<PackInfoTextarea
-												extraInfoPack={extraInfoPack}
-												handleExtraInfoPack={handleExtraInfoPack}
+											<Input
+												onChange={handleExtraInfoPack}
+												value={extraInfoPack}
+												name="extra-info-pack"
+												label={`Extra info ${extraInfoPack.length}/500`}
+												multiline
+												minRows={3}
+												maxRows={10}
+												type="text"
+												inputProps={{
+													maxLength   : 500,
+													placeholder :
+														'Any other info regarding the pack goes in here (500 characters limit)'
+												}}
 											/>
 										</Grid>
 									</Fragment>

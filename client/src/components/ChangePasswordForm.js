@@ -18,6 +18,7 @@ import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
 // @ Components
 import Loader from './Loader'
 import CustomAlert from '../components/CustomAlert'
+import Input from './Input'
 
 // @ Others
 import { changePassword } from '../actions/userActions'
@@ -57,7 +58,7 @@ const ChangePasswordForm = () => {
 		}
 	)
 
-	const passwordCurrentErrorMsg = isError && error?.response && error.response.data.message.passwordCurrentError
+	const passwordCurrentErrorMsg = isError && error.response && error.response.data.message.passwordCurrentError
 	const passwordNewErrorMsg = isError && error.response && error.response.data.message.passwordNewError
 	const passwordNewConfirmationErrorMsg =
 		isError && error.response && error.response.data.message.passwordNewConfirmationError
@@ -78,6 +79,18 @@ const ChangePasswordForm = () => {
 		}
 	}
 
+	const handlePasswordCurrent = (value) => {
+		setPasswordCurrent(value)
+	}
+
+	const handlePasswordNew = (value) => {
+		setPasswordNew(value)
+	}
+
+	const handlePasswordNewConfirmation = (value) => {
+		setPasswordNewConfirmation(value)
+	}
+
 	const submitHandler = (e) => {
 		e.preventDefault()
 		mutate({ passwordCurrent, passwordNew, passwordNewConfirmation })
@@ -86,12 +99,13 @@ const ChangePasswordForm = () => {
 	return (
 		<Fragment>
 			<form onSubmit={submitHandler} autoComplete="off">
-				<TextField
+				<Input
 					className={cls.input}
 					error={isError && passwordCurrentErrorMsg ? true : false}
 					helperText={isError ? passwordCurrentErrorMsg : false}
-					onChange={(e) => setPasswordCurrent(e.target.value)}
+					onChange={handlePasswordCurrent}
 					value={passwordCurrent}
+					size="medium"
 					variant="outlined"
 					id="passwordCurrent"
 					name="passwordCurrent"
@@ -110,12 +124,13 @@ const ChangePasswordForm = () => {
 					required
 				/>
 
-				<TextField
+				<Input
 					className={cls.input}
 					error={isError && passwordNewErrorMsg ? true : false}
 					helperText={isError ? passwordNewErrorMsg : false}
-					onChange={(e) => setPasswordNew(e.target.value)}
+					onChange={handlePasswordNew}
 					value={passwordNew}
+					size="medium"
 					variant="outlined"
 					id="passwordNew"
 					name="passwordNew"
@@ -134,12 +149,13 @@ const ChangePasswordForm = () => {
 					required
 				/>
 
-				<TextField
+				<Input
 					className={cls.input}
 					error={isError && passwordNewConfirmationErrorMsg ? true : false}
 					helperText={isError ? passwordNewConfirmationErrorMsg : false}
-					onChange={(e) => setPasswordNewConfirmation(e.target.value)}
+					onChange={handlePasswordNewConfirmation}
 					value={passwordNewConfirmation}
+					size="medium"
 					variant="outlined"
 					id="passwordNewConfirmation"
 					name="passwordNewConfirmation"

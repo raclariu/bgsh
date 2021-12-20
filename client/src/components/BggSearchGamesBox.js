@@ -6,13 +6,13 @@ import { useDebounce } from 'use-debounce'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
 // @ Components
 import Loader from './Loader'
+import Input from './Input'
 
 // @ Others
 import { addToSaleList } from '../actions/saleListActions'
@@ -62,9 +62,9 @@ const BggSearchGamesBox = () => {
 		[ mutation ]
 	)
 
-	const changeInputHandler = (e) => {
+	const handleInput = (value) => {
 		if (options.length === 0) {
-			setInputText(e.target.value)
+			setInputText(value)
 		}
 	}
 
@@ -98,10 +98,11 @@ const BggSearchGamesBox = () => {
 				getOptionLabel={(option) => `${option.title} (${option.year})`}
 				options={options}
 				renderInput={(params) => (
-					<TextField
+					<Input
 						{...params}
-						onChange={(e) => changeInputHandler(e)}
+						onChange={handleInput}
 						label="Enter board game title"
+						size="medium"
 						error={mutation.isError || (mutation.data && mutation.data.length === 0) ? true : false}
 						helperText={
 							mutation.isError ? (

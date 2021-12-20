@@ -57,6 +57,8 @@ const validateSinglePrice = check('finalPrice')
 	.optional({ nullable: true })
 	.isInt()
 	.withMessage('Final price must be a number')
+	.bail()
+	.toInt()
 	.custom((finalPrice) => {
 		if (finalPrice >= 0 && finalPrice <= 10000) {
 			return true
@@ -69,6 +71,8 @@ const validateMultiplePrices = check('games.*.price')
 	.optional({ nullable: true })
 	.isInt()
 	.withMessage('Final price must be a number')
+	.bail()
+	.toInt()
 	.custom((finalPrice) => {
 		if (finalPrice >= 0 && finalPrice <= 10000) {
 			return true

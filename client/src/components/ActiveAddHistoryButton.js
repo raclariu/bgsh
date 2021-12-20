@@ -11,10 +11,8 @@ import Typography from '@material-ui/core/Typography'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
-import TextField from '@material-ui/core/TextField'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
-import InputAdornment from '@material-ui/core/InputAdornment'
 import DialogActions from '@material-ui/core/DialogActions'
 import Divider from '@material-ui/core/Divider'
 
@@ -26,7 +24,8 @@ import RefreshIcon from '@material-ui/icons/Refresh'
 // @ Components
 import Loader from './Loader'
 import CustomTooltip from './CustomTooltip'
-import CustomAlert from '../components/CustomAlert'
+import CustomAlert from './CustomAlert'
+import Input from './Input'
 
 // @ Others
 import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
@@ -139,12 +138,16 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		reactivateGame.mutate(gameId)
 	}
 
-	const handleFinalPrice = (e) => {
-		setFinalPrice(e.target.value)
+	const handleOtherUsername = (value) => {
+		setOtherUsername(value)
 	}
 
-	const handleExtraInfo = (e) => {
-		setExtraInfo(e.target.value)
+	const handleFinalPrice = (value) => {
+		setFinalPrice(value)
+	}
+
+	const handleExtraInfo = (value) => {
+		setExtraInfo(value)
 	}
 
 	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.otherUsernameError : false
@@ -175,61 +178,52 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 						<DialogContent dividers>
 							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-								<TextField
+								<Input
 									className={cls.input}
 									error={!!otherUsernameError}
 									helperText={otherUsernameError}
-									onChange={(e) => setOtherUsername(e.target.value)}
+									onChange={handleOtherUsername}
 									value={otherUsername}
 									inputProps={{
 										maxLength : 20
 									}}
-									variant="outlined"
 									id="username"
 									name="username"
 									label="Username"
 									type="text"
-									size="small"
 									placeholder="Username of the other person"
 									autoFocus
 								/>
 
 								{mode === 'sell' && (
-									<TextField
+									<Input
 										className={cls.input}
 										error={!!finalPriceError}
 										helperText={finalPriceError}
 										onChange={handleFinalPrice}
 										value={finalPrice}
-										InputProps={{
-											startAdornment : <InputAdornment position="start">RON</InputAdornment>
-										}}
-										variant="outlined"
 										name="final-price"
 										label="Final price"
 										type="number"
-										size="small"
 									/>
 								)}
 
-								<TextField
+								<Input
 									className={cls.textarea}
 									error={!!extraInfoError}
 									helperText={extraInfoError}
 									value={extraInfo}
 									onChange={handleExtraInfo}
+									multiline
+									minRows={3}
+									maxRows={10}
 									inputProps={{
 										maxLength   : 500,
 										placeholder : 'Any other info goes in here (500 characters limit)'
 									}}
-									variant="outlined"
 									name="extra-info"
 									type="text"
 									label={`Extra info ${extraInfo.length}/500`}
-									multiline
-									minRows={3}
-									maxRows={10}
-									size="small"
 								/>
 							</Box>
 						</DialogContent>
