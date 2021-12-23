@@ -1,17 +1,21 @@
 import { check } from 'express-validator'
 
 const validateExtraInfoTxt = check('games.*.extraInfo')
+	.optional({ nullable: true })
 	.trim()
+	.if((value, { req }) => !req.body.isPack)
 	.isLength({ min: 0, max: 500 })
-	.withMessage('500 maximum characters')
+	.withMessage('0-500 character allowed')
 	.bail()
 	.isString()
 	.withMessage('Can only contain letters and numbers')
 
 const validateExtraInfoPackTxt = check('extraInfoPack')
+	.optional({ nullable: true })
 	.trim()
+	.if((value, { req }) => req.body.isPack)
 	.isLength({ min: 0, max: 500 })
-	.withMessage('500 maximum characters')
+	.withMessage('0-500 character allowed')
 	.bail()
 	.isString()
 	.withMessage('Can only contain letters and numbers')
@@ -22,18 +26,14 @@ const validateIsPack = check('isPack')
 
 const validateIsSleeved = check('games.*.isSleeved').isBoolean().withMessage('Sleeved option error')
 
-const validateGameVersion = check('games').custom((games, { req }) => {
+const validateGameVersion = check('games.*.version').custom((version, { req, path }) => {
 	try {
-		for (let i = 0; i < req.body.games.length; i++) {
-			const versionOk = games
-				.map((game) => game.versions)
-				[i].map((v) => v.title)
-				.find((title) => title === games[i].version.title)
+		const idx = path.split('[')[1].split(']')[0]
+		const versionOk = req.body.games[idx].versions.some((v) => v.title === version.title)
 
-			if (!versionOk) {
-				throw {
-					message : `Invalid version for ${games[i].title}`
-				}
+		if (!versionOk) {
+			throw {
+				message : `Invalid version for ${req.body.games[idx].title}`
 			}
 		}
 
@@ -43,59 +43,44 @@ const validateGameVersion = check('games').custom((games, { req }) => {
 	}
 })
 
-const validateGameCondition = check('games').custom((games, { req }) => {
+const validateGameCondition = check('games.*.condition').custom((condition, { req, path }) => {
 	try {
-		for (let i = 0; i < req.body.games.length; i++) {
-			const conditionOk = [
-				'New',
-				'Opened, not played',
-				'Like new',
-				'Very Good',
-				'Good',
-				'Acceptable',
-				'Poor'
-			].includes(games[i].condition)
+		const idx = path.split('[')[1].split(']')[0]
+		const conditionOk = [
+			'New',
+			'Opened, not played',
+			'Like new',
+			'Very Good',
+			'Good',
+			'Acceptable',
+			'Poor'
+		].includes(condition)
 
-			if (!conditionOk) {
-				throw {
-					message : `Invalid condition for ${req.body.games[i].title}`
-				}
+		if (!conditionOk) {
+			throw {
+				message : `Invalid condition for ${req.body.games[idx].title}`
 			}
 		}
+
 		return true
 	} catch (error) {
 		throw new Error(error.message ? error.message : 'Condition error. Check conditions and resubmit')
 	}
 })
 
-const validateGamePrice = check('games').custom((games, { req }) => {
-	if (req.body.isPack) return true
+const validateGamePrice = check('games.*.price')
+	.if((value, { req }) => !req.body.isPack)
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price must be a number between 0 and 10000')
+	.bail()
+	.toInt()
 
-	try {
-		for (let i = 0; i < req.body.games.length; i++) {
-			const priceOk = games[i].price > 0 && games[i].price < 10001
-
-			if (!priceOk) {
-				throw {
-					message : `Invalid price for ${games[i].title}`
-				}
-			}
-		}
-		return true
-	} catch (error) {
-		throw new Error(error.message ? error.message : 'Price error. Check prices and resubmit')
-	}
-})
-
-const validateGameTotalPrice = check('totalPrice').custom((totalPrice, { req }) => {
-	if (!req.body.isPack) return true
-
-	if (totalPrice >= 0 && totalPrice <= 10000) {
-		return true
-	} else {
-		throw new Error('Invalid price for the pack')
-	}
-})
+const validateGameTotalPrice = check('totalPrice')
+	.if((value, { req }) => req.body.isPack)
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price must be a number between 0 and 10000')
+	.bail()
+	.toInt()
 
 const validateShippingMethod = check('shipPost').custom((data, { req }) => {
 	const { shipPost, shipCourier, shipPersonal } = req.body

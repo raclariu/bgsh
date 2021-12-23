@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
-import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -16,6 +15,7 @@ import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
+import Input from './Input'
 
 // @ Others
 import { signUp } from '../actions/userActions'
@@ -56,14 +56,6 @@ const SignUp = () => {
 		[ history, userData ]
 	)
 
-	const handleShowHidePass = () => {
-		setPassVisibility(!passVisibility)
-	}
-
-	const handleShowHidePassConfirmation = () => {
-		setPassConfirmationVisibility(!passConfirmationVisibility)
-	}
-
 	const submitHandler = (e) => {
 		e.preventDefault()
 		dispatch(signUp(email, username, password, passwordConfirmation))
@@ -72,13 +64,13 @@ const SignUp = () => {
 	return (
 		<Fragment>
 			<form onSubmit={submitHandler} className={classes.root} autoComplete="off">
-				<TextField
+				<Input
 					className={classes.input}
 					error={error && error.emailError ? true : false}
 					helperText={error ? error.emailError : false}
 					onChange={(e) => setEmail(e.target.value)}
 					value={email}
-					variant="outlined"
+					size="medium"
 					id="email"
 					name="email"
 					label="Email"
@@ -88,13 +80,13 @@ const SignUp = () => {
 					required
 				/>
 
-				<TextField
+				<Input
 					className={classes.input}
 					error={error && error.usernameError ? true : false}
 					helperText={error ? error.usernameError : false}
 					onChange={(e) => setUsername(e.target.value)}
 					value={username}
-					variant="outlined"
+					size="medium"
 					id="username"
 					name="username"
 					label="Username"
@@ -103,13 +95,13 @@ const SignUp = () => {
 					required
 				/>
 
-				<TextField
+				<Input
 					className={classes.input}
 					error={error && error.passwordError ? true : false}
 					helperText={error ? error.passwordError : false}
 					onChange={(e) => setPassword(e.target.value)}
 					value={password}
-					variant="outlined"
+					size="medium"
 					id="password"
 					name="password"
 					label="Password"
@@ -117,7 +109,7 @@ const SignUp = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={handleShowHidePass}>
+								<IconButton onClick={() => setPassVisibility(!passVisibility)}>
 									{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 								</IconButton>
 							</InputAdornment>
@@ -127,12 +119,13 @@ const SignUp = () => {
 					required
 				/>
 
-				<TextField
+				<Input
 					className={classes.input}
 					error={error && error.passwordConfirmationError ? true : false}
 					helperText={error ? error.passwordConfirmationError : false}
 					onChange={(e) => setPasswordConfirmation(e.target.value)}
 					value={passwordConfirmation}
+					size="medium"
 					variant="outlined"
 					id="passwordConfirmation"
 					name="passwordConfirmation"
@@ -141,7 +134,7 @@ const SignUp = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={handleShowHidePassConfirmation}>
+								<IconButton onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}>
 									{passConfirmationVisibility ? (
 										<VisibilityOutlinedIcon />
 									) : (

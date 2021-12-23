@@ -10,11 +10,16 @@ import Wishlist from '../models/wishlistModel.js'
 // * @route   POST  /api/games/sell
 // * @access  Private route
 const listSaleGames = asyncHandler(async (req, res) => {
-	const validationErrors = validationResult(req)
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
 	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
 		res.status(400)
 		throw {
-			message : validationErrors.errors.map((err) => err.msg)
+			message
 		}
 	}
 
@@ -104,11 +109,16 @@ const listSaleGames = asyncHandler(async (req, res) => {
 // * @route   POST  /api/games/trade
 // * @access  Private route
 const listTradeGames = asyncHandler(async (req, res) => {
-	const validationErrors = validationResult(req)
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
 	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
 		res.status(400)
 		throw {
-			message : validationErrors.errors.map((err) => err.msg)
+			message
 		}
 	}
 
@@ -157,11 +167,16 @@ const listTradeGames = asyncHandler(async (req, res) => {
 // * @route   POST  /api/games/wanted
 // * @access  Private route
 const listWantedGames = asyncHandler(async (req, res) => {
-	const validationErrors = validationResult(req)
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
 	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
 		res.status(400)
 		throw {
-			message : validationErrors.errors.map((err) => err.msg)
+			message
 		}
 	}
 

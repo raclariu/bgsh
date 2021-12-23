@@ -1,11 +1,10 @@
 // @ Libraries
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 
 // @ Mui
-import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -16,6 +15,7 @@ import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
+import Input from './Input'
 
 // @ Others
 import { signIn } from '../actions/userActions'
@@ -37,6 +37,8 @@ const SignIn = () => {
 	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
+	const location = useLocation()
+	console.log(location)
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
@@ -49,10 +51,12 @@ const SignIn = () => {
 	useEffect(
 		() => {
 			if (userData) {
-				history.push('/profile')
+				location.state && location.state.from && location.state.from.pathname
+					? history.push(`${location.state.from.pathname}`)
+					: history.push('/profile')
 			}
 		},
-		[ history, userData ]
+		[ history, userData, location ]
 	)
 
 	useEffect(
@@ -64,10 +68,6 @@ const SignIn = () => {
 		[ success, showSnackbar, userData ]
 	)
 
-	const handleShowHidePass = () => {
-		setPassVisibility(!passVisibility)
-	}
-
 	const submitHandler = (e) => {
 		e.preventDefault()
 		dispatch(signIn(email, password))
@@ -75,29 +75,29 @@ const SignIn = () => {
 
 	return (
 		<form onSubmit={submitHandler} className={cls.root} autoComplete="off">
-			<TextField
+			<Input
 				className={cls.input}
 				error={error && error.emailError ? true : false}
 				helperText={error ? error.emailError : false}
 				onChange={(e) => setEmail(e.target.value)}
 				value={email}
-				variant="outlined"
+				size="medium"
 				id="email"
 				name="email"
 				label="Email"
 				type="email"
 				fullWidth
 				autoFocus
-				required={true}
+				required
 			/>
 
-			<TextField
+			<Input
 				className={cls.input}
 				error={error && error.passwordError ? true : false}
 				helperText={error ? error.passwordError : false}
 				onChange={(e) => setPassword(e.target.value)}
 				value={password}
-				variant="outlined"
+				size="medium"
 				id="password"
 				name="password"
 				label="Password"
@@ -105,7 +105,7 @@ const SignIn = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={handleShowHidePass}>
+							<IconButton onClick={() => setPassVisibility(!passVisibility)}>
 								{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 							</IconButton>
 						</InputAdornment>

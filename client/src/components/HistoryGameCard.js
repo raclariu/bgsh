@@ -61,16 +61,6 @@ const HistoryGameCard = ({ data }) => {
 
 	const [ index, setIndex ] = useState(0)
 
-	// const data = useSelector((state) => {
-	// 	if (page === 'sold') {
-	// 		return state.soldHistory.soldList.find((obj) => obj._id === gameId)
-	// 	}
-
-	// 	if (page === 'traded') {
-	// 		return state.tradedHistory.tradedList.find((obj) => obj._id === gameId)
-	// 	}
-	// })
-
 	const handleIndex = (type) => {
 		if (type === 'minus') {
 			if (index > 0) {

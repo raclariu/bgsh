@@ -9,7 +9,6 @@ import IconButton from '@material-ui/core/IconButton'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
-import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 
 // @ Mui Icons
@@ -17,6 +16,7 @@ import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
 
 // @ Components
 import CustomTooltip from './CustomTooltip'
+import Input from './Input'
 
 // @ Others
 import { apiSendMessage } from '../api/api'
@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 // @Main
 const SendMessage = ({ recipientUsername = '' }) => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
 	const username = useSelector((state) => state.userAuth.userData.username)
@@ -81,7 +80,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 			<Dialog fullWidth maxWidth="sm" open={open} onClose={handleCloseDialog}>
 				<form onSubmit={submitHandler} autoComplete="off">
 					<DialogContent>
-						<TextField
+						<Input
 							className={cls.input}
 							error={
 								mutation.isError && mutation.error.response.data.message.recipientError ? true : false
@@ -93,7 +92,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 								minLength : 4,
 								maxLength : 20
 							}}
-							variant="outlined"
+							size="medium"
 							id="recipient"
 							name="recipient"
 							label="Username of recipient"
@@ -103,7 +102,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 							required
 						/>
 
-						<TextField
+						<Input
 							className={cls.input}
 							error={mutation.isError && mutation.error.response.data.message.subjectError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.subjectError : false}
@@ -113,7 +112,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 								minLength : 1,
 								maxLength : 60
 							}}
-							variant="outlined"
+							size="medium"
 							id="subject"
 							name="subject"
 							label={`Subject (${subject.length}/60)`}
@@ -122,7 +121,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 							required
 						/>
 
-						<TextField
+						<Input
 							error={mutation.isError && mutation.error.response.data.message.messageError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.messageError : false}
 							onChange={(e) => setMessage(e.target.value)}
@@ -131,12 +130,11 @@ const SendMessage = ({ recipientUsername = '' }) => {
 								minLength : 1,
 								maxLength : 500
 							}}
-							variant="outlined"
 							id="message"
 							name="message"
 							label={`Message (${message.length}/500)`}
 							type="text"
-							size="small"
+							size="medium"
 							multiline
 							minRows={3}
 							maxRows={10}

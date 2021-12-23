@@ -69,10 +69,6 @@ const SaleListPopover = () => {
 
 	const open = Boolean(anchorEl)
 
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget)
-	}
-
 	const handleClose = () => {
 		setAnchorEl(null)
 	}
@@ -94,7 +90,7 @@ const SaleListPopover = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={handleClick} color="primary">
+			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>

@@ -38,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
 const KsCard = ({ data }) => {
 	const cls = useStyles()
 
-	// const ks = useSelector((state) => state.kickstartersList.ksList.find((obj) => obj.ksId === ksId))
-
 	return (
 		<Card elevation={1}>
 			<CardMedia

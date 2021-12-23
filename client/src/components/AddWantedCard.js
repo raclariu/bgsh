@@ -10,7 +10,6 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton'
-import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -18,6 +17,13 @@ import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
 import Chip from '@material-ui/core/Chip'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import FormControl from '@material-ui/core/FormControl'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormLabel from '@material-ui/core/FormLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+
+// @ Components
+import Input from './Input'
 
 // @ Icons
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
@@ -49,6 +55,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
 		}
 	}
+	console.log(data)
 
 	return (
 		<Card elevation={1}>
@@ -82,17 +89,49 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefLanguage')}
 					options={[ 'Romanian', 'English', 'Any' ]}
 					renderInput={(params) => (
-						<TextField
+						<Input
 							{...params}
 							name={`prefLanguage-${game.bggId}`}
 							label="Preferred language"
 							placeholder="Select your preferred language"
-							variant="outlined"
-							size="small"
 							required
 						/>
 					)}
 				/> */}
+
+				<FormControl>
+					<FormLabel>Prefer buying or trading for this game?</FormLabel>
+					<FormGroup row>
+						<FormControlLabel
+							control={
+								<Checkbox
+									onChange={(e) =>
+										handleGameInfo(
+											{ ...data.prefMode, buy: e.target.checked },
+											game.bggId,
+											'prefMode'
+										)}
+									checked={data.prefMode.buy}
+								/>
+							}
+							label="Buy"
+						/>
+						<FormControlLabel
+							control={
+								<Checkbox
+									onChange={(e) =>
+										handleGameInfo(
+											{ ...data.prefMode, trade: e.target.checked },
+											game.bggId,
+											'prefMode'
+										)}
+									checked={data.prefMode.trade}
+								/>
+							}
+							label="Trade"
+						/>
+					</FormGroup>
+				</FormControl>
 
 				<Autocomplete
 					value={data.version}
@@ -101,13 +140,11 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 					options={game.versions}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (
-						<TextField
+						<Input
 							{...params}
 							name={`version-${game.bggId}`}
 							label="Preferred version"
 							placeholder="Select preferred version"
-							variant="outlined"
-							size="small"
 							required
 						/>
 					)}

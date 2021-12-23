@@ -11,3 +11,6 @@ da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dr
 
 - de facut reusable component care returneaza data de la fns in formatul dorit
 - de rezolvat cu export const si export {chestii}
+- de rezolvat cu ce iese din api catre FE, adica pentru gamesIndex sa nu trimit tot documentul ci doar selected ce e nevoie
+- de rezolvat ca atunci cand pack=true si se sterge de la 2 la 1 jocuri ramase, react-query apeleaza din nou api pentru ca atunci candidates
+        se sterge de la 2 la 1 pack=true se face pack=single si react-query apeleaza api din nou din cauza asta

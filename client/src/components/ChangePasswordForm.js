@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import TextField from '@material-ui/core/TextField'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -63,8 +62,6 @@ const ChangePasswordForm = () => {
 	const passwordNewConfirmationErrorMsg =
 		isError && error.response && error.response.data.message.passwordNewConfirmationError
 
-	console.log(isLoading, isSuccess)
-
 	const handlePassVisibility = (type) => {
 		if (type === 'passCurrent') {
 			setPassCurrentVisibility(!passCurrentVisibility)
@@ -79,18 +76,6 @@ const ChangePasswordForm = () => {
 		}
 	}
 
-	const handlePasswordCurrent = (value) => {
-		setPasswordCurrent(value)
-	}
-
-	const handlePasswordNew = (value) => {
-		setPasswordNew(value)
-	}
-
-	const handlePasswordNewConfirmation = (value) => {
-		setPasswordNewConfirmation(value)
-	}
-
 	const submitHandler = (e) => {
 		e.preventDefault()
 		mutate({ passwordCurrent, passwordNew, passwordNewConfirmation })
@@ -103,10 +88,9 @@ const ChangePasswordForm = () => {
 					className={cls.input}
 					error={isError && passwordCurrentErrorMsg ? true : false}
 					helperText={isError ? passwordCurrentErrorMsg : false}
-					onChange={handlePasswordCurrent}
+					onChange={(e) => setPasswordCurrent(e.target.value)}
 					value={passwordCurrent}
 					size="medium"
-					variant="outlined"
 					id="passwordCurrent"
 					name="passwordCurrent"
 					label="Current Password"
@@ -128,10 +112,9 @@ const ChangePasswordForm = () => {
 					className={cls.input}
 					error={isError && passwordNewErrorMsg ? true : false}
 					helperText={isError ? passwordNewErrorMsg : false}
-					onChange={handlePasswordNew}
+					onChange={(e) => setPasswordNew(e.target.value)}
 					value={passwordNew}
 					size="medium"
-					variant="outlined"
 					id="passwordNew"
 					name="passwordNew"
 					label="New Password"
@@ -153,10 +136,9 @@ const ChangePasswordForm = () => {
 					className={cls.input}
 					error={isError && passwordNewConfirmationErrorMsg ? true : false}
 					helperText={isError ? passwordNewConfirmationErrorMsg : false}
-					onChange={handlePasswordNewConfirmation}
+					onChange={(e) => setPasswordNewConfirmation(e.target.value)}
 					value={passwordNewConfirmation}
 					size="medium"
-					variant="outlined"
 					id="passwordNewConfirmation"
 					name="passwordNewConfirmation"
 					label="Confirm New Password"

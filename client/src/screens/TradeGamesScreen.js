@@ -112,15 +112,15 @@ const TradeGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (e, value, bggId, key) => {
+	const handleGameInfo = (value, bggId, key) => {
 		const index = values.findIndex((el) => el.bggId === bggId)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
 		setValues(copy)
 	}
 
-	const handleExtraInfoPack = (text) => {
-		setExtraInfoPack(text)
+	const handleExtraInfoPack = (e) => {
+		setExtraInfoPack(e.target.value)
 	}
 
 	const handleShippingInfo = (data, type) => {
@@ -155,7 +155,7 @@ const TradeGamesScreen = () => {
 					...gamesCopy[index],
 					version   : val.version,
 					condition : val.condition,
-					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : '',
+					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : null,
 					isSleeved : val.isSleeved
 				}
 			}
@@ -168,7 +168,7 @@ const TradeGamesScreen = () => {
 			shipCourier,
 			shipPersonal,
 			shipCities,
-			extraInfoPack : isPack ? extraInfoPack.trim() : ''
+			extraInfoPack : isPack ? extraInfoPack.trim() : null
 		}
 		console.log({ values, gamesCopy, gamesData, data, saleList })
 
@@ -181,7 +181,9 @@ const TradeGamesScreen = () => {
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
-					mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+					Object.values(mutation.error.response.data.message).map((err, i) => (
+						<CustomAlert key={i}>{err}</CustomAlert>
+					))}
 
 				{saleList.length === 0 && <CustomAlert severity="warning">Your trade list is empty</CustomAlert>}
 			</div>
@@ -230,6 +232,7 @@ const TradeGamesScreen = () => {
 											name="extra-info-pack"
 											label={`Extra info ${extraInfoPack.length}/500`}
 											type="text"
+											size="medium"
 											multiline
 											minRows={3}
 											maxRows={10}
@@ -238,6 +241,7 @@ const TradeGamesScreen = () => {
 												placeholder :
 													'Any other info regarding the pack goes in here (500 characters limit)'
 											}}
+											fullWidth
 										/>
 									</Grid>
 								</Fragment>

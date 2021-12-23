@@ -48,18 +48,7 @@ const CustomAvatar = ({ size, user }) => {
 	const cls = useStyles()
 	const history = useHistory()
 
-	const userAuth = useSelector((state) => state.userAuth)
-	const { userData } = userAuth
-
 	const [ anchorEl, setAnchorEl ] = useState(null)
-
-	const handleClick = (e) => {
-		setAnchorEl(e.currentTarget)
-	}
-
-	const handleClose = () => {
-		setAnchorEl(null)
-	}
 
 	const handleProfileClick = () => {
 		history.push(`/profile/${user}`)
@@ -69,7 +58,7 @@ const CustomAvatar = ({ size, user }) => {
 		<Fragment>
 			<Box display="flex" flexDirection="row" alignItems="center">
 				<Avatar
-					onClick={handleClick}
+					onClick={(e) => setAnchorEl(e.currentTarget)}
 					className={size === 'small' ? cls.small : size === 'medium' ? cls.medium : cls.large}
 				>
 					<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
@@ -81,7 +70,7 @@ const CustomAvatar = ({ size, user }) => {
 			<Popover
 				open={Boolean(anchorEl)}
 				anchorEl={anchorEl}
-				onClose={handleClose}
+				onClose={() => setAnchorEl(null)}
 				anchorOrigin={{
 					vertical   : 'bottom',
 					horizontal : 'center'

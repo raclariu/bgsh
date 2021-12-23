@@ -8,7 +8,6 @@ import { useQuery, useQueryClient, useMutation } from 'react-query'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import TextField from '@material-ui/core/TextField'
 import Chip from '@material-ui/core/Chip'
 import Button from '@material-ui/core/Button'
 
@@ -16,6 +15,7 @@ import Button from '@material-ui/core/Button'
 import CustomAlert from '../components/CustomAlert'
 import AddWantedCard from '../components/AddWantedCard'
 import Loader from '../components/Loader'
+import Input from '../components/Input'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
@@ -41,7 +41,11 @@ const AddWantedGamesScreen = () => {
 		saleList.map((game) => {
 			return {
 				...game,
-				prefVersion : null
+				prefVersion : null,
+				prefMode    : {
+					buy   : false,
+					trade : false
+				}
 			}
 		})
 	)
@@ -86,7 +90,7 @@ const AddWantedGamesScreen = () => {
 		[ queryClient ]
 	)
 
-	const handleGameInfo = (e, value, id, key) => {
+	const handleGameInfo = (value, id, key) => {
 		const index = values.findIndex((el) => el.bggId === id)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
@@ -95,10 +99,6 @@ const AddWantedGamesScreen = () => {
 
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
-	}
-
-	const handleShipPreffered = (e, value) => {
-		setShipPreffered(value)
 	}
 
 	const handleSubmit = (e) => {
@@ -110,7 +110,8 @@ const AddWantedGamesScreen = () => {
 			if (index !== -1) {
 				gamesCopy[index] = {
 					...gamesCopy[index],
-					prefVersion : val.prefVersion
+					prefVersion : val.prefVersion,
+					prefMode    : val.prefMode
 				}
 			}
 		}
@@ -128,7 +129,10 @@ const AddWantedGamesScreen = () => {
 		<form onSubmit={handleSubmit}>
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{mutation.isError && mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+			{mutation.isError &&
+				Object.values(mutation.error.response.data.message).map((err, i) => (
+					<CustomAlert key={i}>{err}</CustomAlert>
+				))}
 
 			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 
@@ -159,7 +163,7 @@ const AddWantedGamesScreen = () => {
 							multiple
 							filterSelectedOptions
 							value={data.shipPreffered}
-							onChange={(e, selected) => handleShipPreffered(e, selected)}
+							onChange={(e, selected) => setShipPreffered(selected)}
 							limitTags={2}
 							options={[ 'Romanian Post', 'Courier', 'Personal' ]}
 							renderTags={(value, getTagProps) =>
@@ -167,18 +171,15 @@ const AddWantedGamesScreen = () => {
 									<Chip size="small" label={option} {...getTagProps({ index })} />
 								))}
 							renderInput={(params) => (
-								<TextField
+								<Input
 									{...params}
-									required
 									inputProps={{
 										...params.inputProps,
 										required : shipPreffered.length === 0
 									}}
 									label="Preferred shipping methods"
 									placeholder={'Select prefered shipping methods'}
-									name="shipping"
-									variant="outlined"
-									size="small"
+									name="pref-shipping"
 								/>
 							)}
 						/>

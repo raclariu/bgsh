@@ -9,13 +9,15 @@ import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import IconButton from '@material-ui/core/IconButton'
-import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+
+// @ Components
+import Input from '../Input'
 
 // @ Icons
 import HighlightOffIcon from '@material-ui/icons/HighlightOff'
@@ -79,18 +81,16 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 			<CardContent>
 				{mode === 'buy' &&
 				!isPack && (
-					<TextField
+					<Input
 						value={data.otherUsername}
-						onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'otherUsername')}
+						onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'otherUsername')}
 						inputProps={{
 							maxLength : 20
 						}}
-						variant="outlined"
 						id="username"
 						name="username"
 						label="Username"
 						type="text"
-						size="small"
 						placeholder="Username of the person who sold you this game"
 						fullWidth
 					/>
@@ -99,17 +99,15 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				<Autocomplete
 					value={data.version}
 					getOptionSelected={(option, value) => option.title === value.title}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'version')}
+					onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'version')}
 					options={game.versions}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (
-						<TextField
+						<Input
 							{...params}
 							name={`version-${game.bggId}`}
 							label="Version"
 							placeholder="Select game version"
-							variant="outlined"
-							size="small"
 							required
 						/>
 					)}
@@ -120,38 +118,44 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 						className={cls.autocomplete}
 						value={data.condition}
 						getOptionSelected={(option, value) => option === value}
-						onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'condition')}
+						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'condition')}
 						// if options change, don't forget to also change the arr on the server validator
-						options={[ 'New', 'Opened, not played', 'Like new', 'Very Good', 'Good', 'Acceptable', 'Poor' ]}
+						options={[
+							'New',
+							'asd',
+							'Opened, not played',
+							'Like new',
+							'Very Good',
+							'Good',
+							'Acceptable',
+							'Poor'
+						]}
 						renderInput={(params) => (
-							<TextField
+							<Input
 								{...params}
 								name={`condition-${game.bggId}`}
 								label="Condition"
 								placeholder="Select condition"
-								variant="outlined"
-								size="small"
 								required
 							/>
 						)}
 					/>
 				)}
 
-				<TextField
+				<Input
 					className={cls.extraInfo}
 					value={data.extraInfo}
-					onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'extraInfo')}
+					onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'extraInfo')}
 					inputProps={{
 						maxLength   : 500,
 						placeholder : 'Any other info goes in here (500 characters limit)'
 					}}
-					variant="outlined"
 					name="extra-info-txt"
 					type="text"
+					size="medium"
 					multiline
 					minRows={3}
 					maxRows={10}
-					size="small"
 					fullWidth
 				/>
 
@@ -161,28 +165,27 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 							control={
 								<Switch
 									checked={data.isSleeved}
-									onChange={(e) => handleGameInfo(e, e.target.checked, game.bggId, 'isSleeved')}
+									onChange={(e) => handleGameInfo(e.target.checked, game.bggId, 'isSleeved')}
 								/>
 							}
 							label={<Typography variant="body2">Sleeved?</Typography>}
 						/>
 					</Grid>
+
 					{(mode === 'sell' || mode === 'buy') &&
 					!isPack && (
 						<Grid item xs={6}>
-							<TextField
-								onChange={(e) => handleGameInfo(e, e.target.value, game.bggId, 'price')}
+							<Input
+								onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'price')}
 								value={data.price}
+								name={`price-${game.bggId}`}
+								label="Price"
+								type="number"
+								fullWidth
+								required
 								InputProps={{
 									startAdornment : <InputAdornment position="start">RON</InputAdornment>
 								}}
-								name={`price-${game.bggId}`}
-								variant="outlined"
-								label="Price"
-								type="number"
-								size="small"
-								fullWidth
-								required
 							/>
 						</Grid>
 					)}

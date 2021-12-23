@@ -9,10 +9,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import TextField from '@material-ui/core/TextField'
 import Chip from '@material-ui/core/Chip'
 import Radio from '@material-ui/core/Radio'
 import FormHelperText from '@material-ui/core/FormHelperText'
+
+// @ Components
+import Input from '../Input'
 
 // @ Others
 import citiesArr from '../../constants/cities'
@@ -100,9 +102,8 @@ const ShippingSection = ({
 					renderTags={(value, getTagProps) =>
 						value.map((option, index) => <Chip size="small" label={option} {...getTagProps({ index })} />)}
 					renderInput={(params) => (
-						<TextField
+						<Input
 							{...params}
-							required
 							inputProps={{
 								...params.inputProps,
 								required : shipCities.length === 0
@@ -110,8 +111,7 @@ const ShippingSection = ({
 							label="Cities"
 							placeholder={shipCities.length > 0 ? 'Cities' : 'Select cities'}
 							name="cities"
-							variant="outlined"
-							size="small"
+							required
 						/>
 					)}
 				/>

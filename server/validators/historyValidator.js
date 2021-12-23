@@ -53,48 +53,36 @@ const validateMultipleUsernames = check('games.*.otherUsername')
 		}
 	})
 
-const validateSinglePrice = check('finalPrice')
-	.optional({ nullable: true })
-	.isInt()
-	.withMessage('Final price must be a number')
-	.bail()
-	.toInt()
-	.custom((finalPrice) => {
-		if (finalPrice >= 0 && finalPrice <= 10000) {
-			return true
-		} else {
-			throw new Error('Invalid price. Should be between 0 and 10000 RON')
-		}
-	})
-
 const validateMultiplePrices = check('games.*.price')
-	.optional({ nullable: true })
-	.isInt()
-	.withMessage('Final price must be a number')
+	.if((value, { req }) => !req.body.isPack)
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price must be a number between 0 and 10000')
 	.bail()
 	.toInt()
-	.custom((finalPrice) => {
-		if (finalPrice >= 0 && finalPrice <= 10000) {
-			return true
-		} else {
-			throw new Error('Invalid price. Should be between 0 and 10000 RON')
-		}
-	})
 
-const validateExtraInfoPack = check('extraInfoPack')
-	.optional({ nullable: true })
-	.trim()
-	.isLength({ min: 0, max: 500 })
-	.withMessage('500 maximum characters')
+const validateSinglePrice = check('finalPrice')
+	.if((value, { req }) => req.body.isPack)
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price must be a number between 0 and 10000')
 	.bail()
-	.isString()
-	.withMessage('Can only contain letters and numbers')
+	.toInt()
 
 const validateMultipleExtraInfos = check('games.*.extraInfo')
 	.optional({ nullable: true })
 	.trim()
+	.if((value, { req }) => !req.body.isPack)
 	.isLength({ min: 0, max: 500 })
-	.withMessage('500 maximum characters')
+	.withMessage('0-500 character allowed')
+	.bail()
+	.isString()
+	.withMessage('Can only contain letters and numbers')
+
+const validateExtraInfoPack = check('extraInfoPack')
+	.optional({ nullable: true })
+	.trim()
+	.if((value, { req }) => req.body.isPack)
+	.isLength({ min: 0, max: 500 })
+	.withMessage('0-500 character allowed')
 	.bail()
 	.isString()
 	.withMessage('Can only contain letters and numbers')

@@ -15,6 +15,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import DialogActions from '@material-ui/core/DialogActions'
 import Divider from '@material-ui/core/Divider'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 // @ Icons
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
@@ -51,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
 	const cls = useStyles()
-	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
 	const [ openDialog, setOpenDialog ] = useState(false)
@@ -138,21 +138,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		reactivateGame.mutate(gameId)
 	}
 
-	const handleOtherUsername = (value) => {
-		setOtherUsername(value)
-	}
-
-	const handleFinalPrice = (value) => {
-		setFinalPrice(value)
-	}
-
-	const handleExtraInfo = (value) => {
-		setExtraInfo(value)
-	}
-
-	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.otherUsernameError : false
-	const finalPriceError = addGame.isError ? addGame.error.response.data.message.finalPriceError : false
-	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfoError : false
+	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.otherUsername : false
+	const finalPriceError = addGame.isError ? addGame.error.response.data.message.finalPrice : false
+	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfo : false
 
 	return (
 		<Fragment>
@@ -182,7 +170,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 									className={cls.input}
 									error={!!otherUsernameError}
 									helperText={otherUsernameError}
-									onChange={handleOtherUsername}
+									onChange={(e) => setOtherUsername(e.target.value)}
 									value={otherUsername}
 									inputProps={{
 										maxLength : 20
@@ -200,11 +188,15 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										className={cls.input}
 										error={!!finalPriceError}
 										helperText={finalPriceError}
-										onChange={handleFinalPrice}
+										onChange={(e) => setFinalPrice(e.target.value)}
 										value={finalPrice}
 										name="final-price"
 										label="Final price"
 										type="number"
+										InputProps={{
+											startAdornment : <InputAdornment position="start">RON</InputAdornment>
+										}}
+										required
 									/>
 								)}
 
@@ -213,7 +205,8 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 									error={!!extraInfoError}
 									helperText={extraInfoError}
 									value={extraInfo}
-									onChange={handleExtraInfo}
+									onChange={(e) => setExtraInfo(e.target.value)}
+									size="medium"
 									multiline
 									minRows={3}
 									maxRows={10}

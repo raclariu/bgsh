@@ -10,7 +10,7 @@ import queryString from 'query-string'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 // @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
@@ -108,16 +108,16 @@ const BuyGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (e, value, id, key) => {
+	const handleGameInfo = (value, id, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
-	const handleExtraInfoPack = (text) => {
-		setExtraInfoPack(text)
+	const handleExtraInfoPack = (e) => {
+		setExtraInfoPack(e.target.value)
 	}
 
-	const handleFinalPrice = (price) => {
-		setFinalPrice(price)
+	const handleFinalPrice = (e) => {
+		setFinalPrice(e.target.value)
 	}
 
 	const handleOtherUsername = (e) => {
@@ -161,6 +161,11 @@ const BuyGamesScreen = () => {
 		<form onSubmit={handleSubmit}>
 			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 
+			{mutation.isError &&
+				Object.values(mutation.error.response.data.message).map((err, i) => (
+					<CustomAlert key={i}>{err}</CustomAlert>
+				))}
+
 			{isLoading && <Loader />}
 
 			{isSuccess &&
@@ -187,18 +192,16 @@ const BuyGamesScreen = () => {
 						<Grid container direction="column">
 							{isPack && (
 								<Fragment>
-									<TextField
+									<Input
 										value={data.otherUsername}
 										onChange={handleOtherUsername}
 										inputProps={{
 											maxLength : 20
 										}}
-										variant="outlined"
 										id="username"
 										name="username"
 										label="Username"
 										type="text"
-										size="small"
 										placeholder="Username of the person who sold you this game"
 										fullWidth
 									/>
@@ -209,6 +212,11 @@ const BuyGamesScreen = () => {
 											onChange={handleFinalPrice}
 											label="Price"
 											name="final-price"
+											InputProps={{
+												startAdornment : <InputAdornment position="start">RON</InputAdornment>
+											}}
+											required
+											fullWidth
 										/>
 									</Grid>
 									<Grid item>
@@ -218,6 +226,7 @@ const BuyGamesScreen = () => {
 											name="extra-info-pack"
 											label={`Extra info ${extraInfoPack.length}/500`}
 											type="text"
+											size="medium"
 											multiline
 											minRows={3}
 											maxRows={10}
@@ -226,6 +235,7 @@ const BuyGamesScreen = () => {
 												placeholder :
 													'Any other info regarding the pack goes in here (500 characters limit)'
 											}}
+											fullWidth
 										/>
 									</Grid>
 								</Fragment>

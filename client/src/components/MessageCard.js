@@ -31,10 +31,6 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
-	const checkExpanded = () => {
-		return expanded.some((obj) => obj.id === msg._id)
-	}
-
 	return (
 		<Card>
 			<CardHeader
@@ -61,18 +57,12 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 								color="primary"
 								variant="outlined"
 								label={<Box>Sent {calculateTimeAgo(msg.createdAt)}</Box>}
-								// icon={<SendIcon />}
 							/>
 						</CustomTooltip>
 
 						<Box ml={0.5}>
 							{!msg.read && (
-								<Chip
-									size="small"
-									color="secondary"
-									label={path === 'received' ? 'New' : 'Unread'}
-									// icon={<DoneAllIcon />}
-								/>
+								<Chip size="small" color="secondary" label={path === 'received' ? 'New' : 'Unread'} />
 							)}
 						</Box>
 						{msg.readAt && (
@@ -82,7 +72,6 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 									color="primary"
 									variant="outlined"
 									label={<Box>{calculateTimeAgo(msg.readAt)} </Box>}
-									// icon={<DoneAllIcon />}
 								/>
 							</CustomTooltip>
 						)}

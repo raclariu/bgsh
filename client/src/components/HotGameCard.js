@@ -37,8 +37,6 @@ const useStyles = makeStyles((theme) => ({
 const HotGameCard = ({ data }) => {
 	const cls = useStyles()
 
-	// const data = useSelector((state) => state.bggHotGames.hotList.find((obj) => obj.bggId === bggId))
-
 	return (
 		<Card elevation={1}>
 			<CardMedia

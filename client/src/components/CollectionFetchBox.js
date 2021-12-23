@@ -5,11 +5,11 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 
 // @ Components
 import Loader from './Loader'
+import Input from './Input'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
@@ -61,23 +61,23 @@ const CollectionFetchBox = () => {
 				Warning: Your sale/trade/wanted list will reset
 			</Box>
 
-			<TextField
+			<Input
 				onChange={(e) => setBggUsername(e.target.value)}
 				value={bggUsername}
 				error={mutation.isError ? true : false}
 				helperText={mutation.isError ? mutation.error.response.data.message : false}
+				size="medium"
 				id="bggUsername"
 				name="bggUsername"
 				label="Import collection"
 				placeholder="Enter your boardgamegeek username"
 				type="text"
-				variant="outlined"
-				fullWidth
 				InputProps={{
 					endAdornment : (
 						<Fragment>{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}</Fragment>
 					)
 				}}
+				fullWidth
 			/>
 
 			<Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>

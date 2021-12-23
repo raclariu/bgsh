@@ -49,7 +49,7 @@ import MessagesBadge from './MessagesBadge'
 import SaleListPopover from './SaleListPopover'
 import Theme from './Theme'
 import CustomAvatar from './CustomAvatar'
-import NotificationsPopper from './NotificationsPopper'
+import NotificationsPopover from './NotificationsPopover'
 
 // @ Others
 import { signOut } from '../actions/userActions'
@@ -153,7 +153,7 @@ const Header = () => {
 					{userData ? (
 						<Fragment>
 							<Box mr={1}>
-								<NotificationsPopper />
+								<NotificationsPopover />
 							</Box>
 							<Box mr={1}>
 								<MessagesBadge />

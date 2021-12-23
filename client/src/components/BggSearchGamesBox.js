@@ -62,9 +62,9 @@ const BggSearchGamesBox = () => {
 		[ mutation ]
 	)
 
-	const handleInput = (value) => {
+	const handleInput = (e) => {
 		if (options.length === 0) {
-			setInputText(value)
+			setInputText(e.target.input)
 		}
 	}
 

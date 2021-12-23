@@ -13,28 +13,14 @@ import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
 // @ Others
 import { apiGetNewMessagesCount } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	badge : {
-		margin : theme.spacing(0, 1, 0, 0)
-	}
-}))
-
 // @ Main
 const MessagesBadge = () => {
-	const cls = useStyles()
-	const dispatch = useDispatch()
-
-	const { isLoading, isError, error, isSuccess, data: count } = useQuery(
-		[ 'msgReceivedCount' ],
-		apiGetNewMessagesCount,
-		{
-			refetchInterval      : 1000 * 60 * 2,
-			refetchOnWindowFocus : false,
-			refetchOnMount       : false,
-			refetchOnReconnect   : false
-		}
-	)
+	const { isSuccess, data: count } = useQuery([ 'msgReceivedCount' ], apiGetNewMessagesCount, {
+		refetchInterval      : 1000 * 60 * 2,
+		refetchOnWindowFocus : false,
+		refetchOnMount       : false,
+		refetchOnReconnect   : false
+	})
 
 	return (
 		<Fragment>

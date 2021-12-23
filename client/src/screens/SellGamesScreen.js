@@ -10,6 +10,7 @@ import queryString from 'query-string'
 import Grid from '@material-ui/core/Grid'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 // @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
@@ -96,6 +97,8 @@ const SellGamesScreen = () => {
 		}
 	})
 
+	console.log(mutation.isError && mutation.error.response)
+
 	useEffect(
 		() => {
 			if (slRef.current.length !== saleList.length) {
@@ -118,19 +121,19 @@ const SellGamesScreen = () => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (e, value, id, key) => {
+	const handleGameInfo = (value, id, key) => {
 		const index = values.findIndex((el) => el.bggId === id)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
 		setValues(copy)
 	}
 
-	const handleExtraInfoPack = (text) => {
-		setExtraInfoPack(text)
+	const handleExtraInfoPack = (e) => {
+		setExtraInfoPack(e.target.value)
 	}
 
-	const handleTotalPrice = (price) => {
-		setTotalPrice(price)
+	const handleTotalPrice = (e) => {
+		setTotalPrice(e.target.value)
 	}
 
 	const handleShippingInfo = (data, type) => {
@@ -182,9 +185,9 @@ const SellGamesScreen = () => {
 				gamesCopy[index] = {
 					...gamesCopy[index],
 					version   : val.version,
-					price     : !isPack ? +val.price : null,
+					price     : !isPack ? val.price : null,
 					condition : val.condition,
-					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : '',
+					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : null,
 					isSleeved : val.isSleeved
 				}
 			}
@@ -199,8 +202,8 @@ const SellGamesScreen = () => {
 			shipCourierPayer,
 			shipPersonal,
 			shipCities,
-			extraInfoPack    : isPack ? extraInfoPack.trim() : '',
-			totalPrice       : isPack ? +totalPrice : null
+			extraInfoPack    : isPack ? extraInfoPack.trim() : null,
+			totalPrice       : isPack ? totalPrice : null
 		}
 
 		mutation.mutate(gamesData)
@@ -212,7 +215,9 @@ const SellGamesScreen = () => {
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
-					mutation.error.response.data.map((err, i) => <CustomAlert key={i}>{err}</CustomAlert>)}
+					Object.values(mutation.error.response.data.message).map((err, i) => (
+						<CustomAlert key={i}>{err}</CustomAlert>
+					))}
 
 				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 			</div>
@@ -270,10 +275,22 @@ const SellGamesScreen = () => {
 											<Input
 												onChange={handleTotalPrice}
 												value={totalPrice}
+												error={
+													mutation.isError && mutation.error.response.data.message.totalPrice
+												}
+												helperText={
+													mutation.isError && mutation.error.response.data.message.totalPrice
+												}
 												name="total-price"
 												label="Total price"
 												type="number"
-												required={true}
+												InputProps={{
+													startAdornment : (
+														<InputAdornment position="start">RON</InputAdornment>
+													)
+												}}
+												fullWidth
+												required
 											/>
 										</Grid>
 										<Grid item>
@@ -282,6 +299,7 @@ const SellGamesScreen = () => {
 												value={extraInfoPack}
 												name="extra-info-pack"
 												label={`Extra info ${extraInfoPack.length}/500`}
+												size="medium"
 												multiline
 												minRows={3}
 												maxRows={10}
@@ -291,6 +309,7 @@ const SellGamesScreen = () => {
 													placeholder :
 														'Any other info regarding the pack goes in here (500 characters limit)'
 												}}
+												fullWidth
 											/>
 										</Grid>
 									</Fragment>

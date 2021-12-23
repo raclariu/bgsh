@@ -57,29 +57,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // @ Main
-const NotificationsPopper = () => {
+const NotificationsPopover = () => {
 	const cls = useStyles()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const open = Boolean(anchorEl)
 
-	const { isLoading, data, isSuccess } = useQuery([ 'notifications' ], apiGetNotifications, {
+	const { data, isSuccess } = useQuery([ 'notifications' ], apiGetNotifications, {
 		staleTime : 1000 * 60 * 60
 	})
-
-	const handleClick = (e) => {
-		setAnchorEl(e.currentTarget)
-	}
-
-	const handleClose = () => {
-		setAnchorEl(null)
-	}
 
 	return (
 		<Fragment>
 			{console.count('renders:')}
 
-			<IconButton onClick={handleClick} color="primary">
+			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary">
 				<Badge color="secondary" badgeContent={isSuccess ? data.notifications.length : 0}>
 					{isSuccess && data.notifications.length > 0 ? (
 						<NotificationsActiveTwoToneIcon />
@@ -93,7 +85,7 @@ const NotificationsPopper = () => {
 				classes={{ paper: cls.popover }}
 				open={open}
 				anchorEl={anchorEl}
-				onClose={handleClose}
+				onClose={() => setAnchorEl(null)}
 				transitionDuration={350}
 				anchorOrigin={{
 					vertical   : 'bottom',
@@ -158,4 +150,4 @@ const NotificationsPopper = () => {
 	)
 }
 
-export default NotificationsPopper
+export default NotificationsPopover

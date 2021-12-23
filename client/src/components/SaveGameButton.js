@@ -5,10 +5,12 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import IconButton from '@material-ui/core/IconButton'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
 
 // @ Icons
-import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
-import BookmarkIcon from '@material-ui/icons/Bookmark'
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
+import Favorite from '@material-ui/icons/Favorite'
 
 // @ Components
 import Loader from './Loader'
@@ -72,9 +74,16 @@ const SaveGameButton = ({ altId, addedById }) => {
 
 			{isSuccess && (
 				// disabled={addedById === userId}
-				<IconButton onClick={saveGameHandler} color="secondary">
-					{data.isSaved ? <BookmarkIcon fontSize="small" /> : <BookmarkTwoToneIcon fontSize="small" />}
-				</IconButton>
+
+				<Checkbox
+					id="save-button"
+					onChange={saveGameHandler}
+					icon={<FavoriteBorder />}
+					checkedIcon={<Favorite />}
+					name="saved"
+					size="small"
+					checked={data.isSaved}
+				/>
 			)}
 		</Fragment>
 	)
