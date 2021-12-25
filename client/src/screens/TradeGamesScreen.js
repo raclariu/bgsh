@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useEffect, useState, useRef } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 import queryString from 'query-string'
 
@@ -22,20 +22,26 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	section : {
+const PREFIX = 'TradeGamesScreen'
+
+const classes = {
+	section : `${PREFIX}-section`,
+	error   : `${PREFIX}-error`
+}
+
+const Root = styled('form')(({ theme }) => ({
+	[`& .${classes.section}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	error   : {
+
+	[`& .${classes.error}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
 const TradeGamesScreen = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
@@ -176,8 +182,8 @@ const TradeGamesScreen = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div className={cls.error}>
+		<Root onSubmit={handleSubmit}>
+			<div className={classes.error}>
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
@@ -192,7 +198,7 @@ const TradeGamesScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Grid container spacing={3} className={cls.section}>
+					<Grid container spacing={3} className={classes.section}>
 						{data.map(
 							(game) =>
 								values.find((val) => val.bggId === game.bggId) && (
@@ -213,7 +219,7 @@ const TradeGamesScreen = () => {
 					<Divider />
 
 					{/* Shipping Area */}
-					<Grid container className={cls.section} direction="row" spacing={2}>
+					<Grid container className={classes.section} direction="row" spacing={2}>
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
 							<ShippingSection
 								handleShippingInfo={handleShippingInfo}
@@ -264,7 +270,7 @@ const TradeGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</form>
+		</Root>
 	)
 }
 

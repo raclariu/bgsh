@@ -1,7 +1,7 @@
 // @ Libraries
 import React from 'react'
+import { styled } from '@mui/material/styles'
 import { useLocation } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles'
 import queryString from 'query-string'
 
 // @ Mui
@@ -10,9 +10,14 @@ import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	formControl : {
+const PREFIX = 'SortGames'
+
+const classes = {
+	formControl : `${PREFIX}-formControl`
+}
+
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+	[`&.${classes.formControl}`]: {
 		margin   : theme.spacing(1),
 		minWidth : 150
 	}
@@ -20,11 +25,10 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const SortGames = ({ handleFilters, mode }) => {
-	const cls = useStyles()
 	const location = useLocation()
 
 	return (
-		<FormControl variant="standard" className={cls.formControl}>
+		<StyledFormControl variant="standard" className={classes.formControl}>
 			<InputLabel>Sort by</InputLabel>
 			{mode === 'sell' && (
 				<Select
@@ -96,7 +100,7 @@ const SortGames = ({ handleFilters, mode }) => {
 					<MenuItem value="year">Release date</MenuItem>
 				</Select>
 			)}
-		</FormControl>
+		</StyledFormControl>
 	)
 }
 

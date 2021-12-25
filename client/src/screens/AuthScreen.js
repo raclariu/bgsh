@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { useState } from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 import { useHistory } from 'react-router-dom'
 
 // @ Mui
@@ -19,16 +19,20 @@ import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
 import Theme from '../components/Theme'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	tabTitle : {
+const PREFIX = 'AuthScreen'
+
+const classes = {
+	tabTitle : `${PREFIX}-tabTitle`
+}
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+	[`& .${classes.tabTitle}`]: {
 		textTransform : 'none'
 	}
 }))
 
 // @ Main
 const AuthScreen = () => {
-	const cls = useStyles()
 	const history = useHistory()
 
 	const { location: { pathname } } = history
@@ -40,7 +44,13 @@ const AuthScreen = () => {
 	}
 
 	return (
-        <Grid style={{ height: '100vh' }} container direction="column" justifyContent="center" alignItems="center">
+		<StyledGrid
+			style={{ height: '100vh' }}
+			container
+			direction="column"
+			justifyContent="center"
+			alignItems="center"
+		>
 			<Box display="flex" alignItems="center" justifyContent="center">
 				<IconButton color="primary" onClick={() => history.push('/')} size="large">
 					<ArrowBackIcon />
@@ -57,7 +67,7 @@ const AuthScreen = () => {
 						label={
 							<Box display="flex" alignItems="center">
 								<LockOpenIcon />
-								<Box className={cls.tabTitle} ml={1}>
+								<Box className={classes.tabTitle} ml={1}>
 									Sign In
 								</Box>
 							</Box>
@@ -69,7 +79,7 @@ const AuthScreen = () => {
 						label={
 							<Box display="flex" alignItems="center">
 								<LockOpenIcon />
-								<Box className={cls.tabTitle} ml={1}>
+								<Box className={classes.tabTitle} ml={1}>
 									Sign Up
 								</Box>
 							</Box>
@@ -80,8 +90,8 @@ const AuthScreen = () => {
 				{selectedTab === 'signin' && <SignIn />}
 				{selectedTab === 'signup' && <SignUp />}
 			</Grid>
-		</Grid>
-    );
+		</StyledGrid>
+	)
 }
 
 export default AuthScreen

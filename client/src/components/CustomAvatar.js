@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useState, Fragment } from 'react'
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
@@ -16,27 +16,39 @@ import SendMessage from './SendMessage'
 // @ Icons
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	small         : {
+const PREFIX = 'CustomAvatar'
+
+const classes = {
+	small         : `${PREFIX}-small`,
+	medium        : `${PREFIX}-medium`,
+	large         : `${PREFIX}-large`,
+	popoverAvatar : `${PREFIX}-popoverAvatar`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.small}`]: {
 		width           : theme.spacing(3),
 		height          : theme.spacing(3),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
 	},
-	medium        : {
+
+	[`& .${classes.medium}`]: {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
 	},
-	large         : {
+
+	[`& .${classes.large}`]: {
 		width           : theme.spacing(5),
 		height          : theme.spacing(5),
 		backgroundColor : theme.palette.primary.main,
 		cursor          : 'pointer'
 	},
-	popoverAvatar : {
+
+	[`& .${classes.popoverAvatar}`]: {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
@@ -45,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const CustomAvatar = ({ size, user }) => {
-	const cls = useStyles()
 	const history = useHistory()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
@@ -55,11 +66,11 @@ const CustomAvatar = ({ size, user }) => {
 	}
 
 	return (
-        <Fragment>
+		<Root>
 			<Box display="flex" flexDirection="row" alignItems="center">
 				<Avatar
 					onClick={(e) => setAnchorEl(e.currentTarget)}
-					className={size === 'small' ? cls.small : size === 'medium' ? cls.medium : cls.large}
+					className={size === 'small' ? classes.small : size === 'medium' ? classes.medium : classes.large}
 				>
 					<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
 						{user.substring(0, 2).toUpperCase()}
@@ -83,7 +94,7 @@ const CustomAvatar = ({ size, user }) => {
 				<Box p={1} display="flex" flexDirection="column">
 					<Box display="flex" alignItems="center" justifyContent="space-between">
 						<Box ml={1}>
-							<Avatar className={cls.popoverAvatar} color="primary">
+							<Avatar className={classes.popoverAvatar} color="primary">
 								<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
 							</Avatar>
 						</Box>
@@ -99,8 +110,8 @@ const CustomAvatar = ({ size, user }) => {
 					</Box>
 				</Box>
 			</Popover>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default CustomAvatar

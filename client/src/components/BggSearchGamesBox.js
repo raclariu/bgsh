@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import { useDebounce } from 'use-debounce'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
@@ -18,16 +18,21 @@ import Input from './Input'
 import { addToSaleList } from '../actions/saleListActions'
 import { apiBggSearchGames } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	button : {
+const PREFIX = 'BggSearchGamesBox'
+
+const classes = {
+	button : `${PREFIX}-button`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.button}`]: {
 		marginLeft : theme.spacing(1)
 	}
 }))
 
 // @ Main
 const BggSearchGamesBox = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
@@ -82,7 +87,7 @@ const BggSearchGamesBox = () => {
 	}
 
 	return (
-		<Fragment>
+		<Root>
 			<Box mb={2} fontWeight="fontWeightMedium">
 				Search BoardGameGeek by game title
 			</Box>
@@ -133,7 +138,7 @@ const BggSearchGamesBox = () => {
 					Reset
 				</Button>
 				<Button
-					className={cls.button}
+					className={classes.button}
 					variant="contained"
 					onClick={addToSaleListHandler}
 					disabled={!selectedOption}
@@ -142,7 +147,7 @@ const BggSearchGamesBox = () => {
 					Add to my list
 				</Button>
 			</Box>
-		</Fragment>
+		</Root>
 	)
 }
 

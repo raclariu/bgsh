@@ -65,7 +65,7 @@ const SaveGameButton = ({ altId, addedById }) => {
 	}
 
 	return (
-        <Fragment>
+		<Fragment>
 			{isLoading && (
 				<IconButton disabled disableRipple size="large">
 					<Loader size={20} />
@@ -86,7 +86,7 @@ const SaveGameButton = ({ altId, addedById }) => {
 				/>
 			)}
 		</Fragment>
-    );
+	)
 }
 
 export default SaveGameButton

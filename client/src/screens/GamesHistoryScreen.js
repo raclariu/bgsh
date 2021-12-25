@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router'
-import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
@@ -23,17 +23,26 @@ import CustomAlert from '../components/CustomAlert'
 import { apiFetchGamesHistory } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root          : {
+const PREFIX = 'GamesHistoryScreen'
+
+const classes = {
+	root          : `${PREFIX}-root`,
+	gridContainer : `${PREFIX}-gridContainer`,
+	title         : `${PREFIX}-title`
+}
+
+const Root = styled('div')(({ theme }) => ({
+	[`&.${classes.root}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	gridContainer : {
+
+	[`& .${classes.gridContainer}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	},
-	title         : {
+
+	[`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -43,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const GamesHistoryScreen = () => {
-	const cls = useStyles()
 	const history = useHistory()
 	const location = useLocation()
 	const currLoc =
@@ -87,7 +95,7 @@ const GamesHistoryScreen = () => {
 	}
 
 	return (
-        <div className={cls.root}>
+		<Root className={classes.root}>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title" handleFilters={handleFilters} />
@@ -95,7 +103,7 @@ const GamesHistoryScreen = () => {
 			</Grid>
 
 			{isLoading && (
-				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
@@ -108,7 +116,7 @@ const GamesHistoryScreen = () => {
 			)}
 
 			{isSuccess && (
-				<Grid container className={cls.gridContainer} spacing={3}>
+				<Grid container className={classes.gridContainer} spacing={3}>
 					{data.historyList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -134,8 +142,8 @@ const GamesHistoryScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</div>
-    );
+		</Root>
+	)
 }
 
 export default GamesHistoryScreen

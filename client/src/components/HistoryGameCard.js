@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -24,23 +24,39 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	card        : {
+const PREFIX = 'HistoryGameCard';
+
+const classes = {
+    card: `${PREFIX}-card`,
+    media: `${PREFIX}-media`,
+    overlayChip: `${PREFIX}-overlayChip`,
+    title: `${PREFIX}-title`,
+    avatar: `${PREFIX}-avatar`
+};
+
+const StyledCard = styled(Card)((
+    {
+        theme
+    }
+) => ({
+    [`&.${classes.card}`]: {
 		position : 'relative'
 	},
-	media       : {
+
+    [`& .${classes.media}`]: {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	overlayChip : {
+
+    [`& .${classes.overlayChip}`]: {
 		position : 'absolute',
 		top      : '8px',
 		left     : '8px'
 	},
-	title       : {
+
+    [`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -48,16 +64,17 @@ const useStyles = makeStyles((theme) => ({
 		width           : '100%',
 		textAlign       : 'center'
 	},
-	avatar      : {
+
+    [`& .${classes.avatar}`]: {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
 	}
-}))
+}));
 
 // @ Main
 const HistoryGameCard = ({ data }) => {
-	const cls = useStyles()
+
 
 	const [ index, setIndex ] = useState(0)
 
@@ -75,9 +92,9 @@ const HistoryGameCard = ({ data }) => {
 	}
 
 	return (
-        <Card className={cls.card} elevation={1}>
+        <StyledCard className={classes.card} elevation={1}>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.games[index].title}
@@ -85,7 +102,12 @@ const HistoryGameCard = ({ data }) => {
 			/>
 
 			{data.games.length > 1 && (
-				<Chip size="small" color="secondary" className={cls.overlayChip} label={`${data.games.length} pack`} />
+				<Chip
+					size="small"
+					color="secondary"
+					className={classes.overlayChip}
+					label={`${data.games.length} pack`}
+				/>
 			)}
 
 			<Divider />
@@ -101,25 +123,27 @@ const HistoryGameCard = ({ data }) => {
 					{data.isPack ? (
 						<Fragment>
 							<IconButton
-                                color="primary"
-                                disabled={index === 0}
-                                onClick={() => handleIndex('minus')}
-                                size="large">
+								color="primary"
+								disabled={index === 0}
+								onClick={() => handleIndex('minus')}
+								size="large"
+							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={cls.title}>
+							<Box className={classes.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
 							<IconButton
-                                color="primary"
-                                disabled={data.games.length === index + 1}
-                                onClick={() => handleIndex('plus')}
-                                size="large">
+								color="primary"
+								disabled={data.games.length === index + 1}
+								onClick={() => handleIndex('plus')}
+								size="large"
+							>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={cls.title}>
+						<Box className={classes.title}>
 							{data.games[index].title} ({data.games[index].year})
 						</Box>
 					)}
@@ -156,7 +180,7 @@ const HistoryGameCard = ({ data }) => {
 					</Box>
 				</Box>
 			</CardContent>
-		</Card>
+		</StyledCard>
     );
 }
 

@@ -9,7 +9,7 @@ import Button from '@mui/material/Button'
 // @ Main
 const NotFoundScreen = () => {
 	return (
-        <Box my={4}>
+		<Box my={4}>
 			<Box
 				display="flex"
 				flexDirection="column"
@@ -32,7 +32,7 @@ const NotFoundScreen = () => {
 				</Box>
 			</Box>
 		</Box>
-    );
+	)
 }
 
 export default NotFoundScreen

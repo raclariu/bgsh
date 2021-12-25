@@ -1,9 +1,9 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
@@ -47,16 +47,25 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	grid       : {
+const PREFIX = 'InboxScreen'
+
+const classes = {
+	grid       : `${PREFIX}-grid`,
+	buttonBase : `${PREFIX}-buttonBase`,
+	subject    : `${PREFIX}-subject`
+}
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+	[`& .${classes.grid}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	},
-	buttonBase : {
+
+	[`& .${classes.buttonBase}`]: {
 		width : '100%'
 	},
-	subject    : {
+
+	[`& .${classes.subject}`]: {
 		whiteSpace   : 'nowrap',
 		textOverflow : 'ellipsis',
 		overflow     : 'hidden',
@@ -67,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 // @ Skeleton
 const MessageSkeleton = () => {
 	return (
-        <Grid item container xs={12} sm={9} md={7}>
+		<StyledGrid item container xs={12} sm={9} md={7}>
 			<Box
 				display="flex"
 				alignItems="center"
@@ -93,13 +102,12 @@ const MessageSkeleton = () => {
 					</Box>
 				</Box>
 			</Box>
-		</Grid>
-    );
+		</StyledGrid>
+	)
 }
 
 // @ Main
 const InboxScreen = () => {
-	const cls = useStyles()
 	const history = useHistory()
 	const location = useLocation()
 	const queryClient = useQueryClient()
@@ -255,7 +263,7 @@ const InboxScreen = () => {
 	}
 
 	return (
-        <Grid container spacing={2} justifyContent="center" className={cls.grid}>
+		<Grid container spacing={2} justifyContent="center" className={classes.grid}>
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={5} md={4}>
 					<SearchBox placeholder="Search users" handleFilters={handleFilters} />
@@ -317,7 +325,7 @@ const InboxScreen = () => {
 					</Box>
 				))}
 		</Grid>
-    );
+	)
 }
 
 export default InboxScreen

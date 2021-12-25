@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -14,21 +14,27 @@ import ChangePasswordForm from '../components/ChangePasswordForm'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	gridContainer : {
+const PREFIX = 'SettingsScreen'
+
+const classes = {
+	gridContainer : `${PREFIX}-gridContainer`,
+	input         : `${PREFIX}-input`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.gridContainer}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	input         : {
+
+	[`& .${classes.input}`]: {
 		minHeight : '90px'
 	}
 }))
 
 // @ Main
 const SettingsScreen = () => {
-	const cls = useStyles()
-
 	const [ tab, setTab ] = useState('profile')
 
 	const handleTabChange = (event, newTab) => {
@@ -36,7 +42,7 @@ const SettingsScreen = () => {
 	}
 
 	return (
-        <Fragment>
+		<Root>
 			<Box
 				display="flex"
 				alignItems="center"
@@ -53,7 +59,7 @@ const SettingsScreen = () => {
 			</Box>
 
 			{tab === 'change-password' && (
-				<Grid className={cls.gridContainer} container justifyContent="center" alignItems="center">
+				<Grid className={classes.gridContainer} container justifyContent="center" alignItems="center">
 					<Grid item xs={12} sm={8} md={7}>
 						<ChangePasswordForm />
 					</Grid>
@@ -61,7 +67,13 @@ const SettingsScreen = () => {
 			)}
 
 			{tab === 'profile' && (
-				<Grid className={cls.gridContainer} spacing={10} container justifyContent="center" alignItems="center">
+				<Grid
+					className={classes.gridContainer}
+					spacing={10}
+					container
+					justifyContent="center"
+					alignItems="center"
+				>
 					<Grid item xs={12} sm={8} md={7}>
 						<CollectionFetchBox />
 					</Grid>
@@ -73,8 +85,8 @@ const SettingsScreen = () => {
 					<Divider style={{ width: '100%' }} />
 				</Grid>
 			)}
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default SettingsScreen

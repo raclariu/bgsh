@@ -13,7 +13,7 @@ import Button from '@mui/material/Button'
 // @ Main
 const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 	return (
-        <Fragment>
+		<Fragment>
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle>
 					<Typography variant="h6" align="center">
@@ -49,7 +49,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 				</DialogActions>
 			</Dialog>
 		</Fragment>
-    );
+	)
 }
 
 export default SaleListPopoverDialog

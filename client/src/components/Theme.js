@@ -28,12 +28,12 @@ const Theme = () => {
 	}
 
 	return (
-        <Fragment>
+		<Fragment>
 			<IconButton color="primary" onClick={(e) => changeHandler(e, theme)} size="large">
 				{theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon color="secondary" />}
 			</IconButton>
 		</Fragment>
-    );
+	)
 }
 
 export default Theme

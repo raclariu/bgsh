@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { useState } from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Paper from '@mui/material/Paper'
@@ -12,17 +12,20 @@ import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	paper : {
+const PREFIX = 'SearchBox'
+
+const classes = {
+	paper : `${PREFIX}-paper`
+}
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+	[`&.${classes.paper}`]: {
 		padding : theme.spacing(1.2, 1.5, 1.2, 1.5)
 	}
 }))
 
 // @ Main
 const SearchBox = ({ placeholder, handleFilters }) => {
-	const cls = useStyles()
-
 	const [ keyword, setKeyword ] = useState('')
 
 	const submitSearchHandler = (e) => {
@@ -34,9 +37,9 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 	}
 
 	return (
-        <Paper
+		<StyledPaper
 			component="form"
-			className={cls.paper}
+			className={classes.paper}
 			elevation={1}
 			onSubmit={submitSearchHandler}
 			noValidate
@@ -65,8 +68,8 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				}
 				fullWidth
 			/>
-		</Paper>
-    );
+		</StyledPaper>
+	)
 }
 
 export default SearchBox

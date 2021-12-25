@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Card from '@mui/material/Card'
@@ -22,23 +22,38 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CustomTooltip from '../CustomTooltip'
 import GameDetailsButton from '../GameDetailsButton'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	card       : {
+const PREFIX = 'UserProfileGameCard';
+
+const classes = {
+    card: `${PREFIX}-card`,
+    media: `${PREFIX}-media`,
+    overlayTop: `${PREFIX}-overlayTop`,
+    title: `${PREFIX}-title`
+};
+
+const StyledCard = styled(Card)((
+    {
+        theme
+    }
+) => ({
+    [`&.${classes.card}`]: {
 		position : 'relative'
 	},
-	media      : {
+
+    [`& .${classes.media}`]: {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	overlayTop : {
+
+    [`& .${classes.overlayTop}`]: {
 		position : 'absolute',
 		top      : '8px',
 		left     : '8px'
 	},
-	title      : {
+
+    [`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -46,11 +61,11 @@ const useStyles = makeStyles((theme) => ({
 		width           : '100%',
 		textAlign       : 'center'
 	}
-}))
+}));
 
 // @ Main
 const UserProfileGameCard = ({ data }) => {
-	const cls = useStyles()
+
 
 	const [ index, setIndex ] = useState(0)
 
@@ -68,9 +83,9 @@ const UserProfileGameCard = ({ data }) => {
 	}
 
 	return (
-        <Card className={cls.card} elevation={1}>
+        <StyledCard className={classes.card} elevation={1}>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				alt={data.games[index].title}
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -82,7 +97,7 @@ const UserProfileGameCard = ({ data }) => {
 					<Chip
 						size="small"
 						color="secondary"
-						className={cls.overlayTop}
+						className={classes.overlayTop}
 						label={`${data.games.length} pack`}
 					/>
 				</Fragment>
@@ -103,18 +118,19 @@ const UserProfileGameCard = ({ data }) => {
 							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')} size="large">
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={cls.title}>
+							<Box className={classes.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
 							<IconButton
-                                disabled={data.games.length === index + 1}
-                                onClick={() => handleIndex('plus')}
-                                size="large">
+								disabled={data.games.length === index + 1}
+								onClick={() => handleIndex('plus')}
+								size="large"
+							>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={cls.title}>
+						<Box className={classes.title}>
 							{data.games[index].title} ({data.games[index].year})
 						</Box>
 					)}
@@ -139,7 +155,7 @@ const UserProfileGameCard = ({ data }) => {
 					<GameDetailsButton altId={data.altId} />
 				</Box>
 			</CardActions>
-		</Card>
+		</StyledCard>
     );
 }
 

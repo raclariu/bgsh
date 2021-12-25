@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment } from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -13,9 +13,15 @@ import BggSearchGamesBox from '../components/BggSearchGamesBox'
 import SendMessage from '../components/SendMessage'
 import HelmetComponent from '../components/HelmetComponent'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root : {
+const PREFIX = 'ProfileScreen'
+
+const classes = {
+	root : `${PREFIX}-root`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.root}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	}
@@ -23,10 +29,8 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const ProfileScreen = () => {
-	const cls = useStyles()
-
 	return (
-        <Fragment>
+		<Root>
 			<HelmetComponent title="Profile" />
 			<Grid container spacing={3}>
 				<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
@@ -48,8 +52,8 @@ const ProfileScreen = () => {
 
 				<SendMessage />
 			</Grid>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default ProfileScreen

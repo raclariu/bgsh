@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import IconButton from '@mui/material/IconButton'
@@ -20,20 +20,27 @@ import Input from './Input'
 // @ Others
 import { signUp } from '../actions/userActions'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root  : {
+const PREFIX = 'SignUp'
+
+const classes = {
+	root  : `${PREFIX}-root`,
+	input : `${PREFIX}-input`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.root}`]: {
 		width  : '100%',
 		margin : theme.spacing(4, 0, 0, 0)
 	},
-	input : {
+
+	[`& .${classes.input}`]: {
 		minHeight : '90px'
 	}
 }))
 
 // @ Main
 const SignUp = () => {
-	const classes = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
 
@@ -62,7 +69,7 @@ const SignUp = () => {
 	}
 
 	return (
-        <Fragment>
+		<Root>
 			<form onSubmit={submitHandler} className={classes.root} autoComplete="off">
 				<Input
 					className={classes.input}
@@ -135,8 +142,9 @@ const SignUp = () => {
 						endAdornment : (
 							<InputAdornment position="end">
 								<IconButton
-                                    onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}
-                                    size="large">
+									onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}
+									size="large"
+								>
 									{passConfirmationVisibility ? (
 										<VisibilityOutlinedIcon />
 									) : (
@@ -154,8 +162,8 @@ const SignUp = () => {
 					{loading ? <Loader size={26} color="inherit" /> : 'Sign up'}
 				</Button>
 			</form>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default SignUp

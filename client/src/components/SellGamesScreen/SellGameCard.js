@@ -1,6 +1,6 @@
 // @ Libraries
 import React from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -22,27 +22,37 @@ import Input from '../Input'
 // @ Icons
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	media        : {
+const PREFIX = 'SellGameCard'
+
+const classes = {
+	media        : `${PREFIX}-media`,
+	autocomplete : `${PREFIX}-autocomplete`,
+	extraInfo    : `${PREFIX}-extraInfo`,
+	error        : `${PREFIX}-error`
+}
+
+const StyledCard = styled(Card)(({ theme }) => ({
+	[`& .${classes.media}`]: {
 		objectFit      : 'cover',
 		height         : '180px',
 		objectPosition : 'center 10%'
 	},
-	autocomplete : {
+
+	[`& .${classes.autocomplete}`]: {
 		marginTop : theme.spacing(2)
 	},
-	extraInfo    : {
+
+	[`& .${classes.extraInfo}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	},
-	error        : {
+
+	[`& .${classes.error}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
 const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
-	const cls = useStyles()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
 	const displayImageHandler = (image, thumbnail) => {
@@ -54,7 +64,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	}
 
 	return (
-        <Card elevation={1}>
+		<StyledCard elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
@@ -72,7 +82,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				}}
 			/>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				image={displayImageHandler(game.image, game.thumbnail)}
 				alt={game.title}
@@ -115,7 +125,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 				{mode !== 'buy' && (
 					<Autocomplete
-						className={cls.autocomplete}
+						className={classes.autocomplete}
 						value={data.condition}
 						isOptionEqualToValue={(option, value) => option === value}
 						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'condition')}
@@ -143,7 +153,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				)}
 
 				<Input
-					className={cls.extraInfo}
+					className={classes.extraInfo}
 					value={data.extraInfo}
 					onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'extraInfo')}
 					inputProps={{
@@ -191,8 +201,8 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					)}
 				</Grid>
 			</CardContent>
-		</Card>
-    );
+		</StyledCard>
+	)
 }
 
 export default SellGameCard

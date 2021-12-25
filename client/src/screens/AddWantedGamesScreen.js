@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { useEffect, useState, useRef, Fragment } from 'react'
+import { styled } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 
 // @ Mui
@@ -21,9 +21,14 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	section : {
+const PREFIX = 'AddWantedGamesScreen'
+
+const classes = {
+	section : `${PREFIX}-section`
+}
+
+const Root = styled('form')(({ theme }) => ({
+	[`& .${classes.section}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(2)
 	}
@@ -31,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const AddWantedGamesScreen = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
@@ -126,7 +130,7 @@ const AddWantedGamesScreen = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<Root onSubmit={handleSubmit}>
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 			{mutation.isError &&
@@ -140,7 +144,7 @@ const AddWantedGamesScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Grid container spacing={3} className={cls.section}>
+					<Grid container spacing={3} className={classes.section}>
 						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
@@ -192,7 +196,7 @@ const AddWantedGamesScreen = () => {
 					</Box>
 				</Fragment>
 			)}
-		</form>
+		</Root>
 	)
 }
 

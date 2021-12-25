@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Popover from '@mui/material/Popover'
@@ -31,9 +31,18 @@ import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsAct
 import { apiGetNotifications } from '../api/api'
 import { calculateTimeAgo } from '../helpers/helpers'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	popover   : {
+const PREFIX = 'NotificationsPopover'
+
+const classes = {
+	popover   : `${PREFIX}-popover`,
+	subheader : `${PREFIX}-subheader`,
+	btnGroup  : `${PREFIX}-btnGroup`,
+	inline    : `${PREFIX}-inline`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.popover}`]: {
 		[theme.breakpoints.down('sm')]: {
 			width : '100vw'
 		},
@@ -42,24 +51,25 @@ const useStyles = makeStyles((theme) => ({
 		},
 		maxHeight                      : '40vh'
 	},
-	subheader : {
+
+	[`& .${classes.subheader}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	},
-	btnGroup  : {
+
+	[`& .${classes.btnGroup}`]: {
 		display        : 'flex',
 		alignItems     : 'center',
 		justifyContent : 'center',
 		marginBottom   : theme.spacing(2)
 	},
-	inline    : {
+
+	[`& .${classes.inline}`]: {
 		display : 'inline'
 	}
 }))
 
 // @ Main
 const NotificationsPopover = () => {
-	const cls = useStyles()
-
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const open = Boolean(anchorEl)
 
@@ -68,13 +78,10 @@ const NotificationsPopover = () => {
 	})
 
 	return (
-        <Fragment>
+		<Root>
 			{console.count('renders:')}
 
-			<IconButton
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                color="primary"
-                size="large">
+			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? data.notifications.length : 0}>
 					{isSuccess && data.notifications.length > 0 ? (
 						<NotificationsActiveTwoToneIcon />
@@ -85,7 +92,7 @@ const NotificationsPopover = () => {
 			</IconButton>
 
 			<Popover
-				classes={{ paper: cls.popover }}
+				classes={{ paper: classes.popover }}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={() => setAnchorEl(null)}
@@ -149,8 +156,8 @@ const NotificationsPopover = () => {
 					</Box>
 				)}
 			</Popover>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default NotificationsPopover

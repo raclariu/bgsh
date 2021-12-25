@@ -49,7 +49,7 @@ const HomeScreen = () => {
 	}
 
 	return (
-        <Fragment>
+		<Fragment>
 			<Box
 				display="flex"
 				justifyContent="space-between"
@@ -126,7 +126,7 @@ const HomeScreen = () => {
 				</Grid>
 			)}
 		</Fragment>
-    );
+	)
 }
 
 export default HomeScreen

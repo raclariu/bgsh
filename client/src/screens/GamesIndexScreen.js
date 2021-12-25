@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
@@ -24,13 +24,20 @@ import DrawerFilter from '../components/Filters/DrawerFilter'
 import { fetchGames } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root          : {
+const PREFIX = 'GamesIndexScreen'
+
+const classes = {
+	root          : `${PREFIX}-root`,
+	gridContainer : `${PREFIX}-gridContainer`
+}
+
+const Root = styled('div')(({ theme }) => ({
+	[`&.${classes.root}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	gridContainer : {
+
+	[`& .${classes.gridContainer}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	}
@@ -38,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const GamesIndexScreen = () => {
-	const cls = useStyles()
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
@@ -93,7 +99,7 @@ const GamesIndexScreen = () => {
 	}
 
 	return (
-        <div className={cls.root}>
+		<Root className={classes.root}>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
@@ -112,12 +118,12 @@ const GamesIndexScreen = () => {
 			</Box>
 
 			{isLoading && (
-				<Grid container className={cls.gridContainer} spacing={3} direction="row">
+				<Grid container className={classes.gridContainer} spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			<Grid container spacing={3} className={cls.gridContainer}>
+			<Grid container spacing={3} className={classes.gridContainer}>
 				{isSuccess &&
 					data.gamesData.map((data) => (
 						<Grid item key={data._id} md={4} sm={6} xs={12}>
@@ -150,8 +156,8 @@ const GamesIndexScreen = () => {
 					<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 				</Box>
 			)}
-		</div>
-    );
+		</Root>
+	)
 }
 
 export default GamesIndexScreen

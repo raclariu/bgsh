@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useEffect, useState, useRef } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import queryString from 'query-string'
 
@@ -23,20 +23,26 @@ import Loader from '../components/Loader'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	section : {
+const PREFIX = 'SellGamesScreen'
+
+const classes = {
+	section : `${PREFIX}-section`,
+	error   : `${PREFIX}-error`
+}
+
+const Root = styled('form')(({ theme }) => ({
+	[`& .${classes.section}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	},
-	error   : {
+
+	[`& .${classes.error}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
 const SellGamesScreen = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
@@ -210,8 +216,8 @@ const SellGamesScreen = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div className={cls.error}>
+		<Root onSubmit={handleSubmit}>
+			<div className={classes.error}>
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
@@ -227,7 +233,7 @@ const SellGamesScreen = () => {
 			{isSuccess &&
 			saleList.length > 0 && (
 				<Fragment>
-					<Grid container spacing={3} className={cls.section}>
+					<Grid container spacing={3} className={classes.section}>
 						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
@@ -250,7 +256,7 @@ const SellGamesScreen = () => {
 					<Divider />
 
 					{/* Shipping Area */}
-					<Grid container className={cls.section} direction="row" spacing={2}>
+					<Grid container className={classes.section} direction="row" spacing={2}>
 						<Grid item sm={6} xs={12}>
 							<ShippingSection
 								handleShippingInfo={handleShippingInfo}
@@ -331,7 +337,7 @@ const SellGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</form>
+		</Root>
 	)
 }
 

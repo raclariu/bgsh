@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery } from 'react-query'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
@@ -60,13 +60,30 @@ import CustomTooltip from '../components/CustomTooltip'
 // @ Others
 import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root               : {
+const PREFIX = 'SingleGameScreen'
+
+const classes = {
+	root               : `${PREFIX}-root`,
+	chipsBox           : `${PREFIX}-chipsBox`,
+	mainGrid           : `${PREFIX}-mainGrid`,
+	thumbnailContainer : `${PREFIX}-thumbnailContainer`,
+	thumbnail          : `${PREFIX}-thumbnail`,
+	statsBoxes         : `${PREFIX}-statsBoxes`,
+	infoBoxesContainer : `${PREFIX}-infoBoxesContainer`,
+	priceContainer     : `${PREFIX}-priceContainer`,
+	galleryMasonryImg  : `${PREFIX}-galleryMasonryImg`,
+	dialogContent      : `${PREFIX}-dialogContent`,
+	dialogContentImg   : `${PREFIX}-dialogContentImg`,
+	fab                : `${PREFIX}-fab`
+}
+
+const Root = styled('div')(({ theme }) => ({
+	[`&.${classes.root}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(8)
 	},
-	chipsBox           : {
+
+	[`& .${classes.chipsBox}`]: {
 		display        : 'flex',
 		justifyContent : 'center',
 		flexWrap       : 'wrap',
@@ -75,11 +92,13 @@ const useStyles = makeStyles((theme) => ({
 			margin : theme.spacing(0.5)
 		}
 	},
-	mainGrid           : {
+
+	[`& .${classes.mainGrid}`]: {
 		marginTop    : theme.spacing(2),
 		marginBottom : theme.spacing(2)
 	},
-	thumbnailContainer : {
+
+	[`& .${classes.thumbnailContainer}`]: {
 		display                        : 'flex',
 		justifyContent                 : 'center',
 		alignItems                     : 'center',
@@ -90,45 +109,53 @@ const useStyles = makeStyles((theme) => ({
 			marginBottom : theme.spacing(1)
 		}
 	},
-	thumbnail          : {
+
+	[`& .${classes.thumbnail}`]: {
 		objectFit : 'contain',
 		height    : '220px',
 		width     : 'auto',
 		overflow  : 'auto'
 	},
-	statsBoxes         : {
+
+	[`& .${classes.statsBoxes}`]: {
 		marginTop    : theme.spacing(1),
 		marginBottom : theme.spacing(1)
 	},
-	infoBoxesContainer : {
+
+	[`& .${classes.infoBoxesContainer}`]: {
 		width                          : '90%',
 		marginTop                      : theme.spacing(1),
 		[theme.breakpoints.down('sm')]: {
 			width : '70%'
 		}
 	},
-	priceContainer     : {
+
+	[`& .${classes.priceContainer}`]: {
 		marginTop : theme.spacing(2)
 	},
-	galleryMasonryImg  : {
+
+	[`& .${classes.galleryMasonryImg}`]: {
 		maxHeight : '100%',
 		width     : '100%',
 		objectFit : 'contain',
 		cursor    : 'zoom-in'
 	},
-	dialogContent      : {
+
+	[`& .${classes.dialogContent}`]: {
 		display        : 'flex',
 		justifyContent : 'center',
 		alignItems     : 'center'
 	},
-	dialogContentImg   : {
+
+	[`& .${classes.dialogContentImg}`]: {
 		// maxWidth  : '100%',
 		// maxHeight : '100%'
 		maxHeight : '100%',
 		width     : '100%',
 		objectFit : 'contain'
 	},
-	fab                : {
+
+	[`& .${classes.fab}`]: {
 		display   : 'flex',
 		position  : 'fixed',
 		left      : '50%',
@@ -139,7 +166,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const SingleGameScreen = () => {
-	const cls = useStyles()
 	const params = useParams()
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -227,7 +253,7 @@ const SingleGameScreen = () => {
 	}
 
 	return (
-        <div className={cls.root}>
+		<Root className={classes.root}>
 			{isLoading && (
 				<Box display="flex" justifyContent="center">
 					<Loader />
@@ -245,7 +271,7 @@ const SingleGameScreen = () => {
 					<HelmetComponent title={isSuccess ? data.games[index].title : 'Boardgame'} />
 
 					{data.isPack && (
-						<Box className={cls.fab}>
+						<Box className={classes.fab}>
 							<Fab
 								size="small"
 								color="secondary"
@@ -272,13 +298,13 @@ const SingleGameScreen = () => {
 						justifyContent="center"
 						alignItems="flex-start"
 						direction="row"
-						className={cls.mainGrid}
+						className={classes.mainGrid}
 					>
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justifyContent="center">
 							<Box
 								bgcolor="background.paper"
-								className={cls.thumbnailContainer}
+								className={classes.thumbnailContainer}
 								borderRadius="4px"
 								boxShadow={2}
 							>
@@ -288,7 +314,7 @@ const SingleGameScreen = () => {
 									zoomMargin={40}
 								>
 									<img
-										className={cls.thumbnail}
+										className={classes.thumbnail}
 										src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
 										alt={data.games[index].title}
 									/>
@@ -325,7 +351,7 @@ const SingleGameScreen = () => {
 							<Grid
 								item
 								container
-								className={cls.statsBoxes}
+								className={classes.statsBoxes}
 								justifyContent="center"
 								alignItems="center"
 								spacing={1}
@@ -383,7 +409,7 @@ const SingleGameScreen = () => {
 							<Grid
 								item
 								container
-								className={cls.infoBoxesContainer}
+								className={classes.infoBoxesContainer}
 								justifyContent="center"
 								alignItems="center"
 								spacing={1}
@@ -424,7 +450,7 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							<Grid
-								className={cls.priceContainer}
+								className={classes.priceContainer}
 								item
 								container
 								justifyContent="center"
@@ -447,11 +473,11 @@ const SingleGameScreen = () => {
 					{/* Shipping */}
 					<Box display="flex" alignItems="center">
 						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
-						<Box ml={1} className={cls.mainGrid} fontSize="1rem">
+						<Box ml={1} className={classes.mainGrid} fontSize="1rem">
 							Shipping
 						</Box>
 					</Box>
-					<Grid className={cls.mainGrid} container>
+					<Grid className={classes.mainGrid} container>
 						<Grid item container xs={12} direction="column">
 							<Box p={1}>
 								<Typography component="div">
@@ -522,7 +548,7 @@ const SingleGameScreen = () => {
 											<Box fontSize={16} textAlign="center" mt={1}>
 												Personal shipping is available in
 											</Box>
-											<Box className={cls.chipsBox}>
+											<Box className={classes.chipsBox}>
 												{data.shipCities.map((city, index) => (
 													<Chip
 														key={city}
@@ -574,7 +600,7 @@ const SingleGameScreen = () => {
 					)}
 
 					{isSuccessGallery && (
-						<Box className={cls.mainGrid}>
+						<Box className={classes.mainGrid}>
 							{galleryData[index].length > 0 && (
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 									<Masonry gutter="10px">
@@ -589,7 +615,7 @@ const SingleGameScreen = () => {
 												<LazyLoad offset={200} once>
 													<img
 														onClick={() => handleOpenImage(i)}
-														className={cls.galleryMasonryImg}
+														className={classes.galleryMasonryImg}
 														src={obj.thumbnail}
 														alt={obj.caption}
 													/>
@@ -621,9 +647,9 @@ const SingleGameScreen = () => {
 									</Box>
 								</DialogTitle>
 
-								<DialogContent dividers className={cls.dialogContent}>
+								<DialogContent dividers className={classes.dialogContent}>
 									<img
-										className={cls.dialogContentImg}
+										className={classes.dialogContentImg}
 										alt={galleryData[index][imgIndex].caption}
 										src={galleryData[index][imgIndex].image}
 										hidden={!imgLoaded}
@@ -642,19 +668,21 @@ const SingleGameScreen = () => {
 										<Box flexGrow={1}>
 											<CustomTooltip title="Previous image">
 												<IconButton
-                                                    disabled={imgIndex === 0}
-                                                    color="primary"
-                                                    onClick={() => cycleImages('back')}
-                                                    size="large">
+													disabled={imgIndex === 0}
+													color="primary"
+													onClick={() => cycleImages('back')}
+													size="large"
+												>
 													<ArrowBackIcon />
 												</IconButton>
 											</CustomTooltip>
 											<CustomTooltip title="Next image">
 												<IconButton
-                                                    disabled={galleryData[index].length === imgIndex + 1}
-                                                    color="primary"
-                                                    onClick={() => cycleImages('forward')}
-                                                    size="large">
+													disabled={galleryData[index].length === imgIndex + 1}
+													color="primary"
+													onClick={() => cycleImages('forward')}
+													size="large"
+												>
 													<ArrowForwardIcon />
 												</IconButton>
 											</CustomTooltip>
@@ -682,13 +710,13 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					{/* Chips */}
-					<Box className={cls.chipsBox}>
+					<Box className={classes.chipsBox}>
 						<Chips categories={data.games[index].categories} mechanics={data.games[index].mechanics} />
 					</Box>
 				</Fragment>
 			)}
-		</div>
-    );
+		</Root>
+	)
 }
 
 export default SingleGameScreen

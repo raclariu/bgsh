@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -27,21 +27,37 @@ import CustomAvatar from './CustomAvatar'
 // @ Other
 import { calculateTimeAgo } from '../helpers/helpers'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	card        : {
+const PREFIX = 'GameIndexCard';
+
+const classes = {
+    card: `${PREFIX}-card`,
+    media: `${PREFIX}-media`,
+    overlayChip: `${PREFIX}-overlayChip`,
+    title: `${PREFIX}-title`,
+    avatar: `${PREFIX}-avatar`
+};
+
+const StyledCard = styled(Card)((
+    {
+        theme
+    }
+) => ({
+    [`&.${classes.card}`]: {
 		position : 'relative'
 	},
-	media       : {
+
+    [`& .${classes.media}`]: {
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	overlayChip : {
+
+    [`& .${classes.overlayChip}`]: {
 		position : 'absolute',
 		top      : '8px',
 		left     : '8px'
 	},
-	title       : {
+
+    [`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -49,16 +65,17 @@ const useStyles = makeStyles((theme) => ({
 		width           : '100%',
 		textAlign       : 'center'
 	},
-	avatar      : {
+
+    [`& .${classes.avatar}`]: {
 		width           : theme.spacing(4),
 		height          : theme.spacing(4),
 		backgroundColor : theme.palette.primary.main
 	}
-}))
+}));
 
 // @ Main
 const GameIndexCard = ({ data }) => {
-	const cls = useStyles()
+
 
 	const [ index, setIndex ] = useState(0)
 
@@ -76,10 +93,10 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={1}>
+        <StyledCard className={classes.card} elevation={1}>
 			<Box py={1}>
 				<CardMedia
-					className={cls.media}
+					className={classes.media}
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
@@ -115,7 +132,12 @@ const GameIndexCard = ({ data }) => {
 			</Box>
 
 			{data.isPack && (
-				<Chip size="small" color="secondary" className={cls.overlayChip} label={`${data.games.length} pack`} />
+				<Chip
+					size="small"
+					color="secondary"
+					className={classes.overlayChip}
+					label={`${data.games.length} pack`}
+				/>
 			)}
 
 			<Divider />
@@ -138,7 +160,7 @@ const GameIndexCard = ({ data }) => {
 							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={cls.title}>{data.games[index].title}</Box>
+							<Box className={classes.title}>{data.games[index].title}</Box>
 							<IconButton
 								color="primary"
 								disabled={data.games.length === index + 1}
@@ -149,7 +171,7 @@ const GameIndexCard = ({ data }) => {
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box width="100%" className={cls.title}>
+						<Box width="100%" className={classes.title}>
 							{data.games[index].title}
 						</Box>
 					)}
@@ -214,8 +236,8 @@ const GameIndexCard = ({ data }) => {
 					{data.mode !== 'want' && <GameDetailsButton altId={data.altId} />}
 				</Box>
 			</CardActions>
-		</Card>
-	)
+		</StyledCard>
+    );
 }
 
 export default GameIndexCard

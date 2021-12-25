@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
@@ -32,16 +32,24 @@ import Input from './Input'
 import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	input    : {
+const PREFIX = 'ActiveAddHistoryButton'
+
+const classes = {
+	input    : `${PREFIX}-input`,
+	textarea : `${PREFIX}-textarea`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.input}`]: {
 		minHeight                      : '70px',
 		width                          : '70%',
 		[theme.breakpoints.down('sm')]: {
 			width : '100%'
 		}
 	},
-	textarea : {
+
+	[`& .${classes.textarea}`]: {
 		width                          : '70%',
 		[theme.breakpoints.down('sm')]: {
 			width : '100%'
@@ -51,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
-	const cls = useStyles()
 	const queryClient = useQueryClient()
 
 	const [ openDialog, setOpenDialog ] = useState(false)
@@ -143,15 +150,11 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfo : false
 
 	return (
-        <Fragment>
+		<Root>
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
-						<IconButton
-                            disabled={!isActive}
-                            onClick={handleOpenDialog}
-                            color="primary"
-                            size="large">
+						<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary" size="large">
 							<CheckCircleOutlineOutlinedIcon fontSize="small" />
 						</IconButton>
 					</CustomTooltip>
@@ -171,7 +174,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 						<DialogContent dividers>
 							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 								<Input
-									className={cls.input}
+									className={classes.input}
 									error={!!otherUsernameError}
 									helperText={otherUsernameError}
 									onChange={(e) => setOtherUsername(e.target.value)}
@@ -189,7 +192,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 								{mode === 'sell' && (
 									<Input
-										className={cls.input}
+										className={classes.input}
 										error={!!finalPriceError}
 										helperText={finalPriceError}
 										onChange={(e) => setFinalPrice(e.target.value)}
@@ -205,7 +208,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								)}
 
 								<Input
-									className={cls.textarea}
+									className={classes.textarea}
 									error={!!extraInfoError}
 									helperText={extraInfoError}
 									value={extraInfo}
@@ -284,11 +287,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'reactivate' && (
 				<Fragment>
 					<CustomTooltip title="Reactivate">
-						<IconButton
-                            disabled={isActive}
-                            onClick={handleOpenDialog}
-                            color="primary"
-                            size="large">
+						<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary" size="large">
 							<RefreshIcon fontSize="small" />
 						</IconButton>
 					</CustomTooltip>
@@ -318,8 +317,8 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					</Dialog>
 				</Fragment>
 			)}
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default ActiveAddHistoryButton

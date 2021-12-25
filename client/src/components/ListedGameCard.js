@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -26,28 +26,41 @@ import ActiveAddHistoryButton from './ActiveAddHistoryButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	card          : {
+const PREFIX = 'ListedGameCard'
+
+const classes = {
+	card          : `${PREFIX}-card`,
+	media         : `${PREFIX}-media`,
+	overlayTop    : `${PREFIX}-overlayTop`,
+	overlayBottom : `${PREFIX}-overlayBottom`,
+	title         : `${PREFIX}-title`
+}
+
+const StyledCard = styled(Card)(({ theme }) => ({
+	[`&.${classes.card}`]: {
 		position : 'relative'
 	},
-	media         : {
+
+	[`& .${classes.media}`]: {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	overlayTop    : {
+
+	[`& .${classes.overlayTop}`]: {
 		position : 'absolute',
 		top      : '8px',
 		left     : '8px'
 	},
-	overlayBottom : {
+
+	[`& .${classes.overlayBottom}`]: {
 		position : 'absolute',
 		top      : '36px',
 		left     : '8px'
 	},
-	title         : {
+
+	[`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -59,8 +72,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const ListedGameCard = ({ data }) => {
-	const cls = useStyles()
-
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -77,9 +88,9 @@ const ListedGameCard = ({ data }) => {
 	}
 
 	return (
-        <Card className={cls.card} elevation={1}>
+		<StyledCard className={classes.card} elevation={1}>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.games[index].title}
@@ -91,12 +102,12 @@ const ListedGameCard = ({ data }) => {
 					<Chip
 						size="small"
 						color="secondary"
-						className={cls.overlayTop}
+						className={classes.overlayTop}
 						label={`${data.games.length} pack`}
 					/>
 
 					{data.mode === 'sell' && (
-						<Box className={cls.overlayBottom}>
+						<Box className={classes.overlayBottom}>
 							<CustomTooltip title="For sale">
 								<MonetizationOnOutlinedIcon color="secondary" />
 							</CustomTooltip>
@@ -104,7 +115,7 @@ const ListedGameCard = ({ data }) => {
 					)}
 
 					{data.mode === 'trade' && (
-						<Box className={cls.overlayBottom}>
+						<Box className={classes.overlayBottom}>
 							<CustomTooltip title="For trade">
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
 							</CustomTooltip>
@@ -115,7 +126,7 @@ const ListedGameCard = ({ data }) => {
 
 			{!data.isPack &&
 			data.mode === 'sell' && (
-				<Box className={cls.overlayTop}>
+				<Box className={classes.overlayTop}>
 					<CustomTooltip title="For sale">
 						<MonetizationOnOutlinedIcon color="secondary" />
 					</CustomTooltip>
@@ -124,7 +135,7 @@ const ListedGameCard = ({ data }) => {
 
 			{!data.isPack &&
 			data.mode === 'trade' && (
-				<Box className={cls.overlayTop}>
+				<Box className={classes.overlayTop}>
 					<CustomTooltip title="For trade">
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
 					</CustomTooltip>
@@ -133,7 +144,7 @@ const ListedGameCard = ({ data }) => {
 
 			{!data.isPack &&
 			data.mode === 'want' && (
-				<Box className={cls.overlayTop}>
+				<Box className={classes.overlayTop}>
 					<CustomTooltip title="Want to buy">
 						<AddCircleOutlineIcon color="secondary" />
 					</CustomTooltip>
@@ -153,25 +164,27 @@ const ListedGameCard = ({ data }) => {
 					{data.isPack ? (
 						<Fragment>
 							<IconButton
-                                color="primary"
-                                disabled={index === 0}
-                                onClick={() => handleIndex('minus')}
-                                size="large">
+								color="primary"
+								disabled={index === 0}
+								onClick={() => handleIndex('minus')}
+								size="large"
+							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={cls.title}>
+							<Box className={classes.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
 							<IconButton
-                                color="primary"
-                                disabled={data.games.length === index + 1}
-                                onClick={() => handleIndex('plus')}
-                                size="large">
+								color="primary"
+								disabled={data.games.length === index + 1}
+								onClick={() => handleIndex('plus')}
+								size="large"
+							>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={cls.title}>
+						<Box className={classes.title}>
 							{data.games[index].title} ({data.games[index].year})
 						</Box>
 					)}
@@ -202,8 +215,8 @@ const ListedGameCard = ({ data }) => {
 					<ActiveAddHistoryButton gameId={data._id} display="delete" />
 				</Box>
 			</CardActions>
-		</Card>
-    );
+		</StyledCard>
+	)
 }
 
 export default ListedGameCard

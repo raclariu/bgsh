@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
+import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import AppBar from '@mui/material/AppBar'
@@ -54,45 +54,70 @@ import NotificationsPopover from './NotificationsPopover'
 // @ Others
 import { signOut } from '../actions/userActions'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root     : {
+const PREFIX = 'Header';
+
+const classes = {
+    root: `${PREFIX}-root`,
+    title: `${PREFIX}-title`,
+    list: `${PREFIX}-list`,
+    fullList: `${PREFIX}-fullList`,
+    listText: `${PREFIX}-listText`,
+    avatar: `${PREFIX}-avatar`,
+    nested: `${PREFIX}-nested`,
+    paper: `${PREFIX}-paper`,
+    ml: `${PREFIX}-ml`
+};
+
+const Root = styled('div')((
+    {
+        theme
+    }
+) => ({
+    [`&.${classes.root}`]: {
 		flexGrow : 1
 	},
-	title    : {
+
+    [`& .${classes.title}`]: {
 		flexGrow : 1
 	},
-	list     : {
+
+    [`& .${classes.list}`]: {
 		width : 250
 	},
-	fullList : {
+
+    [`& .${classes.fullList}`]: {
 		width : 'auto'
 	},
-	listText : {
+
+    [`& .${classes.listText}`]: {
 		textDecoration : 'none'
 	},
-	avatar   : {
+
+    [`& .${classes.avatar}`]: {
 		width           : theme.spacing(5),
 		height          : theme.spacing(5),
 		backgroundColor : theme.palette.primary.main
 	},
-	nested   : {
+
+    [`& .${classes.nested}`]: {
 		paddingLeft : theme.spacing(4)
 	},
-	paper    : {
+
+    [`& .${classes.paper}`]: {
 		borderRadius : theme.spacing(2),
 		marginTop    : '2vh',
 		marginRight  : '1vh',
 		height       : '96vh'
 	},
-	ml       : {
+
+    [`& .${classes.ml}`]: {
 		marginLeft : theme.spacing(2)
 	}
-}))
+}));
 
 // @ Main
 const Header = () => {
-	const classes = useStyles()
+
 	const dispatch = useDispatch()
 
 	const [ isOpen, setIsOpen ] = useState(false)
@@ -137,7 +162,7 @@ const Header = () => {
 	}
 
 	return (
-        <div className={classes.root}>
+        <Root className={classes.root}>
 			<AppBar elevation={1} position="static" color="transparent">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
@@ -723,7 +748,7 @@ const Header = () => {
 					)}
 				</Toolbar>
 			</AppBar>
-		</div>
+		</Root>
     );
 }
 

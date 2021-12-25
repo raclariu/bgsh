@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
@@ -25,17 +25,21 @@ import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
 import { useNotification } from '../hooks/hooks'
 import { apiUserChangePassword } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	input : {
+const PREFIX = 'ChangePasswordForm'
+
+const classes = {
+	input : `${PREFIX}-input`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.input}`]: {
 		minHeight : '90px'
 	}
 }))
 
 // @ Main
 const ChangePasswordForm = () => {
-	const cls = useStyles()
-
 	const [ passwordCurrent, setPasswordCurrent ] = useState('')
 	const [ passwordNew, setPasswordNew ] = useState('')
 	const [ passwordNewConfirmation, setPasswordNewConfirmation ] = useState('')
@@ -82,10 +86,10 @@ const ChangePasswordForm = () => {
 	}
 
 	return (
-        <Fragment>
+		<Root>
 			<form onSubmit={submitHandler} autoComplete="off">
 				<Input
-					className={cls.input}
+					className={classes.input}
 					error={isError && passwordCurrentErrorMsg ? true : false}
 					helperText={isError ? passwordCurrentErrorMsg : false}
 					onChange={(e) => setPasswordCurrent(e.target.value)}
@@ -109,7 +113,7 @@ const ChangePasswordForm = () => {
 				/>
 
 				<Input
-					className={cls.input}
+					className={classes.input}
 					error={isError && passwordNewErrorMsg ? true : false}
 					helperText={isError ? passwordNewErrorMsg : false}
 					onChange={(e) => setPasswordNew(e.target.value)}
@@ -133,7 +137,7 @@ const ChangePasswordForm = () => {
 				/>
 
 				<Input
-					className={cls.input}
+					className={classes.input}
 					error={isError && passwordNewConfirmationErrorMsg ? true : false}
 					helperText={isError ? passwordNewConfirmationErrorMsg : false}
 					onChange={(e) => setPasswordNewConfirmation(e.target.value)}
@@ -166,8 +170,8 @@ const ChangePasswordForm = () => {
 					</Button>
 				</Box>
 			</form>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default ChangePasswordForm

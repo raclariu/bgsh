@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useState, Fragment } from 'react'
+import { styled } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -33,9 +33,17 @@ import { removeFromSaleList } from '../actions/saleListActions'
 import { saleListLimit } from '../constants/saleListConstants'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	popover   : {
+const PREFIX = 'SaleListPopover'
+
+const classes = {
+	popover   : `${PREFIX}-popover`,
+	subheader : `${PREFIX}-subheader`,
+	btnGroup  : `${PREFIX}-btnGroup`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.popover}`]: {
 		[theme.breakpoints.down('sm')]: {
 			width : '100vw'
 		},
@@ -43,10 +51,12 @@ const useStyles = makeStyles((theme) => ({
 			width : 400
 		}
 	},
-	subheader : {
+
+	[`& .${classes.subheader}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	},
-	btnGroup  : {
+
+	[`& .${classes.btnGroup}`]: {
 		display        : 'flex',
 		alignItems     : 'center',
 		justifyContent : 'center',
@@ -56,8 +66,6 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const SaleListPopover = () => {
-	const cls = useStyles()
-
 	const dispatch = useDispatch()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
@@ -89,18 +97,15 @@ const SaleListPopover = () => {
 	}
 
 	return (
-        <Fragment>
-			<IconButton
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                color="primary"
-                size="large">
+		<Root>
+			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>
 			</IconButton>
 
 			<Popover
-				classes={{ paper: cls.popover }}
+				classes={{ paper: classes.popover }}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={handleClose}
@@ -163,9 +168,10 @@ const SaleListPopover = () => {
 							/>
 							<ListItemSecondaryAction>
 								<IconButton
-                                    edge="end"
-                                    onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
-                                    size="large">
+									edge="end"
+									onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
+									size="large"
+								>
 									<HighlightOffIcon color="error" />
 								</IconButton>
 							</ListItemSecondaryAction>
@@ -209,8 +215,8 @@ const SaleListPopover = () => {
 
 				<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
 			</Popover>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default SaleListPopover

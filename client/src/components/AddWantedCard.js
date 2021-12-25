@@ -1,7 +1,7 @@
 // @ Libraries
 import React from 'react'
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -28,24 +28,32 @@ import Input from './Input'
 // @ Icons
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	media        : {
+const PREFIX = 'AddWantedCard'
+
+const classes = {
+	media        : `${PREFIX}-media`,
+	autocomplete : `${PREFIX}-autocomplete`,
+	error        : `${PREFIX}-error`
+}
+
+const StyledCard = styled(Card)(({ theme }) => ({
+	[`& .${classes.media}`]: {
 		objectFit      : 'cover',
 		height         : '180px',
 		objectPosition : 'center 10%'
 	},
-	autocomplete : {
+
+	[`& .${classes.autocomplete}`]: {
 		marginTop : theme.spacing(2)
 	},
-	error        : {
+
+	[`& .${classes.error}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
 const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }) => {
-	const cls = useStyles()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
 	const displayImageHandler = (image, thumbnail) => {
@@ -58,7 +66,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 	console.log(data)
 
 	return (
-        <Card elevation={1}>
+		<StyledCard elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
@@ -76,7 +84,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 				}}
 			/>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				image={displayImageHandler(game.image, game.thumbnail)}
 				alt={game.title}
@@ -150,8 +158,8 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 					)}
 				/>
 			</CardContent>
-		</Card>
-    );
+		</StyledCard>
+	)
 }
 
 export default AddWantedCard

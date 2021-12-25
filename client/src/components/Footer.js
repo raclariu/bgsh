@@ -1,15 +1,20 @@
 // @ Libraries
 import React from 'react'
-import makeStyles from '@mui/styles/makeStyles';
+import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	footer : {
+const PREFIX = 'Footer'
+
+const classes = {
+	footer : `${PREFIX}-footer`
+}
+
+const Root = styled('footer')(({ theme }) => ({
+	[`&.${classes.footer}`]: {
 		padding         : theme.spacing(3, 2),
 		marginTop       : 'auto',
 		backgroundColor :
@@ -32,14 +37,12 @@ function Copyright() {
 
 // @ Main
 export default function StickyFooter() {
-	const classes = useStyles()
-
 	return (
-		<footer className={classes.footer}>
+		<Root className={classes.footer}>
 			<Container maxWidth="sm">
 				<Typography variant="body1">Footer Placeholder</Typography>
 				<Copyright />
 			</Container>
-		</footer>
+		</Root>
 	)
 }

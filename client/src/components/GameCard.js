@@ -1,8 +1,8 @@
 // @ Libraries
 import React from 'react'
+import { styled } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -22,15 +22,22 @@ import CustomTooltip from './CustomTooltip'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import SearchIcon from '@mui/icons-material/Search'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	media : {
+const PREFIX = 'GameCard'
+
+const classes = {
+	media : `${PREFIX}-media`,
+	title : `${PREFIX}-title`
+}
+
+const StyledCard = styled(Card)(({ theme }) => ({
+	[`& .${classes.media}`]: {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
-	title : {
+
+	[`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -42,12 +49,10 @@ const useStyles = makeStyles((theme) => ({
 
 // @ Main
 const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
-	const cls = useStyles()
-
 	return (
-		<Card elevation={1}>
+		<StyledCard elevation={1}>
 			<CardMedia
-				className={cls.media}
+				className={classes.media}
 				component="img"
 				alt={data.title}
 				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -64,7 +69,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={cls.title}>
+					<Box className={classes.title}>
 						{data.title} ({data.year})
 					</Box>
 				</Box>
@@ -97,7 +102,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 					</CustomTooltip>
 				</Box>
 			</CardActions>
-		</Card>
+		</StyledCard>
 	)
 }
 

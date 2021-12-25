@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { Fragment, useEffect, useState, useRef } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import queryString from 'query-string'
 
@@ -23,20 +23,26 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddGameToHistory } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	section : {
+const PREFIX = 'BuyGamesScreen'
+
+const classes = {
+	section : `${PREFIX}-section`,
+	error   : `${PREFIX}-error`
+}
+
+const Root = styled('form')(({ theme }) => ({
+	[`& .${classes.section}`]: {
 		marginTop    : theme.spacing(4),
 		marginBottom : theme.spacing(4)
 	},
-	error   : {
+
+	[`& .${classes.error}`]: {
 		margin : theme.spacing(2, 0, 2, 0)
 	}
 }))
 
 // @ Main
 const BuyGamesScreen = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
@@ -158,7 +164,7 @@ const BuyGamesScreen = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<Root onSubmit={handleSubmit}>
 			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 
 			{mutation.isError &&
@@ -171,7 +177,7 @@ const BuyGamesScreen = () => {
 			{isSuccess &&
 			saleList.length > 0 && (
 				<Fragment>
-					<Grid container spacing={3} className={cls.section}>
+					<Grid container spacing={3} className={classes.section}>
 						{values.map((game) => (
 							<Grid item key={game.bggId} xs={12} sm={6} md={4}>
 								<SellGameCard
@@ -250,7 +256,7 @@ const BuyGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</form>
+		</Root>
 	)
 }
 

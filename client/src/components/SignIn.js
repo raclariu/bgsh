@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
 import IconButton from '@mui/material/IconButton'
@@ -21,20 +21,26 @@ import Input from './Input'
 import { signIn } from '../actions/userActions'
 import { useNotification } from '../hooks/hooks'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root  : {
+const PREFIX = 'SignIn'
+
+const classes = {
+	root  : `${PREFIX}-root`,
+	input : `${PREFIX}-input`
+}
+
+const Root = styled('form')(({ theme }) => ({
+	[`&.${classes.root}`]: {
 		width  : '100%',
 		margin : theme.spacing(4, 0, 0, 0)
 	},
-	input : {
+
+	[`& .${classes.input}`]: {
 		minHeight : '90px'
 	}
 }))
 
 // @ Main
 const SignIn = () => {
-	const cls = useStyles()
 	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
@@ -74,9 +80,9 @@ const SignIn = () => {
 	}
 
 	return (
-        <form onSubmit={submitHandler} className={cls.root} autoComplete="off">
+		<Root onSubmit={submitHandler} className={classes.root} autoComplete="off">
 			<Input
-				className={cls.input}
+				className={classes.input}
 				error={error && error.emailError ? true : false}
 				helperText={error ? error.emailError : false}
 				onChange={(e) => setEmail(e.target.value)}
@@ -92,7 +98,7 @@ const SignIn = () => {
 			/>
 
 			<Input
-				className={cls.input}
+				className={classes.input}
 				error={error && error.passwordError ? true : false}
 				helperText={error ? error.passwordError : false}
 				onChange={(e) => setPassword(e.target.value)}
@@ -118,8 +124,8 @@ const SignIn = () => {
 			<Button type="submit" variant="contained" color="primary" size="large" disabled={loading} fullWidth>
 				{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
 			</Button>
-		</form>
-    );
+		</Root>
+	)
 }
 
 export default SignIn

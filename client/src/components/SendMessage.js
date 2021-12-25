@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
+import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
@@ -21,20 +21,27 @@ import Input from './Input'
 // @ Others
 import { apiSendMessage } from '../api/api'
 
-// @ Styles
-const useStyles = makeStyles((theme) => ({
-	root  : {
+const PREFIX = 'SendMessage'
+
+const classes = {
+	root  : `${PREFIX}-root`,
+	input : `${PREFIX}-input`
+}
+
+// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
+const Root = styled('div')(({ theme }) => ({
+	[`& .${classes.root}`]: {
 		width  : '100%',
 		margin : theme.spacing(4, 0, 0, 0)
 	},
-	input : {
+
+	[`& .${classes.input}`]: {
 		minHeight : '90px'
 	}
 }))
 
 // @Main
 const SendMessage = ({ recipientUsername = '' }) => {
-	const cls = useStyles()
 	const queryClient = useQueryClient()
 
 	const username = useSelector((state) => state.userAuth.userData.username)
@@ -70,13 +77,14 @@ const SendMessage = ({ recipientUsername = '' }) => {
 	}
 
 	return (
-        <Fragment>
+		<Root>
 			<CustomTooltip title="Send message">
 				<IconButton
-                    disabled={username === recipientUsername}
-                    color="primary"
-                    onClick={handleOpenDialog}
-                    size="large">
+					disabled={username === recipientUsername}
+					color="primary"
+					onClick={handleOpenDialog}
+					size="large"
+				>
 					<MailTwoToneIcon fontSize="small" />
 				</IconButton>
 			</CustomTooltip>
@@ -85,7 +93,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 				<form onSubmit={submitHandler} autoComplete="off">
 					<DialogContent>
 						<Input
-							className={cls.input}
+							className={classes.input}
 							error={
 								mutation.isError && mutation.error.response.data.message.recipientError ? true : false
 							}
@@ -107,7 +115,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						/>
 
 						<Input
-							className={cls.input}
+							className={classes.input}
 							error={mutation.isError && mutation.error.response.data.message.subjectError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.subjectError : false}
 							onChange={(e) => setSubject(e.target.value)}
@@ -154,8 +162,8 @@ const SendMessage = ({ recipientUsername = '' }) => {
 					</DialogActions>
 				</form>
 			</Dialog>
-		</Fragment>
-    );
+		</Root>
+	)
 }
 
 export default SendMessage
