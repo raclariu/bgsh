@@ -2,7 +2,7 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from '@mui/styles/makeStyles'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -76,7 +76,7 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	return (
-        <Card className={cls.card} elevation={1}>
+		<Card className={cls.card} elevation={1}>
 			<Box py={1}>
 				<CardMedia
 					className={cls.media}
@@ -131,18 +131,20 @@ const GameIndexCard = ({ data }) => {
 					{data.isPack ? (
 						<Fragment>
 							<IconButton
-                                color="primary"
-                                disabled={index === 0}
-                                onClick={() => handleIndex('minus')}
-                                size="large">
+								color="primary"
+								disabled={index === 0}
+								onClick={() => handleIndex('minus')}
+								size="large"
+							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>{data.games[index].title}</Box>
 							<IconButton
-                                color="primary"
-                                disabled={data.games.length === index + 1}
-                                onClick={() => handleIndex('plus')}
-                                size="large">
+								color="primary"
+								disabled={data.games.length === index + 1}
+								onClick={() => handleIndex('plus')}
+								size="large"
+							>
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
@@ -161,6 +163,7 @@ const GameIndexCard = ({ data }) => {
 						<Fragment>
 							<Chip
 								size="small"
+								color="primary"
 								variant="outlined"
 								label={`${data.games[index].type} • ${data.games[index].condition}`}
 							/>
@@ -168,6 +171,7 @@ const GameIndexCard = ({ data }) => {
 							<Box mt={0.5}>
 								<Chip
 									size="small"
+									color="primary"
 									variant="outlined"
 									label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
 								/>
@@ -211,7 +215,7 @@ const GameIndexCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-    );
+	)
 }
 
 export default GameIndexCard

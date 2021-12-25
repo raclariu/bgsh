@@ -1,10 +1,10 @@
 // @ Libraries
-import { createTheme, adaptV4Theme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles'
 
 // @ Light
-export const light = createTheme(adaptV4Theme({
+export const light = createTheme({
 	palette : {
-		type      : 'light',
+		mode      : 'light',
 		primary   : {
 			main : '#651fff'
 		},
@@ -12,7 +12,7 @@ export const light = createTheme(adaptV4Theme({
 			main : '#ff3d00'
 		}
 	}
-}))
+})
 
 // // @ Dark
 // export const dark = createTheme({
@@ -32,9 +32,9 @@ export const light = createTheme(adaptV4Theme({
 // 	}
 // })
 
-export const dark = createTheme(adaptV4Theme({
+export const dark = createTheme({
 	palette : {
-		type       : 'dark',
+		mode       : 'dark',
 		primary    : {
 			main : '#58a5f0'
 		},
@@ -46,4 +46,4 @@ export const dark = createTheme(adaptV4Theme({
 			default : '#1A122E'
 		}
 	}
-}))
+})
