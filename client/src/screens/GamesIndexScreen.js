@@ -2,14 +2,14 @@
 import React, { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
 // @ Components
 import GamesIndexCard from '../components/GameIndexCard'
@@ -93,7 +93,7 @@ const GamesIndexScreen = () => {
 	}
 
 	return (
-		<div className={cls.root}>
+        <div className={cls.root}>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
@@ -144,14 +144,14 @@ const GamesIndexScreen = () => {
 					justifyContent="center"
 					height={60}
 					width="100%"
-					borderRadius={4}
+					borderRadius="4px"
 					mt={4}
 				>
 					<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 				</Box>
 			)}
 		</div>
-	)
+    );
 }
 
 export default GamesIndexScreen

@@ -1,31 +1,31 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Popover from '@material-ui/core/Popover'
-import IconButton from '@material-ui/core/IconButton'
-import Box from '@material-ui/core/Box'
-import Grow from '@material-ui/core/Grow'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import Divider from '@material-ui/core/Divider'
-import Badge from '@material-ui/core/Badge'
-import Button from '@material-ui/core/Button'
-import Avatar from '@material-ui/core/Avatar'
-import Chip from '@material-ui/core/Chip'
+import Popover from '@mui/material/Popover'
+import IconButton from '@mui/material/IconButton'
+import Box from '@mui/material/Box'
+import Grow from '@mui/material/Grow'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Divider from '@mui/material/Divider'
+import Badge from '@mui/material/Badge'
+import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
+import Chip from '@mui/material/Chip'
 
 // @ Icons
-import NotificationsNoneTwoToneIcon from '@material-ui/icons/NotificationsNoneTwoTone'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
-import NotificationsActiveTwoToneIcon from '@material-ui/icons/NotificationsActiveTwoTone'
+import NotificationsNoneTwoToneIcon from '@mui/icons-material/NotificationsNoneTwoTone'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
 
 // @ Others
 import { apiGetNotifications } from '../api/api'
@@ -34,7 +34,7 @@ import { calculateTimeAgo } from '../helpers/helpers'
 // @ Styles
 const useStyles = makeStyles((theme) => ({
 	popover   : {
-		[theme.breakpoints.down('xs')]: {
+		[theme.breakpoints.down('sm')]: {
 			width : '100vw'
 		},
 		[theme.breakpoints.up('sm')]: {
@@ -68,10 +68,13 @@ const NotificationsPopover = () => {
 	})
 
 	return (
-		<Fragment>
+        <Fragment>
 			{console.count('renders:')}
 
-			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary">
+			<IconButton
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                color="primary"
+                size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? data.notifications.length : 0}>
 					{isSuccess && data.notifications.length > 0 ? (
 						<NotificationsActiveTwoToneIcon />
@@ -128,7 +131,7 @@ const NotificationsPopover = () => {
 									}}
 								/>
 								<ListItemSecondaryAction>
-									<IconButton edge="end">
+									<IconButton edge="end" size="large">
 										<HighlightOffIcon color="error" />
 									</IconButton>
 								</ListItemSecondaryAction>
@@ -147,7 +150,7 @@ const NotificationsPopover = () => {
 				)}
 			</Popover>
 		</Fragment>
-	)
+    );
 }
 
 export default NotificationsPopover

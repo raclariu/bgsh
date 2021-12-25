@@ -1,26 +1,26 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContent from '@material-ui/core/DialogContent'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Button from '@material-ui/core/Button'
-import DialogActions from '@material-ui/core/DialogActions'
-import Divider from '@material-ui/core/Divider'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import Divider from '@mui/material/Divider'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
-import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined'
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
-import RefreshIcon from '@material-ui/icons/Refresh'
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 // @ Components
 import Loader from './Loader'
@@ -37,13 +37,13 @@ const useStyles = makeStyles((theme) => ({
 	input    : {
 		minHeight                      : '70px',
 		width                          : '70%',
-		[theme.breakpoints.down('xs')]: {
+		[theme.breakpoints.down('sm')]: {
 			width : '100%'
 		}
 	},
 	textarea : {
 		width                          : '70%',
-		[theme.breakpoints.down('xs')]: {
+		[theme.breakpoints.down('sm')]: {
 			width : '100%'
 		}
 	}
@@ -143,17 +143,21 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfo : false
 
 	return (
-		<Fragment>
+        <Fragment>
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
-						<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary">
+						<IconButton
+                            disabled={!isActive}
+                            onClick={handleOpenDialog}
+                            color="primary"
+                            size="large">
 							<CheckCircleOutlineOutlinedIcon fontSize="small" />
 						</IconButton>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
-						<DialogTitle disableTypography>
+						<DialogTitle>
 							<Typography variant="body2">
 								Fill in the form below for history purposes. Username is not required, but it is
 								recommended to be filled in.
@@ -246,13 +250,13 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'delete' && (
 				<Fragment>
 					<CustomTooltip title="Delete">
-						<IconButton onClick={handleOpenDialog}>
+						<IconButton onClick={handleOpenDialog} size="large">
 							<DeleteOutlineIcon color="error" fontSize="small" />
 						</IconButton>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-						<DialogTitle disableTypography>
+						<DialogTitle>
 							<Typography variant="subtitle2" align="center">
 								Are you sure you want to delete this game?
 							</Typography>
@@ -280,13 +284,17 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'reactivate' && (
 				<Fragment>
 					<CustomTooltip title="Reactivate">
-						<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary">
+						<IconButton
+                            disabled={isActive}
+                            onClick={handleOpenDialog}
+                            color="primary"
+                            size="large">
 							<RefreshIcon fontSize="small" />
 						</IconButton>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-						<DialogTitle disableTypography>
+						<DialogTitle>
 							<Typography variant="subtitle2" align="center">
 								Are you sure you want to reactivate this board game?
 							</Typography>
@@ -311,7 +319,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 				</Fragment>
 			)}
 		</Fragment>
-	)
+    );
 }
 
 export default ActiveAddHistoryButton

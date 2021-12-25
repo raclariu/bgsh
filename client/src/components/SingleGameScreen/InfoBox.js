@@ -2,7 +2,7 @@
 import React from 'react'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
+import Box from '@mui/material/Box'
 
 // @ Styles
 const defaultBox = {

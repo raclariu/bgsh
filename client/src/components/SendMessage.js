@@ -1,18 +1,18 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import Dialog from '@material-ui/core/Dialog'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogActions from '@material-ui/core/DialogActions'
-import Button from '@material-ui/core/Button'
+import IconButton from '@mui/material/IconButton'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Button from '@mui/material/Button'
 
 // @ Mui Icons
-import MailTwoToneIcon from '@material-ui/icons/MailTwoTone'
+import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
 
 // @ Components
 import CustomTooltip from './CustomTooltip'
@@ -70,9 +70,13 @@ const SendMessage = ({ recipientUsername = '' }) => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<CustomTooltip title="Send message">
-				<IconButton disabled={username === recipientUsername} color="primary" onClick={handleOpenDialog}>
+				<IconButton
+                    disabled={username === recipientUsername}
+                    color="primary"
+                    onClick={handleOpenDialog}
+                    size="large">
 					<MailTwoToneIcon fontSize="small" />
 				</IconButton>
 			</CustomTooltip>
@@ -151,7 +155,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 				</form>
 			</Dialog>
 		</Fragment>
-	)
+    );
 }
 
 export default SendMessage

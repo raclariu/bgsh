@@ -2,15 +2,15 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import Divider from '@material-ui/core/Divider'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
 
 // @ Components
 import GameCard from '../components/GameCard'
@@ -96,7 +96,7 @@ const CollectionScreen = () => {
 	}
 
 	return (
-		<div className={cls.root}>
+        <div className={cls.root}>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
@@ -153,14 +153,14 @@ const CollectionScreen = () => {
 						justifyContent="center"
 						height={60}
 						width="100%"
-						borderRadius={4}
+						borderRadius="4px"
 						mt={4}
 					>
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</div>
-	)
+    );
 }
 
 export default CollectionScreen

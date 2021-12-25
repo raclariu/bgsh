@@ -1,10 +1,10 @@
 // @ Libraries
 import React, { Fragment } from 'react'
-import Chip from '@material-ui/core/Chip'
+import Chip from '@mui/material/Chip'
 
 // @ Icons
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined'
-import CategoryOutlinedIcon from '@material-ui/icons/CategoryOutlined'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 
 // @ Main
 const Chips = ({ categories, mechanics }) => {

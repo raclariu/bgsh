@@ -1,26 +1,26 @@
 // @ Libraries
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import IconButton from '@material-ui/core/IconButton'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
-import Typography from '@material-ui/core/Typography'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
+import Autocomplete from '@mui/material/Autocomplete'
+import InputAdornment from '@mui/material/InputAdornment'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
+import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 // @ Components
 import Input from '../Input'
 
 // @ Icons
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -54,12 +54,12 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	}
 
 	return (
-		<Card elevation={1}>
+        <Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
 				action={
-					<IconButton onClick={() => removeFromSaleListHandler(game.bggId)}>
+					<IconButton onClick={() => removeFromSaleListHandler(game.bggId)} size="large">
 						<HighlightOffIcon color="error" />
 					</IconButton>
 				}
@@ -98,7 +98,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 				<Autocomplete
 					value={data.version}
-					getOptionSelected={(option, value) => option.title === value.title}
+					isOptionEqualToValue={(option, value) => option.title === value.title}
 					onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'version')}
 					options={game.versions}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
@@ -117,7 +117,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					<Autocomplete
 						className={cls.autocomplete}
 						value={data.condition}
-						getOptionSelected={(option, value) => option === value}
+						isOptionEqualToValue={(option, value) => option === value}
 						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'condition')}
 						// if options change, don't forget to also change the arr on the server validator
 						options={[
@@ -192,7 +192,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				</Grid>
 			</CardContent>
 		</Card>
-	)
+    );
 }
 
 export default SellGameCard

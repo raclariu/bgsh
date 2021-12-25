@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@mui/material/IconButton'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
-import Favorite from '@material-ui/icons/Favorite'
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder'
+import Favorite from '@mui/icons-material/Favorite'
 
 // @ Components
 import Loader from './Loader'
@@ -65,9 +65,9 @@ const SaveGameButton = ({ altId, addedById }) => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			{isLoading && (
-				<IconButton disabled disableRipple>
+				<IconButton disabled disableRipple size="large">
 					<Loader size={20} />
 				</IconButton>
 			)}
@@ -86,7 +86,7 @@ const SaveGameButton = ({ altId, addedById }) => {
 				/>
 			)}
 		</Fragment>
-	)
+    );
 }
 
 export default SaveGameButton

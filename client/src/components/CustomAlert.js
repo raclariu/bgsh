@@ -2,18 +2,18 @@
 import React from 'react'
 
 // @ Mui
-import Alert from '@material-ui/lab/Alert'
-import Box from '@material-ui/core/Box'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 
 // @ Main
 const CustomAlert = ({ className, severity, children }) => {
 	return (
-		<Box borderRadius={4}>
+        <Box borderRadius="4px">
 			<Alert className={className} variant="outlined" severity={severity}>
 				{children}
 			</Alert>
 		</Box>
-	)
+    );
 }
 
 // @ Default Props

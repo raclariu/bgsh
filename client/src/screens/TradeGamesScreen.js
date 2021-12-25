@@ -2,14 +2,14 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
+import Grid from '@mui/material/Grid'
+import Divider from '@mui/material/Divider'
+import Button from '@mui/material/Button'
 
 // @ Components
 import CustomAlert from '../components/CustomAlert'

@@ -2,25 +2,25 @@
 import React from 'react'
 
 // @ Components
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import Skeleton from '@material-ui/lab/Skeleton'
-import Divider from '@material-ui/core/Divider'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Skeleton from '@mui/material/Skeleton'
+import Divider from '@mui/material/Divider'
 
 // @ Main
 const GameCardSkeleton = () => {
 	return (
-		<Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
 			<Box
 				display="flex"
 				flexDirection="column"
 				alignItems="center"
 				bgcolor="background.paper"
 				boxShadow={2}
-				borderRadius={4}
+				borderRadius="4px"
 			>
 				<Box my={1}>
-					<Skeleton animation="wave" variant="rect" width={200} height={180} />
+					<Skeleton animation="wave" variant="rectangular" width={200} height={180} />
 				</Box>
 
 				<Divider style={{ width: '100%' }} />
@@ -36,7 +36,7 @@ const GameCardSkeleton = () => {
 				</Box>
 			</Box>
 		</Grid>
-	)
+    );
 }
 
 export default GameCardSkeleton

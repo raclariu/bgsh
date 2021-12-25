@@ -2,28 +2,28 @@
 import React, { useState, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Popover from '@material-ui/core/Popover'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Button from '@material-ui/core/Button'
-import Badge from '@material-ui/core/Badge'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Avatar from '@material-ui/core/Avatar'
-import Divider from '@material-ui/core/Divider'
+import Grid from '@mui/material/Grid'
+import Popover from '@mui/material/Popover'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Button from '@mui/material/Button'
+import Badge from '@mui/material/Badge'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
+import ListItemText from '@mui/material/ListItemText'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
 
 // @ Icons
-import FeaturedPlayListTwoToneIcon from '@material-ui/icons/FeaturedPlayListTwoTone'
-import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwoTone'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 // @ Components
 import SaleListPopoverDialog from './SaleListPopoverDialog'
@@ -36,7 +36,7 @@ import { useNotification } from '../hooks/hooks'
 // @ Styles
 const useStyles = makeStyles((theme) => ({
 	popover   : {
-		[theme.breakpoints.down('xs')]: {
+		[theme.breakpoints.down('sm')]: {
 			width : '100vw'
 		},
 		[theme.breakpoints.up('sm')]: {
@@ -89,8 +89,11 @@ const SaleListPopover = () => {
 	}
 
 	return (
-		<Fragment>
-			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary">
+        <Fragment>
+			<IconButton
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+                color="primary"
+                size="large">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>
@@ -160,9 +163,9 @@ const SaleListPopover = () => {
 							/>
 							<ListItemSecondaryAction>
 								<IconButton
-									edge="end"
-									onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
-								>
+                                    edge="end"
+                                    onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
+                                    size="large">
 									<HighlightOffIcon color="error" />
 								</IconButton>
 							</ListItemSecondaryAction>
@@ -207,7 +210,7 @@ const SaleListPopover = () => {
 				<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
 			</Popover>
 		</Fragment>
-	)
+    );
 }
 
 export default SaleListPopover

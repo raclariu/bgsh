@@ -3,34 +3,34 @@ import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import queryString from 'query-string'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import Skeleton from '@material-ui/lab/Skeleton'
-import Checkbox from '@material-ui/core/Checkbox'
-import Avatar from '@material-ui/core/Avatar'
-import ButtonBase from '@material-ui/core/ButtonBase'
-import IconButton from '@material-ui/core/IconButton'
-import Fade from '@material-ui/core/Fade'
-import Divider from '@material-ui/core/Divider'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Collapse from '@material-ui/core/Collapse'
-import Typography from '@material-ui/core/Typography'
-import Chip from '@material-ui/core/Chip'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Skeleton from '@mui/material/Skeleton'
+import Checkbox from '@mui/material/Checkbox'
+import Avatar from '@mui/material/Avatar'
+import ButtonBase from '@mui/material/ButtonBase'
+import IconButton from '@mui/material/IconButton'
+import Fade from '@mui/material/Fade'
+import Divider from '@mui/material/Divider'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import Collapse from '@mui/material/Collapse'
+import Typography from '@mui/material/Typography'
+import Chip from '@mui/material/Chip'
 
 // @ Icons
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import EventIcon from '@material-ui/icons/Event'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import EventIcon from '@mui/icons-material/Event'
 
 // @ Components
 import SendMessage from '../components/SendMessage'
@@ -67,21 +67,21 @@ const useStyles = makeStyles((theme) => ({
 // @ Skeleton
 const MessageSkeleton = () => {
 	return (
-		<Grid item container xs={12} sm={9} md={7}>
+        <Grid item container xs={12} sm={9} md={7}>
 			<Box
 				display="flex"
 				alignItems="center"
 				bgcolor="background.paper"
 				width="100%"
 				boxShadow={2}
-				borderRadius={4}
+				borderRadius="4px"
 				height={68}
 			>
 				<Box ml={1.5}>
-					<Skeleton variant="rect" width={20} height={20} />
+					<Skeleton variant="rectangular" width={20} height={20} />
 				</Box>
 				<Box ml={2}>
-					<Skeleton variant="circle" width={40} height={40} />
+					<Skeleton variant="circular" width={40} height={40} />
 				</Box>
 
 				<Box display="flex" flexDirection="column" width="100%" mx={2}>
@@ -94,7 +94,7 @@ const MessageSkeleton = () => {
 				</Box>
 			</Box>
 		</Grid>
-	)
+    );
 }
 
 // @ Main
@@ -255,7 +255,7 @@ const InboxScreen = () => {
 	}
 
 	return (
-		<Grid container spacing={2} justifyContent="center" className={cls.grid}>
+        <Grid container spacing={2} justifyContent="center" className={cls.grid}>
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={5} md={4}>
 					<SearchBox placeholder="Search users" handleFilters={handleFilters} />
@@ -278,7 +278,7 @@ const InboxScreen = () => {
 					/>
 
 					{selected.length > 0 && (
-						<IconButton onClick={handleDelete}>
+						<IconButton onClick={handleDelete} size="large">
 							<DeleteOutlineIcon color="error" />
 						</IconButton>
 					)}
@@ -310,14 +310,14 @@ const InboxScreen = () => {
 						justifyContent="center"
 						height={60}
 						width="100%"
-						borderRadius={4}
+						borderRadius="4px"
 						mt={4}
 					>
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
 		</Grid>
-	)
+    );
 }
 
 export default InboxScreen

@@ -7,9 +7,9 @@ import axios from 'axios'
 import { useQuery } from 'react-query'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
-import Button from '@material-ui/core/Button'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 // @ Components
 import HotGameCard from '../components/HotGameCard'
@@ -49,7 +49,7 @@ const HomeScreen = () => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<Box
 				display="flex"
 				justifyContent="space-between"
@@ -60,7 +60,7 @@ const HomeScreen = () => {
 				fontWeight="fontWeightMedium"
 				fontSize={14}
 				p={1}
-				borderRadius={4}
+				borderRadius="4px"
 				my={4}
 			>
 				<Box>BGG Hot games</Box>
@@ -100,7 +100,7 @@ const HomeScreen = () => {
 				fontWeight="fontWeightMedium"
 				fontSize={14}
 				p={1}
-				borderRadius={4}
+				borderRadius="4px"
 				my={4}
 			>
 				<Box>Popular kickstarters</Box>
@@ -126,7 +126,7 @@ const HomeScreen = () => {
 				</Grid>
 			)}
 		</Fragment>
-	)
+    );
 }
 
 export default HomeScreen

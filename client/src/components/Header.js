@@ -2,47 +2,47 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Box from '@material-ui/core/Box'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Divider from '@material-ui/core/Divider'
-import Avatar from '@material-ui/core/Avatar'
-import Collapse from '@material-ui/core/Collapse'
-import Dialog from '@material-ui/core/Dialog'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Divider from '@mui/material/Divider'
+import Avatar from '@mui/material/Avatar'
+import Collapse from '@mui/material/Collapse'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
 
 // @ Icons
-import MenuIcon from '@material-ui/icons/Menu'
-import HomeTwoToneIcon from '@material-ui/icons/HomeTwoTone'
-import LibraryBooksTwoToneIcon from '@material-ui/icons/LibraryBooksTwoTone'
-import FavoriteTwoToneIcon from '@material-ui/icons/FavoriteTwoTone'
-import DashboardTwoToneIcon from '@material-ui/icons/DashboardTwoTone'
-import MonetizationOnTwoToneIcon from '@material-ui/icons/MonetizationOnTwoTone'
-import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone'
-import BookmarkTwoToneIcon from '@material-ui/icons/BookmarkTwoTone'
-import ArchiveTwoToneIcon from '@material-ui/icons/ArchiveTwoTone'
-import LocalActivityTwoToneIcon from '@material-ui/icons/LocalActivityTwoTone'
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
-import SwapHorizontalCircleTwoToneIcon from '@material-ui/icons/SwapHorizontalCircleTwoTone'
-import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
-import InboxTwoToneIcon from '@material-ui/icons/InboxTwoTone'
-import SettingsTwoToneIcon from '@material-ui/icons/SettingsTwoTone'
-import SendTwoToneIcon from '@material-ui/icons/SendTwoTone'
-import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone'
-import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone'
+import MenuIcon from '@mui/icons-material/Menu'
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
+import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone'
+import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone'
+import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone'
+import MonetizationOnTwoToneIcon from '@mui/icons-material/MonetizationOnTwoTone'
+import MeetingRoomTwoToneIcon from '@mui/icons-material/MeetingRoomTwoTone'
+import BookmarkTwoToneIcon from '@mui/icons-material/BookmarkTwoTone'
+import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone'
+import LocalActivityTwoToneIcon from '@mui/icons-material/LocalActivityTwoTone'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import SwapHorizontalCircleTwoToneIcon from '@mui/icons-material/SwapHorizontalCircleTwoTone'
+import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone'
+import InboxTwoToneIcon from '@mui/icons-material/InboxTwoTone'
+import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone'
+import SendTwoToneIcon from '@mui/icons-material/SendTwoTone'
+import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
+import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
 // @ Components
 import MessagesBadge from './MessagesBadge'
@@ -137,7 +137,7 @@ const Header = () => {
 	}
 
 	return (
-		<div className={classes.root}>
+        <div className={classes.root}>
 			<AppBar elevation={1} position="static" color="transparent">
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
@@ -165,7 +165,11 @@ const Header = () => {
 								<Theme />
 							</Box>
 
-							<IconButton color="primary" onClick={() => setIsOpen(!isOpen)} aria-label="menu">
+							<IconButton
+                                color="primary"
+                                onClick={() => setIsOpen(!isOpen)}
+                                aria-label="menu"
+                                size="large">
 								<MenuIcon />
 							</IconButton>
 
@@ -692,7 +696,7 @@ const Header = () => {
 							</Drawer>
 
 							<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-								<DialogTitle disableTypography>
+								<DialogTitle>
 									<Typography variant="subtitle2" align="center">
 										Are you sure you want to sign out?
 									</Typography>
@@ -720,7 +724,7 @@ const Header = () => {
 				</Toolbar>
 			</AppBar>
 		</div>
-	)
+    );
 }
 
 export default Header

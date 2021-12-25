@@ -2,7 +2,7 @@
 import React from 'react'
 
 // @ Mui
-import CircularProgress from '@material-ui/core/CircularProgress'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // @ Main
 const Loader = ({ size, color }) => {

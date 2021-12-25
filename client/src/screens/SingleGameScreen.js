@@ -2,9 +2,9 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useQuery } from 'react-query'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
 import LazyLoad from 'react-lazyload'
 import Zoom from 'react-medium-image-zoom'
@@ -12,39 +12,39 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import LinearProgress from '@material-ui/core/LinearProgress'
-import Chip from '@material-ui/core/Chip'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Fab from '@material-ui/core/Fab'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogActions from '@material-ui/core/DialogActions'
-import Slide from '@material-ui/core/Slide'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import LinearProgress from '@mui/material/LinearProgress'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Fab from '@mui/material/Fab'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Slide from '@mui/material/Slide'
 
 // @ Icons
-import MarkunreadMailboxTwoToneIcon from '@material-ui/icons/MarkunreadMailboxTwoTone'
-import LocalShippingTwoToneIcon from '@material-ui/icons/LocalShippingTwoTone'
-import LocalLibraryTwoToneIcon from '@material-ui/icons/LocalLibraryTwoTone'
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded'
-import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone'
-import PeopleAltTwoToneIcon from '@material-ui/icons/PeopleAltTwoTone'
-import AccessTimeTwoToneIcon from '@material-ui/icons/AccessTimeTwoTone'
-import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone'
-import ChildCareTwoToneIcon from '@material-ui/icons/ChildCareTwoTone'
-import FaceTwoToneIcon from '@material-ui/icons/FaceTwoTone'
-import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone'
-import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import CloseIcon from '@material-ui/icons/Close'
+import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
+import LocalShippingTwoToneIcon from '@mui/icons-material/LocalShippingTwoTone'
+import LocalLibraryTwoToneIcon from '@mui/icons-material/LocalLibraryTwoTone'
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
+import RoomTwoToneIcon from '@mui/icons-material/RoomTwoTone'
+import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone'
+import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone'
+import PersonAddTwoToneIcon from '@mui/icons-material/PersonAddTwoTone'
+import ChildCareTwoToneIcon from '@mui/icons-material/ChildCareTwoTone'
+import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone'
+import PublicTwoToneIcon from '@mui/icons-material/PublicTwoTone'
+import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import CloseIcon from '@mui/icons-material/Close'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 		height                         : '250px',
 		width                          : '100%',
 		padding                        : theme.spacing(1),
-		[theme.breakpoints.down('sm')]: {
+		[theme.breakpoints.down('md')]: {
 			marginBottom : theme.spacing(1)
 		}
 	},
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 	infoBoxesContainer : {
 		width                          : '90%',
 		marginTop                      : theme.spacing(1),
-		[theme.breakpoints.down('xs')]: {
+		[theme.breakpoints.down('sm')]: {
 			width : '70%'
 		}
 	},
@@ -227,7 +227,7 @@ const SingleGameScreen = () => {
 	}
 
 	return (
-		<div className={cls.root}>
+        <div className={cls.root}>
 			{isLoading && (
 				<Box display="flex" justifyContent="center">
 					<Loader />
@@ -279,7 +279,7 @@ const SingleGameScreen = () => {
 							<Box
 								bgcolor="background.paper"
 								className={cls.thumbnailContainer}
-								borderRadius={4}
+								borderRadius="4px"
 								boxShadow={2}
 							>
 								<Zoom
@@ -581,7 +581,7 @@ const SingleGameScreen = () => {
 										{galleryData[index].map((obj, i) => (
 											<Box
 												key={obj.imageid}
-												borderRadius={4}
+												borderRadius="4px"
 												boxShadow={2}
 												p={1.5}
 												bgcolor="background.paper"
@@ -607,7 +607,7 @@ const SingleGameScreen = () => {
 								transitionDuration={350}
 								TransitionProps={{ direction: 'up' }}
 							>
-								<DialogTitle disableTypography>
+								<DialogTitle>
 									<Box display="flex" alignItems="center">
 										<Box display="flex" flexDirection="column" flexGrow={1}>
 											<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
@@ -615,7 +615,7 @@ const SingleGameScreen = () => {
 												{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
 											</Box>
 										</Box>
-										<IconButton onClick={handleCloseImage} color="secondary">
+										<IconButton onClick={handleCloseImage} color="secondary" size="large">
 											<CloseIcon />
 										</IconButton>
 									</Box>
@@ -642,19 +642,19 @@ const SingleGameScreen = () => {
 										<Box flexGrow={1}>
 											<CustomTooltip title="Previous image">
 												<IconButton
-													disabled={imgIndex === 0}
-													color="primary"
-													onClick={() => cycleImages('back')}
-												>
+                                                    disabled={imgIndex === 0}
+                                                    color="primary"
+                                                    onClick={() => cycleImages('back')}
+                                                    size="large">
 													<ArrowBackIcon />
 												</IconButton>
 											</CustomTooltip>
 											<CustomTooltip title="Next image">
 												<IconButton
-													disabled={galleryData[index].length === imgIndex + 1}
-													color="primary"
-													onClick={() => cycleImages('forward')}
-												>
+                                                    disabled={galleryData[index].length === imgIndex + 1}
+                                                    color="primary"
+                                                    onClick={() => cycleImages('forward')}
+                                                    size="large">
 													<ArrowForwardIcon />
 												</IconButton>
 											</CustomTooltip>
@@ -688,7 +688,7 @@ const SingleGameScreen = () => {
 				</Fragment>
 			)}
 		</div>
-	)
+    );
 }
 
 export default SingleGameScreen

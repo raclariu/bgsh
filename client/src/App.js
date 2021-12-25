@@ -3,20 +3,20 @@ import React, { lazy, Suspense } from 'react'
 import { SnackbarProvider } from 'notistack'
 import { useSelector } from 'react-redux'
 import { Route, Redirect, Switch, useLocation } from 'react-router-dom'
-import { ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { isMobile } from 'react-device-detect'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline'
 
 // @ CSS
 import './fonts.css'
 
 // @ Mui
-import Container from '@material-ui/core/Container'
-import LinearProgress from '@material-ui/core/LinearProgress'
-import IconButton from '@material-ui/core/IconButton'
+import Container from '@mui/material/Container'
+import LinearProgress from '@mui/material/LinearProgress'
+import IconButton from '@mui/material/IconButton'
 
 // @ Icons
-import ClearIcon from '@material-ui/icons/Clear'
+import ClearIcon from '@mui/icons-material/Clear'
 
 // @ Components
 import ProtectedRoute from './components/ProtectedRoute'
@@ -57,126 +57,128 @@ const App = () => {
 	}
 
 	return (
-		<ThemeProvider theme={theme === 'light' ? light : dark}>
-			<SnackbarProvider
-				maxSnack={3}
-				dense={isMobile ? true : false}
-				ref={notistackRef}
-				action={(key) => (
-					<IconButton color="inherit" size="small" onClick={onClickDismiss(key)}>
-						<ClearIcon fontSize="small" />
-					</IconButton>
-				)}
-			>
-				<CssBaseline />
-				{location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme === 'light' ? light : dark}>
+                <SnackbarProvider
+                    maxSnack={3}
+                    dense={isMobile ? true : false}
+                    ref={notistackRef}
+                    action={(key) => (
+                        <IconButton color="inherit" size="small" onClick={onClickDismiss(key)}>
+                            <ClearIcon fontSize="small" />
+                        </IconButton>
+                    )}
+                >
+                    <CssBaseline />
+                    {location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
 
-				<Suspense fallback={<LinearProgress />}>
-					<Container maxWidth="md" component="main">
-						<Switch>
-							<Route path="/" exact>
-								<Home />
-							</Route>
+                    <Suspense fallback={<LinearProgress />}>
+                        <Container maxWidth="md" component="main">
+                            <Switch>
+                                <Route path="/" exact>
+                                    <Home />
+                                </Route>
 
-							<Route path={[ '/signin', '/signup' ]} exact>
-								<Auth />
-							</Route>
+                                <Route path={[ '/signin', '/signup' ]} exact>
+                                    <Auth />
+                                </Route>
 
-							<ProtectedRoute path="/profile" exact>
-								<Profile />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/profile" exact>
+                                    <Profile />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/user/settings" exact>
-								<Settings />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/user/settings" exact>
+                                    <Settings />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/games" exact>
-								<GamesIndex />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/games" exact>
+                                    <GamesIndex />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/trades" exact>
-								<GamesIndex />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/trades" exact>
+                                    <GamesIndex />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/wanted" exact>
-								<GamesIndex />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/wanted" exact>
+                                    <GamesIndex />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/games/:altId" exact>
-								<SingleGame />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/games/:altId" exact>
+                                    <SingleGame />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/collection" exact>
-								<Collection />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/collection" exact>
+                                    <Collection />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/wishlist" exact>
-								<Wishlist />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/wishlist" exact>
+                                    <Wishlist />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/sell" exact>
-								<SellGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/sell" exact>
+                                    <SellGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/trade" exact>
-								<TradeGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/trade" exact>
+                                    <TradeGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/want" exact>
-								<AddWantedGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/want" exact>
+                                    <AddWantedGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/buy" exact>
-								<BuyGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/buy" exact>
+                                    <BuyGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/saved" exact>
-								<SavedGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/saved" exact>
+                                    <SavedGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/received" exact>
-								<Inbox />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/received" exact>
+                                    <Inbox />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/sent" exact>
-								<Inbox />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/sent" exact>
+                                    <Inbox />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/user/listed" exact>
-								<UserListedGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/user/listed" exact>
+                                    <UserListedGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/user/history/sold" exact>
-								<GamesHistory />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/user/history/sold" exact>
+                                    <GamesHistory />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/user/history/traded" exact>
-								<GamesHistory />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/user/history/traded" exact>
+                                    <GamesHistory />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/hot" exact>
-								<HotGames />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/hot" exact>
+                                    <HotGames />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/profile/:username" exact>
-								<UserProfile />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/profile/:username" exact>
+                                    <UserProfile />
+                                </ProtectedRoute>
 
-							<ProtectedRoute path="/signout" exact>
-								<Redirect to="/" />
-							</ProtectedRoute>
+                                <ProtectedRoute path="/signout" exact>
+                                    <Redirect to="/" />
+                                </ProtectedRoute>
 
-							<Route>
-								<NotFound />
-							</Route>
-						</Switch>
-					</Container>
-				</Suspense>
+                                <Route>
+                                    <NotFound />
+                                </Route>
+                            </Switch>
+                        </Container>
+                    </Suspense>
 
-				{location.pathname !== '/signin' && location.pathname !== '/signup' && <Footer />}
-			</SnackbarProvider>
-		</ThemeProvider>
-	)
+                    {location.pathname !== '/signin' && location.pathname !== '/signup' && <Footer />}
+                </SnackbarProvider>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
 }
 
 export default App

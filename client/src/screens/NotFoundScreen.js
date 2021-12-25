@@ -3,20 +3,20 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Button from '@material-ui/core/Button'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 // @ Main
 const NotFoundScreen = () => {
 	return (
-		<Box my={4}>
+        <Box my={4}>
 			<Box
 				display="flex"
 				flexDirection="column"
 				justifyContent="center"
 				alignItems="center"
 				bgcolor="background.paper"
-				borderRadius={4}
+				borderRadius="4px"
 				boxShadow={2}
 				width="100%"
 				height={300}
@@ -32,7 +32,7 @@ const NotFoundScreen = () => {
 				</Box>
 			</Box>
 		</Box>
-	)
+    );
 }
 
 export default NotFoundScreen

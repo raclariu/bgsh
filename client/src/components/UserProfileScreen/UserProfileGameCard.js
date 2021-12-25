@@ -1,22 +1,22 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Box from '@material-ui/core/Box'
-import Divider from '@material-ui/core/Divider'
-import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton'
-import Chip from '@material-ui/core/Chip'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Chip from '@mui/material/Chip'
 
 // @ icons
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
 import CustomTooltip from '../CustomTooltip'
@@ -68,7 +68,7 @@ const UserProfileGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={1}>
+        <Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
@@ -100,13 +100,16 @@ const UserProfileGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')}>
+							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')} size="large">
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
-							<IconButton disabled={data.games.length === index + 1} onClick={() => handleIndex('plus')}>
+							<IconButton
+                                disabled={data.games.length === index + 1}
+                                onClick={() => handleIndex('plus')}
+                                size="large">
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
@@ -137,7 +140,7 @@ const UserProfileGameCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-	)
+    );
 }
 
 export default UserProfileGameCard

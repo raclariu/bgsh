@@ -3,7 +3,7 @@ import React, { Fragment } from 'react'
 import approx from 'approximate-number'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
+import Box from '@mui/material/Box'
 
 // @ Helpers
 const defaultBigBox = {

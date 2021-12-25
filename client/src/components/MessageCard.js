@@ -3,24 +3,24 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 
 // @ Mui
-import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
-import Chip from '@material-ui/core/Chip'
-import Collapse from '@material-ui/core/Collapse'
-import Divider from '@material-ui/core/Divider'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Chip from '@mui/material/Chip'
+import Collapse from '@mui/material/Collapse'
+import Divider from '@mui/material/Divider'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
-import SendIcon from '@material-ui/icons/Send'
-import DoneAllIcon from '@material-ui/icons/DoneAll'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import SendIcon from '@mui/icons-material/Send'
+import DoneAllIcon from '@mui/icons-material/DoneAll'
 
 // @ Components
 import CustomTooltip from './CustomTooltip'
@@ -32,7 +32,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
 	return (
-		<Card>
+        <Card>
 			<CardHeader
 				avatar={
 					<CustomAvatar
@@ -84,7 +84,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" width="100%">
 					<Checkbox checked={isChecked} onChange={(e) => handleSelect(e, msg._id, 'received')} size="small" />
-					<IconButton onClick={() => handleExpandClick(msg._id, msg.read)}>
+					<IconButton onClick={() => handleExpandClick(msg._id, msg.read)} size="large">
 						{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
 					</IconButton>
 				</Box>
@@ -94,7 +94,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 				<CardContent>{msg.message}</CardContent>
 			</Collapse>
 		</Card>
-	)
+    );
 }
 
 export default MessageCard

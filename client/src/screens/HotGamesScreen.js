@@ -1,12 +1,12 @@
 // @ Libraries
 import React, { Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import LazyLoad from 'react-lazyload'
 import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from 'react-query'
 
 // @ Mui
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
 
 // @ Components
 import HotGameCard from '../components/HotGameCard'

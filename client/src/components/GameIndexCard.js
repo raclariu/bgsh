@@ -2,22 +2,22 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Chip from '@material-ui/core/Chip'
-import Avatar from '@material-ui/core/Avatar'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import Chip from '@mui/material/Chip'
+import Avatar from '@mui/material/Avatar'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
 
 // @ Icons
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
@@ -76,7 +76,7 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={1}>
+        <Card className={cls.card} elevation={1}>
 			<Box py={1}>
 				<CardMedia
 					className={cls.media}
@@ -130,15 +130,19 @@ const GameIndexCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton color="primary" disabled={index === 0} onClick={() => handleIndex('minus')}>
+							<IconButton
+                                color="primary"
+                                disabled={index === 0}
+                                onClick={() => handleIndex('minus')}
+                                size="large">
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>{data.games[index].title}</Box>
 							<IconButton
-								color="primary"
-								disabled={data.games.length === index + 1}
-								onClick={() => handleIndex('plus')}
-							>
+                                color="primary"
+                                disabled={data.games.length === index + 1}
+                                onClick={() => handleIndex('plus')}
+                                size="large">
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
@@ -207,7 +211,7 @@ const GameIndexCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</Card>
-	)
+    );
 }
 
 export default GameIndexCard

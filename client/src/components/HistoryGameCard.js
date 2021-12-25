@@ -1,25 +1,25 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import Chip from '@material-ui/core/Chip'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
 
 // @ Components
 import CustomAvatar from './CustomAvatar'
 import CustomTooltip from './CustomTooltip'
 
 // @ Icons
-import EventAvailableOutlinedIcon from '@material-ui/icons/EventAvailableOutlined'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
@@ -75,7 +75,7 @@ const HistoryGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card className={cls.card} elevation={1}>
+        <Card className={cls.card} elevation={1}>
 			<CardMedia
 				className={cls.media}
 				component="img"
@@ -100,17 +100,21 @@ const HistoryGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton color="primary" disabled={index === 0} onClick={() => handleIndex('minus')}>
+							<IconButton
+                                color="primary"
+                                disabled={index === 0}
+                                onClick={() => handleIndex('minus')}
+                                size="large">
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
 							<Box className={cls.title}>
 								{data.games[index].title} ({data.games[index].year})
 							</Box>
 							<IconButton
-								color="primary"
-								disabled={data.games.length === index + 1}
-								onClick={() => handleIndex('plus')}
-							>
+                                color="primary"
+                                disabled={data.games.length === index + 1}
+                                onClick={() => handleIndex('plus')}
+                                size="large">
 								<ArrowForwardIcon fontSize="small" />
 							</IconButton>
 						</Fragment>
@@ -153,7 +157,7 @@ const HistoryGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 		</Card>
-	)
+    );
 }
 
 export default HistoryGameCard

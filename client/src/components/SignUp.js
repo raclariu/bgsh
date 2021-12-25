@@ -2,16 +2,16 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
-import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
@@ -62,7 +62,7 @@ const SignUp = () => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<form onSubmit={submitHandler} className={classes.root} autoComplete="off">
 				<Input
 					className={classes.input}
@@ -109,7 +109,7 @@ const SignUp = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={() => setPassVisibility(!passVisibility)}>
+								<IconButton onClick={() => setPassVisibility(!passVisibility)} size="large">
 									{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 								</IconButton>
 							</InputAdornment>
@@ -134,7 +134,9 @@ const SignUp = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}>
+								<IconButton
+                                    onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}
+                                    size="large">
 									{passConfirmationVisibility ? (
 										<VisibilityOutlinedIcon />
 									) : (
@@ -153,7 +155,7 @@ const SignUp = () => {
 				</Button>
 			</form>
 		</Fragment>
-	)
+    );
 }
 
 export default SignUp

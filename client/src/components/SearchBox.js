@@ -1,16 +1,16 @@
 // @ Libraries
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Paper from '@material-ui/core/Paper'
-import InputBase from '@material-ui/core/InputBase'
-import IconButton from '@material-ui/core/IconButton'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import Paper from '@mui/material/Paper'
+import InputBase from '@mui/material/InputBase'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
-import SearchIcon from '@material-ui/icons/Search'
-import ClearIcon from '@material-ui/icons/Clear'
+import SearchIcon from '@mui/icons-material/Search'
+import ClearIcon from '@mui/icons-material/Clear'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 	}
 
 	return (
-		<Paper
+        <Paper
 			component="form"
 			className={cls.paper}
 			elevation={1}
@@ -57,7 +57,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				endAdornment={
 					<InputAdornment position="end">
 						{keyword.length > 0 && (
-							<IconButton onClick={() => setKeyword('')}>
+							<IconButton onClick={() => setKeyword('')} size="large">
 								<ClearIcon color="disabled" />
 							</IconButton>
 						)}
@@ -66,7 +66,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				fullWidth
 			/>
 		</Paper>
-	)
+    );
 }
 
 export default SearchBox

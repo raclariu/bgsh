@@ -6,10 +6,10 @@ import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 
 // @ Components
 import UserProfileGameCard from '../components/UserProfileScreen/UserProfileGameCard'
@@ -42,10 +42,10 @@ const UserProfileScreen = () => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			{isError && <Box>{error.response.data.message}</Box>}
 
-			<Box borderRadius={4} boxShadow={2} my={2} bgcolor="background.paper">
+			<Box borderRadius="4px" boxShadow={2} my={2} bgcolor="background.paper">
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
 					<Tab value="sale" label="For sale" />
 					<Tab value="trade" label="For trade" />
@@ -107,7 +107,7 @@ const UserProfileScreen = () => {
 				</Fragment>
 			)}
 		</Fragment>
-	)
+    );
 }
 
 export default UserProfileScreen

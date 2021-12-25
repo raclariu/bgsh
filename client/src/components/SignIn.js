@@ -2,16 +2,16 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
-import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
@@ -74,7 +74,7 @@ const SignIn = () => {
 	}
 
 	return (
-		<form onSubmit={submitHandler} className={cls.root} autoComplete="off">
+        <form onSubmit={submitHandler} className={cls.root} autoComplete="off">
 			<Input
 				className={cls.input}
 				error={error && error.emailError ? true : false}
@@ -105,7 +105,7 @@ const SignIn = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => setPassVisibility(!passVisibility)}>
+							<IconButton onClick={() => setPassVisibility(!passVisibility)} size="large">
 								{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 							</IconButton>
 						</InputAdornment>
@@ -119,7 +119,7 @@ const SignIn = () => {
 				{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
 			</Button>
 		</form>
-	)
+    );
 }
 
 export default SignIn

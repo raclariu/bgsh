@@ -1,18 +1,18 @@
 // @ Libraries
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import Button from '@material-ui/core/Button'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Box from '@material-ui/core/Box'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import InputAdornment from '@mui/material/InputAdornment'
+import Box from '@mui/material/Box'
 
 // @ Icons
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined'
-import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined'
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
 import Loader from './Loader'
@@ -82,7 +82,7 @@ const ChangePasswordForm = () => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<form onSubmit={submitHandler} autoComplete="off">
 				<Input
 					className={cls.input}
@@ -98,7 +98,7 @@ const ChangePasswordForm = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passCurrent')}>
+								<IconButton onClick={() => handlePassVisibility('passCurrent')} size="large">
 									{passCurrentVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 								</IconButton>
 							</InputAdornment>
@@ -122,7 +122,7 @@ const ChangePasswordForm = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passNew')}>
+								<IconButton onClick={() => handlePassVisibility('passNew')} size="large">
 									{passNewVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 								</IconButton>
 							</InputAdornment>
@@ -146,7 +146,7 @@ const ChangePasswordForm = () => {
 					InputProps={{
 						endAdornment : (
 							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passNewConfirmation')}>
+								<IconButton onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
 									{passNewConfirmationVisibility ? (
 										<VisibilityOutlinedIcon />
 									) : (
@@ -167,7 +167,7 @@ const ChangePasswordForm = () => {
 				</Box>
 			</form>
 		</Fragment>
-	)
+    );
 }
 
 export default ChangePasswordForm

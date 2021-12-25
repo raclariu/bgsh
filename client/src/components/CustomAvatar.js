@@ -2,19 +2,19 @@
 import React, { useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Avatar from '@material-ui/core/Avatar'
-import Box from '@material-ui/core/Box'
-import Popover from '@material-ui/core/Popover'
-import IconButton from '@material-ui/core/IconButton'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import Popover from '@mui/material/Popover'
+import IconButton from '@mui/material/IconButton'
 
 // @ Components
 import SendMessage from './SendMessage'
 
 // @ Icons
-import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone'
+import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +55,7 @@ const CustomAvatar = ({ size, user }) => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<Box display="flex" flexDirection="row" alignItems="center">
 				<Avatar
 					onClick={(e) => setAnchorEl(e.currentTarget)}
@@ -91,7 +91,7 @@ const CustomAvatar = ({ size, user }) => {
 							{user}
 						</Box>
 						<Box ml={2}>
-							<IconButton color="primary" onClick={handleProfileClick}>
+							<IconButton color="primary" onClick={handleProfileClick} size="large">
 								<AccountCircleTwoToneIcon />
 							</IconButton>
 						</Box>
@@ -100,7 +100,7 @@ const CustomAvatar = ({ size, user }) => {
 				</Box>
 			</Popover>
 		</Fragment>
-	)
+    );
 }
 
 export default CustomAvatar

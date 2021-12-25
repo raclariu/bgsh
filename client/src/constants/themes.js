@@ -1,8 +1,8 @@
 // @ Libraries
-import { createTheme } from '@material-ui/core/styles'
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 
 // @ Light
-export const light = createTheme({
+export const light = createTheme(adaptV4Theme({
 	palette : {
 		type      : 'light',
 		primary   : {
@@ -12,7 +12,7 @@ export const light = createTheme({
 			main : '#ff3d00'
 		}
 	}
-})
+}))
 
 // // @ Dark
 // export const dark = createTheme({
@@ -32,7 +32,7 @@ export const light = createTheme({
 // 	}
 // })
 
-export const dark = createTheme({
+export const dark = createTheme(adaptV4Theme({
 	palette : {
 		type       : 'dark',
 		primary    : {
@@ -46,4 +46,4 @@ export const dark = createTheme({
 			default : '#1A122E'
 		}
 	}
-})
+}))

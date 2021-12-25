@@ -2,7 +2,7 @@
 import React from 'react'
 
 // @ Mui
-import Pagination from '@material-ui/lab/Pagination'
+import Pagination from '@mui/material/Pagination'
 
 // @ Main
 const Paginate = ({ pagination, handleFilters }) => {

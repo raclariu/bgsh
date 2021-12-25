@@ -1,13 +1,13 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Divider from '@material-ui/core/Divider'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Divider from '@mui/material/Divider'
 
 // @ Components
 import ChangePasswordForm from '../components/ChangePasswordForm'
@@ -36,14 +36,14 @@ const SettingsScreen = () => {
 	}
 
 	return (
-		<Fragment>
+        <Fragment>
 			<Box
 				display="flex"
 				alignItems="center"
 				justifyContent="center"
 				bgcolor="background.paper"
 				boxShadow={2}
-				borderRadius={4}
+				borderRadius="4px"
 				mt={4}
 			>
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
@@ -74,7 +74,7 @@ const SettingsScreen = () => {
 				</Grid>
 			)}
 		</Fragment>
-	)
+    );
 }
 
 export default SettingsScreen

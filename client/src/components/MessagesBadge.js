@@ -2,13 +2,13 @@
 import React, { Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 import { useQuery } from 'react-query'
 
 // @ Mui
-import IconButton from '@material-ui/core/IconButton'
-import Badge from '@material-ui/core/Badge'
-import EmailTwoToneIcon from '@material-ui/icons/EmailTwoTone'
+import IconButton from '@mui/material/IconButton'
+import Badge from '@mui/material/Badge'
+import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone'
 
 // @ Others
 import { apiGetNewMessagesCount } from '../api/api'
@@ -23,14 +23,14 @@ const MessagesBadge = () => {
 	})
 
 	return (
-		<Fragment>
-			<IconButton component={RouterLink} to="/received" color="primary">
+        <Fragment>
+			<IconButton component={RouterLink} to="/received" color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
 					<EmailTwoToneIcon />
 				</Badge>
 			</IconButton>
 		</Fragment>
-	)
+    );
 }
 
 export default MessagesBadge

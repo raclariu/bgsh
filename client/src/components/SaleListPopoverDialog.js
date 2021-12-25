@@ -3,19 +3,19 @@ import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
 // @ Mui
-import Typography from '@material-ui/core/Typography'
-import Dialog from '@material-ui/core/Dialog'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import DialogActions from '@material-ui/core/DialogActions'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Button from '@material-ui/core/Button'
+import Typography from '@mui/material/Typography'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogActions from '@mui/material/DialogActions'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Button from '@mui/material/Button'
 
 // @ Main
 const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 	return (
-		<Fragment>
+        <Fragment>
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-				<DialogTitle disableTypography>
+				<DialogTitle>
 					<Typography variant="h6" align="center">
 						{mode === 'sell' ? 'Sell' : mode === 'trade' ? 'Trade' : 'Buy'} games individually or as a pack?
 					</Typography>
@@ -49,7 +49,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 				</DialogActions>
 			</Dialog>
 		</Fragment>
-	)
+    );
 }
 
 export default SaleListPopoverDialog

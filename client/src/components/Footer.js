@@ -1,11 +1,11 @@
 // @ Libraries
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Typography from '@material-ui/core/Typography'
-import Container from '@material-ui/core/Container'
-import Link from '@material-ui/core/Link'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import Link from '@mui/material/Link'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 		padding         : theme.spacing(3, 2),
 		marginTop       : 'auto',
 		backgroundColor :
-			theme.palette.type === 'light' ? theme.palette.background.paper : theme.palette.background.paper
+			theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.paper
 	}
 }))
 

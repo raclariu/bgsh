@@ -2,25 +2,25 @@
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles';
 
 // @ Mui
-import Box from '@material-ui/core/Box'
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Button from '@material-ui/core/Button'
-import Divider from '@material-ui/core/Divider'
-import Checkbox from '@material-ui/core/Checkbox'
-import IconButton from '@material-ui/core/IconButton'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Checkbox from '@mui/material/Checkbox'
+import IconButton from '@mui/material/IconButton'
 
 // @ Components
 import CustomTooltip from './CustomTooltip'
 
 // @ Icons
-import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
-import SearchIcon from '@material-ui/icons/Search'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
+import SearchIcon from '@mui/icons-material/Search'
 
 // @ Styles
 const useStyles = makeStyles((theme) => ({
