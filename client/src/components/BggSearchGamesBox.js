@@ -18,19 +18,6 @@ import Input from './Input'
 import { addToSaleList } from '../actions/saleListActions'
 import { apiBggSearchGames } from '../api/api'
 
-const PREFIX = 'BggSearchGamesBox'
-
-const classes = {
-	button : `${PREFIX}-button`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.button}`]: {
-		marginLeft : theme.spacing(1)
-	}
-}))
-
 // @ Main
 const BggSearchGamesBox = () => {
 	const dispatch = useDispatch()
@@ -69,7 +56,7 @@ const BggSearchGamesBox = () => {
 
 	const handleInput = (e) => {
 		if (options.length === 0) {
-			setInputText(e.target.input)
+			setInputText(e.target.value)
 		}
 	}
 
@@ -87,7 +74,7 @@ const BggSearchGamesBox = () => {
 	}
 
 	return (
-		<Root>
+		<Fragment>
 			<Box mb={2} fontWeight="fontWeightMedium">
 				Search BoardGameGeek by game title
 			</Box>
@@ -133,21 +120,15 @@ const BggSearchGamesBox = () => {
 				)}
 			/>
 
-			<Box display="flex" alignItems="center" justifyContent="flex-end" mt={2}>
+			<Box display="flex" alignItems="center" justifyContent="flex-end" mt={2} gap={1}>
 				<Button variant="contained" onClick={resetHandler} disabled={options.length === 0} color="secondary">
 					Reset
 				</Button>
-				<Button
-					className={classes.button}
-					variant="contained"
-					onClick={addToSaleListHandler}
-					disabled={!selectedOption}
-					color="secondary"
-				>
+				<Button variant="contained" onClick={addToSaleListHandler} disabled={!selectedOption} color="secondary">
 					Add to my list
 				</Button>
 			</Box>
-		</Root>
+		</Fragment>
 	)
 }
 

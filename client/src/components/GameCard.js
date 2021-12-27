@@ -22,37 +22,28 @@ import CustomTooltip from './CustomTooltip'
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import SearchIcon from '@mui/icons-material/Search'
 
-const PREFIX = 'GameCard'
+// @ Styles
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+	margin    : theme.spacing(1, 0, 1, 0),
+	padding   : theme.spacing(0, 1, 0, 1),
+	objectFit : 'contain',
+	height    : '180px'
+}))
 
-const classes = {
-	media : `${PREFIX}-media`,
-	title : `${PREFIX}-title`
-}
-
-const StyledCard = styled(Card)(({ theme }) => ({
-	[`& .${classes.media}`]: {
-		margin    : theme.spacing(1, 0, 1, 0),
-		padding   : theme.spacing(0, 1, 0, 1),
-		objectFit : 'contain',
-		height    : '180px'
-	},
-
-	[`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	}
+const StyledTitleBox = styled(Box)(() => ({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
 }))
 
 // @ Main
 const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 	return (
-		<StyledCard elevation={1}>
-			<CardMedia
-				className={classes.media}
+		<Card elevation={1}>
+			<StyledCardMedia
 				component="img"
 				alt={data.title}
 				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -69,9 +60,9 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={classes.title}>
+					<StyledTitleBox>
 						{data.title} ({data.year})
-					</Box>
+					</StyledTitleBox>
 				</Box>
 			</CardContent>
 
@@ -102,7 +93,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 					</CustomTooltip>
 				</Box>
 			</CardActions>
-		</StyledCard>
+		</Card>
 	)
 }
 

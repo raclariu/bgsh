@@ -6,21 +6,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
-
-const PREFIX = 'Footer'
-
-const classes = {
-	footer : `${PREFIX}-footer`
-}
-
-const Root = styled('footer')(({ theme }) => ({
-	[`&.${classes.footer}`]: {
-		padding         : theme.spacing(3, 2),
-		marginTop       : 'auto',
-		backgroundColor :
-			theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.paper
-	}
-}))
+import Box from '@mui/material/Box'
 
 function Copyright() {
 	return (
@@ -30,7 +16,6 @@ function Copyright() {
 				Your Website
 			</Link>{' '}
 			{new Date().getFullYear()}
-			{'.'}
 		</Typography>
 	)
 }
@@ -38,11 +23,18 @@ function Copyright() {
 // @ Main
 export default function StickyFooter() {
 	return (
-		<Root className={classes.footer}>
+		<Box
+			sx={{
+				padding         : (theme) => theme.spacing(3, 2),
+				marginTop       : 'auto',
+				backgroundColor : (theme) =>
+					theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.paper
+			}}
+		>
 			<Container maxWidth="sm">
 				<Typography variant="body1">Footer Placeholder</Typography>
 				<Copyright />
 			</Container>
-		</Root>
+		</Box>
 	)
 }

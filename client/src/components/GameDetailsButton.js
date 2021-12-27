@@ -14,16 +14,12 @@ import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTo
 // @ Main
 const GameDetailsButton = ({ altId }) => {
 	return (
-        <CustomTooltip title="Details">
-			<IconButton
-                component={RouterLink}
-                to={{ pathname: `/games/${altId}` }}
-                color="primary"
-                size="large">
+		<CustomTooltip title="Details">
+			<IconButton component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary" size="large">
 				<CenterFocusWeakTwoToneIcon fontSize="small" />
 			</IconButton>
 		</CustomTooltip>
-    );
+	)
 }
 
 export default GameDetailsButton

@@ -22,35 +22,6 @@ import Input from '../Input'
 // @ Icons
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
-const PREFIX = 'SellGameCard'
-
-const classes = {
-	media        : `${PREFIX}-media`,
-	autocomplete : `${PREFIX}-autocomplete`,
-	extraInfo    : `${PREFIX}-extraInfo`,
-	error        : `${PREFIX}-error`
-}
-
-const StyledCard = styled(Card)(({ theme }) => ({
-	[`& .${classes.media}`]: {
-		objectFit      : 'cover',
-		height         : '180px',
-		objectPosition : 'center 10%'
-	},
-
-	[`& .${classes.autocomplete}`]: {
-		marginTop : theme.spacing(2)
-	},
-
-	[`& .${classes.extraInfo}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
-
 // @ Main
 const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -64,7 +35,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	}
 
 	return (
-		<StyledCard elevation={1}>
+		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
@@ -82,7 +53,11 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				}}
 			/>
 			<CardMedia
-				className={classes.media}
+				sx={{
+					objectFit      : 'cover',
+					height         : '180px',
+					objectPosition : 'center 10%'
+				}}
 				component="img"
 				image={displayImageHandler(game.image, game.thumbnail)}
 				alt={game.title}
@@ -125,7 +100,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 				{mode !== 'buy' && (
 					<Autocomplete
-						className={classes.autocomplete}
+						sx={{ mt: 2 }}
 						value={data.condition}
 						isOptionEqualToValue={(option, value) => option === value}
 						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'condition')}
@@ -153,7 +128,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				)}
 
 				<Input
-					className={classes.extraInfo}
+					sx={{ margin: (theme) => theme.spacing(2, 0, 2, 0) }}
 					value={data.extraInfo}
 					onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'extraInfo')}
 					inputProps={{
@@ -201,7 +176,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					)}
 				</Grid>
 			</CardContent>
-		</StyledCard>
+		</Card>
 	)
 }
 

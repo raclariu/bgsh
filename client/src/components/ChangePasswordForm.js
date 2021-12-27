@@ -25,19 +25,6 @@ import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
 import { useNotification } from '../hooks/hooks'
 import { apiUserChangePassword } from '../api/api'
 
-const PREFIX = 'ChangePasswordForm'
-
-const classes = {
-	input : `${PREFIX}-input`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.input}`]: {
-		minHeight : '90px'
-	}
-}))
-
 // @ Main
 const ChangePasswordForm = () => {
 	const [ passwordCurrent, setPasswordCurrent ] = useState('')
@@ -86,91 +73,89 @@ const ChangePasswordForm = () => {
 	}
 
 	return (
-		<Root>
-			<form onSubmit={submitHandler} autoComplete="off">
-				<Input
-					className={classes.input}
-					error={isError && passwordCurrentErrorMsg ? true : false}
-					helperText={isError ? passwordCurrentErrorMsg : false}
-					onChange={(e) => setPasswordCurrent(e.target.value)}
-					value={passwordCurrent}
-					size="medium"
-					id="passwordCurrent"
-					name="passwordCurrent"
-					label="Current Password"
-					type={passCurrentVisibility ? 'text' : 'password'}
-					InputProps={{
-						endAdornment : (
-							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passCurrent')} size="large">
-									{passCurrentVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-								</IconButton>
-							</InputAdornment>
-						)
-					}}
-					fullWidth
-					required
-				/>
+		<form onSubmit={submitHandler} autoComplete="off">
+			<Input
+				sx={{ minHeight: '90px' }}
+				error={isError && passwordCurrentErrorMsg ? true : false}
+				helperText={isError ? passwordCurrentErrorMsg : false}
+				onChange={(e) => setPasswordCurrent(e.target.value)}
+				value={passwordCurrent}
+				size="medium"
+				id="passwordCurrent"
+				name="passwordCurrent"
+				label="Current Password"
+				type={passCurrentVisibility ? 'text' : 'password'}
+				InputProps={{
+					endAdornment : (
+						<InputAdornment position="end">
+							<IconButton onClick={() => handlePassVisibility('passCurrent')} size="large">
+								{passCurrentVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+							</IconButton>
+						</InputAdornment>
+					)
+				}}
+				fullWidth
+				required
+			/>
 
-				<Input
-					className={classes.input}
-					error={isError && passwordNewErrorMsg ? true : false}
-					helperText={isError ? passwordNewErrorMsg : false}
-					onChange={(e) => setPasswordNew(e.target.value)}
-					value={passwordNew}
-					size="medium"
-					id="passwordNew"
-					name="passwordNew"
-					label="New Password"
-					type={passNewVisibility ? 'text' : 'password'}
-					InputProps={{
-						endAdornment : (
-							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passNew')} size="large">
-									{passNewVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-								</IconButton>
-							</InputAdornment>
-						)
-					}}
-					fullWidth
-					required
-				/>
+			<Input
+				sx={{ minHeight: '90px' }}
+				error={isError && passwordNewErrorMsg ? true : false}
+				helperText={isError ? passwordNewErrorMsg : false}
+				onChange={(e) => setPasswordNew(e.target.value)}
+				value={passwordNew}
+				size="medium"
+				id="passwordNew"
+				name="passwordNew"
+				label="New Password"
+				type={passNewVisibility ? 'text' : 'password'}
+				InputProps={{
+					endAdornment : (
+						<InputAdornment position="end">
+							<IconButton onClick={() => handlePassVisibility('passNew')} size="large">
+								{passNewVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+							</IconButton>
+						</InputAdornment>
+					)
+				}}
+				fullWidth
+				required
+			/>
 
-				<Input
-					className={classes.input}
-					error={isError && passwordNewConfirmationErrorMsg ? true : false}
-					helperText={isError ? passwordNewConfirmationErrorMsg : false}
-					onChange={(e) => setPasswordNewConfirmation(e.target.value)}
-					value={passwordNewConfirmation}
-					size="medium"
-					id="passwordNewConfirmation"
-					name="passwordNewConfirmation"
-					label="Confirm New Password"
-					type={passNewConfirmationVisibility ? 'text' : 'password'}
-					InputProps={{
-						endAdornment : (
-							<InputAdornment position="end">
-								<IconButton onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
-									{passNewConfirmationVisibility ? (
-										<VisibilityOutlinedIcon />
-									) : (
-										<VisibilityOffOutlinedIcon />
-									)}
-								</IconButton>
-							</InputAdornment>
-						)
-					}}
-					fullWidth
-					required
-				/>
+			<Input
+				sx={{ minHeight: '90px' }}
+				error={isError && passwordNewConfirmationErrorMsg ? true : false}
+				helperText={isError ? passwordNewConfirmationErrorMsg : false}
+				onChange={(e) => setPasswordNewConfirmation(e.target.value)}
+				value={passwordNewConfirmation}
+				size="medium"
+				id="passwordNewConfirmation"
+				name="passwordNewConfirmation"
+				label="Confirm New Password"
+				type={passNewConfirmationVisibility ? 'text' : 'password'}
+				InputProps={{
+					endAdornment : (
+						<InputAdornment position="end">
+							<IconButton onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
+								{passNewConfirmationVisibility ? (
+									<VisibilityOutlinedIcon />
+								) : (
+									<VisibilityOffOutlinedIcon />
+								)}
+							</IconButton>
+						</InputAdornment>
+					)
+				}}
+				fullWidth
+				required
+			/>
 
-				<Box display="flex" justifyContent="flex-end">
-					<Button variant="contained" type="submit" color="primary" size="large" disabled={isLoading}>
-						{isLoading ? <Loader size={26} color="inherit" /> : 'Change password'}
-					</Button>
-				</Box>
-			</form>
-		</Root>
+			<Box display="flex" justifyContent="flex-end">
+				<Button variant="contained" type="submit" color="primary" size="large" disabled={isLoading}>
+					{isLoading ? <Loader size={26} color="inherit" /> : 'Change password'}
+				</Button>
+			</Box>
+		</form>
 	)
 }
 

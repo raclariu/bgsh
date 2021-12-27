@@ -28,30 +28,6 @@ import Input from './Input'
 // @ Icons
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
-const PREFIX = 'AddWantedCard'
-
-const classes = {
-	media        : `${PREFIX}-media`,
-	autocomplete : `${PREFIX}-autocomplete`,
-	error        : `${PREFIX}-error`
-}
-
-const StyledCard = styled(Card)(({ theme }) => ({
-	[`& .${classes.media}`]: {
-		objectFit      : 'cover',
-		height         : '180px',
-		objectPosition : 'center 10%'
-	},
-
-	[`& .${classes.autocomplete}`]: {
-		marginTop : theme.spacing(2)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
-
 // @ Main
 const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -66,7 +42,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 	console.log(data)
 
 	return (
-		<StyledCard elevation={1}>
+		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
@@ -84,7 +60,11 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 				}}
 			/>
 			<CardMedia
-				className={classes.media}
+				sx={{
+					objectFit      : 'cover',
+					height         : '180px',
+					objectPosition : 'center 10%'
+				}}
 				component="img"
 				image={displayImageHandler(game.image, game.thumbnail)}
 				alt={game.title}
@@ -158,7 +138,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 					)}
 				/>
 			</CardContent>
-		</StyledCard>
+		</Card>
 	)
 }
 

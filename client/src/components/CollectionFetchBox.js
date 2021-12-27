@@ -48,14 +48,6 @@ const CollectionFetchBox = () => {
 
 	return (
 		<form onSubmit={submitToBGGHandler} autoComplete="off">
-			{mutation.isSuccess && (
-				<Box mb={2}>
-					<CustomAlert severity="success">
-						<Box>Collection successfully imported.</Box>
-					</CustomAlert>
-				</Box>
-			)}
-
 			<Box fontWeight="fontWeightMedium">Import your BoardGameGeek collection</Box>
 			<Box color="grey.500" mb={2} fontStyle="italic" fontSize="caption.fontSize">
 				Warning: Your sale/trade/wanted list will reset

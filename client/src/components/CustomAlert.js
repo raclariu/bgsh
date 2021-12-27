@@ -6,14 +6,14 @@ import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 
 // @ Main
-const CustomAlert = ({ className, severity, children }) => {
+const CustomAlert = ({ severity, children }) => {
 	return (
-        <Box borderRadius="4px">
-			<Alert className={className} variant="outlined" severity={severity}>
+		<Box borderRadius="4px">
+			<Alert variant="outlined" severity={severity}>
 				{children}
 			</Alert>
 		</Box>
-    );
+	)
 }
 
 // @ Default Props

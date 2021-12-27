@@ -16,43 +16,30 @@ import SendMessage from './SendMessage'
 // @ Icons
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
-const PREFIX = 'CustomAvatar'
+// @ Styles
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+	width           : theme.spacing(3),
+	height          : theme.spacing(3),
+	backgroundColor : theme.palette.primary.main,
+	cursor          : 'pointer'
+}))
+const MediumAvatar = styled(Avatar)(({ theme }) => ({
+	width           : theme.spacing(4),
+	height          : theme.spacing(4),
+	backgroundColor : theme.palette.primary.main,
+	cursor          : 'pointer'
+}))
+const LargeAvatar = styled(Avatar)(({ theme }) => ({
+	width           : theme.spacing(5),
+	height          : theme.spacing(5),
+	backgroundColor : theme.palette.primary.main,
+	cursor          : 'pointer'
+}))
 
-const classes = {
-	small         : `${PREFIX}-small`,
-	medium        : `${PREFIX}-medium`,
-	large         : `${PREFIX}-large`,
-	popoverAvatar : `${PREFIX}-popoverAvatar`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.small}`]: {
-		width           : theme.spacing(3),
-		height          : theme.spacing(3),
-		backgroundColor : theme.palette.primary.main,
-		cursor          : 'pointer'
-	},
-
-	[`& .${classes.medium}`]: {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main,
-		cursor          : 'pointer'
-	},
-
-	[`& .${classes.large}`]: {
-		width           : theme.spacing(5),
-		height          : theme.spacing(5),
-		backgroundColor : theme.palette.primary.main,
-		cursor          : 'pointer'
-	},
-
-	[`& .${classes.popoverAvatar}`]: {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main
-	}
+const InactiveAvatar = styled(Avatar)(({ theme }) => ({
+	width           : theme.spacing(5),
+	height          : theme.spacing(5),
+	backgroundColor : theme.palette.primary.main
 }))
 
 // @ Main
@@ -66,16 +53,25 @@ const CustomAvatar = ({ size, user }) => {
 	}
 
 	return (
-		<Root>
+		<Fragment>
 			<Box display="flex" flexDirection="row" alignItems="center">
-				<Avatar
-					onClick={(e) => setAnchorEl(e.currentTarget)}
-					className={size === 'small' ? classes.small : size === 'medium' ? classes.medium : classes.large}
-				>
-					<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
-						{user.substring(0, 2).toUpperCase()}
-					</Box>
-				</Avatar>
+				{size === 'small' && (
+					<SmallAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+						<Box fontSize={10}>{user.substring(0, 2).toUpperCase()}</Box>
+					</SmallAvatar>
+				)}
+
+				{size === 'medium' && (
+					<MediumAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+						<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
+					</MediumAvatar>
+				)}
+
+				{size === 'large' && (
+					<LargeAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+						<Box fontSize={14}>{user.substring(0, 2).toUpperCase()}</Box>
+					</LargeAvatar>
+				)}
 			</Box>
 
 			<Popover
@@ -93,24 +89,25 @@ const CustomAvatar = ({ size, user }) => {
 			>
 				<Box p={1} display="flex" flexDirection="column">
 					<Box display="flex" alignItems="center" justifyContent="space-between">
-						<Box ml={1}>
-							<Avatar className={classes.popoverAvatar} color="primary">
-								<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
-							</Avatar>
-						</Box>
+						<InactiveAvatar>
+							<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
+								{user.substring(0, 2).toUpperCase()}
+							</Box>
+						</InactiveAvatar>
+
 						<Box ml={1} fontWeight="fontWeightMedium">
 							{user}
 						</Box>
-						<Box ml={2}>
-							<IconButton color="primary" onClick={handleProfileClick} size="large">
-								<AccountCircleTwoToneIcon />
-							</IconButton>
-						</Box>
+
+						<IconButton color="primary" onClick={handleProfileClick} size="large" sx={{ ml: 2 }}>
+							<AccountCircleTwoToneIcon />
+						</IconButton>
+
 						<SendMessage recipientUsername={user} />
 					</Box>
 				</Box>
 			</Popover>
-		</Root>
+		</Fragment>
 	)
 }
 

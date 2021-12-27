@@ -19,7 +19,7 @@ const defaultBox = {
 // @ Main
 const InfoBox = ({ data, children }) => {
 	return (
-		<Box {...defaultBox}>
+		<Box sx={defaultBox}>
 			<Box>{children}</Box>
 			<Box textAlign="center" fontSize={12}>
 				{data}

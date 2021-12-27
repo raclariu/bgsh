@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 
@@ -27,56 +27,18 @@ import CustomAvatar from './CustomAvatar'
 // @ Other
 import { calculateTimeAgo } from '../helpers/helpers'
 
-const PREFIX = 'GameIndexCard';
-
-const classes = {
-    card: `${PREFIX}-card`,
-    media: `${PREFIX}-media`,
-    overlayChip: `${PREFIX}-overlayChip`,
-    title: `${PREFIX}-title`,
-    avatar: `${PREFIX}-avatar`
-};
-
-const StyledCard = styled(Card)((
-    {
-        theme
-    }
-) => ({
-    [`&.${classes.card}`]: {
-		position : 'relative'
-	},
-
-    [`& .${classes.media}`]: {
-		objectFit : 'contain',
-		height    : '180px'
-	},
-
-    [`& .${classes.overlayChip}`]: {
-		position : 'absolute',
-		top      : '8px',
-		left     : '8px'
-	},
-
-    [`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	},
-
-    [`& .${classes.avatar}`]: {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main
-	}
-}));
+// @ Styles
+const StyledTitleBox = styled(Box)(() => ({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
+}))
 
 // @ Main
 const GameIndexCard = ({ data }) => {
-
-
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -93,10 +55,13 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	return (
-        <StyledCard className={classes.card} elevation={1}>
+		<Card sx={{ position: 'relative' }} elevation={1}>
 			<Box py={1}>
 				<CardMedia
-					className={classes.media}
+					sx={{
+						objectFit : 'contain',
+						height    : '180px'
+					}}
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
@@ -133,9 +98,13 @@ const GameIndexCard = ({ data }) => {
 
 			{data.isPack && (
 				<Chip
+					sx={{
+						position : 'absolute',
+						top      : '8px',
+						left     : '8px'
+					}}
 					size="small"
 					color="secondary"
-					className={classes.overlayChip}
 					label={`${data.games.length} pack`}
 				/>
 			)}
@@ -160,7 +129,7 @@ const GameIndexCard = ({ data }) => {
 							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={classes.title}>{data.games[index].title}</Box>
+							<StyledTitleBox>{data.games[index].title}</StyledTitleBox>
 							<IconButton
 								color="primary"
 								disabled={data.games.length === index + 1}
@@ -171,9 +140,7 @@ const GameIndexCard = ({ data }) => {
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box width="100%" className={classes.title}>
-							{data.games[index].title}
-						</Box>
+						<StyledTitleBox sx={{ width: '100%' }}>{data.games[index].title}</StyledTitleBox>
 					)}
 				</Box>
 			</CardContent>
@@ -236,8 +203,8 @@ const GameIndexCard = ({ data }) => {
 					{data.mode !== 'want' && <GameDetailsButton altId={data.altId} />}
 				</Box>
 			</CardActions>
-		</StyledCard>
-    );
+		</Card>
+	)
 }
 
 export default GameIndexCard

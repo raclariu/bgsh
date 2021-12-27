@@ -14,7 +14,7 @@ const DrawerFilter = () => {
 			<Button variant="contained" color="primary" onClick={() => setOpen(true)}>
 				Open filters
 			</Button>
-			<Drawer variant="temporary" anchor="bottom" open={open} onClose={() => setOpen(false)}>
+			<Drawer anchor="bottom" open={open} onClose={() => setOpen(false)}>
 				asd
 			</Drawer>
 		</Fragment>

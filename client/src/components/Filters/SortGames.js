@@ -10,25 +10,12 @@ import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
-const PREFIX = 'SortGames'
-
-const classes = {
-	formControl : `${PREFIX}-formControl`
-}
-
-const StyledFormControl = styled(FormControl)(({ theme }) => ({
-	[`&.${classes.formControl}`]: {
-		margin   : theme.spacing(1),
-		minWidth : 150
-	}
-}))
-
 // @ Main
 const SortGames = ({ handleFilters, mode }) => {
 	const location = useLocation()
 
 	return (
-		<StyledFormControl variant="standard" className={classes.formControl}>
+		<FormControl variant="standard" sx={{ margin: (theme) => theme.spacing(2), minWidth: 150 }}>
 			<InputLabel>Sort by</InputLabel>
 			{mode === 'sell' && (
 				<Select
@@ -100,7 +87,7 @@ const SortGames = ({ handleFilters, mode }) => {
 					<MenuItem value="year">Release date</MenuItem>
 				</Select>
 			)}
-		</StyledFormControl>
+		</FormControl>
 	)
 }
 

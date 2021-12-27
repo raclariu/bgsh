@@ -28,7 +28,7 @@ const defaultMiniBox = {
 	fontWeight   : 'fontWeightMedium',
 	minWidth     : 45,
 	boxShadow    : 2,
-	borderRadius : 4
+	borderRadius : 2
 }
 
 const RatingBox = ({ variant, stats }) => {
@@ -56,11 +56,11 @@ const RatingBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box bgcolor={handleRatingBgColor()} {...defaultMiniBox}>
+				<Box fontSize="0.875rem" bgcolor={handleRatingBgColor()} sx={defaultMiniBox}>
 					{approx(stats.avgRating)}
 				</Box>
 			) : (
-				<Box bgcolor={handleRatingBgColor()} {...defaultBigBox}>
+				<Box bgcolor={handleRatingBgColor()} sx={defaultBigBox}>
 					{approx(stats.avgRating)}
 					<Box fontSize={11} color="grey.200">
 						{approx(stats.ratings)} ratings
@@ -83,13 +83,13 @@ const RankBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' && (
-				<Box bgcolor={handleRankBgColor()} {...defaultMiniBox}>
+				<Box fontSize="0.875rem" bgcolor={handleRankBgColor()} sx={defaultMiniBox}>
 					{!stats.rank ? <Box color="grey.200">N/A</Box> : <Box color="grey.200">{stats.rank}</Box>}
 				</Box>
 			)}
 
 			{variant === 'full' && (
-				<Box bgcolor={handleRankBgColor()} {...defaultBigBox}>
+				<Box bgcolor={handleRankBgColor()} sx={defaultBigBox}>
 					{!stats.rank ? (
 						<Fragment>
 							<Box>N/A</Box>
@@ -127,7 +127,7 @@ const ComplexityBox = ({ variant, complexity }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box bgcolor={handleComplexityBgColor()} {...defaultMiniBox}>
+				<Box fontSize="0.875rem" bgcolor={handleComplexityBgColor()} sx={defaultMiniBox}>
 					{!complexity.weight ? (
 						<Box color="grey.200">N/A</Box>
 					) : (
@@ -135,7 +135,7 @@ const ComplexityBox = ({ variant, complexity }) => {
 					)}
 				</Box>
 			) : (
-				<Box bgcolor={handleComplexityBgColor()} {...defaultBigBox}>
+				<Box bgcolor={handleComplexityBgColor()} sx={defaultBigBox}>
 					{!complexity.weight ? (
 						<Fragment>
 							<Box>N/A</Box>

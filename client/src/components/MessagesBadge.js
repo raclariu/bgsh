@@ -2,7 +2,6 @@
 import React, { Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import makeStyles from '@mui/styles/makeStyles';
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -23,14 +22,14 @@ const MessagesBadge = () => {
 	})
 
 	return (
-        <Fragment>
+		<Fragment>
 			<IconButton component={RouterLink} to="/received" color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
 					<EmailTwoToneIcon />
 				</Badge>
 			</IconButton>
 		</Fragment>
-    );
+	)
 }
 
 export default MessagesBadge

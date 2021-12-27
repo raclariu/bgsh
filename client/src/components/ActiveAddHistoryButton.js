@@ -32,31 +32,6 @@ import Input from './Input'
 import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-const PREFIX = 'ActiveAddHistoryButton'
-
-const classes = {
-	input    : `${PREFIX}-input`,
-	textarea : `${PREFIX}-textarea`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.input}`]: {
-		minHeight                      : '70px',
-		width                          : '70%',
-		[theme.breakpoints.down('sm')]: {
-			width : '100%'
-		}
-	},
-
-	[`& .${classes.textarea}`]: {
-		width                          : '70%',
-		[theme.breakpoints.down('sm')]: {
-			width : '100%'
-		}
-	}
-}))
-
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
 	const queryClient = useQueryClient()
@@ -150,7 +125,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfo : false
 
 	return (
-		<Root>
+		<Fragment>
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
@@ -174,7 +149,13 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 						<DialogContent dividers>
 							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 								<Input
-									className={classes.input}
+									sx={{
+										minHeight : '70px',
+										width     : {
+											sm : '70%',
+											xs : '100%'
+										}
+									}}
 									error={!!otherUsernameError}
 									helperText={otherUsernameError}
 									onChange={(e) => setOtherUsername(e.target.value)}
@@ -192,7 +173,13 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 								{mode === 'sell' && (
 									<Input
-										className={classes.input}
+										sx={{
+											minHeight : '70px',
+											width     : {
+												sm : '70%',
+												xs : '100%'
+											}
+										}}
 										error={!!finalPriceError}
 										helperText={finalPriceError}
 										onChange={(e) => setFinalPrice(e.target.value)}
@@ -208,7 +195,12 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								)}
 
 								<Input
-									className={classes.textarea}
+									sx={{
+										width : {
+											sm : '70%',
+											xs : '100%'
+										}
+									}}
 									error={!!extraInfoError}
 									helperText={extraInfoError}
 									value={extraInfo}
@@ -317,7 +309,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					</Dialog>
 				</Fragment>
 			)}
-		</Root>
+		</Fragment>
 	)
 }
 
