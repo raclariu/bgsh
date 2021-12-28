@@ -8,8 +8,8 @@ const genNanoId = (length) => {
 	return nanoid()
 }
 
-const parseXML = async (xml) => {
-	const promise = await new Promise((resolve, reject) => {
+const parseXML = (xml) => {
+	return new Promise((resolve, reject) => {
 		parseString(
 			xml,
 			{
@@ -20,12 +20,10 @@ const parseXML = async (xml) => {
 				mergeAttrs    : true
 			},
 			(error, result) => {
-				if (error) reject(error)
-				else resolve(result)
+				error ? reject(error) : resolve(result)
 			}
 		)
 	})
-	return promise
 }
 
 const comparePasswords = async (enteredPassword, dbPassword) => {

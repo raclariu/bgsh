@@ -191,8 +191,9 @@ const SingleGameScreen = () => {
 			return apiFetchGallery(bggIds)
 		},
 		{
-			enabled   : isSuccess,
-			staleTime : 1000 * 60 * 3
+			enabled              : isSuccess,
+			staleTime            : 1000 * 60 * 3,
+			refetchOnWindowFocus : false
 		}
 	)
 

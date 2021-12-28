@@ -28,8 +28,13 @@ const BggSearchGamesBox = () => {
 	const [ options, setOptions ] = useState([])
 	const [ selectedOption, setSelectedOption ] = useState(null)
 
-	const mutation = useMutation((debKeyword) => apiBggSearchGames(debKeyword))
-	const { mutate } = mutation
+	const mutation = useMutation((debKeyword) => apiBggSearchGames(debKeyword), {
+		onSuccess : (data) => {
+			setOptions(data.filter((v, i, a) => a.findIndex((t) => t.bggId === v.bggId) === i))
+		}
+	})
+
+	const { mutate, reset } = mutation
 
 	useEffect(
 		() => {
@@ -42,16 +47,7 @@ const BggSearchGamesBox = () => {
 				setSelectedOption(null)
 			}
 		},
-		[ dispatch, debKeyword, mutate ]
-	)
-
-	useEffect(
-		() => {
-			if (mutation.isSuccess) {
-				setOptions(mutation.data)
-			}
-		},
-		[ mutation ]
+		[ dispatch, debKeyword, mutate, reset ]
 	)
 
 	const handleInput = (e) => {
@@ -89,6 +85,13 @@ const BggSearchGamesBox = () => {
 				onChange={(e, value) => setSelectedOption(value)}
 				getOptionLabel={(option) => `${option.title} (${option.year})`}
 				options={options}
+				renderOption={(props, option) => {
+					return (
+						<li {...props} key={option.bggId}>
+							{option.title}
+						</li>
+					)
+				}}
 				renderInput={(params) => (
 					<Input
 						{...params}
