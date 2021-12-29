@@ -29,7 +29,12 @@ import CustomAlert from './CustomAlert'
 import Input from './Input'
 
 // @ Others
-import { apiAddGameToHistory, apiDeleteListedGame, apiReactivateListedGame } from '../api/api'
+import {
+	apiAddSoldGamesToHistory,
+	apiDeleteListedGame,
+	apiReactivateListedGame,
+	apiAddTradedGamesToHistory
+} from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
 // @ Main
@@ -43,15 +48,26 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const [ showSnackbar ] = useNotification()
 
 	const addGame = useMutation(
-		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) =>
-			apiAddGameToHistory({
-				games,
-				mode,
-				otherUsername : otherUsername ? otherUsername.trim().toLowerCase() : null,
-				finalPrice    : finalPrice ? finalPrice : null,
-				extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
-				gameId
-			}),
+		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) => {
+			if (mode === 'sell') {
+				return apiAddSoldGamesToHistory({
+					games,
+					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
+					finalPrice    : finalPrice,
+					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
+					gameId
+				})
+			}
+
+			if (mode === 'trade') {
+				return apiAddTradedGamesToHistory({
+					games,
+					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
+					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
+					gameId
+				})
+			}
+		},
 		{
 			onSuccess : () => {
 				setOpenDialog(false)
@@ -109,6 +125,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	}
 
 	const addGameHandler = () => {
+		console.log({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 	}
 
@@ -136,14 +153,14 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<DialogTitle>
-							<Typography variant="body2">
+							<Box>
 								Fill in the form below for history purposes. Username is not required, but it is
 								recommended to be filled in.
-							</Typography>
-							<Typography variant="caption" color="textSecondary">
+							</Box>
+							<Box color="textSecondary">
 								Note: once you press the button below, this listing will be deleted and added to your
 								history.
-							</Typography>
+							</Box>
 						</DialogTitle>
 
 						<DialogContent dividers>
@@ -187,10 +204,10 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										name="final-price"
 										label="Final price"
 										type="number"
+										required
 										InputProps={{
 											startAdornment : <InputAdornment position="start">RON</InputAdornment>
 										}}
-										required
 									/>
 								)}
 
@@ -252,9 +269,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle>
-							<Typography variant="subtitle2" align="center">
-								Are you sure you want to delete this game?
-							</Typography>
+							<Box align="center">Are you sure you want to delete this game?</Box>
 						</DialogTitle>
 
 						<Divider />
@@ -286,9 +301,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<DialogTitle>
-							<Typography variant="subtitle2" align="center">
-								Are you sure you want to reactivate this board game?
-							</Typography>
+							<Box align="center">Are you sure you want to reactivate this board game?</Box>
 						</DialogTitle>
 
 						<Divider />

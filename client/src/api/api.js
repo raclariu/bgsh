@@ -293,7 +293,7 @@ export const apiFetchListedGames = async (search, page) => {
 	return data
 }
 
-export const apiAddGameToHistory = async (gamesData) => {
+export const apiAddSoldGamesToHistory = async (gamesData) => {
 	const config = {
 		headers : {
 			'Content-Type' : 'application/json',
@@ -301,7 +301,29 @@ export const apiAddGameToHistory = async (gamesData) => {
 		}
 	}
 
-	return await axios.post('/api/history', gamesData, config)
+	return await axios.post('/api/history/sell', gamesData, config)
+}
+
+export const apiAddTradedGamesToHistory = async (gamesData) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	return await axios.post('/api/history/trade', gamesData, config)
+}
+
+export const apiAddBoughtGamesToHistory = async (gamesData) => {
+	const config = {
+		headers : {
+			'Content-Type' : 'application/json',
+			Authorization  : getBearer()
+		}
+	}
+
+	return await axios.post('/api/history/buy', gamesData, config)
 }
 
 export const apiDeleteListedGame = async (id) => {

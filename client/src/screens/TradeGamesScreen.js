@@ -73,7 +73,7 @@ const TradeGamesScreen = () => {
 
 	const mutation = useMutation((gamesData) => apiListGamesForTrade(gamesData), {
 		onSuccess : () => {
-			queryClient.invalidateQueries('saleGames')
+			queryClient.invalidateQueries('tradeGames')
 			queryClient.invalidateQueries('myListedGames')
 		}
 	})

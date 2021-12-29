@@ -2,23 +2,17 @@ import { check } from 'express-validator'
 
 const validateExtraInfoTxt = check('games.*.extraInfo')
 	.optional({ nullable: true })
-	.trim()
 	.if((value, { req }) => !req.body.isPack)
+	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('0-500 character allowed')
-	.bail()
-	.isString()
-	.withMessage('Can only contain letters and numbers')
 
 const validateExtraInfoPackTxt = check('extraInfoPack')
 	.optional({ nullable: true })
-	.trim()
 	.if((value, { req }) => req.body.isPack)
+	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('0-500 character allowed')
-	.bail()
-	.isString()
-	.withMessage('Can only contain letters and numbers')
 
 const validateIsPack = check('isPack')
 	.isIn([ true, false ])
@@ -33,7 +27,7 @@ const validateGameVersion = check('games.*.version').custom((version, { req, pat
 
 		if (!versionOk) {
 			throw {
-				message : `Invalid version for ${req.body.games[idx].title}`
+				message : `${req.body.games[idx].title} - Invalid version`
 			}
 		}
 
@@ -58,7 +52,7 @@ const validateGameCondition = check('games.*.condition').custom((condition, { re
 
 		if (!conditionOk) {
 			throw {
-				message : `Invalid condition for ${req.body.games[idx].title}`
+				message : `${req.body.games[idx].title} - Invalid condition`
 			}
 		}
 

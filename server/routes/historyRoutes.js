@@ -1,31 +1,43 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
-import { addGamesToHistory, getGamesHistory } from '../controllers/historyController.js'
+import {
+	addSoldGamesToHistory,
+	addTradedGamesToHistory,
+	addBoughtGamesToHistory,
+	getGamesHistory
+} from '../controllers/historyController.js'
 import {
 	validateSingleUsername,
-	validateMultipleUsernames,
+	validateBuySingleUsername,
+	validateBuyMultipleUsernames,
 	validateSinglePrice,
-	validateMultiplePrices,
+	validateBuySinglePrice,
+	validateBuyMultiplePrices,
 	validateExtraInfoPack,
-	validateMultipleExtraInfos
+	validateBuyMultipleExtraInfos,
+	validateSingleExtraInfo
 } from '../validators/historyValidator.js'
 
 // @route /api/history
+router.route('/').get(protect, getGamesHistory)
 router
-	.route('/')
+	.route('/sell')
+	.post([ protect, validateSingleUsername, validateSinglePrice, validateSingleExtraInfo ], addSoldGamesToHistory)
+router.route('/trade').post([ protect, validateSingleUsername, validateSingleExtraInfo ], addTradedGamesToHistory)
+router
+	.route('/buy')
 	.post(
 		[
 			protect,
-			validateSingleUsername,
-			validateMultipleUsernames,
-			validateSinglePrice,
-			validateMultiplePrices,
-			validateExtraInfoPack,
-			validateMultipleExtraInfos
+			validateBuySinglePrice,
+			validateBuyMultiplePrices,
+			validateBuySingleUsername,
+			validateBuyMultipleUsernames,
+			validateBuyMultipleExtraInfos,
+			validateExtraInfoPack
 		],
-		addGamesToHistory
+		addBoughtGamesToHistory
 	)
-	.get(protect, getGamesHistory)
 
 export default router

@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogActions from '@mui/material/DialogActions'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 
 // @ Main
 const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
@@ -16,9 +17,9 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 		<Fragment>
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle>
-					<Typography variant="h6" align="center">
+					<Box textAlign="center">
 						{mode === 'sell' ? 'Sell' : mode === 'trade' ? 'Trade' : 'Buy'} games individually or as a pack?
-					</Typography>
+					</Box>
 				</DialogTitle>
 
 				<DialogActions>

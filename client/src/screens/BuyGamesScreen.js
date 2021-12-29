@@ -21,7 +21,7 @@ import Input from '../components/Input'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
-import { apiFetchGameDetails, apiAddGameToHistory } from '../api/api'
+import { apiFetchGameDetails, apiAddBoughtGamesToHistory } from '../api/api'
 
 // @ Main
 const BuyGamesScreen = () => {
@@ -41,14 +41,6 @@ const BuyGamesScreen = () => {
 	const [ values, setValues ] = useState([])
 
 	console.log(values)
-
-	if (isPack !== false && isPack !== true) {
-		history.push('/sell')
-	}
-
-	if (saleList.length === 1 && isPack) {
-		history.push('/sell')
-	}
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
@@ -73,7 +65,17 @@ const BuyGamesScreen = () => {
 		}
 	)
 
-	const mutation = useMutation((gamesData) => apiAddGameToHistory(gamesData))
+	const mutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData))
+
+	if (isPack !== false && isPack !== true) {
+		mutation.reset()
+		history.push('/buy')
+	}
+
+	if (saleList.length === 1 && isPack) {
+		mutation.reset()
+		history.push('/buy')
+	}
 
 	useEffect(
 		() => {
@@ -122,11 +124,13 @@ const BuyGamesScreen = () => {
 				return {
 					...val,
 					price         : null,
-					otherUsername : null
+					otherUsername : null,
+					extraInfo     : val.extraInfo.trim() ? val.extraInfo.trim() : null
 				}
 			} else {
 				return {
-					...val
+					...val,
+					extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
 				}
 			}
 		})
@@ -134,14 +138,225 @@ const BuyGamesScreen = () => {
 		const gamesData = {
 			games         : verifiedGames,
 			isPack,
-			mode          : 'buy',
 			extraInfoPack : extraInfoPack.trim() ? extraInfoPack.trim() : null,
-			finalPrice    : finalPrice ? finalPrice : null,
-			otherUsername : otherUsername ? otherUsername : null
+			finalPrice    : finalPrice,
+			otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null
 		}
 
-		console.log(gamesData)
-
+		const testIndividual = {
+			games         : [
+				{
+					type               : 'boardgame',
+					bggId              : '299960',
+					thumbnail          :
+						'https://cf.geekdo-images.com/TYaY5oUlCIOCwDYJkjgKWg__thumb/img/bj66Z9SfSDy3futFwlY-HAJM1fo=/fit-in/200x150/filters:strip_icc()/pic5199243.jpg',
+					image              :
+						'https://cf.geekdo-images.com/TYaY5oUlCIOCwDYJkjgKWg__original/img/HJD7_FeLkRx9BDSsFYp8GTC3jsM=/0x0/filters:format(jpeg)/pic5199243.jpg',
+					title              : 'Alma Mater',
+					year               : 2020,
+					designers          : [
+						'Acchittocca',
+						'Flaminia Brasini',
+						'Virginio Gigli',
+						'Stefano Luperto',
+						'Antonio Tinto'
+					],
+					minPlayers         : 2,
+					maxPlayers         : 4,
+					suggestedPlayers   : 4,
+					languageDependence : null,
+					playTime           : '90 - 150',
+					minAge             : 12,
+					categories         : [
+						{
+							id   : 1070,
+							name : 'Renaissance'
+						}
+					],
+					mechanics          : [
+						{
+							id   : 2984,
+							name : 'Drafting'
+						},
+						{
+							id   : 2875,
+							name : 'End Game Bonuses'
+						},
+						{
+							id   : 2040,
+							name : 'Hand Management'
+						},
+						{
+							id   : 2002,
+							name : 'Tile Placement'
+						},
+						{
+							id   : 2082,
+							name : 'Worker Placement'
+						}
+					],
+					versions           : [
+						{
+							title : 'Chinese edition',
+							year  : 2020
+						},
+						{
+							title : 'English edition',
+							year  : 2020
+						},
+						{
+							title : 'English/German edition',
+							year  : 2020
+						},
+						{
+							title : 'French edition',
+							year  : 2021
+						},
+						{
+							title : 'Japanese edition',
+							year  : 2021
+						},
+						{
+							title : 'Korean edition',
+							year  : 2020
+						},
+						{
+							title : 'Spanish edition',
+							year  : 2021
+						}
+					],
+					stats              : {
+						ratings   : 1585,
+						avgRating : 7.55,
+						rank      : 1132
+					},
+					complexity         : {
+						weight : 3.78,
+						votes  : 104
+					},
+					isSleeved          : true,
+					version            : {
+						title : 'Chinese edition',
+						year  : 2020
+					},
+					extraInfo          : { a: 1 },
+					price              : '12313',
+					otherUsername      : 'claudiu'
+				},
+				{
+					type               : 'boardgame',
+					bggId              : '234487',
+					thumbnail          :
+						'https://cf.geekdo-images.com/hgUDu_oG0uhnOWX4WM2vXA__thumb/img/KlzN2TK2WVHgCimiLG_aoEZXVQA=/fit-in/200x150/filters:strip_icc()/pic4070329.jpg',
+					image              :
+						'https://cf.geekdo-images.com/hgUDu_oG0uhnOWX4WM2vXA__original/img/S0BVejCX4yDWZv934q6BS7gAF9M=/0x0/filters:format(jpeg)/pic4070329.jpg',
+					title              : 'Altiplano',
+					year               : 2017,
+					designers          : [ 'Reiner Stockhausen' ],
+					minPlayers         : 2,
+					maxPlayers         : 5,
+					suggestedPlayers   : 3,
+					languageDependence : 'No necessary in-game text',
+					playTime           : '60 - 120',
+					minAge             : 12,
+					categories         : [
+						{
+							id   : 1021,
+							name : 'Economic'
+						}
+					],
+					mechanics          : [
+						{
+							id   : 2001,
+							name : 'Action Points'
+						},
+						{
+							id   : 2912,
+							name : 'Contracts'
+						},
+						{
+							id   : 2664,
+							name : 'Deck, Bag, and Pool Building'
+						},
+						{
+							id   : 2015,
+							name : 'Variable Player Powers'
+						}
+					],
+					versions           : [
+						{
+							title : 'Chinese edition',
+							year  : 2018
+						},
+						{
+							title : 'Dutch edition',
+							year  : 2018
+						},
+						{
+							title : 'English-only edition',
+							year  : 2018
+						},
+						{
+							title : 'English/German edition',
+							year  : 2017
+						},
+						{
+							title : 'French edition',
+							year  : 2018
+						},
+						{
+							title : 'Hungarian edition',
+							year  : 2018
+						},
+						{
+							title : 'Italian edition',
+							year  : 2018
+						},
+						{
+							title : 'Japanese edition',
+							year  : 2018
+						},
+						{
+							title : 'Polish edition',
+							year  : 2018
+						},
+						{
+							title : 'Portuguese edition',
+							year  : 2018
+						},
+						{
+							title : 'Russian edition',
+							year  : 2018
+						},
+						{
+							title : 'Spanish edition',
+							year  : 2017
+						}
+					],
+					stats              : {
+						ratings   : 7652,
+						avgRating : 7.52,
+						rank      : 307
+					},
+					complexity         : {
+						weight : 3.33,
+						votes  : 256
+					},
+					isSleeved          : false,
+					version            : {
+						title : 'Dutch edition',
+						year  : 2018
+					},
+					extraInfo          : {},
+					price              : '12313',
+					otherUsername      : 'claudiu'
+				}
+			],
+			isPack        : false,
+			extraInfoPack : null,
+			finalPrice    : '',
+			otherUsername : null
+		}
 		mutation.mutate(gamesData)
 	}
 

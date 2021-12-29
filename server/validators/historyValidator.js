@@ -12,7 +12,7 @@ const validateSingleUsername = check('otherUsername')
 			return true
 		}
 
-		if (otherUsername === req.user.username) {
+		if (otherUsername.toLowerCase() === req.user.username.toLowerCase()) {
 			throw new Error('You cannot use your own username')
 		}
 
@@ -22,76 +22,139 @@ const validateSingleUsername = check('otherUsername')
 			if (!otherUsernameExists) {
 				throw new Error('User not found')
 			} else {
+				req.otherUsernameId = otherUsernameExists._id
 				return true
 			}
 		}
 	})
 
-const validateMultipleUsernames = check('games.*.otherUsername')
+const validateBuySingleUsername = check('otherUsername')
 	.optional({ nullable: true })
+	.if((value, { req }) => req.body.isPack)
 	.trim()
 	.isLength({ max: 20 })
 	.withMessage('Username must have between 4 and 20 characters')
 	.bail()
 	.custom(async (otherUsername, { req }) => {
-		if (!otherUsername) {
-			return true
-		}
-
-		if (otherUsername === req.user.username) {
-			throw new Error('You cannot use your own username')
-		}
-
-		if (otherUsername) {
-			const otherUsernameExists = await User.findOne({ username: otherUsername }).select('_id username').lean()
-
-			if (!otherUsernameExists) {
-				throw new Error('User not found')
-			} else {
+		try {
+			if (!otherUsername) {
 				return true
 			}
+
+			if (otherUsername.toLowerCase() === req.user.username.toLowerCase()) {
+				throw {
+					message : 'You cannot use your own username'
+				}
+			}
+
+			if (otherUsername) {
+				const otherUsernameExists = await User.findOne({ username: otherUsername })
+					.select('_id username')
+					.lean()
+
+				if (!otherUsernameExists) {
+					throw {
+						message : `User "${otherUsername}" not found`
+					}
+				} else {
+					req.otherUsernameId = otherUsernameExists._id
+					return true
+				}
+			}
+		} catch (error) {
+			throw new Error(error.message ? error.message : 'Username error.')
 		}
 	})
 
-const validateMultiplePrices = check('games.*.price')
+const validateBuyMultipleUsernames = check('games.*.otherUsername')
+	.optional({ nullable: true })
+	.trim()
+	.isLength({ max: 20 })
+	.withMessage('Username must have between 4 and 20 characters')
+	.bail()
+	.custom(async (otherUsername, { req, path }) => {
+		try {
+			if (!otherUsername) {
+				return true
+			}
+
+			const idx = path.split('[')[1].split(']')[0]
+
+			if (otherUsername === req.user.username) {
+				throw {
+					message : `${req.body.games[idx].title} - You cannot use your own username`
+				}
+			}
+
+			if (otherUsername) {
+				const otherUsernameExists = await User.findOne({ username: otherUsername })
+					.select('_id username')
+					.lean()
+
+				if (!otherUsernameExists) {
+					throw {
+						message : `${req.body.games[idx].title} - User "${otherUsername}" not found`
+					}
+				} else {
+					return true
+				}
+			}
+		} catch (error) {
+			throw new Error(error.message ? error.message : 'Username error. Check usernames and resubmit')
+		}
+	})
+
+const validateBuyMultiplePrices = check('games.*.price')
 	.if((value, { req }) => !req.body.isPack)
 	.isInt({ min: 0, max: 10000 })
-	.withMessage('Price must be a number between 0 and 10000')
+	.withMessage((value, { req, path }) => {
+		const idx = path.split('[')[1].split(']')[0]
+		return `${req.body.games[idx].title} - Price must be a number between 0 and 10000`
+	})
 	.bail()
 	.toInt()
 
 const validateSinglePrice = check('finalPrice')
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price must be a number between 0 and 10000')
+	.bail()
+	.toInt()
+
+const validateBuySinglePrice = check('finalPrice')
 	.if((value, { req }) => req.body.isPack)
 	.isInt({ min: 0, max: 10000 })
 	.withMessage('Price must be a number between 0 and 10000')
 	.bail()
 	.toInt()
 
-const validateMultipleExtraInfos = check('games.*.extraInfo')
+const validateBuyMultipleExtraInfos = check('games.*.extraInfo')
 	.optional({ nullable: true })
-	.trim()
 	.if((value, { req }) => !req.body.isPack)
+	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('0-500 character allowed')
-	.bail()
-	.isString()
-	.withMessage('Can only contain letters and numbers')
 
 const validateExtraInfoPack = check('extraInfoPack')
 	.optional({ nullable: true })
-	.trim()
 	.if((value, { req }) => req.body.isPack)
+	.trim()
 	.isLength({ min: 0, max: 500 })
 	.withMessage('0-500 character allowed')
-	.bail()
-	.isString()
-	.withMessage('Can only contain letters and numbers')
+
+const validateSingleExtraInfo = check('extraInfo')
+	.optional({ nullable: true })
+	.trim()
+	.isLength({ min: 0, max: 500 })
+	.withMessage('0-500 character allowed')
 
 export {
 	validateSingleUsername,
-	validateMultipleUsernames,
+	validateBuySingleUsername,
+	validateBuyMultipleUsernames,
 	validateSinglePrice,
-	validateMultiplePrices,
+	validateBuyMultiplePrices,
 	validateExtraInfoPack,
-	validateMultipleExtraInfos
+	validateBuyMultipleExtraInfos,
+	validateSingleExtraInfo,
+	validateBuySinglePrice
 }

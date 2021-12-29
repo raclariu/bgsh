@@ -5,10 +5,134 @@ import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import History from '../models/historyModel.js'
 
-// * @desc    Add game(s) to history as a result of user selling or trading
-// * @route   POST  /api/history
+// * @desc    Add sold games to history
+// * @route   POST  /api/history/sell
 // * @access  Private route
-const addGamesToHistory = asyncHandler(async (req, res) => {
+const addSoldGamesToHistory = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message : {
+				otherUsername : err.otherUsername ? err.otherUsername.msg : null,
+				finalPrice    : err.finalPrice ? err.finalPrice.msg : null,
+				extraInfo     : err.extraInfo ? err.extraInfo.msg : null
+			}
+		}
+	}
+
+	const { games, gameId, finalPrice, extraInfo } = req.body
+
+	const simplifyGames = games.map((game) => {
+		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+	})
+
+	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
+
+	if (gameExists) {
+		if (gameExists.isActive === false) {
+			res.status(404)
+			throw {
+				message : 'Game is no longer available'
+			}
+		}
+
+		// const otherUserId = otherUsername ? await User.findOne({ username: otherUsername }).select('_id').lean() : null
+
+		const history = await History.create({
+			mode       : 'sell',
+			isPack     : gameExists.isPack,
+			addedBy    : req.user._id,
+			otherUser  : req.otherUsernameId ? req.otherUsernameId : null,
+			games      : simplifyGames,
+			finalPrice : finalPrice,
+			extraInfo  : extraInfo || null
+		})
+
+		if (history) {
+			await Game.findOneAndDelete({ _id: gameId })
+			return res.status(204).end()
+		} else {
+			res.status(500)
+			throw {
+				message : 'Error. Please try again'
+			}
+		}
+	} else {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+})
+
+// * @desc    Add traded games to history
+// * @route   POST  /api/history/trade
+// * @access  Private route
+const addTradedGamesToHistory = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message : {
+				otherUsername : err.otherUsername ? err.otherUsername.msg : null,
+				extraInfo     : err.extraInfo ? err.extraInfo.msg : null
+			}
+		}
+	}
+
+	const { games, extraInfo, gameId } = req.body
+
+	const simplifyGames = games.map((game) => {
+		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+	})
+
+	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
+
+	if (gameExists) {
+		if (gameExists.isActive === false) {
+			res.status(404)
+			throw {
+				message : 'Game is no longer available'
+			}
+		}
+
+		// const otherUserId = otherUsername ? await User.findOne({ username: otherUsername }).select('_id').lean() : null
+
+		const history = await History.create({
+			mode      : 'trade',
+			isPack    : gameExists.isPack,
+			addedBy   : req.user._id,
+			otherUser : req.otherUsernameId ? req.otherUsernameId : null,
+			games     : simplifyGames,
+			extraInfo : extraInfo || null
+		})
+
+		if (history) {
+			await Game.findOneAndDelete({ _id: gameId })
+			return res.status(204).end()
+		} else {
+			res.status(500)
+			throw {
+				message : 'Error. Please try again'
+			}
+		}
+	} else {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+})
+
+// * @desc    Add bought games to history
+// * @route   POST  /api/history/buy
+// * @access  Private route
+const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 	let message = {}
 	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
 		message[param] = msg
@@ -22,108 +146,58 @@ const addGamesToHistory = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const { games, isPack, extraInfoPack, extraInfo, otherUsername, finalPrice, gameId, mode } = req.body
+	const { games, extraInfoPack, finalPrice, isPack, otherUsername } = req.body
 
-	if (mode !== 'buy') {
-		const simplifyGames = games.map((game) => {
-			return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+	if (isPack) {
+		// const otherUserId = otherUsername ? await User.findOne({ username: otherUsername }).select('_id').lean() : null
+		await History.create({
+			mode          : 'buy',
+			isPack        : true,
+			games         : games.map((game) => {
+				return {
+					title     : game.title,
+					thumbnail : game.thumbnail,
+					image     : game.image,
+					year      : game.year,
+					version   : game.version,
+					extraInfo : game.extraInfo || null,
+					isSleeved : game.isSleeved
+				}
+			}),
+			addedBy       : req.user._id,
+			otherUser     : req.otherUsernameId ? req.otherUsernameId : null,
+			extraInfoPack : extraInfoPack ? extraInfoPack.trim() : null,
+			finalPrice    : finalPrice ? finalPrice : null
 		})
-
-		const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
-
-		if (gameExists) {
-			if (gameExists.isActive === false) {
-				res.status(404)
-				throw {
-					message : 'Game is no longer available'
-				}
-			}
-
-			const otherUserId = otherUsername
-				? await User.findOne({ username: otherUsername }).select('_id').lean()
+	} else {
+		const buyList = []
+		for (let game of games) {
+			const otherUserId = game.otherUsername
+				? await User.findOne({ username: game.otherUsername }).select('_id').lean()
 				: null
-
-			const history = await History.create({
-				mode       : gameExists.mode,
-				isPack     : gameExists.isPack,
-				addedBy    : req.user._id,
-				otherUser  : otherUserId ? otherUserId._id : null,
-				games      : simplifyGames,
-				finalPrice : finalPrice ? finalPrice : null,
-				extraInfo  : extraInfo ? extraInfo.trim() : null
-			})
-
-			if (history) {
-				await Game.findOneAndDelete({ _id: gameId })
-				return res.status(204).end()
-			} else {
-				res.status(500)
-				throw {
-					message : 'Error. Please try again'
-				}
-			}
-		} else {
-			res.status(404)
-			throw {
-				message : 'Game not found'
-			}
-		}
-	}
-
-	if (mode === 'buy') {
-		if (isPack) {
-			const otherUserId = otherUsername
-				? await User.findOne({ username: otherUsername }).select('_id').lean()
-				: null
-			await History.create({
-				mode          : 'buy',
-				isPack        : true,
-				games         : games.map((game) => {
-					return {
+			const data = {
+				mode       : 'buy',
+				isPack     : false,
+				games      : [
+					{
 						title     : game.title,
 						thumbnail : game.thumbnail,
 						image     : game.image,
 						year      : game.year,
 						version   : game.version,
-						extraInfo : game.extraInfo ? game.extraInfo : null,
+						extraInfo : game.extraInfo || null,
 						isSleeved : game.isSleeved
 					}
-				}),
-				addedBy       : req.user._id,
-				otherUser     : otherUserId ? otherUserId._id : null,
-				extraInfoPack : extraInfoPack ? extraInfoPack.trim() : null,
-				finalPrice    : finalPrice ? finalPrice : null
-			})
-		} else {
-			const buyList = []
-			for (let game of games) {
-				const otherUserId = game.otherUsername
-					? await User.findOne({ username: game.otherUsername }).select('_id').lean()
-					: null
-				const data = {
-					mode       : 'buy',
-					isPack     : false,
-					games      : [
-						{
-							title     : game.title,
-							thumbnail : game.thumbnail,
-							image     : game.image,
-							year      : game.year,
-							version   : game.version,
-							extraInfo : game.extraInfo ? game.extraInfo : null,
-							isSleeved : game.isSleeved
-						}
-					],
-					addedBy    : req.user._id,
-					otherUser  : otherUserId ? otherUserId._id : null,
-					finalPrice : game.price ? game.price : null
-				}
-				buyList.push(data)
+				],
+				addedBy    : req.user._id,
+				otherUser  : otherUserId ? otherUserId._id : null,
+				finalPrice : game.price
 			}
-			await History.insertMany(buyList)
+			buyList.push(data)
 		}
-		res.status(204).end()
+		await History.insertMany(buyList)
 	}
+	res.status(204).end()
 })
 
 // ~ @desc    Get user games history
@@ -182,4 +256,4 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 	}
 })
 
-export { addGamesToHistory, getGamesHistory }
+export { addSoldGamesToHistory, addTradedGamesToHistory, addBoughtGamesToHistory, getGamesHistory }
