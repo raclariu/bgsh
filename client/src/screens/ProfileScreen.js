@@ -13,24 +13,10 @@ import BggSearchGamesBox from '../components/BggSearchGamesBox'
 import SendMessage from '../components/SendMessage'
 import HelmetComponent from '../components/HelmetComponent'
 
-const PREFIX = 'ProfileScreen'
-
-const classes = {
-	root : `${PREFIX}-root`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.root}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	}
-}))
-
 // @ Main
 const ProfileScreen = () => {
 	return (
-		<Root>
+		<Fragment>
 			<HelmetComponent title="Profile" />
 			<Grid container spacing={3}>
 				<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
@@ -52,7 +38,7 @@ const ProfileScreen = () => {
 
 				<SendMessage />
 			</Grid>
-		</Root>
+		</Fragment>
 	)
 }
 

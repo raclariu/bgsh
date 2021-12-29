@@ -42,7 +42,7 @@ const UserProfileScreen = () => {
 	}
 
 	return (
-        <Fragment>
+		<Fragment>
 			{isError && <Box>{error.response.data.message}</Box>}
 
 			<Box borderRadius="4px" boxShadow={2} my={2} bgcolor="background.paper">
@@ -107,7 +107,7 @@ const UserProfileScreen = () => {
 				</Fragment>
 			)}
 		</Fragment>
-    );
+	)
 }
 
 export default UserProfileScreen

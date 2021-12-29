@@ -19,18 +19,6 @@ import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
 import Theme from '../components/Theme'
 
-const PREFIX = 'AuthScreen'
-
-const classes = {
-	tabTitle : `${PREFIX}-tabTitle`
-}
-
-const StyledGrid = styled(Grid)(({ theme }) => ({
-	[`& .${classes.tabTitle}`]: {
-		textTransform : 'none'
-	}
-}))
-
 // @ Main
 const AuthScreen = () => {
 	const history = useHistory()
@@ -44,13 +32,7 @@ const AuthScreen = () => {
 	}
 
 	return (
-		<StyledGrid
-			style={{ height: '100vh' }}
-			container
-			direction="column"
-			justifyContent="center"
-			alignItems="center"
-		>
+		<Grid style={{ height: '100vh' }} container direction="column" justifyContent="center" alignItems="center">
 			<Box display="flex" alignItems="center" justifyContent="center">
 				<IconButton color="primary" onClick={() => history.push('/')} size="large">
 					<ArrowBackIcon />
@@ -67,7 +49,7 @@ const AuthScreen = () => {
 						label={
 							<Box display="flex" alignItems="center">
 								<LockOpenIcon />
-								<Box className={classes.tabTitle} ml={1}>
+								<Box sx={{ textTransform: 'none' }} ml={1}>
 									Sign In
 								</Box>
 							</Box>
@@ -79,7 +61,7 @@ const AuthScreen = () => {
 						label={
 							<Box display="flex" alignItems="center">
 								<LockOpenIcon />
-								<Box className={classes.tabTitle} ml={1}>
+								<Box sx={{ textTransform: 'none' }} ml={1}>
 									Sign Up
 								</Box>
 							</Box>
@@ -90,7 +72,7 @@ const AuthScreen = () => {
 				{selectedTab === 'signin' && <SignIn />}
 				{selectedTab === 'signup' && <SignUp />}
 			</Grid>
-		</StyledGrid>
+		</Grid>
 	)
 }
 

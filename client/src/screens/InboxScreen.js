@@ -47,36 +47,10 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
 import { useNotification } from '../hooks/hooks'
 
-const PREFIX = 'InboxScreen'
-
-const classes = {
-	grid       : `${PREFIX}-grid`,
-	buttonBase : `${PREFIX}-buttonBase`,
-	subject    : `${PREFIX}-subject`
-}
-
-const StyledGrid = styled(Grid)(({ theme }) => ({
-	[`& .${classes.grid}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.buttonBase}`]: {
-		width : '100%'
-	},
-
-	[`& .${classes.subject}`]: {
-		whiteSpace   : 'nowrap',
-		textOverflow : 'ellipsis',
-		overflow     : 'hidden',
-		width        : '95%'
-	}
-}))
-
 // @ Skeleton
 const MessageSkeleton = () => {
 	return (
-		<StyledGrid item container xs={12} sm={9} md={7}>
+		<Grid item container xs={12} sm={9} md={7}>
 			<Box
 				display="flex"
 				alignItems="center"
@@ -102,7 +76,7 @@ const MessageSkeleton = () => {
 					</Box>
 				</Box>
 			</Box>
-		</StyledGrid>
+		</Grid>
 	)
 }
 
@@ -263,7 +237,7 @@ const InboxScreen = () => {
 	}
 
 	return (
-		<Grid container spacing={2} justifyContent="center" className={classes.grid}>
+		<Grid container spacing={2} justifyContent="center">
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={5} md={4}>
 					<SearchBox placeholder="Search users" handleFilters={handleFilters} />

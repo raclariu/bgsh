@@ -1,5 +1,5 @@
 // @ Libraries
-import React from 'react'
+import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -24,30 +24,6 @@ import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
 import { saleListLimit } from '../constants/saleListConstants'
 import { apiFetchWishlistCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
-
-const PREFIX = 'WishlistScreen'
-
-const classes = {
-	root          : `${PREFIX}-root`,
-	gridContainer : `${PREFIX}-gridContainer`,
-	error         : `${PREFIX}-error`
-}
-
-const Root = styled('div')(({ theme }) => ({
-	[`&.${classes.root}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-
-	[`& .${classes.gridContainer}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
 
 // @ Main
 const WishlistScreen = () => {
@@ -103,7 +79,7 @@ const WishlistScreen = () => {
 	}
 
 	return (
-		<Root className={classes.root}>
+		<Fragment>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
@@ -116,19 +92,15 @@ const WishlistScreen = () => {
 					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
 				</Box>
 			)}
-			{isError && (
-				<div className={classes.error}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</div>
-			)}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 			{isLoading && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
 			{isSuccess && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{data.wishlist.map((data) => (
 						<Grid item key={data.bggId} md={4} sm={6} xs={12}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -168,7 +140,7 @@ const WishlistScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</Root>
+		</Fragment>
 	)
 }
 

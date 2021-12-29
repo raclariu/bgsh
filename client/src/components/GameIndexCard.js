@@ -28,14 +28,14 @@ import CustomAvatar from './CustomAvatar'
 import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Styles
-const StyledTitleBox = styled(Box)(() => ({
+const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
 	WebkitLineClamp : '2',
 	WebkitBoxOrient : 'vertical',
 	overflow        : 'hidden',
 	width           : '100%',
 	textAlign       : 'center'
-}))
+})
 
 // @ Main
 const GameIndexCard = ({ data }) => {

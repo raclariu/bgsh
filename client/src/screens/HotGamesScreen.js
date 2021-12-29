@@ -16,20 +16,6 @@ import CustomAlert from '../components/CustomAlert'
 // @ Others
 import { apiFetchHotGames } from '../api/api'
 
-const PREFIX = 'HotGamesScreen'
-
-const classes = {
-	grid : `${PREFIX}-grid`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.grid}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	}
-}))
-
 // @ Main
 const HotGamesScreen = () => {
 	const dispatch = useDispatch()
@@ -39,9 +25,9 @@ const HotGamesScreen = () => {
 	})
 
 	return (
-		<Root>
+		<Fragment>
 			{isLoading && (
-				<Grid container className={classes.grid} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
@@ -49,7 +35,7 @@ const HotGamesScreen = () => {
 			{error && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 			{isSuccess && (
-				<Grid container className={classes.grid} spacing={2}>
+				<Grid container spacing={2}>
 					{data.map((data) => (
 						<Grid key={data.bggId} item xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -59,7 +45,7 @@ const HotGamesScreen = () => {
 					))}
 				</Grid>
 			)}
-		</Root>
+		</Fragment>
 	)
 }
 

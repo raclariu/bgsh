@@ -32,14 +32,14 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
 	height    : '180px'
 }))
 
-const StyledTitleBox = styled(Box)(() => ({
+const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
 	WebkitLineClamp : '2',
 	WebkitBoxOrient : 'vertical',
 	overflow        : 'hidden',
 	width           : '100%',
 	textAlign       : 'center'
-}))
+})
 
 // @ Main
 const HistoryGameCard = ({ data }) => {

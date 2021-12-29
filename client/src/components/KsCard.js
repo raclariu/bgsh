@@ -16,14 +16,14 @@ import Button from '@mui/material/Button'
 import CustomTooltip from './CustomTooltip'
 
 // @ Styles
-const StyledTitleBox = styled(Box)(() => ({
+const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
 	WebkitLineClamp : '2',
 	WebkitBoxOrient : 'vertical',
 	overflow        : 'hidden',
 	width           : '100%',
 	textAlign       : 'center'
-}))
+})
 
 // @ Main
 const KsCard = ({ data }) => {

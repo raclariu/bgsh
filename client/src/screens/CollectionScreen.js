@@ -1,5 +1,5 @@
 // @ Libraries
-import React from 'react'
+import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
@@ -25,30 +25,6 @@ import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
 import { saleListLimit } from '../constants/saleListConstants'
 import { apiFetchOwnedCollection } from '../api/api'
 import { useNotification } from '../hooks/hooks'
-
-const PREFIX = 'CollectionScreen'
-
-const classes = {
-	root          : `${PREFIX}-root`,
-	gridContainer : `${PREFIX}-gridContainer`,
-	error         : `${PREFIX}-error`
-}
-
-const Root = styled('div')(({ theme }) => ({
-	[`&.${classes.root}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-
-	[`& .${classes.gridContainer}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
 
 // @ Main
 const CollectionScreen = () => {
@@ -104,7 +80,7 @@ const CollectionScreen = () => {
 	}
 
 	return (
-		<Root className={classes.root}>
+		<Fragment>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
@@ -119,13 +95,13 @@ const CollectionScreen = () => {
 			)}
 
 			{isLoading && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
 			{isSuccess && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{data.owned.map((data) => (
 						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -167,7 +143,7 @@ const CollectionScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</Root>
+		</Fragment>
 	)
 }
 

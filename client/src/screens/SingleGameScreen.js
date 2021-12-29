@@ -60,109 +60,33 @@ import CustomTooltip from '../components/CustomTooltip'
 // @ Others
 import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
 
-const PREFIX = 'SingleGameScreen'
-
-const classes = {
-	root               : `${PREFIX}-root`,
-	chipsBox           : `${PREFIX}-chipsBox`,
-	mainGrid           : `${PREFIX}-mainGrid`,
-	thumbnailContainer : `${PREFIX}-thumbnailContainer`,
-	thumbnail          : `${PREFIX}-thumbnail`,
-	statsBoxes         : `${PREFIX}-statsBoxes`,
-	infoBoxesContainer : `${PREFIX}-infoBoxesContainer`,
-	priceContainer     : `${PREFIX}-priceContainer`,
-	galleryMasonryImg  : `${PREFIX}-galleryMasonryImg`,
-	dialogContent      : `${PREFIX}-dialogContent`,
-	dialogContentImg   : `${PREFIX}-dialogContentImg`,
-	fab                : `${PREFIX}-fab`
-}
-
-const Root = styled('div')(({ theme }) => ({
-	[`&.${classes.root}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-
-	[`& .${classes.chipsBox}`]: {
-		display        : 'flex',
-		justifyContent : 'center',
-		flexWrap       : 'wrap',
-		margin         : theme.spacing(2, 0, 2, 0),
-		'& > *'        : {
-			margin : theme.spacing(0.5)
-		}
-	},
-
-	[`& .${classes.mainGrid}`]: {
-		marginTop    : theme.spacing(2),
-		marginBottom : theme.spacing(2)
-	},
-
-	[`& .${classes.thumbnailContainer}`]: {
-		display                        : 'flex',
-		justifyContent                 : 'center',
-		alignItems                     : 'center',
-		height                         : '250px',
-		width                          : '100%',
-		padding                        : theme.spacing(1),
-		[theme.breakpoints.down('md')]: {
-			marginBottom : theme.spacing(1)
-		}
-	},
-
-	[`& .${classes.thumbnail}`]: {
-		objectFit : 'contain',
-		height    : '220px',
-		width     : 'auto',
-		overflow  : 'auto'
-	},
-
-	[`& .${classes.statsBoxes}`]: {
-		marginTop    : theme.spacing(1),
-		marginBottom : theme.spacing(1)
-	},
-
-	[`& .${classes.infoBoxesContainer}`]: {
-		width                          : '90%',
-		marginTop                      : theme.spacing(1),
-		[theme.breakpoints.down('sm')]: {
-			width : '70%'
-		}
-	},
-
-	[`& .${classes.priceContainer}`]: {
-		marginTop : theme.spacing(2)
-	},
-
-	[`& .${classes.galleryMasonryImg}`]: {
-		maxHeight : '100%',
-		width     : '100%',
-		objectFit : 'contain',
-		cursor    : 'zoom-in'
-	},
-
-	[`& .${classes.dialogContent}`]: {
-		display        : 'flex',
-		justifyContent : 'center',
-		alignItems     : 'center'
-	},
-
-	[`& .${classes.dialogContentImg}`]: {
-		// maxWidth  : '100%',
-		// maxHeight : '100%'
-		maxHeight : '100%',
-		width     : '100%',
-		objectFit : 'contain'
-	},
-
-	[`& .${classes.fab}`]: {
-		display   : 'flex',
-		position  : 'fixed',
-		left      : '50%',
-		bottom    : theme.spacing(3),
-		transform : 'translate(-50%, 0)'
-	}
+const StyledChipsBox = styled(Box)(({ theme }) => ({
+	display        : 'flex',
+	justifyContent : 'center',
+	flexWrap       : 'wrap',
+	margin         : theme.spacing(2, 0, 2, 0),
+	gap            : theme.spacing(1)
 }))
+
+const StyledImg = styled('img')({
+	objectFit : 'contain',
+	height    : '220px',
+	width     : 'auto',
+	overflow  : 'auto'
+})
+
+const StyledMasonryImg = styled('img')({
+	maxHeight : '100%',
+	width     : '100%',
+	objectFit : 'contain',
+	cursor    : 'zoom-in'
+})
+
+const StyledDialogImg = styled('img')({
+	maxHeight : '100%',
+	width     : '100%',
+	objectFit : 'contain'
+})
 
 // @ Main
 const SingleGameScreen = () => {
@@ -254,7 +178,7 @@ const SingleGameScreen = () => {
 	}
 
 	return (
-		<Root className={classes.root}>
+		<Fragment>
 			{isLoading && (
 				<Box display="flex" justifyContent="center">
 					<Loader />
@@ -272,7 +196,15 @@ const SingleGameScreen = () => {
 					<HelmetComponent title={isSuccess ? data.games[index].title : 'Boardgame'} />
 
 					{data.isPack && (
-						<Box className={classes.fab}>
+						<Box
+							sx={{
+								display   : 'flex',
+								position  : 'fixed',
+								left      : '50%',
+								bottom    : (theme) => theme.spacing(3),
+								transform : 'translate(-50%, 0)'
+							}}
+						>
 							<Fab
 								size="small"
 								color="secondary"
@@ -294,18 +226,23 @@ const SingleGameScreen = () => {
 						</Box>
 					)}
 
-					<Grid
-						container
-						justifyContent="center"
-						alignItems="flex-start"
-						direction="row"
-						className={classes.mainGrid}
-					>
+					<Grid container justifyContent="center" alignItems="flex-start" direction="row">
 						{/* Thumbnail */}
 						<Grid item container md={4} xs={12} justifyContent="center">
 							<Box
 								bgcolor="background.paper"
-								className={classes.thumbnailContainer}
+								sx={{
+									display        : 'flex',
+									justifyContent : 'center',
+									alignItems     : 'center',
+									height         : '250px',
+									width          : '100%',
+									padding        : (theme) => theme.spacing(1),
+									mb             : {
+										md : (theme) => theme.spacing(0),
+										xs : (theme) => theme.spacing(1)
+									}
+								}}
 								borderRadius="4px"
 								boxShadow={2}
 							>
@@ -314,8 +251,7 @@ const SingleGameScreen = () => {
 									// overlayBgColorEnd="rgba(255, 255, 255, 0)"
 									zoomMargin={40}
 								>
-									<img
-										className={classes.thumbnail}
+									<StyledImg
 										src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
 										alt={data.games[index].title}
 									/>
@@ -352,7 +288,7 @@ const SingleGameScreen = () => {
 							<Grid
 								item
 								container
-								className={classes.statsBoxes}
+								sx={{ mt: 1, mb: 1 }}
 								justifyContent="center"
 								alignItems="center"
 								spacing={1}
@@ -373,7 +309,7 @@ const SingleGameScreen = () => {
 							</Grid>
 
 							{/* Desginers and language dependence */}
-							<Grid item>
+							<Grid item sx={{ mt: 0.5 }}>
 								<Box
 									display="flex"
 									flexDirection="column"
@@ -410,7 +346,14 @@ const SingleGameScreen = () => {
 							<Grid
 								item
 								container
-								className={classes.infoBoxesContainer}
+								sx={{
+									mt    : 0.5,
+									width : {
+										xs : '90%',
+										sm : '70%',
+										md : '90%'
+									}
+								}}
 								justifyContent="center"
 								alignItems="center"
 								spacing={1}
@@ -450,13 +393,7 @@ const SingleGameScreen = () => {
 								</Grid>
 							</Grid>
 
-							<Grid
-								className={classes.priceContainer}
-								item
-								container
-								justifyContent="center"
-								alignItems="center"
-							>
+							<Grid sx={{ mt: 2 }} item container justifyContent="center" alignItems="center">
 								{data.mode === 'sell' && (
 									<Box fontWeight="fontWeightMedium">
 										<Box>{data.totalPrice} RON</Box>
@@ -474,11 +411,11 @@ const SingleGameScreen = () => {
 					{/* Shipping */}
 					<Box display="flex" alignItems="center">
 						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
-						<Box ml={1} className={classes.mainGrid} fontSize="1rem">
+						<Box ml={1} fontSize="1rem">
 							Shipping
 						</Box>
 					</Box>
-					<Grid className={classes.mainGrid} container>
+					<Grid container>
 						<Grid item container xs={12} direction="column">
 							<Box p={1}>
 								<Typography component="div">
@@ -549,7 +486,7 @@ const SingleGameScreen = () => {
 											<Box fontSize={16} textAlign="center" mt={1}>
 												Personal shipping is available in
 											</Box>
-											<Box className={classes.chipsBox}>
+											<StyledChipsBox>
 												{data.shipCities.map((city, index) => (
 													<Chip
 														key={city}
@@ -560,7 +497,7 @@ const SingleGameScreen = () => {
 														label={city}
 													/>
 												))}
-											</Box>
+											</StyledChipsBox>
 										</Box>
 									) : (
 										<Box
@@ -602,7 +539,7 @@ const SingleGameScreen = () => {
 
 					{isSuccessGallery &&
 					galleryData[index].length > 0 && (
-						<Box className={classes.mainGrid}>
+						<Box>
 							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 								<Masonry gutter="10px">
 									{galleryData[index].map((obj, i) => (
@@ -614,9 +551,8 @@ const SingleGameScreen = () => {
 											bgcolor="background.paper"
 										>
 											<LazyLoad offset={200} once>
-												<img
+												<StyledMasonryImg
 													onClick={() => handleOpenImage(i)}
-													className={classes.galleryMasonryImg}
 													src={obj.thumbnail}
 													alt={obj.caption}
 												/>
@@ -647,9 +583,11 @@ const SingleGameScreen = () => {
 									</Box>
 								</DialogTitle>
 
-								<DialogContent dividers className={classes.dialogContent}>
-									<img
-										className={classes.dialogContentImg}
+								<DialogContent
+									dividers
+									sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+								>
+									<StyledDialogImg
 										alt={galleryData[index][imgIndex].caption}
 										src={galleryData[index][imgIndex].image}
 										hidden={!imgLoaded}
@@ -709,12 +647,12 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					{/* Chips */}
-					<Box className={classes.chipsBox}>
+					<StyledChipsBox>
 						<Chips categories={data.games[index].categories} mechanics={data.games[index].mechanics} />
-					</Box>
+					</StyledChipsBox>
 				</Fragment>
 			)}
-		</Root>
+		</Fragment>
 	)
 }
 

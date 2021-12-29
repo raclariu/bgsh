@@ -23,24 +23,6 @@ import Loader from '../components/Loader'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
 
-const PREFIX = 'SellGamesScreen'
-
-const classes = {
-	section : `${PREFIX}-section`,
-	error   : `${PREFIX}-error`
-}
-
-const Root = styled('form')(({ theme }) => ({
-	[`& .${classes.section}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
-
 // @ Main
 const SellGamesScreen = () => {
 	const dispatch = useDispatch()
@@ -216,8 +198,8 @@ const SellGamesScreen = () => {
 	}
 
 	return (
-		<Root onSubmit={handleSubmit}>
-			<div className={classes.error}>
+		<form onSubmit={handleSubmit} autoComplete="off">
+			<div>
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
@@ -233,7 +215,7 @@ const SellGamesScreen = () => {
 			{isSuccess &&
 			saleList.length > 0 && (
 				<Fragment>
-					<Grid container spacing={3} className={classes.section}>
+					<Grid container spacing={3}>
 						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
@@ -256,7 +238,7 @@ const SellGamesScreen = () => {
 					<Divider />
 
 					{/* Shipping Area */}
-					<Grid container className={classes.section} direction="row" spacing={2}>
+					<Grid container direction="row" spacing={2}>
 						<Grid item sm={6} xs={12}>
 							<ShippingSection
 								handleShippingInfo={handleShippingInfo}
@@ -337,7 +319,7 @@ const SellGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</Root>
+		</form>
 	)
 }
 

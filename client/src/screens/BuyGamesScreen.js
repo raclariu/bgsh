@@ -23,24 +23,6 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddGameToHistory } from '../api/api'
 
-const PREFIX = 'BuyGamesScreen'
-
-const classes = {
-	section : `${PREFIX}-section`,
-	error   : `${PREFIX}-error`
-}
-
-const Root = styled('form')(({ theme }) => ({
-	[`& .${classes.section}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
-
 // @ Main
 const BuyGamesScreen = () => {
 	const dispatch = useDispatch()
@@ -164,7 +146,7 @@ const BuyGamesScreen = () => {
 	}
 
 	return (
-		<Root onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} autoComplete="off">
 			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
 
 			{mutation.isError &&
@@ -177,7 +159,7 @@ const BuyGamesScreen = () => {
 			{isSuccess &&
 			saleList.length > 0 && (
 				<Fragment>
-					<Grid container spacing={3} className={classes.section}>
+					<Grid container spacing={3}>
 						{values.map((game) => (
 							<Grid item key={game.bggId} xs={12} sm={6} md={4}>
 								<SellGameCard
@@ -256,7 +238,7 @@ const BuyGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</Root>
+		</form>
 	)
 }
 

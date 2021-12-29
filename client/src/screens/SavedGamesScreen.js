@@ -1,5 +1,5 @@
 // @ Libraries
-import React, { useEffect } from 'react'
+import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -22,33 +22,6 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 // @ Others
 import { apiFetchSavedGames } from '../api/api'
 import { useNotification } from '../hooks/hooks'
-
-const PREFIX = 'SavedGamesScreen'
-
-const classes = {
-	root          : `${PREFIX}-root`,
-	gridContainer : `${PREFIX}-gridContainer`,
-	title         : `${PREFIX}-title`
-}
-
-const Root = styled('div')(({ theme }) => ({
-	[`&.${classes.root}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-
-	[`& .${classes.gridContainer}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(4)
-	},
-
-	[`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden'
-	}
-}))
 
 // @ Main
 const SavedGamesScreen = () => {
@@ -92,7 +65,7 @@ const SavedGamesScreen = () => {
 	}
 
 	return (
-		<Root className={classes.root}>
+		<Fragment>
 			<Grid container justifyContent="center" spacing={2}>
 				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
 					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
@@ -100,7 +73,7 @@ const SavedGamesScreen = () => {
 			</Grid>
 
 			{isLoading && (
-				<Grid container className={classes.gridContainer} spacing={3} direction="row">
+				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
@@ -113,7 +86,7 @@ const SavedGamesScreen = () => {
 			)}
 
 			{isSuccess && (
-				<Grid container className={classes.gridContainer} spacing={3}>
+				<Grid container spacing={3}>
 					{data.list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -138,7 +111,7 @@ const SavedGamesScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</Root>
+		</Fragment>
 	)
 }
 

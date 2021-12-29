@@ -22,24 +22,6 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 
-const PREFIX = 'TradeGamesScreen'
-
-const classes = {
-	section : `${PREFIX}-section`,
-	error   : `${PREFIX}-error`
-}
-
-const Root = styled('form')(({ theme }) => ({
-	[`& .${classes.section}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(8)
-	},
-
-	[`& .${classes.error}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	}
-}))
-
 // @ Main
 const TradeGamesScreen = () => {
 	const dispatch = useDispatch()
@@ -182,8 +164,8 @@ const TradeGamesScreen = () => {
 	}
 
 	return (
-		<Root onSubmit={handleSubmit}>
-			<div className={classes.error}>
+		<form onSubmit={handleSubmit}>
+			<div>
 				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 				{mutation.isError &&
@@ -198,7 +180,7 @@ const TradeGamesScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Grid container spacing={3} className={classes.section}>
+					<Grid container spacing={3}>
 						{data.map(
 							(game) =>
 								values.find((val) => val.bggId === game.bggId) && (
@@ -219,7 +201,7 @@ const TradeGamesScreen = () => {
 					<Divider />
 
 					{/* Shipping Area */}
-					<Grid container className={classes.section} direction="row" spacing={2}>
+					<Grid container direction="row" spacing={2}>
 						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
 							<ShippingSection
 								handleShippingInfo={handleShippingInfo}
@@ -270,7 +252,7 @@ const TradeGamesScreen = () => {
 					</Grid>
 				</Fragment>
 			)}
-		</Root>
+		</form>
 	)
 }
 
