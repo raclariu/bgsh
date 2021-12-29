@@ -31,43 +31,6 @@ import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsAct
 import { apiGetNotifications } from '../api/api'
 import { calculateTimeAgo } from '../helpers/helpers'
 
-const PREFIX = 'NotificationsPopover'
-
-const classes = {
-	popover   : `${PREFIX}-popover`,
-	subheader : `${PREFIX}-subheader`,
-	btnGroup  : `${PREFIX}-btnGroup`,
-	inline    : `${PREFIX}-inline`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.popover}`]: {
-		[theme.breakpoints.down('sm')]: {
-			width : '100vw'
-		},
-		[theme.breakpoints.up('sm')]: {
-			width : 400
-		},
-		maxHeight                      : '40vh'
-	},
-
-	[`& .${classes.subheader}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	},
-
-	[`& .${classes.btnGroup}`]: {
-		display        : 'flex',
-		alignItems     : 'center',
-		justifyContent : 'center',
-		marginBottom   : theme.spacing(2)
-	},
-
-	[`& .${classes.inline}`]: {
-		display : 'inline'
-	}
-}))
-
 // @ Main
 const NotificationsPopover = () => {
 	const [ anchorEl, setAnchorEl ] = useState(null)
@@ -78,9 +41,7 @@ const NotificationsPopover = () => {
 	})
 
 	return (
-		<Root>
-			{console.count('renders:')}
-
+		<Fragment>
 			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? data.notifications.length : 0}>
 					{isSuccess && data.notifications.length > 0 ? (
@@ -92,7 +53,15 @@ const NotificationsPopover = () => {
 			</IconButton>
 
 			<Popover
-				classes={{ paper: classes.popover }}
+				PaperProps={{
+					sx : {
+						width     : {
+							sm : 350,
+							xs : '100vw'
+						},
+						maxHeight : '50vh'
+					}
+				}}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={() => setAnchorEl(null)}
@@ -156,7 +125,7 @@ const NotificationsPopover = () => {
 					</Box>
 				)}
 			</Popover>
-		</Root>
+		</Fragment>
 	)
 }
 

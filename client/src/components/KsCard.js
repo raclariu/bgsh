@@ -1,6 +1,6 @@
 // @ Libraries
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 
 // @ Mui
@@ -15,44 +15,26 @@ import Button from '@mui/material/Button'
 // @ Components
 import CustomTooltip from './CustomTooltip'
 
-const PREFIX = 'KsCard';
-
-const classes = {
-    media: `${PREFIX}-media`,
-    title: `${PREFIX}-title`
-};
-
-const StyledCard = styled(Card)((
-    {
-        theme
-    }
-) => ({
-    [`& .${classes.media}`]: {
-		//margin    : theme.spacing(1, 0, 1, 0),
-		//padding   : theme.spacing(0, 1, 0, 1),
-		objectFit      : 'fill',
-		height         : '180px',
-		objectPosition : 'center 10%'
-	},
-
-    [`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	}
-}));
+// @ Styles
+const StyledTitleBox = styled(Box)(() => ({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
+}))
 
 // @ Main
 const KsCard = ({ data }) => {
-
-
 	return (
-        <StyledCard elevation={1}>
+		<Card elevation={1}>
 			<CardMedia
-				className={classes.media}
+				sx={{
+					objectFit      : 'fill',
+					height         : '180px',
+					objectPosition : 'center 10%'
+				}}
 				component="img"
 				alt={data.title}
 				image={data.image ? data.image : '/images/gameImgPlaceholder.jpg'}
@@ -69,7 +51,7 @@ const KsCard = ({ data }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={classes.title}>{data.title}</Box>
+					<StyledTitleBox>{data.title}</StyledTitleBox>
 				</Box>
 			</CardContent>
 
@@ -90,8 +72,8 @@ const KsCard = ({ data }) => {
 					</CustomTooltip>
 				</Box>
 			</CardActions>
-		</StyledCard>
-    );
+		</Card>
+	)
 }
 
 export default KsCard

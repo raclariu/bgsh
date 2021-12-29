@@ -25,55 +25,21 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
 
-const PREFIX = 'SavedGameCard'
+// @ Styles
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+	margin    : theme.spacing(1, 0, 1, 0),
+	padding   : theme.spacing(0, 1, 0, 1),
+	objectFit : 'contain',
+	height    : '180px'
+}))
 
-const classes = {
-	card          : `${PREFIX}-card`,
-	media         : `${PREFIX}-media`,
-	overlayTop    : `${PREFIX}-overlayTop`,
-	overlayBottom : `${PREFIX}-overlayBottom`,
-	title         : `${PREFIX}-title`,
-	avatar        : `${PREFIX}-avatar`
-}
-
-const StyledCard = styled(Card)(({ theme }) => ({
-	[`&.${classes.card}`]: {
-		position : 'relative'
-	},
-
-	[`& .${classes.media}`]: {
-		margin    : theme.spacing(1, 0, 1, 0),
-		padding   : theme.spacing(0, 1, 0, 1),
-		objectFit : 'contain',
-		height    : '180px'
-	},
-
-	[`& .${classes.overlayTop}`]: {
-		position : 'absolute',
-		top      : '8px',
-		left     : '8px'
-	},
-
-	[`& .${classes.overlayBottom}`]: {
-		position : 'absolute',
-		top      : '36px',
-		left     : '8px'
-	},
-
-	[`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	},
-
-	[`& .${classes.avatar}`]: {
-		width           : theme.spacing(4),
-		height          : theme.spacing(4),
-		backgroundColor : theme.palette.primary.main
-	}
+const StyledTitleBox = styled(Box)(() => ({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
 }))
 
 // @ Main
@@ -94,9 +60,8 @@ const SavedGameCard = ({ data }) => {
 	}
 
 	return (
-		<StyledCard className={classes.card} elevation={1}>
-			<CardMedia
-				className={classes.media}
+		<Card sx={{ position: 'relative' }} elevation={1}>
+			<StyledCardMedia
 				component="img"
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 				alt={data.games[index].title}
@@ -106,15 +71,25 @@ const SavedGameCard = ({ data }) => {
 			{data.isPack && (
 				<Fragment>
 					<Chip
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
 						size="small"
 						color="secondary"
-						className={classes.overlayTop}
 						label={`${data.games.length} pack`}
 					/>
 
 					{data.mode === 'sell' && (
 						<CustomTooltip title="For sale">
-							<Box className={classes.overlayBottom}>
+							<Box
+								sx={{
+									position : 'absolute',
+									top      : '36px',
+									left     : '8px'
+								}}
+							>
 								<MonetizationOnOutlinedIcon color="secondary" />
 							</Box>
 						</CustomTooltip>
@@ -122,7 +97,13 @@ const SavedGameCard = ({ data }) => {
 
 					{data.mode === 'trade' && (
 						<CustomTooltip title="For trade">
-							<Box className={classes.overlayBottom}>
+							<Box
+								sx={{
+									position : 'absolute',
+									top      : '36px',
+									left     : '8px'
+								}}
+							>
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
 							</Box>
 						</CustomTooltip>
@@ -133,7 +114,13 @@ const SavedGameCard = ({ data }) => {
 			{!data.isPack &&
 			data.mode === 'sell' && (
 				<CustomTooltip title="For sale">
-					<Box className={classes.overlayTop}>
+					<Box
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
+					>
 						<MonetizationOnOutlinedIcon color="secondary" />
 					</Box>
 				</CustomTooltip>
@@ -142,7 +129,13 @@ const SavedGameCard = ({ data }) => {
 			{!data.isPack &&
 			data.mode === 'trade' && (
 				<CustomTooltip title="For trade">
-					<Box className={classes.overlayTop}>
+					<Box
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
+					>
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
 					</Box>
 				</CustomTooltip>
@@ -168,9 +161,9 @@ const SavedGameCard = ({ data }) => {
 							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={classes.title}>
+							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
-							</Box>
+							</StyledTitleBox>
 							<IconButton
 								color="primary"
 								disabled={data.games.length === index + 1}
@@ -181,9 +174,9 @@ const SavedGameCard = ({ data }) => {
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={classes.title}>
+						<StyledTitleBox>
 							{data.games[index].title} ({data.games[index].year})
-						</Box>
+						</StyledTitleBox>
 					)}
 				</Box>
 			</CardContent>
@@ -206,7 +199,7 @@ const SavedGameCard = ({ data }) => {
 					<GameDetailsButton altId={data.altId} />
 				</Box>
 			</CardActions>
-		</StyledCard>
+		</Card>
 	)
 }
 

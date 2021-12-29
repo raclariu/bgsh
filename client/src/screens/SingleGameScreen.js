@@ -600,32 +600,31 @@ const SingleGameScreen = () => {
 						</Fragment>
 					)}
 
-					{isSuccessGallery && (
+					{isSuccessGallery &&
+					galleryData[index].length > 0 && (
 						<Box className={classes.mainGrid}>
-							{galleryData[index].length > 0 && (
-								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
-									<Masonry gutter="10px">
-										{galleryData[index].map((obj, i) => (
-											<Box
-												key={obj.imageid}
-												borderRadius="4px"
-												boxShadow={2}
-												p={1.5}
-												bgcolor="background.paper"
-											>
-												<LazyLoad offset={200} once>
-													<img
-														onClick={() => handleOpenImage(i)}
-														className={classes.galleryMasonryImg}
-														src={obj.thumbnail}
-														alt={obj.caption}
-													/>
-												</LazyLoad>
-											</Box>
-										))}
-									</Masonry>
-								</ResponsiveMasonry>
-							)}
+							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
+								<Masonry gutter="10px">
+									{galleryData[index].map((obj, i) => (
+										<Box
+											key={obj.imageid}
+											borderRadius="4px"
+											boxShadow={2}
+											p={1.5}
+											bgcolor="background.paper"
+										>
+											<LazyLoad offset={200} once>
+												<img
+													onClick={() => handleOpenImage(i)}
+													className={classes.galleryMasonryImg}
+													src={obj.thumbnail}
+													alt={obj.caption}
+												/>
+											</LazyLoad>
+										</Box>
+									))}
+								</Masonry>
+							</ResponsiveMasonry>
 
 							<Dialog
 								fullScreen
@@ -636,9 +635,9 @@ const SingleGameScreen = () => {
 							>
 								<DialogTitle>
 									<Box display="flex" alignItems="center">
-										<Box display="flex" flexDirection="column" flexGrow={1}>
+										<Box display="flex" flexDirection="column" flexGrow={1} gap={0.5}>
 											<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
-											<Box mt={0.5} fontSize="0.75rem" color="grey.500">
+											<Box fontSize="0.75rem" color="grey.500">
 												{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
 											</Box>
 										</Box>
@@ -701,12 +700,11 @@ const SingleGameScreen = () => {
 									</Box>
 								</DialogActions>
 							</Dialog>
-
-							{galleryData[index].length === 0 && (
-								<CustomAlert severity="warning">{`${data.games[index].title}`}</CustomAlert>
-							)}
 						</Box>
 					)}
+
+					{isSuccessGallery &&
+					galleryData[index].length === 0 && <CustomAlert severity="warning">No images found</CustomAlert>}
 
 					<Divider light />
 

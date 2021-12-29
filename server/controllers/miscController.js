@@ -174,30 +174,21 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 				}
 			})
 
-			if (data.images.length !== 0) {
-				const mapImages = data.images.map((img) => {
-					const {
-						imageid,
-						imageurl_lg : image,
-						caption,
-						imageurl    : thumbnail,
-						href        : extLink,
-						user        : { username: postedBy }
-					} = img
-					return { imageid, image, caption: caption || 'No caption available', thumbnail, extLink, postedBy }
-				})
-				images.push(mapImages)
-			}
+			const mapImages = data.images.map((img) => {
+				const {
+					imageid,
+					imageurl_lg : image,
+					caption,
+					imageurl    : thumbnail,
+					href        : extLink,
+					user        : { username: postedBy }
+				} = img
+				return { imageid, image, caption: caption || 'No caption available', thumbnail, extLink, postedBy }
+			})
+			images.push(mapImages)
 		}
 
-		if (images.length !== bggIds.length) {
-			res.status(404)
-			throw {
-				message : 'No images found'
-			}
-		} else {
-			return res.status(200).json(images)
-		}
+		return res.status(200).json(images)
 	} catch (error) {
 		res.status(503)
 		throw {

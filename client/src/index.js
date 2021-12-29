@@ -26,7 +26,7 @@ ReactDOM.render(
 			<BrowserRouter>
 				<App />
 			</BrowserRouter>
-			<ReactQueryDevtools initialIsOpen={false} />
+			<ReactQueryDevtools initialIsOpen={false} position="top-left" />
 		</QueryClientProvider>
 	</Provider>,
 	document.getElementById('root')

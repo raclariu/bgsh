@@ -21,19 +21,6 @@ import Input from '../components/Input'
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
 
-const PREFIX = 'AddWantedGamesScreen'
-
-const classes = {
-	section : `${PREFIX}-section`
-}
-
-const Root = styled('form')(({ theme }) => ({
-	[`& .${classes.section}`]: {
-		marginTop    : theme.spacing(4),
-		marginBottom : theme.spacing(2)
-	}
-}))
-
 // @ Main
 const AddWantedGamesScreen = () => {
 	const dispatch = useDispatch()
@@ -67,8 +54,6 @@ const AddWantedGamesScreen = () => {
 		}
 	)
 
-	console.log(data && data)
-
 	const mutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
 		onSuccess : () => {
 			queryClient.invalidateQueries('wantedGames')
@@ -95,6 +80,7 @@ const AddWantedGamesScreen = () => {
 	)
 
 	const handleGameInfo = (value, id, key) => {
+		console.log({ value, id, key })
 		const index = values.findIndex((el) => el.bggId === id)
 		const copy = [ ...values ]
 		copy[index] = { ...copy[index], [key]: value }
@@ -104,6 +90,8 @@ const AddWantedGamesScreen = () => {
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
 	}
+
+	console.log(values)
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -130,7 +118,7 @@ const AddWantedGamesScreen = () => {
 	}
 
 	return (
-		<Root onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} autoComplete="off">
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 			{mutation.isError &&
@@ -144,7 +132,7 @@ const AddWantedGamesScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Grid container spacing={3} className={classes.section}>
+					<Grid container spacing={3}>
 						{data.map(
 							(game) =>
 								// Because we may have 6 fetched games, but values could have only 3 because
@@ -196,7 +184,7 @@ const AddWantedGamesScreen = () => {
 					</Box>
 				</Fragment>
 			)}
-		</Root>
+		</form>
 	)
 }
 

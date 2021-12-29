@@ -33,37 +33,6 @@ import { removeFromSaleList } from '../actions/saleListActions'
 import { saleListLimit } from '../constants/saleListConstants'
 import { useNotification } from '../hooks/hooks'
 
-const PREFIX = 'SaleListPopover'
-
-const classes = {
-	popover   : `${PREFIX}-popover`,
-	subheader : `${PREFIX}-subheader`,
-	btnGroup  : `${PREFIX}-btnGroup`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.popover}`]: {
-		[theme.breakpoints.down('sm')]: {
-			width : '100vw'
-		},
-		[theme.breakpoints.up('sm')]: {
-			width : 400
-		}
-	},
-
-	[`& .${classes.subheader}`]: {
-		margin : theme.spacing(2, 0, 2, 0)
-	},
-
-	[`& .${classes.btnGroup}`]: {
-		display        : 'flex',
-		alignItems     : 'center',
-		justifyContent : 'center',
-		marginBottom   : theme.spacing(2)
-	}
-}))
-
 // @ Main
 const SaleListPopover = () => {
 	const dispatch = useDispatch()
@@ -97,7 +66,7 @@ const SaleListPopover = () => {
 	}
 
 	return (
-		<Root>
+		<Fragment>
 			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
 				<Badge color="secondary" badgeContent={saleList.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
@@ -105,7 +74,14 @@ const SaleListPopover = () => {
 			</IconButton>
 
 			<Popover
-				classes={{ paper: classes.popover }}
+				PaperProps={{
+					sx : {
+						width : {
+							sm : 450,
+							xs : '100vw'
+						}
+					}
+				}}
 				open={open}
 				anchorEl={anchorEl}
 				onClose={handleClose}
@@ -215,7 +191,7 @@ const SaleListPopover = () => {
 
 				<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
 			</Popover>
-		</Root>
+		</Fragment>
 	)
 }
 

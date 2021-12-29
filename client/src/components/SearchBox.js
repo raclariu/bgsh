@@ -12,18 +12,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 
-const PREFIX = 'SearchBox'
-
-const classes = {
-	paper : `${PREFIX}-paper`
-}
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-	[`&.${classes.paper}`]: {
-		padding : theme.spacing(1.2, 1.5, 1.2, 1.5)
-	}
-}))
-
 // @ Main
 const SearchBox = ({ placeholder, handleFilters }) => {
 	const [ keyword, setKeyword ] = useState('')
@@ -37,9 +25,11 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 	}
 
 	return (
-		<StyledPaper
+		<Paper
 			component="form"
-			className={classes.paper}
+			sx={{
+				padding : (theme) => theme.spacing(1.2, 1.5, 1.2, 1.5)
+			}}
 			elevation={1}
 			onSubmit={submitSearchHandler}
 			noValidate
@@ -60,7 +50,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				endAdornment={
 					<InputAdornment position="end">
 						{keyword.length > 0 && (
-							<IconButton onClick={() => setKeyword('')} size="large">
+							<IconButton onClick={() => setKeyword('')}>
 								<ClearIcon color="disabled" />
 							</IconButton>
 						)}
@@ -68,7 +58,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				}
 				fullWidth
 			/>
-		</StyledPaper>
+		</Paper>
 	)
 }
 

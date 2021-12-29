@@ -10,6 +10,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
 
 // @ Mui Icons
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
@@ -20,25 +21,6 @@ import Input from './Input'
 
 // @ Others
 import { apiSendMessage } from '../api/api'
-
-const PREFIX = 'SendMessage'
-
-const classes = {
-	root  : `${PREFIX}-root`,
-	input : `${PREFIX}-input`
-}
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-	[`& .${classes.root}`]: {
-		width  : '100%',
-		margin : theme.spacing(4, 0, 0, 0)
-	},
-
-	[`& .${classes.input}`]: {
-		minHeight : '90px'
-	}
-}))
 
 // @Main
 const SendMessage = ({ recipientUsername = '' }) => {
@@ -77,7 +59,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 	}
 
 	return (
-		<Root>
+		<Fragment>
 			<CustomTooltip title="Send message">
 				<IconButton
 					disabled={username === recipientUsername}
@@ -93,7 +75,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 				<form onSubmit={submitHandler} autoComplete="off">
 					<DialogContent>
 						<Input
-							className={classes.input}
+							sx={{ minHeight: '90px' }}
 							error={
 								mutation.isError && mutation.error.response.data.message.recipientError ? true : false
 							}
@@ -115,7 +97,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						/>
 
 						<Input
-							className={classes.input}
+							sx={{ minHeight: '90px' }}
 							error={mutation.isError && mutation.error.response.data.message.subjectError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.subjectError : false}
 							onChange={(e) => setSubject(e.target.value)}
@@ -155,6 +137,8 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						/>
 					</DialogContent>
 
+					<Divider />
+
 					<DialogActions>
 						<Button disabled={username === recipient} color="primary" type="submit" variant="outlined">
 							Send
@@ -162,7 +146,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 					</DialogActions>
 				</form>
 			</Dialog>
-		</Root>
+		</Fragment>
 	)
 }
 

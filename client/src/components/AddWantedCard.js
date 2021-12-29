@@ -39,7 +39,6 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
 		}
 	}
-	console.log(data)
 
 	return (
 		<Card elevation={1}>
@@ -71,22 +70,6 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 				title={game.title}
 			/>
 			<CardContent>
-				{/* <Autocomplete
-					value={data.prefLanguage}
-					getOptionSelected={(option, value) => option === value}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefLanguage')}
-					options={[ 'Romanian', 'English', 'Any' ]}
-					renderInput={(params) => (
-						<Input
-							{...params}
-							name={`prefLanguage-${game.bggId}`}
-							label="Preferred language"
-							placeholder="Select your preferred language"
-							required
-						/>
-					)}
-				/> */}
-
 				<FormControl>
 					<FormLabel>Prefer buying or trading for this game?</FormLabel>
 					<FormGroup row>
@@ -124,7 +107,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 				<Autocomplete
 					value={data.version}
 					isOptionEqualToValue={(option, value) => option.title === value.title}
-					onChange={(e, selected) => handleGameInfo(e, selected, game.bggId, 'prefVersion')}
+					onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'prefVersion')}
 					options={game.versions}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (

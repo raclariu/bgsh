@@ -21,24 +21,6 @@ import Input from './Input'
 import { signIn } from '../actions/userActions'
 import { useNotification } from '../hooks/hooks'
 
-const PREFIX = 'SignIn'
-
-const classes = {
-	root  : `${PREFIX}-root`,
-	input : `${PREFIX}-input`
-}
-
-const Root = styled('form')(({ theme }) => ({
-	[`&.${classes.root}`]: {
-		width  : '100%',
-		margin : theme.spacing(4, 0, 0, 0)
-	},
-
-	[`& .${classes.input}`]: {
-		minHeight : '90px'
-	}
-}))
-
 // @ Main
 const SignIn = () => {
 	const dispatch = useDispatch()
@@ -80,9 +62,9 @@ const SignIn = () => {
 	}
 
 	return (
-		<Root onSubmit={submitHandler} className={classes.root} autoComplete="off">
+		<form onSubmit={submitHandler} autoComplete="off">
 			<Input
-				className={classes.input}
+				sx={{ minHeight: '90px' }}
 				error={error && error.emailError ? true : false}
 				helperText={error ? error.emailError : false}
 				onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +80,7 @@ const SignIn = () => {
 			/>
 
 			<Input
-				className={classes.input}
+				sx={{ minHeight: '90px' }}
 				error={error && error.passwordError ? true : false}
 				helperText={error ? error.passwordError : false}
 				onChange={(e) => setPassword(e.target.value)}
@@ -124,7 +106,7 @@ const SignIn = () => {
 			<Button type="submit" variant="contained" color="primary" size="large" disabled={loading} fullWidth>
 				{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
 			</Button>
-		</Root>
+		</form>
 	)
 }
 

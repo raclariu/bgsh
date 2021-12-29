@@ -1,6 +1,6 @@
 // @ Libraries
 import React from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 
 // @ Mui
@@ -15,43 +15,28 @@ import Button from '@mui/material/Button'
 // @ Components
 import CustomTooltip from './CustomTooltip'
 
-const PREFIX = 'HotGameCard';
+// @ Styles
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+	margin    : theme.spacing(1, 0, 1, 0),
+	padding   : theme.spacing(0, 1, 0, 1),
+	objectFit : 'contain',
+	height    : '180px'
+}))
 
-const classes = {
-    media: `${PREFIX}-media`,
-    title: `${PREFIX}-title`
-};
-
-const StyledCard = styled(Card)((
-    {
-        theme
-    }
-) => ({
-    [`& .${classes.media}`]: {
-		margin    : theme.spacing(1, 0, 1, 0),
-		padding   : theme.spacing(0, 1, 0, 1),
-		objectFit : 'contain',
-		height    : '180px'
-	},
-
-    [`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	}
-}));
+const StyledTitleBox = styled(Box)(() => ({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
+}))
 
 // @ Main
 const HotGameCard = ({ data }) => {
-
-
 	return (
-        <StyledCard elevation={1}>
-			<CardMedia
-				className={classes.media}
+		<Card elevation={1}>
+			<StyledCardMedia
 				component="img"
 				alt={data.title}
 				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -68,9 +53,9 @@ const HotGameCard = ({ data }) => {
 					fontWeight="fontWeightMedium"
 					minHeight="3rem"
 				>
-					<Box className={classes.title}>
+					<StyledTitleBox>
 						{data.title} ({data.year})
-					</Box>
+					</StyledTitleBox>
 				</Box>
 			</CardContent>
 
@@ -90,8 +75,8 @@ const HotGameCard = ({ data }) => {
 					</CustomTooltip>
 				</Box>
 			</CardActions>
-		</StyledCard>
-    );
+		</Card>
+	)
 }
 
 export default HotGameCard

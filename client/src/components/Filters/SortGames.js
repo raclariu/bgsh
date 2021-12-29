@@ -20,15 +20,14 @@ const SortGames = ({ handleFilters, mode }) => {
 			{mode === 'sell' && (
 				<Select
 					MenuProps={{
-						anchorOrigin       : {
+						anchorOrigin    : {
 							vertical   : 'bottom',
 							horizontal : 'left'
 						},
-						transformOrigin    : {
+						transformOrigin : {
 							vertical   : 'top',
 							horizontal : 'left'
-						},
-						getContentAnchorEl : null
+						}
 					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
@@ -45,15 +44,14 @@ const SortGames = ({ handleFilters, mode }) => {
 			{mode === 'trade' && (
 				<Select
 					MenuProps={{
-						anchorOrigin       : {
+						anchorOrigin    : {
 							vertical   : 'bottom',
 							horizontal : 'left'
 						},
-						transformOrigin    : {
+						transformOrigin : {
 							vertical   : 'top',
 							horizontal : 'left'
-						},
-						getContentAnchorEl : null
+						}
 					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
@@ -68,15 +66,14 @@ const SortGames = ({ handleFilters, mode }) => {
 			{mode === 'want' && (
 				<Select
 					MenuProps={{
-						anchorOrigin       : {
+						anchorOrigin    : {
 							vertical   : 'bottom',
 							horizontal : 'left'
 						},
-						transformOrigin    : {
+						transformOrigin : {
 							vertical   : 'top',
 							horizontal : 'left'
-						},
-						getContentAnchorEl : null
+						}
 					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}

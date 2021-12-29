@@ -32,7 +32,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
 	return (
-        <Card>
+		<Card>
 			<CardHeader
 				avatar={
 					<CustomAvatar
@@ -44,7 +44,8 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 					<Box
 						color={!msg.read ? 'primary.main' : 'inherit'}
 						fontWeight="fontWeightBold"
-						style={{ wordBreak: 'break-word', marginBottom: '0.25em' }}
+						mb="0.25em"
+						sx={{ wordBreak: 'break-word' }}
 					>
 						{msg.subject}
 					</Box>
@@ -60,14 +61,19 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 							/>
 						</CustomTooltip>
 
-						<Box ml={0.5}>
-							{!msg.read && (
-								<Chip size="small" color="secondary" label={path === 'received' ? 'New' : 'Unread'} />
-							)}
-						</Box>
+						{!msg.read && (
+							<Chip
+								sx={{ ml: 0.5 }}
+								size="small"
+								color="secondary"
+								label={path === 'received' ? 'New' : 'Unread'}
+							/>
+						)}
+
 						{msg.readAt && (
 							<CustomTooltip title={formatDate(msg.readAt)}>
 								<Chip
+									sx={{ ml: 0.5 }}
 									size="small"
 									color="primary"
 									variant="outlined"
@@ -94,7 +100,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 				<CardContent>{msg.message}</CardContent>
 			</Collapse>
 		</Card>
-    );
+	)
 }
 
 export default MessageCard
