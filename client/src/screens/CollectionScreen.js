@@ -19,6 +19,7 @@ import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
+import Hero from '../components/Hero'
 
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
@@ -81,18 +82,19 @@ const CollectionScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
-
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
-					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
-				</Box>
-			)}
+				{search && (
+					<Box display="flex" alignItems="center" width="100%">
+						<BackButton />
+						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					</Box>
+				)}
+			</Hero>
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -126,8 +128,6 @@ const CollectionScreen = () => {
 					))}
 				</Grid>
 			)}
-
-			<Divider />
 
 			{isSuccess &&
 				(data.pagination.totalPages > 1 && (

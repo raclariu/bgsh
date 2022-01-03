@@ -18,9 +18,11 @@ import SearchBox from '../components/SearchBox'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
+import Hero from '../components/Hero'
 
 // @ Others
 import { apiFetchListedGames } from '../api/api'
+import { useNotification } from '../hooks/hooks'
 
 // @ Main
 const UserListedGamesScreen = () => {
@@ -30,11 +32,17 @@ const UserListedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
+	const [ showSnackbar ] = useNotification()
+
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'myListedGames', { search, page } ],
 		() => apiFetchListedGames(search, page),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 60,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching listed games'
+				showSnackbar.error({ text })
+			}
 		}
 	)
 
@@ -55,29 +63,24 @@ const UserListedGamesScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+				{search && (
+					<Box display="flex" alignItems="center" width="100%">
+						<BackButton />
+						{data && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					</Box>
+				)}
+			</Hero>
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
-			)}
-
-			{isError && (
-				<Box mt={2}>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
-				</Box>
-			)}
-
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
-					<BackButton />
-					{data && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
-				</Box>
 			)}
 
 			{data && (

@@ -58,23 +58,26 @@ const SellGamesScreen = () => {
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState(slRef.current)
 
-	if (isPack !== false && isPack !== true) {
-		history.push('/sell')
-	}
-
-	if (saleList.length === 1 && isPack) {
-		history.push('/sell')
-	}
-
-	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
-	const mapped = slRef.current.map((el) => el.bggId)
-
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(mapped),
+		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
 		{
 			staleTime : Infinity,
-			enabled   : saleList.length > 0
+			enabled   : !!saleList.length,
+			onSuccess : (data) => {
+				setValues(
+					data.map((game) => {
+						return {
+							...game,
+							isSleeved : false,
+							version   : null,
+							condition : null,
+							extraInfo : '',
+							price     : ''
+						}
+					})
+				)
+			}
 		}
 	)
 
@@ -85,13 +88,29 @@ const SellGamesScreen = () => {
 		}
 	})
 
-	console.log(mutation.isError && mutation.error.response)
+	if (isPack !== false && isPack !== true) {
+		mutation.reset()
+		history.push('/sell')
+	}
+
+	if (saleList.length === 1 && isPack) {
+		mutation.reset()
+		history.push('/sell')
+	}
 
 	useEffect(
 		() => {
-			if (slRef.current.length !== saleList.length) {
-				setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
+			return () => {
+				queryClient.invalidateQueries([ 'bggGamesDetails' ])
 			}
+		},
+		[ queryClient ]
+	)
+
+	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
+	useEffect(
+		() => {
+			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
 		},
 		[ saleList ]
 	)
@@ -105,15 +124,14 @@ const SellGamesScreen = () => {
 		[ queryClient ]
 	)
 
+	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
+
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
 	}
 
 	const handleGameInfo = (value, id, key) => {
-		const index = values.findIndex((el) => el.bggId === id)
-		const copy = [ ...values ]
-		copy[index] = { ...copy[index], [key]: value }
-		setValues(copy)
+		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
 	const handleExtraInfoPack = (e) => {
@@ -166,23 +184,23 @@ const SellGamesScreen = () => {
 
 		if (saleList.length === 0) return
 
-		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
-		for (let val of values) {
-			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
-			if (index !== -1) {
-				gamesCopy[index] = {
-					...gamesCopy[index],
-					version   : val.version,
-					price     : !isPack ? val.price : null,
-					condition : val.condition,
-					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : null,
-					isSleeved : val.isSleeved
+		const verifiedGames = values.map((val) => {
+			if (isPack) {
+				return {
+					...val,
+					price     : null,
+					extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
+				}
+			} else {
+				return {
+					...val,
+					extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
 				}
 			}
-		}
+		})
 
 		const gamesData = {
-			games            : gamesCopy,
+			games            : verifiedGames,
 			isPack,
 			shipPost,
 			shipPostPayer,
@@ -190,7 +208,7 @@ const SellGamesScreen = () => {
 			shipCourierPayer,
 			shipPersonal,
 			shipCities,
-			extraInfoPack    : isPack ? extraInfoPack.trim() : null,
+			extraInfoPack    : isPack && extraInfoPack.trim() ? extraInfoPack.trim() : null,
 			totalPrice       : isPack ? totalPrice : null
 		}
 

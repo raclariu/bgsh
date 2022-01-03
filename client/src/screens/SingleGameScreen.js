@@ -8,6 +8,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { formatDistance, parseISO } from 'date-fns'
 import LazyLoad from 'react-lazyload'
 import Zoom from 'react-medium-image-zoom'
+import { useInView } from 'react-intersection-observer'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
 
@@ -76,10 +77,11 @@ const StyledImg = styled('img')({
 })
 
 const StyledMasonryImg = styled('img')({
-	maxHeight : '100%',
-	width     : '100%',
-	objectFit : 'contain',
-	cursor    : 'zoom-in'
+	verticalAlign : 'middle',
+	maxHeight     : '100%',
+	width         : '100%',
+	objectFit     : 'contain',
+	cursor        : 'zoom-in'
 })
 
 const StyledDialogImg = styled('img')({
@@ -102,6 +104,13 @@ const SingleGameScreen = () => {
 		}
 	)
 
+	const { ref: galleryRef, inView: galleryInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
+	console.log(galleryInView)
+
 	const {
 		isLoading : isLoadingGallery,
 		isError   : isErrorGallery,
@@ -115,8 +124,8 @@ const SingleGameScreen = () => {
 			return apiFetchGallery(bggIds)
 		},
 		{
-			enabled              : isSuccess,
-			staleTime            : 1000 * 60 * 3,
+			enabled              : isSuccess && galleryInView,
+			staleTime            : 1000 * 60 * 60,
 			refetchOnWindowFocus : false
 		}
 	)
@@ -231,20 +240,20 @@ const SingleGameScreen = () => {
 						<Grid item container md={4} xs={12} justifyContent="center">
 							<Box
 								bgcolor="background.paper"
+								borderRadius="4px"
+								boxShadow={2}
 								sx={{
 									display        : 'flex',
 									justifyContent : 'center',
 									alignItems     : 'center',
 									height         : '250px',
 									width          : '100%',
-									padding        : (theme) => theme.spacing(1),
+									padding        : 1,
 									mb             : {
-										md : (theme) => theme.spacing(0),
-										xs : (theme) => theme.spacing(1)
+										md : 0,
+										xs : 2
 									}
 								}}
-								borderRadius="4px"
-								boxShadow={2}
 							>
 								<Zoom
 									// overlayBgColorStart="rgba(255, 255, 255, 0)"
@@ -519,7 +528,7 @@ const SingleGameScreen = () => {
 
 					<Divider light />
 
-					<Box display="flex" alignItems="center" mt={2}>
+					<Box ref={galleryRef} display="flex" alignItems="center" mt={2}>
 						{isLoadingGallery ? (
 							<Loader size={20} />
 						) : (

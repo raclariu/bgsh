@@ -43,6 +43,7 @@ import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone'
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone'
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
+import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 
 // @ Components
 import MessagesBadge from '../MessagesBadge'
@@ -608,6 +609,38 @@ const Header = () => {
 															}
 														>
 															Traded
+														</Box>
+													}
+												/>
+											</ListItem>
+
+											<ListItem
+												sx={{ pl: (theme) => theme.spacing(4) }}
+												button
+												onClick={(e) => handleClick(e, 112)}
+												selected={selectedIndex === 112}
+												component={RouterLink}
+												to="/user/history/bought"
+											>
+												<ListItemIcon>
+													<LocalMallTwoToneIcon
+														color={selectedIndex === 112 ? 'primary' : 'inherit'}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													primary={
+														<Box
+															fontWeight="fontWeightMedium"
+															fontSize="subtitle2.fontSize"
+															color={
+																selectedIndex === 112 ? (
+																	'primary.main'
+																) : (
+																	'text.secondary'
+																)
+															}
+														>
+															Bought
 														</Box>
 													}
 												/>

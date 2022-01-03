@@ -18,6 +18,7 @@ import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import Hero from '../components/Hero'
 
 // @ Others
 import { apiFetchSavedGames } from '../api/api'
@@ -66,23 +67,24 @@ const SavedGamesScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+				{search && (
+					<Box display="flex" alignItems="center" width="100%">
+						<BackButton />
+						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					</Box>
+				)}
+			</Hero>
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
-			)}
-
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
-					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
-				</Box>
 			)}
 
 			{isSuccess && (

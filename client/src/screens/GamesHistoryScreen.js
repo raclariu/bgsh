@@ -18,6 +18,7 @@ import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
+import Hero from '../components/Hero'
 
 // @ Others
 import { apiFetchGamesHistory } from '../api/api'
@@ -30,8 +31,11 @@ const GamesHistoryScreen = () => {
 	const currLoc =
 		location.pathname === '/user/history/sold'
 			? 'sell'
-			: location.pathname === '/user/history/traded' ? 'trade' : 'want'
-	const qryKey = currLoc === 'sell' ? 'soldHistory' : currLoc === 'trade' ? 'tradedHistory' : 'wantedHistory'
+			: location.pathname === '/user/history/traded' ? 'trade' : 'buy'
+
+	const qryKey = currLoc === 'sell' ? 'soldHistory' : currLoc === 'trade' ? 'tradedHistory' : 'buyHistory'
+
+	console.log({ currLoc, qryKey })
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
@@ -69,23 +73,25 @@ const GamesHistoryScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Enter game title" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+
+				{search && (
+					<Box display="flex" alignItems="center" width="100%">
+						<BackButton />
+						{isSuccess && <Box fontSize={12}>Found {data.historyList.length} games</Box>}
+					</Box>
+				)}
+			</Hero>
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
-			)}
-
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
-					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.historyList.length} games</Box>}
-				</Box>
 			)}
 
 			{isSuccess && (

@@ -19,6 +19,7 @@ import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import DrawerFilter from '../components/Filters/DrawerFilter'
+import Hero from '../components/Hero'
 
 // @ Others
 import { fetchGames } from '../api/api'
@@ -81,21 +82,23 @@ const GamesIndexScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+
+				<Box display="flex" width="100%" alignItems="center">
+					<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
+						<BackButton />
+					</Box>
+					<SortGames mode={currLoc} handleFilters={handleFilters} />
+				</Box>
+			</Hero>
 
 			<Box>
 				<DrawerFilter />
-			</Box>
-
-			<Box display="flex" width="100%" alignItems="center">
-				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
-					<BackButton />
-				</Box>
-				<SortGames mode={currLoc} handleFilters={handleFilters} />
 			</Box>
 
 			{isLoading && (

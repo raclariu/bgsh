@@ -209,7 +209,10 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 	const resultsPerPage = 24
 	const mode = req.query.mode
 
-	const completeList = await History.find({ addedBy: req.user._id, mode }).sort({ createdAt: -1 }).lean()
+	const completeList = await History.find({ addedBy: req.user._id, mode })
+		.populate('otherUser', 'username _id')
+		.sort({ createdAt: -1 })
+		.lean()
 
 	if (completeList.length === 0) {
 		return res.status(200).json({ historyList: [] })
@@ -237,6 +240,7 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 		})
 	} else {
 		const historyList = await History.find({ addedBy: req.user._id, mode })
+			.populate('otherUser', 'username _id')
 			.sort({ createdAt: -1 })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)

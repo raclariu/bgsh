@@ -152,7 +152,7 @@ const GameIndexCard = ({ data }) => {
 						<Fragment>
 							<Chip
 								size="small"
-								color="primary"
+								color={data.games[index].type === 'boardgame' ? 'primary' : 'secondary'}
 								variant="outlined"
 								label={`${data.games[index].type} • ${data.games[index].condition}`}
 							/>

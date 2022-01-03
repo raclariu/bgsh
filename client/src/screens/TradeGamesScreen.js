@@ -33,41 +33,33 @@ const TradeGamesScreen = () => {
 	isPack = !!isPack
 
 	const saleList = useSelector((state) => state.saleList)
-	const slRef = useRef(
-		saleList.map((game) => {
-			return {
-				...game,
-				isSleeved : false,
-				version   : null,
-				condition : null,
-				extraInfo : ''
-			}
-		})
-	)
 
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
-	const [ values, setValues ] = useState(slRef.current)
-
-	if (isPack !== false && isPack !== true) {
-		history.push('/sell')
-	}
-
-	if (saleList.length === 1 && isPack) {
-		history.push('/trade')
-	}
-
-	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
-	const mapped = slRef.current.map((el) => el.bggId)
+	const [ values, setValues ] = useState([])
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(mapped),
+		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 60,
+			enabled   : !!saleList.length,
+			onSuccess : (data) => {
+				setValues(
+					data.map((game) => {
+						return {
+							...game,
+							isSleeved : false,
+							version   : null,
+							condition : null,
+							extraInfo : ''
+						}
+					})
+				)
+			}
 		}
 	)
 
@@ -78,33 +70,41 @@ const TradeGamesScreen = () => {
 		}
 	})
 
-	useEffect(
-		() => {
-			if (slRef.current.length !== saleList.length) {
-				setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-			}
-		},
-		[ saleList ]
-	)
+	if (isPack !== false && isPack !== true) {
+		mutation.reset()
+		history.push('/trade')
+	}
+
+	if (saleList.length === 1 && isPack) {
+		mutation.reset()
+		history.push('/trade')
+	}
 
 	useEffect(
 		() => {
 			return () => {
-				queryClient.invalidateQueries('bggGamesDetails')
+				queryClient.invalidateQueries([ 'bggGamesDetails' ])
 			}
 		},
 		[ queryClient ]
 	)
 
+	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
+	useEffect(
+		() => {
+			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
+		},
+		[ saleList ]
+	)
+
+	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
+
 	const removeFromSaleListHandler = (id) => {
 		dispatch(removeFromSaleList(id))
 	}
 
-	const handleGameInfo = (value, bggId, key) => {
-		const index = values.findIndex((el) => el.bggId === bggId)
-		const copy = [ ...values ]
-		copy[index] = { ...copy[index], [key]: value }
-		setValues(copy)
+	const handleGameInfo = (value, id, key) => {
+		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
 	const handleExtraInfoPack = (e) => {
@@ -130,27 +130,20 @@ const TradeGamesScreen = () => {
 		}
 	}
 
-	console.log({ values, data, saleList })
-
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
-		for (let val of values) {
-			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
-			if (index !== -1) {
-				gamesCopy[index] = {
-					...gamesCopy[index],
-					version   : val.version,
-					condition : val.condition,
-					extraInfo : val.extraInfo.trim().length > 0 ? val.extraInfo.trim() : null,
-					isSleeved : val.isSleeved
-				}
+		if (saleList.length === 0) return
+
+		const verifiedGames = values.map((val) => {
+			return {
+				...val,
+				extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
 			}
-		}
+		})
 
 		const gamesData = {
-			games         : gamesCopy,
+			games         : verifiedGames,
 			isPack,
 			shipPost,
 			shipCourier,
@@ -158,7 +151,6 @@ const TradeGamesScreen = () => {
 			shipCities,
 			extraInfoPack : isPack ? extraInfoPack.trim() : null
 		}
-		console.log({ values, gamesCopy, gamesData, data, saleList })
 
 		mutation.mutate(gamesData)
 	}

@@ -40,8 +40,6 @@ const BuyGamesScreen = () => {
 	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	console.log(values)
-
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
 		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
@@ -65,7 +63,9 @@ const BuyGamesScreen = () => {
 		}
 	)
 
-	const mutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData))
+	const mutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData), {
+		onSuccess : () => queryClient.invalidateQueries([ 'buyHistory' ])
+	})
 
 	if (isPack !== false && isPack !== true) {
 		mutation.reset()

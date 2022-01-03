@@ -7,9 +7,15 @@ const getBearer = () => {
 	return `Bearer ${state.userAuth.userData.token}`
 }
 
-export const fetchKickstarters = async () => {
+export const apiFetchKickstarters = async () => {
 	const { data } = await axios.get('/api/misc/kickstarters')
 	return data
+}
+
+export const apiFetchRedditPosts = async () => {
+	const { data } = await axios.get('https://www.reddit.com/r/boardgames/.json?limit=10')
+	const { data: { children } } = data
+	return children
 }
 
 export const apiGetNotifications = async () => {

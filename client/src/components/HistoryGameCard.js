@@ -123,17 +123,17 @@ const HistoryGameCard = ({ data }) => {
 			<Divider />
 
 			<CardContent>
-				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+				{/* <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium">
 							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
 						</Box>
 					)}
 
-					{data.buyer ? (
+					{data.otherUser ? (
 						<Box my={1} display="flex" alignItems="center">
-							<CustomAvatar size="medium" user={data.buyer} />
-							<Box ml={1}>{data.buyer}</Box>
+							<CustomAvatar size="medium" user={data.otherUser.username} />
+							<Box ml={1}>{data.otherUser.username}</Box>
 						</Box>
 					) : (
 						'N/A'
@@ -141,12 +141,47 @@ const HistoryGameCard = ({ data }) => {
 
 					<Box display="flex" alignItems="center">
 						<CustomTooltip title={formatDate(data.createdAt)}>
-							<EventAvailableOutlinedIcon fontSize="small" />
+							<EventAvailableOutlinedIcon />
 						</CustomTooltip>
 
 						<Box textAlign="center" ml={0.5}>
 							{calculateTimeAgo(data.createdAt)}
 						</Box>
+					</Box>
+					<Divider orientation="vertical" flexItem />
+				</Box> */}
+
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
+					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
+						{data.otherUser ? (
+							<Box my={1} display="flex" alignItems="center">
+								<CustomAvatar size="medium" user={data.otherUser.username} />
+								<Box ml={1}>{data.otherUser.username}</Box>
+							</Box>
+						) : (
+							'N/A'
+						)}
+					</Box>
+					<Divider orientation="vertical" flexItem />
+					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
+						<Box>
+							{data.finalPrice ? (
+								<Box fontWeight="fontWeightMedium">
+									<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
+								</Box>
+							) : (
+								'N/A'
+							)}
+						</Box>
+					</Box>
+				</Box>
+				<Box display="flex" alignItems="center">
+					<CustomTooltip title={formatDate(data.createdAt)}>
+						<EventAvailableOutlinedIcon />
+					</CustomTooltip>
+
+					<Box textAlign="center" ml={0.5}>
+						{calculateTimeAgo(data.createdAt)}
 					</Box>
 				</Box>
 			</CardContent>

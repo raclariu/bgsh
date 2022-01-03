@@ -28,29 +28,29 @@ const AddWantedGamesScreen = () => {
 
 	const saleList = useSelector((state) => state.saleList)
 
-	const slRef = useRef(
-		saleList.map((game) => {
-			return {
-				...game,
-				prefVersion : null,
-				prefMode    : {
-					buy   : false,
-					trade : false
-				}
-			}
-		})
-	)
-
-	const [ values, setValues ] = useState(slRef.current)
 	const [ shipPreffered, setShipPreffered ] = useState([])
-
-	const mapped = slRef.current.map((el) => el.bggId)
+	const [ values, setValues ] = useState([])
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(mapped),
+		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
 		{
-			staleTime : 1000 * 60 * 60
+			staleTime : 1000 * 60 * 60,
+			enabled   : !!saleList.length,
+			onSuccess : (data) => {
+				setValues(
+					data.map((game) => {
+						return {
+							...game,
+							prefVersion : null,
+							prefMode    : {
+								buy   : false,
+								trade : false
+							}
+						}
+					})
+				)
+			}
 		}
 	)
 
@@ -63,28 +63,23 @@ const AddWantedGamesScreen = () => {
 
 	useEffect(
 		() => {
-			if (slRef.current.length !== saleList.length) {
-				setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-			}
-		},
-		[ saleList ]
-	)
-
-	useEffect(
-		() => {
 			return () => {
-				queryClient.invalidateQueries('bggGamesDetails')
+				queryClient.invalidateQueries([ 'bggGamesDetails' ])
 			}
 		},
 		[ queryClient ]
 	)
 
+	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
+	useEffect(
+		() => {
+			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
+		},
+		[ saleList ]
+	)
+
 	const handleGameInfo = (value, id, key) => {
-		console.log({ value, id, key })
-		const index = values.findIndex((el) => el.bggId === id)
-		const copy = [ ...values ]
-		copy[index] = { ...copy[index], [key]: value }
-		setValues(copy)
+		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
 	const removeFromSaleListHandler = (id) => {
@@ -96,24 +91,19 @@ const AddWantedGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		const gamesCopy = data.filter(({ bggId }) => values.find((val) => val.bggId === bggId))
-		for (let val of values) {
-			const index = gamesCopy.findIndex((el) => el.bggId === val.bggId)
-			if (index !== -1) {
-				gamesCopy[index] = {
-					...gamesCopy[index],
-					prefVersion : val.prefVersion,
-					prefMode    : val.prefMode
-				}
+		if (saleList.length === 0) return
+
+		const verifiedGames = values.map((val) => {
+			return {
+				...val
 			}
-		}
+		})
 
 		const gamesData = {
-			games         : gamesCopy,
+			games         : verifiedGames,
 			shipPreffered
 		}
 
-		console.log(gamesData)
 		mutation.mutate(gamesData)
 	}
 

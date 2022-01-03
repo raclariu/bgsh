@@ -3,8 +3,8 @@ import React, { useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import LazyLoad from 'react-lazyload'
-import axios from 'axios'
 import { useQuery } from 'react-query'
+import { useInView } from 'react-intersection-observer'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -18,11 +18,21 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { apiFetchHotGames, fetchKickstarters } from '../api/api'
+import { apiFetchHotGames, apiFetchKickstarters, apiFetchRedditPosts } from '../api/api'
 
 // @ Main
 const HomeScreen = () => {
 	const dispatch = useDispatch()
+
+	const { ref: redditRef, inView: redditInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
+	const { ref: ksRef, inView: ksInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
 
 	const options = {
 		refetchOnWindowFocus : false,
@@ -40,9 +50,22 @@ const HomeScreen = () => {
 
 	const { isLoading: isLoadingKs, error: errorKs, data: ksList, isSuccess: isSuccessKs } = useQuery(
 		[ 'kickstarters' ],
-		fetchKickstarters,
-		options
+		apiFetchKickstarters,
+		{
+			enabled : ksInView,
+			...options
+		}
 	)
+
+	const {
+		isLoading : isLoadingRedditPosts,
+		error     : errorRedditPosts,
+		data      : redditPosts,
+		isSuccess : isSuccessRedditPosts
+	} = useQuery([ 'redditPosts' ], apiFetchRedditPosts, {
+		enabled : redditInView,
+		...options
+	})
 
 	if (errorHotGames) {
 		console.log(errorHotGames.response)
@@ -92,7 +115,9 @@ const HomeScreen = () => {
 			)}
 
 			<Box
+				ref={ksRef}
 				display="flex"
+				justifyContent="space-between"
 				alignItems="center"
 				width="100%"
 				bgcolor="primary.main"
@@ -104,6 +129,16 @@ const HomeScreen = () => {
 				my={4}
 			>
 				<Box>Popular kickstarters</Box>
+				<Button
+					href={`https://www.kickstarter.com/discover/advanced?category_id=34&sort=popularity`}
+					target="_blank"
+					rel="noopener"
+					variant="outlined"
+					size="small"
+					color="inherit"
+				>
+					See more
+				</Button>
 			</Box>
 
 			{errorKs && <CustomAlert>{errorKs.response.data.message}</CustomAlert>}
@@ -124,6 +159,100 @@ const HomeScreen = () => {
 						</Grid>
 					))}
 				</Grid>
+			)}
+
+			<Box
+				ref={redditRef}
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				width="100%"
+				bgcolor="primary.main"
+				color="primary.contrastText"
+				fontWeight="fontWeightMedium"
+				fontSize={14}
+				p={1}
+				borderRadius="4px"
+				my={4}
+			>
+				<Box>Latest r/boardgames posts</Box>
+				<Button
+					href={`https://reddit.com/r/boardgames`}
+					target="_blank"
+					rel="noopener"
+					variant="outlined"
+					size="small"
+					color="inherit"
+				>
+					See more
+				</Button>
+			</Box>
+
+			{isSuccessRedditPosts && (
+				<Box display="flex" flexDirection="column" gap={1}>
+					{redditPosts.map(
+						({ data }) =>
+							!data.stickied && (
+								<Box
+									key={data.id}
+									display="flex"
+									bgcolor="background.paper"
+									boxShadow={1}
+									borderRadius={2}
+									p={1}
+									width="100%"
+								>
+									{data.thumbnail !== 'self' && (
+										<Box
+											sx={{
+												width  : {
+													xs : 100,
+													sm : 140
+												},
+												height : {
+													xs : 80,
+													sm : 100
+												},
+												mr     : 2
+											}}
+										>
+											<img
+												style={{
+													width     : '100%',
+													height    : '100%',
+													objectFit : 'cover'
+												}}
+												src={data.thumbnail}
+												alt={data.title}
+											/>
+										</Box>
+									)}
+									<Box
+										display="flex"
+										flexDirection="column"
+										justifyContent="space-between"
+										width="100%"
+									>
+										<Box sx={{ wordBreak: 'break-word' }}>{data.title}</Box>
+										<Box display="flex" justifyContent="space-between" alignItems="center">
+											<Box fontSize="0.75rem" color="grey.500" fontStyle="italic">
+												by {data.author}
+											</Box>
+											<Button
+												color="primary"
+												href={`https://reddit.com/${data.permalink}`}
+												target="_blank"
+												rel="noopener"
+												size="small"
+											>
+												See on Reddit
+											</Button>
+										</Box>
+									</Box>
+								</Box>
+							)
+					)}
+				</Box>
 			)}
 		</Fragment>
 	)

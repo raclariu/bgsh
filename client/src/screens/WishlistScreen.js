@@ -18,6 +18,7 @@ import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import Hero from '../components/Hero'
 
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
@@ -80,19 +81,20 @@ const WishlistScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+			<Hero>
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+				{search && (
+					<Box display="flex" alignItems="center" width="100%">
+						<BackButton />
+						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+					</Box>
+				)}
+			</Hero>
 
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
-					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
-				</Box>
-			)}
-			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}

@@ -155,6 +155,10 @@ const App = () => {
 									<GamesHistory />
 								</ProtectedRoute>
 
+								<ProtectedRoute path="/user/history/bought" exact>
+									<GamesHistory />
+								</ProtectedRoute>
+
 								<ProtectedRoute path="/hot" exact>
 									<HotGames />
 								</ProtectedRoute>
