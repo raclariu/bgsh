@@ -2,7 +2,6 @@
 import React, { useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 import { useInView } from 'react-intersection-observer'
 
@@ -16,6 +15,7 @@ import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { apiFetchHotGames, apiFetchKickstarters, apiFetchRedditPosts } from '../api/api'
@@ -102,13 +102,15 @@ const HomeScreen = () => {
 				</Grid>
 			)}
 
+			<LzLoad offset={200}>asdad</LzLoad>
+
 			{isSuccessHotGames && (
 				<Grid container spacing={2}>
 					{hotGamesList.slice(0, 6).map((data) => (
 						<Grid key={data.bggId} item xs={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad offset={200} once placeholder={<GameCardSkeleton />}>
 								<HotGameCard data={data} />
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>
@@ -153,9 +155,9 @@ const HomeScreen = () => {
 				<Grid container spacing={2}>
 					{ksList.map((data) => (
 						<Grid key={data.ksId} item xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GameCardSkeleton />}>
 								<KsCard data={data} />
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

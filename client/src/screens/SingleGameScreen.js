@@ -1,12 +1,9 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { formatDistance, parseISO } from 'date-fns'
-import LazyLoad from 'react-lazyload'
 import Zoom from 'react-medium-image-zoom'
 import { useInView } from 'react-intersection-observer'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
@@ -57,6 +54,7 @@ import SendMessage from '../components/SendMessage'
 import HelmetComponent from '../components/HelmetComponent'
 import CustomAlert from '../components/CustomAlert'
 import CustomTooltip from '../components/CustomTooltip'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
@@ -559,13 +557,13 @@ const SingleGameScreen = () => {
 											p={1.5}
 											bgcolor="background.paper"
 										>
-											<LazyLoad offset={200} once>
+											<LzLoad>
 												<StyledMasonryImg
 													onClick={() => handleOpenImage(i)}
 													src={obj.thumbnail}
 													alt={obj.caption}
 												/>
-											</LazyLoad>
+											</LzLoad>
 										</Box>
 									))}
 								</Masonry>

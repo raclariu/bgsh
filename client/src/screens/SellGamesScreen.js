@@ -81,6 +81,8 @@ const SellGamesScreen = () => {
 		}
 	)
 
+	console.log(data && data)
+
 	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
 			queryClient.invalidateQueries('saleGames')

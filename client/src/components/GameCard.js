@@ -81,16 +81,23 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 						</Button>
 					</CustomTooltip>
 
-					<CustomTooltip
-						title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}
-					>
-						<Checkbox
-							checked={isChecked}
-							disabled={isDisabled}
-							onChange={(e) => saleListHandler(e, data.bggId)}
-							icon={<AddBoxOutlinedIcon />}
-						/>
-					</CustomTooltip>
+					<Box display="flex" gap={1} alignItems="center">
+						<CustomTooltip title={'Search for this game'}>
+							<IconButton component={RouterLink} to={`/games?search=${data.bggId}`}>
+								<SearchIcon />
+							</IconButton>
+						</CustomTooltip>
+						<CustomTooltip
+							title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}
+						>
+							<Checkbox
+								checked={isChecked}
+								disabled={isDisabled}
+								onChange={(e) => saleListHandler(e, data.bggId)}
+								icon={<AddBoxOutlinedIcon />}
+							/>
+						</CustomTooltip>
+					</Box>
 				</Box>
 			</CardActions>
 		</Card>

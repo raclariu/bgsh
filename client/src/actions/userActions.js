@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { axsPUBLIC, axsAUTH } from '../api/axs'
 import {
 	USER_AUTH_REQUEST,
 	USER_AUTH_SUCCESS,
@@ -11,13 +11,7 @@ export const signIn = (email, password) => async (dispatch) => {
 	try {
 		dispatch({ type: USER_AUTH_REQUEST })
 
-		const config = {
-			headers : {
-				'Content-Type' : 'application/json'
-			}
-		}
-
-		const { data } = await axios.post('/api/users/signin', { email, password }, config)
+		const { data } = await axsPUBLIC.post('/api/users/signin', { email, password })
 
 		dispatch({
 			type    : USER_AUTH_SUCCESS,
@@ -37,17 +31,7 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 	try {
 		dispatch({ type: USER_AUTH_REQUEST })
 
-		const config = {
-			headers : {
-				'Content-Type' : 'application/json'
-			}
-		}
-
-		const { data } = await axios.post(
-			'/api/users/signup',
-			{ email, username, password, passwordConfirmation },
-			config
-		)
+		const { data } = await axsPUBLIC.post('/api/users/signup', { email, username, password, passwordConfirmation })
 
 		dispatch({
 			type    : USER_AUTH_SUCCESS,

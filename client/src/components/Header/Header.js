@@ -693,9 +693,7 @@ const Header = () => {
 
 						<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 							<DialogTitle>
-								<Typography variant="subtitle2" align="center">
-									Are you sure you want to sign out?
-								</Typography>
+								<Box textAlign="center">Are you sure you want to sign out?</Box>
 							</DialogTitle>
 
 							<Divider />

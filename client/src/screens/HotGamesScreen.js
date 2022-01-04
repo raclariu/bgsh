@@ -2,8 +2,7 @@
 import React, { Fragment, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import LazyLoad from 'react-lazyload'
-import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from 'react-query'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -12,6 +11,7 @@ import Grid from '@mui/material/Grid'
 import HotGameCard from '../components/HotGameCard'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { apiFetchHotGames } from '../api/api'
@@ -38,9 +38,9 @@ const HotGamesScreen = () => {
 				<Grid container spacing={2}>
 					{data.map((data) => (
 						<Grid key={data.bggId} item xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GameCardSkeleton />}>
 								<HotGameCard data={data} />
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

@@ -43,7 +43,7 @@ const userRegister = asyncHandler(async (req, res) => {
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
 
-		res.status(400)
+		res.status(401)
 		throw {
 			message : {
 				emailError                : err.email ? err.email.msg : null,

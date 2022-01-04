@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -19,6 +18,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import Hero from '../components/Hero'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
@@ -105,7 +105,7 @@ const WishlistScreen = () => {
 				<Grid container spacing={3} direction="row">
 					{data.wishlist.map((data) => (
 						<Grid item key={data.bggId} md={4} sm={6} xs={12}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GameCardSkeleton />}>
 								<GameCard
 									data={data}
 									saleListHandler={saleListHandler}
@@ -122,7 +122,7 @@ const WishlistScreen = () => {
 										)
 									}
 								/>
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -19,6 +18,7 @@ import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import Hero from '../components/Hero'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { apiFetchSavedGames } from '../api/api'
@@ -91,9 +91,9 @@ const SavedGamesScreen = () => {
 				<Grid container spacing={3}>
 					{data.list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GameCardSkeleton />}>
 								<SavedGameCard data={data} />
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

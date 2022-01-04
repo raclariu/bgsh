@@ -22,6 +22,8 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
+		console.log(item)
+
 		for (let game of ensureArray) {
 			const item = {
 				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
@@ -95,7 +97,9 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
 							: null,
 					votes  : +game.statistics.ratings.numweights.value
-				}
+				},
+				parent             :
+					game.type === 'boardgameexpansion' && game.link.find((obj) => obj.inbound && obj.inbound === 'true')
 			}
 
 			gamesArr.push(item)

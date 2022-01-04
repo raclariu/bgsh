@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
 import queryString from 'query-string'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -20,6 +19,7 @@ import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 import Hero from '../components/Hero'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
@@ -106,7 +106,7 @@ const CollectionScreen = () => {
 				<Grid container spacing={3} direction="row">
 					{data.owned.map((data) => (
 						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
-							<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GameCardSkeleton />}>
 								<GameCard
 									data={data}
 									saleListHandler={saleListHandler}
@@ -123,7 +123,7 @@ const CollectionScreen = () => {
 										)
 									}
 								/>
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

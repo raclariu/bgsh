@@ -1,7 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { checkTokenExpirationMiddleware } from './middlewares/middlewares'
 
 import { userAuthReducer, setThemeReducer } from './reducers/userReducers'
 import { saleListReducer } from './reducers/saleListReducers'
@@ -24,7 +23,7 @@ const initialState = {
 	userPreferences : { theme: currentThemeFromStorage }
 }
 
-const middleware = [ thunk, checkTokenExpirationMiddleware ]
+const middleware = [ thunk ]
 
 const store = createStore(reducer, initialState, composeWithDevTools(applyMiddleware(...middleware)))
 

@@ -2,7 +2,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -15,9 +14,9 @@ import Tab from '@mui/material/Tab'
 import UserProfileGameCard from '../components/UserProfileScreen/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { getUserProfileData } from '../actions/userActions'
 import { apiGetProfileData } from '../api/api'
 
 // @ Main
@@ -67,9 +66,9 @@ const UserProfileScreen = () => {
 						{isSuccess &&
 							data.saleGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
-									<LazyLoad offset={200} once placeholder={<GameCardSkeleton />}>
+									<LzLoad placeholder={<GameCardSkeleton />}>
 										<UserProfileGameCard data={data} />
-									</LazyLoad>
+									</LzLoad>
 								</Grid>
 							))}
 					</Grid>

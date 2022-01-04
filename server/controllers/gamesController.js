@@ -213,7 +213,11 @@ const getGames = asyncHandler(async (req, res) => {
 	if (search) {
 		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id').lean()
 
-		const fuse = new Fuse(gamesData, { keys: [ 'games.title', 'games.designers' ], threshold: 0.3, distance: 200 })
+		const fuse = new Fuse(gamesData, {
+			keys      : [ 'games.bggId', 'games.title', 'games.designers' ],
+			threshold : 0.3,
+			distance  : 200
+		})
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
 			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt

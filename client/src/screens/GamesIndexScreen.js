@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
-import LazyLoad from 'react-lazyload'
 import { useQuery } from 'react-query'
 
 // @ Mui
@@ -20,6 +19,7 @@ import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import DrawerFilter from '../components/Filters/DrawerFilter'
 import Hero from '../components/Hero'
+import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { fetchGames } from '../api/api'
@@ -111,9 +111,7 @@ const GamesIndexScreen = () => {
 				{isSuccess &&
 					data.gamesData.map((data) => (
 						<Grid item key={data._id} md={4} sm={6} xs={12}>
-							<LazyLoad
-								offset={200}
-								once
+							<LzLoad
 								placeholder={
 									<Box width="100%">
 										<GameIndexCardSkeleton />
@@ -121,7 +119,7 @@ const GamesIndexScreen = () => {
 								}
 							>
 								<GamesIndexCard data={data} sort={sort} />
-							</LazyLoad>
+							</LzLoad>
 						</Grid>
 					))}
 			</Grid>
