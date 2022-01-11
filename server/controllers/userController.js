@@ -104,9 +104,8 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @access  Private route
 const changeAvatar = asyncHandler(async (req, res) => {
 	console.log('inside ctrl', req.file)
-	await User.updateOne({ _id: req.user._id }, { avatar: req.file.path })
-
-	console.log(req.file.path)
+	const user = await User.findById({ _id: req.user._id })
+	user.avatar = req.file.path
 
 	return res.status(200).json({ avatar: req.file.path })
 })

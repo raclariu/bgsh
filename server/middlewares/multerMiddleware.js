@@ -5,7 +5,8 @@ const __dirname = path.resolve()
 
 const storage = multer.diskStorage({
 	destination : function(req, file, cb) {
-		cb(null, 'server/public')
+		console.log(__dirname)
+		cb(null, path.join(__dirname, './server/public'))
 	},
 	filename    : function(req, file, cb) {
 		console.log('inside mw', file)

@@ -15,4 +15,4 @@ yarn-error.log*
 /.changelog
 .npm/
 yarn.lock
-/public
+server/public
