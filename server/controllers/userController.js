@@ -22,7 +22,7 @@ const userAuth = asyncHandler(async (req, res) => {
 		}
 	} else {
 		const { email } = req.body
-		const user = await User.findOne({ email }).select('_id email username isAdmin token')
+		const user = await User.findOne({ email }).select('_id email username isAdmin token avatar')
 		user.lastSeen = Date.now()
 		user.save()
 		res.status(200).json({
@@ -30,6 +30,7 @@ const userAuth = asyncHandler(async (req, res) => {
 			email    : user.email,
 			username : user.username,
 			isAdmin  : user.isAdmin,
+			avatar   : user.avatar,
 			token    : generateToken(user._id)
 		})
 	}
@@ -104,10 +105,11 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @access  Private route
 const changeAvatar = asyncHandler(async (req, res) => {
 	console.log('inside ctrl', req.file)
-	const user = await User.findById({ _id: req.user._id })
-	user.avatar = req.file.path
+	const user = await User.findById({ _id: req.user._id }).select('_id avatar')
+	user.avatar = req.file.filename
+	user.save()
 
-	return res.status(200).json({ avatar: req.file.path })
+	return res.status(200).json({ avatar: req.file.filename })
 })
 
 // ~ @desc    Get single user profile data

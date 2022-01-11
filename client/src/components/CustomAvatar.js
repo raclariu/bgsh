@@ -18,33 +18,39 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
 // @ Styles
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(3),
-	height          : theme.spacing(3),
-	backgroundColor : theme.palette.primary.main,
-	cursor          : 'pointer'
-}))
-const MediumAvatar = styled(Avatar)(({ theme }) => ({
 	width           : theme.spacing(4),
 	height          : theme.spacing(4),
 	backgroundColor : theme.palette.primary.main,
+	imageRendering  : '-webkit-optimize-contrast',
 	cursor          : 'pointer'
 }))
-const LargeAvatar = styled(Avatar)(({ theme }) => ({
+const MediumAvatar = styled(Avatar)(({ theme }) => ({
 	width           : theme.spacing(5),
 	height          : theme.spacing(5),
 	backgroundColor : theme.palette.primary.main,
+	imageRendering  : '-webkit-optimize-contrast',
+	cursor          : 'pointer'
+}))
+const LargeAvatar = styled(Avatar)(({ theme }) => ({
+	width           : theme.spacing(6),
+	height          : theme.spacing(6),
+	backgroundColor : theme.palette.primary.main,
+	imageRendering  : '-webkit-optimize-contrast',
 	cursor          : 'pointer'
 }))
 
 const InactiveAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(5),
-	height          : theme.spacing(5),
-	backgroundColor : theme.palette.primary.main
+	width           : theme.spacing(7),
+	height          : theme.spacing(7),
+	backgroundColor : theme.palette.primary.main,
+	imageRendering  : '-webkit-optimize-contrast'
 }))
 
 // @ Main
 const CustomAvatar = ({ size, user }) => {
 	const history = useHistory()
+
+	const { userData } = useSelector((state) => state.userAuth)
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -56,19 +62,31 @@ const CustomAvatar = ({ size, user }) => {
 		<Fragment>
 			<Box display="flex" flexDirection="row" alignItems="center">
 				{size === 'small' && (
-					<SmallAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+					<SmallAvatar
+						imgProps={{ alt: 'avatar' }}
+						src={userData.avatar}
+						onClick={(e) => setAnchorEl(e.currentTarget)}
+					>
 						<Box fontSize={10}>{user.substring(0, 2).toUpperCase()}</Box>
 					</SmallAvatar>
 				)}
 
 				{size === 'medium' && (
-					<MediumAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+					<MediumAvatar
+						imgProps={{ alt: 'avatar' }}
+						src={userData.avatar}
+						onClick={(e) => setAnchorEl(e.currentTarget)}
+					>
 						<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
 					</MediumAvatar>
 				)}
 
 				{size === 'large' && (
-					<LargeAvatar onClick={(e) => setAnchorEl(e.currentTarget)}>
+					<LargeAvatar
+						imgProps={{ alt: 'avatar' }}
+						src={userData.avatar}
+						onClick={(e) => setAnchorEl(e.currentTarget)}
+					>
 						<Box fontSize={14}>{user.substring(0, 2).toUpperCase()}</Box>
 					</LargeAvatar>
 				)}
@@ -89,7 +107,7 @@ const CustomAvatar = ({ size, user }) => {
 			>
 				<Box p={1} display="flex" flexDirection="column">
 					<Box display="flex" alignItems="center" justifyContent="space-between">
-						<InactiveAvatar>
+						<InactiveAvatar src={userData.avatar}>
 							<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
 								{user.substring(0, 2).toUpperCase()}
 							</Box>

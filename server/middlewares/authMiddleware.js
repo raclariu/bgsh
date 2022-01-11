@@ -13,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			console.log(decoded)
 
-			req.user = await User.findById(decoded.id).select('_id isAdmin email username')
+			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar')
 
 			if (!req.user) {
 				res.status(401)

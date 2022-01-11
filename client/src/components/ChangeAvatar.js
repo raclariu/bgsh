@@ -1,5 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState, useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import AvatarEditor from 'react-avatar-editor'
 import { useDebounce } from 'use-debounce'
@@ -43,6 +44,8 @@ const FileInput = styled('input')({
 })
 
 const ChangeAvatar = () => {
+	const { userData } = useSelector((state) => state.userAuth)
+
 	const ref = useRef()
 	const [ image, setImage ] = useState(null)
 	const [ zoom, setZoom ] = useState(1.2)
@@ -52,11 +55,10 @@ const ChangeAvatar = () => {
 	const [ url, setUrl ] = useState('')
 
 	const mutation = useMutation((imgBlob) => apiUserChangeAvatar(imgBlob), {
-		onSuccess : (data) => {
-			const x = data.avatar.split('\\')
-			setUrl(`/avatars/${x[x.length - 1]}`)
-			console.log(x)
-			console.log(data)
+		onSuccess : () => {
+			setOpenDialog(false)
+			setImage(null)
+			showSnackbar.success({ text: 'Avatar changed successfully' })
 		}
 	})
 
@@ -109,8 +111,8 @@ const ChangeAvatar = () => {
 
 				mutation.mutate(fd)
 			},
-			'image/webp',
-			0.7
+			'image/jpeg',
+			0.95
 		)
 	}
 
@@ -125,7 +127,7 @@ const ChangeAvatar = () => {
 					onChange={handleImageChange}
 					onClick={(e) => (e.target.value = null)}
 				/>
-				<MyAvatar src={url}>
+				<MyAvatar src={userData.avatar}>
 					<PhotoCameraIcon fontSize="large" />
 				</MyAvatar>
 			</label>

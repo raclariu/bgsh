@@ -28,7 +28,10 @@ const userSchema = mongoose.Schema({
 		type    : Date,
 		default : new Date()
 	},
-	avatar     : String,
+	avatar     : {
+		type    : String,
+		default : ''
+	},
 	savedGames : [
 		{
 			type     : mongoose.Schema.Types.ObjectId,

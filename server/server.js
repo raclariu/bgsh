@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'))
 }
 app.use(express.json())
-app.use(express.static(path.join(__dirname, './public')))
+app.use(express.static(path.join(__dirname, './server/public')))
 
 app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes)
