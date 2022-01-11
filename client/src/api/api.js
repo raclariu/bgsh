@@ -1,6 +1,6 @@
 import store from '../store'
 import queryString from 'query-string'
-import { axsPUBLIC, axsAUTH } from './axs'
+import { axsPUBLIC, axsAUTH, multipartAxsAUTH } from './axs'
 
 export const apiFetchKickstarters = async () => {
 	const { data } = await axsPUBLIC.get('/api/misc/kickstarters')
@@ -20,6 +20,11 @@ export const apiGetNotifications = async () => {
 
 export const apiUserChangePassword = async ({ passwordCurrent, passwordNew, passwordNewConfirmation }) => {
 	await axsAUTH.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation })
+}
+
+export const apiUserChangeAvatar = async (img) => {
+	const { data } = await axsAUTH.post('/api/users/avatar', img)
+	return data
 }
 
 export const fetchGames = async ({ search, page, sort, mode }) => {

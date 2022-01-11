@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import colors from 'colors'
+import path from 'path'
 import cors from 'cors'
 import connectDB from './db/dbConnect.js'
 import { setInactiveTask, getKickstarters } from './tasks/tasks.js'
@@ -12,6 +13,7 @@ import gameRoutes from './routes/gameRoutes.js'
 import historyRoutes from './routes/historyRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import miscRoutes from './routes/miscRoutes.js'
+const __dirname = path.resolve()
 
 dotenv.config()
 
@@ -24,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'))
 }
 app.use(express.json())
+app.use(express.static(path.join(__dirname, '/server/public')))
 
 app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes)

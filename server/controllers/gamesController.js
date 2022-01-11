@@ -210,6 +210,8 @@ const getGames = asyncHandler(async (req, res) => {
 	const mode = req.query.mode
 	const resultsPerPage = 24
 
+	console.log(req.headers)
+
 	if (search) {
 		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id').lean()
 

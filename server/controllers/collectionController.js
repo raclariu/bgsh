@@ -127,8 +127,6 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			await Wishlist.deleteOne({ user: req.user._id })
 		}
 
-		console.log(bggOwned)
-
 		await Collection.create({
 			user       : req.user._id,
 			owned      : bggOwned.length > 0 ? bggOwned.sort((a, b) => (a.title > b.title ? 1 : -1)) : [],

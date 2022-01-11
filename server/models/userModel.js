@@ -24,6 +24,11 @@ const userSchema = mongoose.Schema({
 		required : true,
 		default  : false
 	},
+	lastSeen   : {
+		type    : Date,
+		default : new Date()
+	},
+	avatar     : String,
 	savedGames : [
 		{
 			type     : mongoose.Schema.Types.ObjectId,

@@ -11,7 +11,17 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
+			console.log(decoded)
+
 			req.user = await User.findById(decoded.id).select('_id isAdmin email username')
+
+			if (!req.user) {
+				res.status(401)
+				throw {
+					message : 'Not authorized, token failed',
+					devErr  : error.stack
+				}
+			}
 
 			next()
 		} catch (error) {

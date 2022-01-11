@@ -14,6 +14,13 @@ export const axsAUTH = axios.create({
 	}
 })
 
+export const multipartAxsAUTH = axios.create({
+	baseURL : '/',
+	headers : {
+		'Content-Type' : 'multipart/form-data'
+	}
+})
+
 export const axsPUBLIC = axios.create({
 	baseURL : '/',
 	headers : {
@@ -22,6 +29,18 @@ export const axsPUBLIC = axios.create({
 })
 
 axsAUTH.interceptors.request.use(
+	(config) => {
+		if (!config.headers.Authorization) {
+			config.headers.Authorization = getBearer()
+		}
+		return config
+	},
+	(error) => {
+		return Promise.reject(error)
+	}
+)
+
+multipartAxsAUTH.interceptors.request.use(
 	(config) => {
 		if (!config.headers.Authorization) {
 			config.headers.Authorization = getBearer()

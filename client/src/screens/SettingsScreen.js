@@ -13,6 +13,7 @@ import Divider from '@mui/material/Divider'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
+import ChangeAvatar from '../components/ChangeAvatar'
 
 // @ Main
 const SettingsScreen = () => {
@@ -49,6 +50,10 @@ const SettingsScreen = () => {
 
 			{tab === 'profile' && (
 				<Grid spacing={10} container justifyContent="center" alignItems="center">
+					<Grid item>
+						<ChangeAvatar />
+					</Grid>
+
 					<Grid item xs={12} sm={8} md={7}>
 						<CollectionFetchBox />
 					</Grid>

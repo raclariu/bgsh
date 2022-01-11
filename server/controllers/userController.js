@@ -23,6 +23,8 @@ const userAuth = asyncHandler(async (req, res) => {
 	} else {
 		const { email } = req.body
 		const user = await User.findOne({ email }).select('_id email username isAdmin token')
+		user.lastSeen = Date.now()
+		user.save()
 		res.status(200).json({
 			_id      : user._id,
 			email    : user.email,
@@ -97,6 +99,18 @@ const changePassword = asyncHandler(async (req, res) => {
 	}
 })
 
+// * @desc    Change avatar
+// * @route   POST  /api/users/avatar
+// * @access  Private route
+const changeAvatar = asyncHandler(async (req, res) => {
+	console.log('inside ctrl', req.file)
+	await User.updateOne({ _id: req.user._id }, { avatar: req.file.path })
+
+	console.log(req.file.path)
+
+	return res.status(200).json({ avatar: req.file.path })
+})
+
 // ~ @desc    Get single user profile data
 // ~ @route   GET  /api/users/:username
 // ~ @access  Private route
@@ -142,4 +156,4 @@ const getNotifications = asyncHandler(async (req, res) => {
 	res.status(200).json({ notifications })
 })
 
-export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications }
+export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications, changeAvatar }

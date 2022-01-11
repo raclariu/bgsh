@@ -1,12 +1,14 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
+import { uploadAvatar } from '../middlewares/multerMiddleware.js'
 import {
 	userAuth,
 	userRegister,
 	changePassword,
 	getUserProfileData,
-	getNotifications
+	getNotifications,
+	changeAvatar
 } from '../controllers/userController.js'
 import {
 	validateEmail,
@@ -34,5 +36,6 @@ router
 	.route('/password')
 	.post([ protect, validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ], changePassword)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
+router.route('/avatar').post([ protect, uploadAvatar ], changeAvatar)
 
 export default router
