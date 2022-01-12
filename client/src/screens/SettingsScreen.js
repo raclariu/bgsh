@@ -1,10 +1,8 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Divider from '@mui/material/Divider'
@@ -41,29 +39,51 @@ const SettingsScreen = () => {
 			</Box>
 
 			{tab === 'change-password' && (
-				<Grid container justifyContent="center" alignItems="center">
-					<Grid item xs={12} sm={8} md={7}>
+				<Box display="flex" justifyContent="center" width="100%" mt={2}>
+					<Box
+						sx={{
+							width : {
+								xs : '100%',
+								sm : '85%',
+								md : '50%'
+							}
+						}}
+					>
 						<ChangePasswordForm />
-					</Grid>
-				</Grid>
+					</Box>
+				</Box>
 			)}
 
 			{tab === 'profile' && (
-				<Grid spacing={10} container justifyContent="center" alignItems="center">
-					<Grid item>
+				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={5}>
+					<Box mt={2}>
 						<ChangeAvatar />
-					</Grid>
-
-					<Grid item xs={12} sm={8} md={7}>
+					</Box>
+					<Divider flexItem />
+					<Box
+						sx={{
+							width : {
+								xs : '100%',
+								sm : '85%',
+								md : '50%'
+							}
+						}}
+					>
 						<CollectionFetchBox />
-					</Grid>
-
-					<Grid item xs={12} sm={8} md={7}>
+					</Box>
+					<Box
+						sx={{
+							width : {
+								xs : '100%',
+								sm : '85%',
+								md : '50%'
+							}
+						}}
+					>
 						<BggSearchGamesBox />
-					</Grid>
-
-					<Divider style={{ width: '100%' }} />
-				</Grid>
+					</Box>
+					<Divider flexItem />
+				</Box>
 			)}
 		</Fragment>
 	)

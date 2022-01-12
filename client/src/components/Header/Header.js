@@ -158,33 +158,9 @@ const Header = () => {
 									<Box fontWeight="fontWeightMedium" mr={1}>
 										{userData.username}
 									</Box>
-									<Avatar
-										sx={{
-											width   : (theme) => theme.spacing(5),
-											height  : (theme) => theme.spacing(5),
-											bgcolor : 'primary.main'
-										}}
-										// sx={[
-										// 	(theme) => ({
-										// 		backgroundColor : {
-										// 			xs : theme.palette.primary.main,
-										// 			md : theme.palette.secondary.main
-										// 		}
-										// 	}),
-										// 	{ width: (theme) => theme.spacing(1) }
-										// ]}
-										// sx={[
-										// 	(theme) => ({
-										// 		backgroundColor : {
-										// 			xs : theme.palette.primary.main,
-										// 			md : theme.palette.secondary.main
-										// 		}
-										// 	}),
-										// 	{ mr: 2, color: 'red' }
-										// ]}
-									>
+									<CustomAvatar size={6} defaultAvatar inactive>
 										<Box fontSize={14}>{userData.username.substring(0, 2).toUpperCase()}</Box>
-									</Avatar>
+									</CustomAvatar>
 								</Box>
 								{/* <IconButton
 										color="primary"

@@ -111,7 +111,6 @@ const ShippingSection = ({
 							label="Cities"
 							placeholder={shipCities.length > 0 ? 'Cities' : 'Select cities'}
 							name="cities"
-							required
 						/>
 					)}
 				/>

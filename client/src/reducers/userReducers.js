@@ -4,6 +4,7 @@ import {
 	USER_AUTH_SUCCESS,
 	USER_AUTH_FAIL,
 	USER_SIGNOUT,
+	USER_CHANGE_AVATAR,
 	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
@@ -15,6 +16,8 @@ export const userAuthReducer = (state = {}, action) => {
 			return { loading: false, success: true, userData: action.payload }
 		case USER_AUTH_FAIL:
 			return { loading: false, error: action.payload }
+		case USER_CHANGE_AVATAR:
+			return { ...state, userData: { ...state.userData, avatar: action.payload } }
 		case USER_SIGNOUT:
 			return {}
 

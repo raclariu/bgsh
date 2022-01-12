@@ -210,10 +210,8 @@ const getGames = asyncHandler(async (req, res) => {
 	const mode = req.query.mode
 	const resultsPerPage = 24
 
-	console.log(req.headers)
-
 	if (search) {
-		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id').lean()
+		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id avatar').lean()
 
 		const fuse = new Fuse(gamesData, {
 			keys      : [ 'games.bggId', 'games.title', 'games.designers' ],
@@ -273,7 +271,7 @@ const getGames = asyncHandler(async (req, res) => {
 		const gamesData = await Game.find({ isActive: true, mode })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
-			.populate('addedBy', 'username _id')
+			.populate('addedBy', 'username _id avatar')
 			.sort(checkSort())
 			.lean()
 
@@ -365,7 +363,11 @@ const reactivateGame = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const game = await Game.findOne({ altId }).where('mode').ne('want').populate('addedBy', 'username _id').lean()
+	const game = await Game.findOne({ altId })
+		.where('mode')
+		.ne('want')
+		.populate('addedBy', 'username _id avatar')
+		.lean()
 
 	if (!game) {
 		res.status(404)

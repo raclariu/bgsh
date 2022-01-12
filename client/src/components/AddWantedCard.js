@@ -21,6 +21,7 @@ import FormControl from '@mui/material/FormControl'
 import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
 import Checkbox from '@mui/material/Checkbox'
+import FormHelperText from '@mui/material/FormHelperText'
 
 // @ Components
 import Input from './Input'
@@ -39,6 +40,8 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
 		}
 	}
+
+	const prefModeError = !data.prefMode.buy && !data.prefMode.trade
 
 	return (
 		<Card elevation={1}>
@@ -70,7 +73,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 				title={game.title}
 			/>
 			<CardContent>
-				<FormControl>
+				<FormControl required error={prefModeError}>
 					<FormLabel>Prefer buying or trading for this game?</FormLabel>
 					<FormGroup row>
 						<FormControlLabel
@@ -101,6 +104,8 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 							}
 							label="Trade"
 						/>
+
+						{prefModeError && <FormHelperText error>Select at least one shipping method</FormHelperText>}
 					</FormGroup>
 				</FormControl>
 
@@ -108,7 +113,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 					value={data.version}
 					isOptionEqualToValue={(option, value) => option.title === value.title}
 					onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'prefVersion')}
-					options={game.versions}
+					options={[ ...game.versions, { title: 'TEST FOR ERROR', year: 1999 } ]}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (
 						<Input

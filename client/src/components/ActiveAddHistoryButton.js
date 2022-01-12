@@ -27,6 +27,7 @@ import Loader from './Loader'
 import CustomTooltip from './CustomTooltip'
 import CustomAlert from './CustomAlert'
 import Input from './Input'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import {
@@ -40,6 +41,8 @@ import { useNotification } from '../hooks/hooks'
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
 	const queryClient = useQueryClient()
+
+	const currUsername = useSelector((state) => state.userAuth.userData.username)
 
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ otherUsername, setOtherUsername ] = useState('')
@@ -124,16 +127,19 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		setOpenDialog(false)
 	}
 
-	const addGameHandler = () => {
+	const addGameHandler = (e) => {
+		e.preventDefault()
 		console.log({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 	}
 
-	const deleteGameHandler = () => {
+	const deleteGameHandler = (e) => {
+		e.preventDefault()
 		deleteGame.mutate(gameId)
 	}
 
-	const reactivateGameHandler = () => {
+	const reactivateGameHandler = (e) => {
+		e.preventDefault()
 		reactivateGame.mutate(gameId)
 	}
 
@@ -152,43 +158,20 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
-						<DialogTitle>
-							<Box>
-								Fill in the form below for history purposes. Username is not required, but it is
-								recommended to be filled in.
-							</Box>
-							<Box color="textSecondary">
-								Note: once you press the button below, this listing will be deleted and added to your
-								history.
-							</Box>
-						</DialogTitle>
+						<form onSubmit={addGameHandler} autoComplete="off">
+							<DialogTitle>
+								<Box>
+									Fill in the form below for history purposes. Username is not required, but it is
+									recommended to be filled in.
+								</Box>
+								<Box color="textSecondary">
+									Note: once you press the button below, this listing will be deleted and added to
+									your history.
+								</Box>
+							</DialogTitle>
 
-						<DialogContent dividers>
-							<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-								<Input
-									sx={{
-										minHeight : '70px',
-										width     : {
-											sm : '70%',
-											xs : '100%'
-										}
-									}}
-									error={!!otherUsernameError}
-									helperText={otherUsernameError}
-									onChange={(e) => setOtherUsername(e.target.value)}
-									value={otherUsername}
-									inputProps={{
-										maxLength : 20
-									}}
-									id="username"
-									name="username"
-									label="Username"
-									type="text"
-									placeholder="Username of the other person"
-									autoFocus
-								/>
-
-								{mode === 'sell' && (
+							<DialogContent dividers>
+								<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 									<Input
 										sx={{
 											minHeight : '70px',
@@ -197,64 +180,84 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 												xs : '100%'
 											}
 										}}
-										error={!!finalPriceError}
-										helperText={finalPriceError}
-										onChange={(e) => setFinalPrice(e.target.value)}
-										value={finalPrice}
-										name="final-price"
-										label="Final price"
-										type="number"
-										required
-										InputProps={{
-											startAdornment : <InputAdornment position="start">RON</InputAdornment>
+										error={!!otherUsernameError}
+										helperText={otherUsernameError}
+										onChange={(e) => setOtherUsername(e.target.value)}
+										value={otherUsername}
+										inputProps={{
+											maxLength : 20
 										}}
+										id="username"
+										name="username"
+										label="Username"
+										type="text"
+										placeholder="Username of the other person"
+										autoFocus
 									/>
-								)}
 
-								<Input
-									sx={{
-										width : {
-											sm : '70%',
-											xs : '100%'
-										}
-									}}
-									error={!!extraInfoError}
-									helperText={extraInfoError}
-									value={extraInfo}
-									onChange={(e) => setExtraInfo(e.target.value)}
-									size="medium"
-									multiline
-									minRows={3}
-									maxRows={10}
-									inputProps={{
-										maxLength   : 500,
-										placeholder : 'Any other info goes in here (500 characters limit)'
-									}}
-									name="extra-info"
-									type="text"
-									label={`Extra info ${extraInfo.length}/500`}
-								/>
-							</Box>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={handleCloseDialog} color="primary">
-								Cancel
-							</Button>
-							<Button
-								onClick={addGameHandler}
-								disabled={addGame.isLoading}
-								variant="contained"
-								color="primary"
-							>
-								{addGame.isLoading ? (
-									<Loader color="inherit" size={24} />
-								) : mode === 'sell' ? (
-									'Sell'
-								) : (
-									'Trade'
-								)}
-							</Button>
-						</DialogActions>
+									{mode === 'sell' && (
+										<Input
+											sx={{
+												minHeight : '70px',
+												width     : {
+													sm : '70%',
+													xs : '100%'
+												}
+											}}
+											error={!!finalPriceError}
+											helperText={finalPriceError}
+											onChange={(e) => setFinalPrice(e.target.value)}
+											value={finalPrice}
+											name="final-price"
+											label="Final price"
+											type="number"
+											required
+											InputProps={{
+												startAdornment : <InputAdornment position="start">RON</InputAdornment>
+											}}
+										/>
+									)}
+
+									<Input
+										sx={{
+											width : {
+												sm : '70%',
+												xs : '100%'
+											}
+										}}
+										error={!!extraInfoError}
+										helperText={extraInfoError}
+										value={extraInfo}
+										onChange={(e) => setExtraInfo(e.target.value)}
+										size="medium"
+										multiline
+										minRows={3}
+										maxRows={10}
+										inputProps={{
+											maxLength   : 500,
+											placeholder : 'Any other info goes in here (500 characters limit)'
+										}}
+										name="extra-info"
+										type="text"
+										label={`Extra info ${extraInfo.length}/500`}
+									/>
+								</Box>
+							</DialogContent>
+							<DialogActions>
+								<Button disabled={addGame.isLoading} onClick={handleCloseDialog} color="primary">
+									Cancel
+								</Button>
+
+								<LoadingBtn
+									type="submit"
+									color="primary"
+									loading={addGame.isLoading}
+									disabled={currUsername.trim().toLowerCase() === otherUsername.trim().toLowerCase()}
+								>
+									{mode === 'sell' ? 'Sell' : 'Trade'}
+								</LoadingBtn>
+							</DialogActions>
+						</form>
 					</Dialog>
 				</Fragment>
 			)}
@@ -268,25 +271,28 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-						<DialogTitle>
-							<Box align="center">Are you sure you want to delete this game?</Box>
-						</DialogTitle>
+						<form onSubmit={deleteGameHandler} autoComplete="off">
+							<DialogTitle>
+								<Box align="center">Are you sure you want to delete this game?</Box>
+							</DialogTitle>
 
-						<Divider />
+							<Divider />
 
-						<DialogActions>
-							<Button onClick={handleCloseDialog} color="primary">
-								Cancel
-							</Button>
-							<Button
-								disabled={deleteGame.isLoading}
-								onClick={deleteGameHandler}
-								variant="contained"
-								color="primary"
-							>
-								{deleteGame.isLoading ? <Loader color="inherit" size={24} /> : 'Delete'}
-							</Button>
-						</DialogActions>
+							<DialogActions>
+								<Button disabled={deleteGame.isLoading} onClick={handleCloseDialog} color="primary">
+									Cancel
+								</Button>
+
+								<LoadingBtn
+									type="submit"
+									variant="contained"
+									color="primary"
+									loading={deleteGame.isLoading}
+								>
+									Delete
+								</LoadingBtn>
+							</DialogActions>
+						</form>
 					</Dialog>
 				</Fragment>
 			)}
@@ -300,25 +306,28 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-						<DialogTitle>
-							<Box align="center">Are you sure you want to reactivate this board game?</Box>
-						</DialogTitle>
+						<form onSubmit={reactivateGameHandler} autoComplete="off">
+							<DialogTitle>
+								<Box align="center">Are you sure you want to reactivate this board game?</Box>
+							</DialogTitle>
 
-						<Divider />
+							<Divider />
 
-						<DialogActions>
-							<Button onClick={handleCloseDialog} color="primary">
-								Cancel
-							</Button>
-							<Button
-								disabled={reactivateGame.isLoading}
-								onClick={reactivateGameHandler}
-								variant="contained"
-								color="primary"
-							>
-								{reactivateGame.isLoading ? <Loader color="inherit" size={24} /> : 'Reactivate'}
-							</Button>
-						</DialogActions>
+							<DialogActions>
+								<Button disabled={reactivateGame.isLoading} onClick={handleCloseDialog} color="primary">
+									Cancel
+								</Button>
+
+								<LoadingBtn
+									type="submit"
+									variant="contained"
+									color="primary"
+									loading={reactivateGame.isLoading}
+								>
+									Reactivate
+								</LoadingBtn>
+							</DialogActions>
+						</form>
 					</Dialog>
 				</Fragment>
 			)}

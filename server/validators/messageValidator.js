@@ -13,17 +13,16 @@ const validateMessageRecipient = check('recipient')
 	.withMessage('Username can only contain letters and numbers')
 	.bail()
 	.custom(async (username, { req }) => {
-		if (username === req.user.username) {
-			throw new Error('You cannot send a message to yourself.')
-		}
-
 		if (username) {
 			const usernameExists = await User.findOne({ username }).select('_id').lean()
 
 			if (!usernameExists) {
 				throw new Error('User not found')
 			} else {
-				req.body = { ...req.body, recipientId: usernameExists._id }
+				if (req.user._id.toString() === usernameExists._id.toString()) {
+					throw new Error('You cannot send a message to yourself')
+				}
+				req.recipientId = usernameExists._id
 				return true
 			}
 		}

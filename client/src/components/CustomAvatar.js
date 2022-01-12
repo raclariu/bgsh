@@ -8,89 +8,64 @@ import { useHistory } from 'react-router-dom'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Popover from '@mui/material/Popover'
+import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 
 // @ Components
 import SendMessage from './SendMessage'
+import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 
 // @ Styles
-const SmallAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(4),
-	height          : theme.spacing(4),
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
 	backgroundColor : theme.palette.primary.main,
 	imageRendering  : '-webkit-optimize-contrast',
 	cursor          : 'pointer'
-}))
-const MediumAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(5),
-	height          : theme.spacing(5),
-	backgroundColor : theme.palette.primary.main,
-	imageRendering  : '-webkit-optimize-contrast',
-	cursor          : 'pointer'
-}))
-const LargeAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(6),
-	height          : theme.spacing(6),
-	backgroundColor : theme.palette.primary.main,
-	imageRendering  : '-webkit-optimize-contrast',
-	cursor          : 'pointer'
-}))
-
-const InactiveAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(7),
-	height          : theme.spacing(7),
-	backgroundColor : theme.palette.primary.main,
-	imageRendering  : '-webkit-optimize-contrast'
 }))
 
 // @ Main
-const CustomAvatar = ({ size, user }) => {
+const CustomAvatar = ({ size, username, src, defaultAvatar, inactive }) => {
 	const history = useHistory()
+	console.log(size, username, src)
 
 	const { userData } = useSelector((state) => state.userAuth)
+	const data = {
+		src      : defaultAvatar ? userData.avatar : src,
+		username : defaultAvatar ? userData.username : username
+	}
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 
 	const handleProfileClick = () => {
-		history.push(`/profile/${user}`)
+		history.push(`/profile/${username}`)
 	}
 
 	return (
 		<Fragment>
-			<Box display="flex" flexDirection="row" alignItems="center">
-				{size === 'small' && (
-					<SmallAvatar
-						imgProps={{ alt: 'avatar' }}
-						src={userData.avatar}
-						onClick={(e) => setAnchorEl(e.currentTarget)}
-					>
-						<Box fontSize={10}>{user.substring(0, 2).toUpperCase()}</Box>
-					</SmallAvatar>
-				)}
-
-				{size === 'medium' && (
-					<MediumAvatar
-						imgProps={{ alt: 'avatar' }}
-						src={userData.avatar}
-						onClick={(e) => setAnchorEl(e.currentTarget)}
-					>
-						<Box fontSize={12}>{user.substring(0, 2).toUpperCase()}</Box>
-					</MediumAvatar>
-				)}
-
-				{size === 'large' && (
-					<LargeAvatar
-						imgProps={{ alt: 'avatar' }}
-						src={userData.avatar}
-						onClick={(e) => setAnchorEl(e.currentTarget)}
-					>
-						<Box fontSize={14}>{user.substring(0, 2).toUpperCase()}</Box>
-					</LargeAvatar>
-				)}
-			</Box>
+			{inactive ? (
+				<StyledAvatar
+					sx={{
+						width  : (theme) => theme.spacing(size),
+						height : (theme) => theme.spacing(size),
+						cursor : 'default'
+					}}
+					imgProps={{ alt: 'avatar' }}
+					src={data.src}
+				>
+					<Box fontSize={12}>{data.username ? data.username.substring(0, 2).toUpperCase() : 'XX'}</Box>
+				</StyledAvatar>
+			) : (
+				<StyledAvatar
+					sx={{ width: (theme) => theme.spacing(size), height: (theme) => theme.spacing(size) }}
+					imgProps={{ alt: 'avatar' }}
+					src={data.src}
+					onClick={(e) => setAnchorEl(e.currentTarget)}
+				>
+					<Box fontSize={12}>{data.username ? data.username.substring(0, 2).toUpperCase() : 'XX'}</Box>
+				</StyledAvatar>
+			)}
 
 			<Popover
 				open={Boolean(anchorEl)}
@@ -107,21 +82,32 @@ const CustomAvatar = ({ size, user }) => {
 			>
 				<Box p={1} display="flex" flexDirection="column">
 					<Box display="flex" alignItems="center" justifyContent="space-between">
-						<InactiveAvatar src={userData.avatar}>
-							<Box fontSize={size === 'small' ? 10 : size === 'medium' ? 12 : 14}>
-								{user.substring(0, 2).toUpperCase()}
+						<StyledAvatar
+							sx={{
+								width  : (theme) => theme.spacing(size + 4),
+								height : (theme) => theme.spacing(size + 4),
+								cursor : 'default'
+							}}
+							src={data.src}
+						>
+							<Box fontSize={12}>{data.username.substring(0, 2).toUpperCase()}</Box>
+						</StyledAvatar>
+
+						<Divider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
+
+						<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+							<Box fontWeight="fontWeightMedium">{data.username}</Box>
+
+							<Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={0.5}>
+								<CustomTooltip title="View profile">
+									<IconButton color="primary" onClick={handleProfileClick} size="large">
+										<AccountCircleTwoToneIcon />
+									</IconButton>
+								</CustomTooltip>
+
+								<SendMessage recipientUsername={data.username} />
 							</Box>
-						</InactiveAvatar>
-
-						<Box ml={1} fontWeight="fontWeightMedium">
-							{user}
 						</Box>
-
-						<IconButton color="primary" onClick={handleProfileClick} size="large" sx={{ ml: 2 }}>
-							<AccountCircleTwoToneIcon />
-						</IconButton>
-
-						<SendMessage recipientUsername={user} />
 					</Box>
 				</Box>
 			</Popover>

@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState, useRef, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import AvatarEditor from 'react-avatar-editor'
 import { useDebounce } from 'use-debounce'
@@ -17,6 +17,9 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import IconButton from '@mui/material/IconButton'
 
+// @ Components
+import LoadingBtn from './LoadingBtn'
+
 // @ Icons
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
@@ -25,6 +28,7 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut'
 // @ Others
 import { apiUserChangeAvatar } from '../api/api'
 import { useNotification } from '../hooks/hooks'
+import { changeAvatar } from '../actions/userActions'
 
 // @ Styles
 const MyAvatar = styled(Avatar)(({ theme }) => ({
@@ -44,6 +48,8 @@ const FileInput = styled('input')({
 })
 
 const ChangeAvatar = () => {
+	const dispatch = useDispatch()
+
 	const { userData } = useSelector((state) => state.userAuth)
 
 	const ref = useRef()
@@ -52,22 +58,19 @@ const ChangeAvatar = () => {
 	const [ pos, setPos ] = useState({ x: 0.5, y: 0.5 })
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ showSnackbar ] = useNotification()
-	const [ url, setUrl ] = useState('')
 
 	const mutation = useMutation((imgBlob) => apiUserChangeAvatar(imgBlob), {
-		onSuccess : () => {
+		onSuccess : (data) => {
 			setOpenDialog(false)
 			setImage(null)
+			dispatch(changeAvatar(data.avatar))
 			showSnackbar.success({ text: 'Avatar changed successfully' })
 		}
 	})
 
-	console.log(mutation)
-
 	useEffect(
 		() => {
 			if (image) {
-				console.log(image)
 				setOpenDialog(true)
 			}
 		},
@@ -117,7 +120,7 @@ const ChangeAvatar = () => {
 	}
 
 	return (
-		<Fragment>
+		<form onSubmit={handleSubmit} autoComplete="off">
 			<label htmlFor="avatar">
 				<FileInput
 					accept="image/*"
@@ -156,10 +159,12 @@ const ChangeAvatar = () => {
 					</Box>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleSubmit}>Change avatar</Button>
+					<LoadingBtn type="submit" variant="outlined" color="primary" loading={mutation.isLoading}>
+						Change avatar
+					</LoadingBtn>
 				</DialogActions>
 			</Dialog>
-		</Fragment>
+		</form>
 	)
 }
 

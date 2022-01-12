@@ -132,7 +132,7 @@ const HistoryGameCard = ({ data }) => {
 
 					{data.otherUser ? (
 						<Box my={1} display="flex" alignItems="center">
-							<CustomAvatar size="medium" user={data.otherUser.username} />
+							<CustomAvatar size={5} username={data.otherUser.username} src={data.otherUser.avatar} />
 							<Box ml={1}>{data.otherUser.username}</Box>
 						</Box>
 					) : (
@@ -155,7 +155,7 @@ const HistoryGameCard = ({ data }) => {
 					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
 						{data.otherUser ? (
 							<Box my={1} display="flex" alignItems="center">
-								<CustomAvatar size="medium" user={data.otherUser.username} />
+								<CustomAvatar size={5} username={data.otherUser.username} src={data.otherUser.avatar} />
 								<Box ml={1}>{data.otherUser.username}</Box>
 							</Box>
 						) : (

@@ -18,6 +18,7 @@ import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
 // @ Components
 import CustomTooltip from './CustomTooltip'
 import Input from './Input'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { apiSendMessage } from '../api/api'
@@ -26,7 +27,7 @@ import { apiSendMessage } from '../api/api'
 const SendMessage = ({ recipientUsername = '' }) => {
 	const queryClient = useQueryClient()
 
-	const username = useSelector((state) => state.userAuth.userData.username)
+	const currUsername = useSelector((state) => state.userAuth.userData.username)
 
 	const mutation = useMutation(
 		({ subject, message, recipient }) => {
@@ -62,12 +63,12 @@ const SendMessage = ({ recipientUsername = '' }) => {
 		<Fragment>
 			<CustomTooltip title="Send message">
 				<IconButton
-					disabled={username === recipientUsername}
+					disabled={currUsername === recipientUsername}
 					color="primary"
 					onClick={handleOpenDialog}
 					size="large"
 				>
-					<MailTwoToneIcon fontSize="small" />
+					<MailTwoToneIcon />
 				</IconButton>
 			</CustomTooltip>
 
@@ -140,9 +141,15 @@ const SendMessage = ({ recipientUsername = '' }) => {
 					<Divider />
 
 					<DialogActions>
-						<Button disabled={username === recipient} color="primary" type="submit" variant="outlined">
+						<LoadingBtn
+							disabled={currUsername.trim().toLowerCase() === recipient.trim().toLowerCase()}
+							type="submit"
+							variant="outlined"
+							color="primary"
+							loading={mutation.isLoading}
+						>
 							Send
-						</Button>
+						</LoadingBtn>
 					</DialogActions>
 				</form>
 			</Dialog>

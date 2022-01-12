@@ -7,37 +7,12 @@ import {
 	addBoughtGamesToHistory,
 	getGamesHistory
 } from '../controllers/historyController.js'
-import {
-	validateSingleUsername,
-	validateBuySingleUsername,
-	validateBuyMultipleUsernames,
-	validateSinglePrice,
-	validateBuySinglePrice,
-	validateBuyMultiplePrices,
-	validateExtraInfoPack,
-	validateBuyMultipleExtraInfos,
-	validateSingleExtraInfo
-} from '../validators/historyValidator.js'
+import { sellValidators, tradeValidators, buyValidators } from '../validators/historyValidator.js'
 
 // @route /api/history
 router.route('/').get(protect, getGamesHistory)
-router
-	.route('/sell')
-	.post([ protect, validateSingleUsername, validateSinglePrice, validateSingleExtraInfo ], addSoldGamesToHistory)
-router.route('/trade').post([ protect, validateSingleUsername, validateSingleExtraInfo ], addTradedGamesToHistory)
-router
-	.route('/buy')
-	.post(
-		[
-			protect,
-			validateBuySinglePrice,
-			validateBuyMultiplePrices,
-			validateBuySingleUsername,
-			validateBuyMultipleUsernames,
-			validateBuyMultipleExtraInfos,
-			validateExtraInfoPack
-		],
-		addBoughtGamesToHistory
-	)
+router.route('/sell').post([ protect, ...sellValidators ], addSoldGamesToHistory)
+router.route('/trade').post([ protect, ...tradeValidators ], addTradedGamesToHistory)
+router.route('/buy').post([ protect, ...buyValidators ], addBoughtGamesToHistory)
 
 export default router

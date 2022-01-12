@@ -36,8 +36,9 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			<CardHeader
 				avatar={
 					<CustomAvatar
-						size="medium"
-						user={path === 'received' ? msg.sender.username : msg.recipient.username}
+						size={5}
+						username={path === 'received' ? msg.sender.username : msg.recipient.username}
+						src={path === 'received' ? msg.sender.avatar : msg.recipient.avatar}
 					/>
 				}
 				title={
@@ -77,7 +78,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 									size="small"
 									color="primary"
 									variant="outlined"
-									label={<Box>{calculateTimeAgo(msg.readAt)} </Box>}
+									label={<Box>Read {calculateTimeAgo(msg.readAt)} </Box>}
 								/>
 							</CustomTooltip>
 						)}

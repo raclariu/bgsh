@@ -18,6 +18,7 @@ import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
+import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
@@ -413,7 +414,7 @@ const BuyGamesScreen = () => {
 											type="number"
 											value={finalPrice}
 											onChange={handleFinalPrice}
-											label="Price"
+											label="Pack price"
 											name="final-price"
 											InputProps={{
 												startAdornment : <InputAdornment position="start">RON</InputAdornment>
@@ -445,9 +446,15 @@ const BuyGamesScreen = () => {
 							)}
 
 							<Grid item>
-								<Button type="submit" variant="contained" color="primary" fullWidth>
+								<LoadingBtn
+									type="submit"
+									variant="contained"
+									color="primary"
+									loading={mutation.isLoading}
+									fullWidth
+								>
 									Buy
-								</Button>
+								</LoadingBtn>
 							</Grid>
 						</Grid>
 					</Grid>

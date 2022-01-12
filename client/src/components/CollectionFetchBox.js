@@ -11,6 +11,7 @@ import Box from '@mui/material/Box'
 import Loader from './Loader'
 import Input from './Input'
 import CustomAlert from '../components/CustomAlert'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { clearSaleList } from '../actions/saleListActions'
@@ -64,23 +65,24 @@ const CollectionFetchBox = () => {
 				label="Import collection"
 				placeholder="Enter your boardgamegeek username"
 				type="text"
-				InputProps={{
-					endAdornment : (
-						<Fragment>{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}</Fragment>
-					)
-				}}
+				// InputProps={{
+				// 	endAdornment : (
+				// 		<Fragment>{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}</Fragment>
+				// 	)
+				// }}
 				fullWidth
 			/>
 
 			<Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>
-				<Button
+				<LoadingBtn
 					type="submit"
 					variant="contained"
 					disabled={mutation.isLoading || bggUsername.trim().length < 4}
 					color="primary"
+					loading={mutation.isLoading}
 				>
 					Import collection
-				</Button>
+				</LoadingBtn>
 			</Box>
 		</form>
 	)

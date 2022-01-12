@@ -7,7 +7,7 @@ import Message from '../models/messageModel.js'
 // * @route   POST  /api/messages
 // * @access  Private route
 const sendMessage = asyncHandler(async (req, res) => {
-	const { subject, message, recipientId } = req.body
+	const { subject, message } = req.body
 
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
@@ -24,7 +24,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 	} else {
 		await Message.create({
 			sender    : req.user._id,
-			recipient : recipientId,
+			recipient : req.recipientId,
 			subject,
 			message
 		})
@@ -43,7 +43,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const receivedList = await Message.find({ recipient: req.user._id, delRecipient: false })
-			.populate('sender', '_id username')
+			.populate('sender', '_id username avatar')
 			.sort({ createdAt: -1 })
 			.lean()
 
@@ -81,7 +81,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 		}
 
 		const receivedMessages = await Message.find({ recipient: req.user._id, delRecipient: false })
-			.populate('sender', '_id username')
+			.populate('sender', '_id username avatar')
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })
@@ -114,7 +114,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const sentList = await Message.find({ sender: req.user._id, delSender: false })
-			.populate('recipient', '_id username')
+			.populate('recipient', '_id username avatar')
 			.sort({ createdAt: -1 })
 			.lean()
 
@@ -148,7 +148,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		}
 
 		const sentMessages = await Message.find({ sender: req.user._id, delSender: false })
-			.populate('recipient', '_id username')
+			.populate('recipient', '_id username avatar')
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })

@@ -16,6 +16,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 // @ Components
 import Loader from './Loader'
 import Input from './Input'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { signIn } from '../actions/userActions'
@@ -103,9 +104,9 @@ const SignIn = () => {
 				required
 			/>
 
-			<Button type="submit" variant="contained" color="primary" size="large" disabled={loading} fullWidth>
-				{loading ? <Loader size={26} color="inherit" /> : 'Sign In'}
-			</Button>
+			<LoadingBtn type="submit" variant="contained" color="primary" size="large" loading={loading} fullWidth>
+				Sign in
+			</LoadingBtn>
 		</form>
 	)
 }

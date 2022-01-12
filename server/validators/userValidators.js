@@ -171,15 +171,13 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 	})
 	.withMessage('New password confirmation does not match new password')
 
-export {
-	validateEmail,
+const validateSignIn = [ validateEmail, validatePasswordSignIn ]
+const validateSignUp = [
 	validateEmailDuplicate,
-	validatePasswordSignIn,
-	validatePasswordSignUp,
 	validateUsername,
-	validatePasswordConfirmation,
-	validatePasswordCurrent,
-	validatePasswordNew,
-	validatePasswordNewConfirmation,
-	validateUsernameExist
-}
+	validatePasswordSignUp,
+	validatePasswordConfirmation
+]
+const validatePasswordChange = [ validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ]
+
+export { validateSignIn, validateSignUp, validatePasswordChange, validateUsernameExist }

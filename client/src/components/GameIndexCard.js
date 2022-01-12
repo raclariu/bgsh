@@ -68,31 +68,27 @@ const GameIndexCard = ({ data }) => {
 					title={data.games[index].title}
 				/>
 
-				<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1}>
-					<Box>
-						<StatsBoxes
-							variant="mini"
-							complexity={data.games[index].complexity}
-							stats={data.games[index].stats}
-							type="rating"
-						/>
-					</Box>
-					<Box ml={1}>
-						<StatsBoxes
-							variant="mini"
-							complexity={data.games[index].complexity}
-							stats={data.games[index].stats}
-							type="rank"
-						/>
-					</Box>
-					<Box ml={1}>
-						<StatsBoxes
-							variant="mini"
-							complexity={data.games[index].complexity}
-							stats={data.games[index].stats}
-							type="complexity"
-						/>
-					</Box>
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1} gap={1}>
+					<StatsBoxes
+						variant="mini"
+						complexity={data.games[index].complexity}
+						stats={data.games[index].stats}
+						type="rating"
+					/>
+
+					<StatsBoxes
+						variant="mini"
+						complexity={data.games[index].complexity}
+						stats={data.games[index].stats}
+						type="rank"
+					/>
+
+					<StatsBoxes
+						variant="mini"
+						complexity={data.games[index].complexity}
+						stats={data.games[index].stats}
+						type="complexity"
+					/>
 				</Box>
 			</Box>
 
@@ -147,7 +143,7 @@ const GameIndexCard = ({ data }) => {
 			<Divider />
 
 			<CardContent>
-				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={0.5}>
 					{data.mode !== 'want' ? (
 						<Fragment>
 							<Chip
@@ -157,31 +153,40 @@ const GameIndexCard = ({ data }) => {
 								label={`${data.games[index].type} • ${data.games[index].condition}`}
 							/>
 
-							<Box mt={0.5}>
-								<Chip
-									size="small"
-									color="primary"
-									variant="outlined"
-									label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
-								/>
-							</Box>
+							<Chip
+								size="small"
+								color="primary"
+								variant="outlined"
+								label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
+							/>
 						</Fragment>
 					) : (
 						<Fragment>
 							<Chip
 								size="small"
+								color={data.games[index].type === 'boardgame' ? 'primary' : 'secondary'}
+								variant="outlined"
+								label={data.games[index].type}
+							/>
+
+							<Chip
+								size="small"
+								color="primary"
 								variant="outlined"
 								label={`${data.games[index].prefVersion.title} • ${data.games[index].prefVersion.year}`}
 							/>
 
-							<Box mt={0.5}>
-								<Chip size="small" variant="outlined" label={`${data.shipping.shipPreffered}`} />
-							</Box>
+							<Chip
+								color="primary"
+								size="small"
+								variant="outlined"
+								label={`${data.shipping.shipPreffered}`}
+							/>
 						</Fragment>
 					)}
 
 					{data.mode === 'sell' && (
-						<Box fontWeight="fontWeightMedium" mt={0.5}>
+						<Box fontWeight="fontWeightMedium">
 							<Chip color="primary" label={`${data.totalPrice} RON`} />
 						</Box>
 					)}
@@ -192,12 +197,10 @@ const GameIndexCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<Box display="flex" justifyContent="center" alignItems="center">
-						<CustomAvatar size="medium" user={data.addedBy.username} />
+					<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
+						<CustomAvatar size={5} username={data.addedBy.username} src={data.addedBy.avatar} />
 
-						<Box fontSize={12} ml={1}>
-							{calculateTimeAgo(data.createdAt)}
-						</Box>
+						<Box fontSize={12}>{calculateTimeAgo(data.createdAt)}</Box>
 					</Box>
 
 					{data.mode !== 'want' && <GameDetailsButton altId={data.altId} />}

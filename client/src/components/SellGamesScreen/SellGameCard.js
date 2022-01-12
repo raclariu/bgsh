@@ -85,7 +85,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					value={data.version}
 					isOptionEqualToValue={(option, value) => option.title === value.title}
 					onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'version')}
-					options={game.versions}
+					options={[ ...game.versions, { title: 'TEST FOR ERROR', year: 1999 } ]}
 					getOptionLabel={(option) => `${option.title} (${option.year})`}
 					renderInput={(params) => (
 						<Input
@@ -135,6 +135,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 						maxLength   : 500,
 						placeholder : 'Any other info goes in here (500 characters limit)'
 					}}
+					label={`Extra info ${data.extraInfo.length}/500`}
 					name="extra-info-txt"
 					type="text"
 					size="medium"

@@ -18,6 +18,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import Loader from './Loader'
 import CustomAlert from '../components/CustomAlert'
 import Input from './Input'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { changePassword } from '../actions/userActions'
@@ -151,9 +152,9 @@ const ChangePasswordForm = () => {
 			/>
 
 			<Box display="flex" justifyContent="flex-end">
-				<Button variant="contained" type="submit" color="primary" size="large" disabled={isLoading}>
-					{isLoading ? <Loader size={26} color="inherit" /> : 'Change password'}
-				</Button>
+				<LoadingBtn variant="outlined" type="submit" color="primary" size="large" loading={isLoading}>
+					Change password
+				</LoadingBtn>
 			</Box>
 		</form>
 	)

@@ -18,6 +18,7 @@ import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import Input from '../components/Input'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
+import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
@@ -35,19 +36,6 @@ const SellGamesScreen = () => {
 
 	const saleList = useSelector((state) => state.saleList)
 
-	const slRef = useRef(
-		saleList.map((game) => {
-			return {
-				...game,
-				isSleeved : false,
-				version   : null,
-				condition : null,
-				extraInfo : '',
-				price     : ''
-			}
-		})
-	)
-
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
@@ -56,7 +44,7 @@ const SellGamesScreen = () => {
 	const [ shipCities, setShipCities ] = useState([])
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ totalPrice, setTotalPrice ] = useState('')
-	const [ values, setValues ] = useState(slRef.current)
+	const [ values, setValues ] = useState([])
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
@@ -80,8 +68,6 @@ const SellGamesScreen = () => {
 			}
 		}
 	)
-
-	console.log(data && data)
 
 	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
@@ -115,15 +101,6 @@ const SellGamesScreen = () => {
 			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
 		},
 		[ saleList ]
-	)
-
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries('bggGamesDetails')
-			}
-		},
-		[ queryClient ]
 	)
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
@@ -290,7 +267,7 @@ const SellGamesScreen = () => {
 													mutation.isError && mutation.error.response.data.message.totalPrice
 												}
 												name="total-price"
-												label="Total price"
+												label="Pack price"
 												type="number"
 												InputProps={{
 													startAdornment : (
@@ -324,15 +301,16 @@ const SellGamesScreen = () => {
 								)}
 
 								<Grid item>
-									<Button
+									<LoadingBtn
 										type="submit"
 										disabled={shipError}
 										variant="contained"
 										color="primary"
+										loading={mutation.isLoading}
 										fullWidth
 									>
 										Sell
-									</Button>
+									</LoadingBtn>
 								</Grid>
 							</Grid>
 						</Grid>

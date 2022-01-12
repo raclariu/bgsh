@@ -11,30 +11,17 @@ import {
 	changeAvatar
 } from '../controllers/userController.js'
 import {
-	validateEmail,
-	validateEmailDuplicate,
-	validatePasswordSignIn,
-	validatePasswordSignUp,
-	validatePasswordConfirmation,
-	validateUsername,
-	validatePasswordCurrent,
-	validatePasswordNew,
-	validatePasswordNewConfirmation,
+	validateSignIn,
+	validateSignUp,
+	validatePasswordChange,
 	validateUsernameExist
 } from '../validators/userValidators.js'
 
 // @route /api/users
-router.route('/signin').post([ validateEmail, validatePasswordSignIn ], userAuth)
+router.route('/signin').post(validateSignIn, userAuth)
 router.route('/notifications').get([ protect ], getNotifications)
-router
-	.route('/signup')
-	.post(
-		[ validateEmailDuplicate, validateUsername, validatePasswordSignUp, validatePasswordConfirmation ],
-		userRegister
-	)
-router
-	.route('/password')
-	.post([ protect, validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ], changePassword)
+router.route('/signup').post(validateSignUp, userRegister)
+router.route('/password').post([ protect, ...validatePasswordChange ], changePassword)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
 router.route('/avatar').post([ protect, uploadAvatar ], changeAvatar)
 

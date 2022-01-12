@@ -17,6 +17,7 @@ import Loader from '../components/Loader'
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
 import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import Input from '../components/Input'
+import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
@@ -229,15 +230,16 @@ const TradeGamesScreen = () => {
 
 							<Grid container direction="column">
 								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
-									<Button
+									<LoadingBtn
 										type="submit"
 										disabled={shipError}
 										variant="contained"
 										color="primary"
+										loading={mutation.isLoading}
 										fullWidth
 									>
 										Trade
-									</Button>
+									</LoadingBtn>
 								</Grid>
 							</Grid>
 						</Grid>

@@ -16,6 +16,7 @@ import CustomAlert from '../components/CustomAlert'
 import AddWantedCard from '../components/AddWantedCard'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
+import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
@@ -44,7 +45,7 @@ const AddWantedGamesScreen = () => {
 							...game,
 							prefVersion : null,
 							prefMode    : {
-								buy   : false,
+								buy   : true,
 								trade : false
 							}
 						}
@@ -140,37 +141,41 @@ const AddWantedGamesScreen = () => {
 						)}
 					</Grid>
 
-					<Grid container>
-						<Autocomplete
-							multiple
-							filterSelectedOptions
-							value={data.shipPreffered}
-							onChange={(e, selected) => setShipPreffered(selected)}
-							limitTags={2}
-							options={[ 'Romanian Post', 'Courier', 'Personal' ]}
-							renderTags={(value, getTagProps) =>
-								value.map((option, index) => (
-									<Chip size="small" label={option} {...getTagProps({ index })} />
-								))}
-							renderInput={(params) => (
-								<Input
-									{...params}
-									inputProps={{
-										...params.inputProps,
-										required : shipPreffered.length === 0
-									}}
-									label="Preferred shipping methods"
-									placeholder={'Select prefered shipping methods'}
-									name="pref-shipping"
-								/>
-							)}
-						/>
-					</Grid>
+					<Autocomplete
+						multiple
+						filterSelectedOptions
+						value={data.shipPreffered}
+						onChange={(e, selected) => setShipPreffered(selected)}
+						limitTags={2}
+						options={[ 'Romanian Post', 'Courier', 'Personal', 'Fake' ]}
+						renderTags={(value, getTagProps) =>
+							value.map((option, index) => (
+								<Chip size="small" label={option} {...getTagProps({ index })} />
+							))}
+						renderInput={(params) => (
+							<Input
+								{...params}
+								inputProps={{
+									...params.inputProps,
+									required : shipPreffered.length === 0
+								}}
+								label="Preferred shipping methods"
+								placeholder={'Select prefered shipping methods'}
+								name="pref-shipping"
+							/>
+						)}
+					/>
 
 					<Box display="flex">
-						<Button type="submit" variant="contained" color="primary">
-							Add games
-						</Button>
+						<LoadingBtn
+							type="submit"
+							variant="contained"
+							color="primary"
+							loading={mutation.isLoading}
+							fullWidth
+						>
+							Add wanted games
+						</LoadingBtn>
 					</Box>
 				</Fragment>
 			)}
