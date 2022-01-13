@@ -8,6 +8,7 @@ import Zoom from 'react-medium-image-zoom'
 import { useInView } from 'react-intersection-observer'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
+import approx from 'approximate-number'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -27,6 +28,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
 import Collapse from '@mui/material/Collapse'
+import Skeleton from '@mui/material/Skeleton'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -93,6 +95,14 @@ const StyledDialogImg = styled('img')({
 	objectFit : 'contain'
 })
 
+const StyledRecImg = styled('img')({
+	verticalAlign : 'bottom',
+	objectFit     : 'cover',
+	maxWidth      : 60,
+	height        : 60,
+	borderRadius  : '8px'
+})
+
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
 	WebkitLineClamp : '1',
@@ -101,6 +111,17 @@ const StyledTitleBox = styled(Box)({
 	width           : '100%',
 	fontSize        : 14
 })
+
+// @ Gallery skeleton
+const GallerySkeleton = () => {
+	return (
+		<Grid item xs={6} sm={4} md={3}>
+			<Box borderRadius="8px" boxShadow={1} p={2} bgcolor="background.paper" width="100%">
+				<Skeleton animation="wave" variant="rectangular" width="100%" height={150} />
+			</Box>
+		</Grid>
+	)
+}
 
 // @ Main
 const SingleGameScreen = () => {
@@ -583,27 +604,33 @@ const SingleGameScreen = () => {
 							</Fragment>
 						)}
 
+						{isLoadingGallery && (
+							<Grid container spacing={1}>
+								{[ ...Array(8).keys() ].map((i, k) => <GallerySkeleton />)}
+							</Grid>
+						)}
+
 						{isSuccessGallery &&
 						galleryData[index].length > 0 && (
 							<Box>
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 									<Masonry gutter="10px">
 										{galleryData[index].map((obj, i) => (
-											<Box
-												key={obj.imageid}
-												borderRadius="8px"
-												boxShadow={1}
-												p={1}
-												bgcolor="background.paper"
-											>
-												<LzLoad>
+											<LzLoad>
+												<Box
+													key={obj.imageid}
+													borderRadius="8px"
+													boxShadow={1}
+													p={1}
+													bgcolor="background.paper"
+												>
 													<StyledMasonryImg
 														onClick={() => handleOpenImage(i)}
 														src={obj.thumbnail}
 														alt={obj.caption}
 													/>
-												</LzLoad>
-											</Box>
+												</Box>
+											</LzLoad>
 										))}
 									</Masonry>
 								</ResponsiveMasonry>
@@ -722,17 +749,7 @@ const SingleGameScreen = () => {
 													target="_blank"
 													rel="noreferrer"
 												>
-													<img
-														style={{
-															verticalAlign : 'bottom',
-															objectFit     : 'cover',
-															maxWidth      : 60,
-															height        : 60,
-															borderRadius  : '8px'
-														}}
-														src={rec.thumbnail}
-														alt={rec.title}
-													/>
+													<StyledRecImg src={rec.thumbnail} alt={rec.title} />
 												</a>
 											</LzLoad>
 
@@ -757,7 +774,7 @@ const SingleGameScreen = () => {
 														color="grey.500"
 													>
 														<StarPurple500Icon color="primary" fontSize="small" />
-														{rec.stats.avgRating}
+														{approx(rec.stats.avgRating)}
 													</Box>
 
 													<Box
@@ -777,6 +794,10 @@ const SingleGameScreen = () => {
 									</Grid>
 								))}
 						</Grid>
+
+						{isSuccessRec &&
+						recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
+
 						<Box display="flex" justifyContent="flex-end" mt={1}>
 							<Button onClick={() => setExpanded((expanded) => !expanded)}>
 								{expanded ? 'See less' : 'See more'}

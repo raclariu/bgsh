@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider'
 // @ Main
 const GameIndexCardSkeleton = () => {
 	return (
-		<Grid item md={4} sm={6} xs={12}>
+		<Grid item md={4} sm={6} xs={12} sx={{ width: '100%' }}>
 			<Box
 				display="flex"
 				flexDirection="column"
