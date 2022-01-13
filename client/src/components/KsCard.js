@@ -60,13 +60,13 @@ const KsCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
 					<CustomTooltip title="See on Kickstarter">
-						<Button color="primary" href={`${data.url}`} target="_blank" rel="noopener">
+						<Button color="primary" href={`${data.url}`} target="_blank" rel="noreferrer">
 							Page
 						</Button>
 					</CustomTooltip>
 
 					<CustomTooltip title="Rewards page">
-						<Button color="primary" href={`${data.url}/rewards`} target="_blank" rel="noopener">
+						<Button color="primary" href={`${data.url}/rewards`} target="_blank" rel="noreferrer">
 							Rewards
 						</Button>
 					</CustomTooltip>

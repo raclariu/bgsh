@@ -75,7 +75,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
 							target="_blank"
-							rel="noopener"
+							rel="noreferrer"
 						>
 							BGG
 						</Button>

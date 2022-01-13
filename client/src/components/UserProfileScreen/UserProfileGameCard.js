@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 
 // @ Mui
@@ -22,38 +22,34 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CustomTooltip from '../CustomTooltip'
 import GameDetailsButton from '../GameDetailsButton'
 
-const PREFIX = 'UserProfileGameCard';
+const PREFIX = 'UserProfileGameCard'
 
 const classes = {
-    card: `${PREFIX}-card`,
-    media: `${PREFIX}-media`,
-    overlayTop: `${PREFIX}-overlayTop`,
-    title: `${PREFIX}-title`
-};
+	card       : `${PREFIX}-card`,
+	media      : `${PREFIX}-media`,
+	overlayTop : `${PREFIX}-overlayTop`,
+	title      : `${PREFIX}-title`
+}
 
-const StyledCard = styled(Card)((
-    {
-        theme
-    }
-) => ({
-    [`&.${classes.card}`]: {
+const StyledCard = styled(Card)(({ theme }) => ({
+	[`&.${classes.card}`]: {
 		position : 'relative'
 	},
 
-    [`& .${classes.media}`]: {
+	[`& .${classes.media}`]: {
 		margin    : theme.spacing(1, 0, 1, 0),
 		padding   : theme.spacing(0, 1, 0, 1),
 		objectFit : 'contain',
 		height    : '180px'
 	},
 
-    [`& .${classes.overlayTop}`]: {
+	[`& .${classes.overlayTop}`]: {
 		position : 'absolute',
 		top      : '8px',
 		left     : '8px'
 	},
 
-    [`& .${classes.title}`]: {
+	[`& .${classes.title}`]: {
 		display         : '-webkit-box',
 		WebkitLineClamp : '2',
 		WebkitBoxOrient : 'vertical',
@@ -61,12 +57,10 @@ const StyledCard = styled(Card)((
 		width           : '100%',
 		textAlign       : 'center'
 	}
-}));
+}))
 
 // @ Main
 const UserProfileGameCard = ({ data }) => {
-
-
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -83,7 +77,7 @@ const UserProfileGameCard = ({ data }) => {
 	}
 
 	return (
-        <StyledCard className={classes.card} elevation={1}>
+		<StyledCard className={classes.card} elevation={1}>
 			<CardMedia
 				className={classes.media}
 				component="img"
@@ -146,7 +140,7 @@ const UserProfileGameCard = ({ data }) => {
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
 							target="_blank"
-							rel="noopener"
+							rel="noreferrer"
 						>
 							BGG
 						</Button>
@@ -156,7 +150,7 @@ const UserProfileGameCard = ({ data }) => {
 				</Box>
 			</CardActions>
 		</StyledCard>
-    );
+	)
 }
 
 export default UserProfileGameCard

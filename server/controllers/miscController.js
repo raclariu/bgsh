@@ -99,7 +99,17 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 					votes  : +game.statistics.ratings.numweights.value
 				},
 				parent             :
-					game.type === 'boardgameexpansion' && game.link.find((obj) => obj.inbound && obj.inbound === 'true')
+					game.type === 'boardgameexpansion'
+						? game.link.filter((link) => link.inbound && link.inbound === 'true').map((parent) => {
+								return { bggId: parent.id, title: parent.value }
+							})
+						: [],
+				expansions         :
+					game.type === 'boardgame'
+						? game.link.filter((link) => link.type === 'boardgameexpansion').map((exp) => {
+								return { bggId: exp.id, title: exp.value }
+							})
+						: []
 			}
 
 			gamesArr.push(item)
@@ -246,6 +256,46 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 	}
 })
 
+// ~ @desc    Get BGG "fans also like"
+// ~ @route   GET  /api/misc/bgg/reccomendations
+// ~ @access  Public route
+const getBggReccomendations = asyncHandler(async (req, res) => {
+	try {
+		const { bggId } = req.query
+		console.log(bggId)
+		const { data } = await axios.get('https://api.geekdo.com/api/geekitem/recs', {
+			params : {
+				ajax       : 1,
+				objectid   : bggId,
+				objecttype : 'thing',
+				pageid     : 1
+			}
+		})
+
+		const recArr = []
+		for (let rec of data.recs) {
+			const { item, image, rating, rank, yearpublished: year } = rec
+			const { id: bggId, name: title } = item
+			const { src: thumbnail } = image
+			recArr.push({
+				bggId,
+				title,
+				thumbnail,
+				stats     : { avgRating: +parseFloat(rating).toFixed(2), rank },
+				year      : +year
+			})
+		}
+
+		res.status(200).json(recArr)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
 // ~ @desc    Get all kickstarters
 // ~ @route   GET  /api/misc/kickstarters
 // ~ @access  Public route
@@ -262,4 +312,4 @@ const getKickstarters = asyncHandler(async (req, res) => {
 	res.status(200).json(kickstarters)
 })
 
-export { bggGetGamesDetails, bggGetHotGamesList, bggGetGallery, bggSearchGame, getKickstarters }
+export { bggGetGamesDetails, bggGetHotGamesList, bggGetGallery, bggSearchGame, getKickstarters, getBggReccomendations }

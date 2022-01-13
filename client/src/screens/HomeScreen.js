@@ -134,7 +134,7 @@ const HomeScreen = () => {
 				<Button
 					href={`https://www.kickstarter.com/discover/advanced?category_id=34&sort=popularity`}
 					target="_blank"
-					rel="noopener"
+					rel="noreferrer"
 					variant="outlined"
 					size="small"
 					color="inherit"
@@ -181,7 +181,7 @@ const HomeScreen = () => {
 				<Button
 					href={`https://reddit.com/r/boardgames`}
 					target="_blank"
-					rel="noopener"
+					rel="noreferrer"
 					variant="outlined"
 					size="small"
 					color="inherit"
@@ -244,7 +244,7 @@ const HomeScreen = () => {
 												color="primary"
 												href={`https://reddit.com/${data.permalink}`}
 												target="_blank"
-												rel="noopener"
+												rel="noreferrer"
 												size="small"
 											>
 												See on Reddit

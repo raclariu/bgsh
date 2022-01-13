@@ -190,7 +190,7 @@ const SavedGameCard = ({ data }) => {
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
 							target="_blank"
-							rel="noopener"
+							rel="noreferrer"
 						>
 							BGG
 						</Button>

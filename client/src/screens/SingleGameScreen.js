@@ -1,7 +1,7 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Zoom from 'react-medium-image-zoom'
@@ -26,6 +26,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
+import Collapse from '@mui/material/Collapse'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -43,6 +44,9 @@ import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CloseIcon from '@mui/icons-material/Close'
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
+import StarPurple500Icon from '@mui/icons-material/StarPurple500'
+import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
 
 // @ Components
 import Chips from '../components/SingleGameScreen/Chips'
@@ -57,7 +61,7 @@ import CustomTooltip from '../components/CustomTooltip'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiFetchSingleGame, apiFetchGallery } from '../api/api'
+import { apiFetchSingleGame, apiFetchGallery, apiFetchRecommendations } from '../api/api'
 
 const StyledChipsBox = styled(Box)(({ theme }) => ({
 	display        : 'flex',
@@ -79,7 +83,8 @@ const StyledMasonryImg = styled('img')({
 	maxHeight     : '100%',
 	width         : '100%',
 	objectFit     : 'contain',
-	cursor        : 'zoom-in'
+	cursor        : 'zoom-in',
+	borderRadius  : '8px'
 })
 
 const StyledDialogImg = styled('img')({
@@ -88,11 +93,36 @@ const StyledDialogImg = styled('img')({
 	objectFit : 'contain'
 })
 
+const StyledTitleBox = styled(Box)({
+	display         : '-webkit-box',
+	WebkitLineClamp : '1',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	fontSize        : 14
+})
+
 // @ Main
 const SingleGameScreen = () => {
 	const params = useParams()
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
+
+	const { ref: galleryRef, inView: galleryInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
+	const { ref: recsRef, inView: recsInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
+	const [ index, setIndex ] = useState(0)
+	const [ imgIndex, setImgIndex ] = useState(0)
+	const [ open, setOpen ] = useState(false)
+	const [ imgLoaded, setImgLoaded ] = useState(false)
+	const [ expanded, setExpanded ] = useState(false)
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'singleGame', altId ],
@@ -101,13 +131,6 @@ const SingleGameScreen = () => {
 			staleTime : 1000 * 60 * 3
 		}
 	)
-
-	const { ref: galleryRef, inView: galleryInView } = useInView({
-		threshold   : 0,
-		triggerOnce : true
-	})
-
-	console.log(galleryInView)
 
 	const {
 		isLoading : isLoadingGallery,
@@ -128,10 +151,26 @@ const SingleGameScreen = () => {
 		}
 	)
 
-	const [ index, setIndex ] = useState(0)
-	const [ imgIndex, setImgIndex ] = useState(0)
-	const [ open, setOpen ] = useState(false)
-	const [ imgLoaded, setImgLoaded ] = useState(false)
+	const {
+		isLoading : isLoadingRecs,
+		isError   : isErrorRecs,
+		error     : errorRecs,
+		data      : recData,
+		isSuccess : isSuccessRec,
+		refetch   : refetchRecs
+	} = useQuery(
+		[ 'recommendations', { altId, index } ],
+		() => {
+			const currBggId = data.games[index].bggId
+			return apiFetchRecommendations(currBggId)
+		},
+		{
+			enabled              : isSuccess && recsInView,
+			staleTime            : 1000 * 60 * 60,
+			refetchOnWindowFocus : false,
+			keepPreviousData     : true
+		}
+	)
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -416,240 +455,336 @@ const SingleGameScreen = () => {
 					<Divider light />
 
 					{/* Shipping */}
-					<Box display="flex" alignItems="center">
-						<LocalShippingTwoToneIcon color="primary" fontSize="small" />
-						<Box ml={1} fontSize="1rem">
-							Shipping
-						</Box>
-					</Box>
-					<Grid container>
-						<Grid item container xs={12} direction="column">
-							<Box p={1}>
-								<Typography component="div">
-									{data.shipPost ? (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<MarkunreadMailboxTwoToneIcon color="primary" />
-											<Box
-												fontSize={16}
-												textAlign="center"
-												mt={1}
-											>{`Shipping by post is available, paid by ${data.shipPostPayer}`}</Box>
-										</Box>
-									) : (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<CancelRoundedIcon fontSize="small" color="error" />
-											<Box fontSize={16} textAlign="center" mt={1}>
-												Shipping by post is not available
-											</Box>
-										</Box>
-									)}
-
-									{data.shipCourier ? (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<LocalShippingTwoToneIcon color="primary" />
-											<Box
-												fontSize={16}
-												textAlign="center"
-												mt={1}
-											>{`Shipping by courier is available, paid by ${data.shipCourierPayer}`}</Box>
-										</Box>
-									) : (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<CancelRoundedIcon color="error" />
-											<Box fontSize={16} textAlign="center" mt={1}>
-												Shipping by courier is not available
-											</Box>
-										</Box>
-									)}
-
-									{data.shipPersonal ? (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<LocalLibraryTwoToneIcon color="primary" />
-											<Box fontSize={16} textAlign="center" mt={1}>
-												Personal shipping is available in
-											</Box>
-											<StyledChipsBox>
-												{data.shipCities.map((city, index) => (
-													<Chip
-														key={city}
-														icon={<RoomTwoToneIcon />}
-														size="small"
-														color="primary"
-														variant="outlined"
-														label={city}
-													/>
-												))}
-											</StyledChipsBox>
-										</Box>
-									) : (
-										<Box
-											display="flex"
-											flexDirection="column"
-											justifyContent="center"
-											alignItems="center"
-										>
-											<CancelRoundedIcon color="error" />
-											<Box fontSize={16} textAlign="center" mt={1}>
-												No personal shipping
-											</Box>
-										</Box>
-									)}
-								</Typography>
+					<Box id="shipping" mt={2} mb={4}>
+						<Box display="flex" alignItems="center" mb={1}>
+							<LocalShippingTwoToneIcon color="primary" />
+							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
+								Shipping
 							</Box>
+						</Box>
+						<Grid container>
+							<Grid item container xs={12} direction="column">
+								<Box p={1}>
+									<Typography component="div">
+										{data.shipPost ? (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<MarkunreadMailboxTwoToneIcon color="primary" />
+												<Box
+													fontSize={16}
+													textAlign="center"
+													mt={1}
+												>{`Shipping by post is available, paid by ${data.shipPostPayer}`}</Box>
+											</Box>
+										) : (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<CancelRoundedIcon fontSize="small" color="error" />
+												<Box fontSize={16} textAlign="center" mt={1}>
+													Shipping by post is not available
+												</Box>
+											</Box>
+										)}
+
+										{data.shipCourier ? (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<LocalShippingTwoToneIcon color="primary" />
+												<Box
+													fontSize={16}
+													textAlign="center"
+													mt={1}
+												>{`Shipping by courier is available, paid by ${data.shipCourierPayer}`}</Box>
+											</Box>
+										) : (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<CancelRoundedIcon color="error" />
+												<Box fontSize={16} textAlign="center" mt={1}>
+													Shipping by courier is not available
+												</Box>
+											</Box>
+										)}
+
+										{data.shipPersonal ? (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<LocalLibraryTwoToneIcon color="primary" />
+												<Box fontSize={16} textAlign="center" mt={1}>
+													Personal shipping is available in
+												</Box>
+												<StyledChipsBox>
+													{data.shipCities.map((city, index) => (
+														<Chip
+															key={city}
+															icon={<RoomTwoToneIcon />}
+															size="small"
+															color="primary"
+															variant="outlined"
+															label={city}
+														/>
+													))}
+												</StyledChipsBox>
+											</Box>
+										) : (
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+											>
+												<CancelRoundedIcon color="error" />
+												<Box fontSize={16} textAlign="center" mt={1}>
+													No personal shipping
+												</Box>
+											</Box>
+										)}
+									</Typography>
+								</Box>
+							</Grid>
 						</Grid>
-					</Grid>
+					</Box>
 
 					<Divider light />
 
-					<Box ref={galleryRef} display="flex" alignItems="center" mt={2}>
-						{isLoadingGallery ? (
-							<Loader size={20} />
-						) : (
-							<ImageTwoToneIcon color="primary" fontSize="small" />
+					{/* Gallery */}
+					<Box id="gallery" mt={2} mb={4}>
+						<Box ref={galleryRef} display="flex" alignItems="center" mb={1}>
+							{isLoadingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" />}
+
+							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
+								Gallery
+							</Box>
+						</Box>
+
+						{isErrorGallery && (
+							<Fragment>
+								<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
+							</Fragment>
 						)}
 
-						<Box ml={1} fontSize="1rem">
-							Gallery
-						</Box>
+						{isSuccessGallery &&
+						galleryData[index].length > 0 && (
+							<Box>
+								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
+									<Masonry gutter="10px">
+										{galleryData[index].map((obj, i) => (
+											<Box
+												key={obj.imageid}
+												borderRadius="8px"
+												boxShadow={1}
+												p={1}
+												bgcolor="background.paper"
+											>
+												<LzLoad>
+													<StyledMasonryImg
+														onClick={() => handleOpenImage(i)}
+														src={obj.thumbnail}
+														alt={obj.caption}
+													/>
+												</LzLoad>
+											</Box>
+										))}
+									</Masonry>
+								</ResponsiveMasonry>
+
+								<Dialog
+									fullScreen
+									open={open}
+									TransitionComponent={Slide}
+									transitionDuration={350}
+									TransitionProps={{ direction: 'up' }}
+								>
+									<DialogTitle>
+										<Box display="flex" alignItems="center">
+											<Box display="flex" flexDirection="column" flexGrow={1} gap={0.5}>
+												<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
+												<Box fontSize="0.75rem" color="grey.500">
+													{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
+												</Box>
+											</Box>
+											<IconButton onClick={handleCloseImage} color="secondary" size="large">
+												<CloseIcon />
+											</IconButton>
+										</Box>
+									</DialogTitle>
+
+									<DialogContent
+										dividers
+										sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+									>
+										<StyledDialogImg
+											alt={galleryData[index][imgIndex].caption}
+											src={galleryData[index][imgIndex].image}
+											hidden={!imgLoaded}
+											onLoad={onImgLoad}
+										/>
+
+										{!imgLoaded && (
+											<Box p={10} display="flex" justifyContent="center" alignItems="center">
+												<Loader />
+											</Box>
+										)}
+									</DialogContent>
+
+									<DialogActions>
+										<Box width="100%" display="flex" alignItems="center">
+											<Box flexGrow={1}>
+												<CustomTooltip title="Previous image">
+													<IconButton
+														disabled={imgIndex === 0}
+														color="primary"
+														onClick={() => cycleImages('back')}
+														size="large"
+													>
+														<ArrowBackIcon />
+													</IconButton>
+												</CustomTooltip>
+												<CustomTooltip title="Next image">
+													<IconButton
+														disabled={galleryData[index].length === imgIndex + 1}
+														color="primary"
+														onClick={() => cycleImages('forward')}
+														size="large"
+													>
+														<ArrowForwardIcon />
+													</IconButton>
+												</CustomTooltip>
+											</Box>
+
+											<Button
+												color="primary"
+												variant="outlined"
+												href={`https://boardgamegeek.com${galleryData[index][imgIndex]
+													.extLink}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												See on BGG
+											</Button>
+										</Box>
+									</DialogActions>
+								</Dialog>
+							</Box>
+						)}
+
+						{isSuccessGallery &&
+						galleryData[index].length === 0 && (
+							<CustomAlert severity="warning">No images found</CustomAlert>
+						)}
 					</Box>
 
-					{isErrorGallery && (
-						<Fragment>
-							<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
-						</Fragment>
-					)}
+					<Divider light />
 
-					{isSuccessGallery &&
-					galleryData[index].length > 0 && (
-						<Box>
-							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
-								<Masonry gutter="10px">
-									{galleryData[index].map((obj, i) => (
+					{/* Recommendations */}
+					<Box id="recommendations" mt={2} mb={4}>
+						<Box ref={recsRef} display="flex" alignItems="center" mb={1}>
+							{isLoadingRecs ? <Loader size={20} /> : <RecommendTwoToneIcon color="primary" />}
+
+							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
+								Recommendations
+							</Box>
+						</Box>
+						<Grid container spacing={1}>
+							{isSuccessRec &&
+								recData.slice(0, !expanded ? 12 : 30).map((rec) => (
+									<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
 										<Box
-											key={obj.imageid}
+											p={1}
+											display="flex"
+											boxShadow={1}
 											borderRadius="4px"
-											boxShadow={2}
-											p={1.5}
 											bgcolor="background.paper"
 										>
 											<LzLoad>
-												<StyledMasonryImg
-													onClick={() => handleOpenImage(i)}
-													src={obj.thumbnail}
-													alt={obj.caption}
-												/>
+												<a
+													href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
+													target="_blank"
+													rel="noreferrer"
+												>
+													<img
+														style={{
+															verticalAlign : 'bottom',
+															objectFit     : 'cover',
+															maxWidth      : 60,
+															height        : 60,
+															borderRadius  : '8px'
+														}}
+														src={rec.thumbnail}
+														alt={rec.title}
+													/>
+												</a>
 											</LzLoad>
-										</Box>
-									))}
-								</Masonry>
-							</ResponsiveMasonry>
 
-							<Dialog
-								fullScreen
-								open={open}
-								TransitionComponent={Slide}
-								transitionDuration={350}
-								TransitionProps={{ direction: 'up' }}
-							>
-								<DialogTitle>
-									<Box display="flex" alignItems="center">
-										<Box display="flex" flexDirection="column" flexGrow={1} gap={0.5}>
-											<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
-											<Box fontSize="0.75rem" color="grey.500">
-												{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												ml={1}
+												width="100%"
+												gap={0.5}
+											>
+												<StyledTitleBox fontWeight="fontWeightMedium">
+													{rec.title}
+												</StyledTitleBox>
+												<Box display="flex" gap={1}>
+													<Box
+														display="flex"
+														alignItems="center"
+														gap={0.25}
+														fontWeight="fontWeightMedium"
+														fontSize={14}
+														color="grey.500"
+													>
+														<StarPurple500Icon color="primary" fontSize="small" />
+														{rec.stats.avgRating}
+													</Box>
+
+													<Box
+														display="flex"
+														alignItems="center"
+														gap={0.25}
+														fontWeight="fontWeightMedium"
+														fontSize={14}
+														color="grey.500"
+													>
+														<MilitaryTechIcon color="primary" fontSize="small" />
+														{rec.stats.rank}
+													</Box>
+												</Box>
 											</Box>
 										</Box>
-										<IconButton onClick={handleCloseImage} color="secondary" size="large">
-											<CloseIcon />
-										</IconButton>
-									</Box>
-								</DialogTitle>
-
-								<DialogContent
-									dividers
-									sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-								>
-									<StyledDialogImg
-										alt={galleryData[index][imgIndex].caption}
-										src={galleryData[index][imgIndex].image}
-										hidden={!imgLoaded}
-										onLoad={onImgLoad}
-									/>
-
-									{!imgLoaded && (
-										<Box p={10} display="flex" justifyContent="center" alignItems="center">
-											<Loader />
-										</Box>
-									)}
-								</DialogContent>
-
-								<DialogActions>
-									<Box width="100%" display="flex" alignItems="center">
-										<Box flexGrow={1}>
-											<CustomTooltip title="Previous image">
-												<IconButton
-													disabled={imgIndex === 0}
-													color="primary"
-													onClick={() => cycleImages('back')}
-													size="large"
-												>
-													<ArrowBackIcon />
-												</IconButton>
-											</CustomTooltip>
-											<CustomTooltip title="Next image">
-												<IconButton
-													disabled={galleryData[index].length === imgIndex + 1}
-													color="primary"
-													onClick={() => cycleImages('forward')}
-													size="large"
-												>
-													<ArrowForwardIcon />
-												</IconButton>
-											</CustomTooltip>
-										</Box>
-
-										<Button
-											color="primary"
-											variant="outlined"
-											href={`https://boardgamegeek.com${galleryData[index][imgIndex].extLink}`}
-											target="_blank"
-											rel="noopener"
-										>
-											See on BGG
-										</Button>
-									</Box>
-								</DialogActions>
-							</Dialog>
+									</Grid>
+								))}
+						</Grid>
+						<Box display="flex" justifyContent="flex-end" mt={1}>
+							<Button onClick={() => setExpanded((expanded) => !expanded)}>
+								{expanded ? 'See less' : 'See more'}
+							</Button>
 						</Box>
-					)}
+					</Box>
 
-					{isSuccessGallery &&
-					galleryData[index].length === 0 && <CustomAlert severity="warning">No images found</CustomAlert>}
+					{console.count('renders')}
 
 					<Divider light />
 

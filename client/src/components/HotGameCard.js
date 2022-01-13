@@ -68,7 +68,7 @@ const HotGameCard = ({ data }) => {
 							color="primary"
 							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
 							target="_blank"
-							rel="noopener"
+							rel="noreferrer"
 						>
 							BGG
 						</Button>
