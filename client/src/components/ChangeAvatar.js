@@ -50,7 +50,7 @@ const FileInput = styled('input')({
 const ChangeAvatar = () => {
 	const dispatch = useDispatch()
 
-	const { userData } = useSelector((state) => state.userAuth)
+	const userAvatar = useSelector((state) => state.userAuth.userData.avatar)
 
 	const ref = useRef()
 	const [ image, setImage ] = useState(null)
@@ -65,6 +65,10 @@ const ChangeAvatar = () => {
 			setImage(null)
 			dispatch(changeAvatar(data.avatar))
 			showSnackbar.success({ text: 'Avatar changed successfully' })
+		},
+		onError   : (error) => {
+			console.log(error.response)
+			showSnackbar.error({ text: `${error.response.data.message}` })
 		}
 	})
 
@@ -101,7 +105,6 @@ const ChangeAvatar = () => {
 	}
 
 	const handleSubmit = (e) => {
-		e.preventDefault()
 		ref.current.getImageScaledToCanvas().toBlob(
 			(blob) => {
 				if (blob.size > 102400) {
@@ -120,7 +123,7 @@ const ChangeAvatar = () => {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} autoComplete="off">
+		<Fragment>
 			<label htmlFor="avatar">
 				<FileInput
 					accept="image/*"
@@ -130,7 +133,7 @@ const ChangeAvatar = () => {
 					onChange={handleImageChange}
 					onClick={(e) => (e.target.value = null)}
 				/>
-				<MyAvatar src={userData.avatar}>
+				<MyAvatar src={userAvatar}>
 					<PhotoCameraIcon fontSize="large" />
 				</MyAvatar>
 			</label>
@@ -159,12 +162,12 @@ const ChangeAvatar = () => {
 					</Box>
 				</DialogContent>
 				<DialogActions>
-					<LoadingBtn type="submit" variant="outlined" color="primary" loading={mutation.isLoading}>
+					<LoadingBtn onClick={handleSubmit} variant="outlined" color="primary" loading={mutation.isLoading}>
 						Change avatar
 					</LoadingBtn>
 				</DialogActions>
 			</Dialog>
-		</form>
+		</Fragment>
 	)
 }
 

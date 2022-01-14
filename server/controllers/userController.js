@@ -4,6 +4,8 @@ import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
+import gcsStorage from '../helpers/gcs.js'
+import sharp from 'sharp'
 
 // * @desc    Sign in user & get token
 // * @route   POST  /api/users/signin
@@ -103,13 +105,41 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @desc    Change avatar
 // * @route   POST  /api/users/avatar
 // * @access  Private route
-const changeAvatar = asyncHandler(async (req, res) => {
+const changeAvatar = asyncHandler(async (req, res, err) => {
+	if (!req.file) {
+		res.status(422)
+		throw {
+			message : `Only images are allowed`
+		}
+	}
 	console.log('inside ctrl', req.file)
-	const user = await User.findById({ _id: req.user._id }).select('_id avatar')
-	user.avatar = req.file.filename
-	user.save()
+	const sharpBuffer = await sharp(req.file.buffer).resize(100).grayscale().toBuffer()
 
-	return res.status(200).json({ avatar: req.file.filename })
+	const bucket = gcsStorage.bucket('bgsh-avatars')
+	const name = `${Date.now()}-${req.file.originalname}`
+
+	const file = bucket.file(name)
+
+	const stream = file.createWriteStream({
+		metadata : {
+			contentType : req.file.mimetype
+		}
+	})
+
+	stream.on('error', (err) => {
+		console.log(err)
+	})
+
+	stream.on('finish', async () => {
+		await file.makePublic()
+		const user = await User.findById({ _id: req.user._id }).select('_id avatar')
+		user.avatar = `https://storage.googleapis.com/bgsh-avatars/${name}`
+		user.save()
+		console.log('done @ ', `https://storage.googleapis.com/bgsh-avatars/${name}`)
+		return res.status(200).json({ avatar: `https://storage.googleapis.com/bgsh-avatars/${name}` })
+	})
+
+	stream.end(sharpBuffer)
 })
 
 // ~ @desc    Get single user profile data
