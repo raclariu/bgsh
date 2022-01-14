@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
-import { uploadAvatar } from '../middlewares/multerMiddleware.js'
+import { uploadAvatar, resizeImage } from '../middlewares/multerMiddleware.js'
 import {
 	userAuth,
 	userRegister,
@@ -23,6 +23,6 @@ router.route('/notifications').get([ protect ], getNotifications)
 router.route('/signup').post(validateSignUp, userRegister)
 router.route('/password').post([ protect, ...validatePasswordChange ], changePassword)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
-router.route('/avatar').post([ protect, uploadAvatar ], changeAvatar)
+router.route('/avatar').post([ protect, uploadAvatar, resizeImage ], changeAvatar)
 
 export default router

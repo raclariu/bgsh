@@ -5,7 +5,6 @@ import Game from '../models/gameModel.js'
 import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 import gcsStorage from '../helpers/gcs.js'
-import sharp from 'sharp'
 
 // * @desc    Sign in user & get token
 // * @route   POST  /api/users/signin
@@ -105,15 +104,15 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @desc    Change avatar
 // * @route   POST  /api/users/avatar
 // * @access  Private route
-const changeAvatar = asyncHandler(async (req, res, err) => {
-	if (!req.file) {
-		res.status(422)
-		throw {
-			message : `Only images are allowed`
-		}
-	}
-	console.log('inside ctrl', req.file)
-	const sharpBuffer = await sharp(req.file.buffer).resize(100).grayscale().toBuffer()
+const changeAvatar = asyncHandler(async (req, res) => {
+	// if (!req.file) {
+	// 	res.status(422)
+	// 	throw {
+	// 		message : `Only images are allowed`
+	// 	}
+	// }
+
+	// console.log('inside ctrl', req.file)
 
 	const bucket = gcsStorage.bucket('bgsh-avatars')
 	const name = `${Date.now()}-${req.file.originalname}`
@@ -139,7 +138,7 @@ const changeAvatar = asyncHandler(async (req, res, err) => {
 		return res.status(200).json({ avatar: `https://storage.googleapis.com/bgsh-avatars/${name}` })
 	})
 
-	stream.end(sharpBuffer)
+	stream.end(req.file.buffer)
 })
 
 // ~ @desc    Get single user profile data

@@ -112,7 +112,6 @@ const GamesIndexScreen = () => {
 					data.gamesData.map((data) => (
 						<Grid item key={data._id} md={4} sm={6} xs={12}>
 							<LzLoad
-								offset={-600}
 								placeholder={
 									<Box width="100%">
 										<GameIndexCardSkeleton />
