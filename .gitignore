@@ -16,3 +16,4 @@ yarn-error.log*
 .npm/
 yarn.lock
 server/public
+server/config

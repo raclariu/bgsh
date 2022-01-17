@@ -55,7 +55,7 @@ const checkFileType = (file, cb) => {
 	}
 }
 
-const resizeImage = asyncHandler(async (req, res, next) => {
+const resizeAvatar = asyncHandler(async (req, res, next) => {
 	try {
 		const sharpBuffer = await sharp(req.file.buffer).resize(100).toBuffer()
 		req.file.buffer = sharpBuffer
@@ -67,4 +67,4 @@ const resizeImage = asyncHandler(async (req, res, next) => {
 	}
 })
 
-export { uploadAvatar, resizeImage }
+export { uploadAvatar, resizeAvatar }

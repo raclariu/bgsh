@@ -4,7 +4,8 @@ import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
-import gcsStorage from '../helpers/gcs.js'
+import storage from '../helpers/storage.js'
+import { genNanoId } from '../helpers/helpers.js'
 
 // * @desc    Sign in user & get token
 // * @route   POST  /api/users/signin
@@ -105,40 +106,37 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @route   POST  /api/users/avatar
 // * @access  Private route
 const changeAvatar = asyncHandler(async (req, res) => {
-	// if (!req.file) {
-	// 	res.status(422)
-	// 	throw {
-	// 		message : `Only images are allowed`
-	// 	}
-	// }
-
-	// console.log('inside ctrl', req.file)
-
-	const bucket = gcsStorage.bucket('bgsh-avatars')
-	const name = `${Date.now()}-${req.file.originalname}`
-
-	const file = bucket.file(name)
+	const bucket = storage.bucket('avt_yz5cquiskvhqaztjc9ew54')
+	const fileName = genNanoId(15)
+	const file = bucket.file(fileName)
 
 	const stream = file.createWriteStream({
-		metadata : {
-			contentType : req.file.mimetype
+		resumable : false,
+		metadata  : {
+			contentType  : req.file.mimetype,
+			cacheControl : 'public, max-age=31536000'
 		}
 	})
 
-	stream.on('error', (err) => {
-		console.log(err)
-	})
+	stream
+		.on('error', (err) => {
+			console.log(err)
+		})
+		.on('finish', async () => {
+			await file.makePublic()
+			const publicUrl = `https://storage.googleapis.com/${file.metadata.bucket}/${file.metadata.name}`
+			const user = await User.findById({ _id: req.user._id }).select('_id avatar')
+			if (user.avatar) {
+				const extractName = user.avatar.split('/').pop()
+				await bucket.file(extractName).delete({ ignoreNotFound: true })
+			}
+			user.avatar = publicUrl
+			user.save()
+			console.log('done, see @ ', publicUrl)
 
-	stream.on('finish', async () => {
-		await file.makePublic()
-		const user = await User.findById({ _id: req.user._id }).select('_id avatar')
-		user.avatar = `https://storage.googleapis.com/bgsh-avatars/${name}`
-		user.save()
-		console.log('done @ ', `https://storage.googleapis.com/bgsh-avatars/${name}`)
-		return res.status(200).json({ avatar: `https://storage.googleapis.com/bgsh-avatars/${name}` })
-	})
-
-	stream.end(req.file.buffer)
+			return res.status(200).json({ avatar: publicUrl })
+		})
+		.end(req.file.buffer)
 })
 
 // ~ @desc    Get single user profile data
