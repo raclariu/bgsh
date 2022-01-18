@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import { protect } from '../middlewares/authMiddleware.js'
-import { uploadAvatar, resizeAvatar } from '../middlewares/multerMiddleware.js'
+import { uploadAvatar, resizeAvatar } from '../middlewares/imagesMiddleware.js'
 import {
 	userAuth,
 	userRegister,

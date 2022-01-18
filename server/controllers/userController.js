@@ -106,37 +106,35 @@ const changePassword = asyncHandler(async (req, res) => {
 // * @route   POST  /api/users/avatar
 // * @access  Private route
 const changeAvatar = asyncHandler(async (req, res) => {
-	const bucket = storage.bucket('avt_yz5cquiskvhqaztjc9ew54')
-	const fileName = genNanoId(15)
-	const file = bucket.file(fileName)
+	try {
+		const fileName = genNanoId(15)
+		const bucket = storage.bucket('avt_yz5cquiskvhqaztjc9ew54')
+		const file = bucket.file(`${fileName}.webp`)
 
-	const stream = file.createWriteStream({
-		resumable : false,
-		metadata  : {
-			contentType  : req.file.mimetype,
-			cacheControl : 'public, max-age=31536000'
-		}
-	})
-
-	stream
-		.on('error', (err) => {
-			console.log(err)
-		})
-		.on('finish', async () => {
-			await file.makePublic()
-			const publicUrl = `https://storage.googleapis.com/${file.metadata.bucket}/${file.metadata.name}`
-			const user = await User.findById({ _id: req.user._id }).select('_id avatar')
-			if (user.avatar) {
-				const extractName = user.avatar.split('/').pop()
-				await bucket.file(extractName).delete({ ignoreNotFound: true })
+		await file.save(req.file.buffer, {
+			resumable : false,
+			metadata  : {
+				contentType  : 'image/webp',
+				cacheControl : 'public, max-age=31536000'
 			}
-			user.avatar = publicUrl
-			user.save()
-			console.log('done, see @ ', publicUrl)
-
-			return res.status(200).json({ avatar: publicUrl })
 		})
-		.end(req.file.buffer)
+
+		await file.makePublic()
+		const publicUrl = `https://storage.googleapis.com/${file.metadata.bucket}/${file.metadata.name}`
+		const user = await User.findById({ _id: req.user._id }).select('_id avatar')
+		if (user.avatar) {
+			const extractName = user.avatar.split('/').pop()
+			await bucket.file(extractName).delete({ ignoreNotFound: true })
+		}
+		user.avatar = publicUrl
+		user.save()
+		console.log('done, see @ ', publicUrl)
+
+		return res.status(200).json({ avatar: publicUrl })
+	} catch (error) {
+		res.status(503)
+		throw { message: 'Error while changing avatar. Try again' }
+	}
 })
 
 // ~ @desc    Get single user profile data

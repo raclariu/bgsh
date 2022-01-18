@@ -19,17 +19,17 @@ const uploadAvatar = (req, res, next) => {
 		// FILE SIZE ERROR
 		if (err instanceof multer.MulterError) {
 			res.status(400)
-			err.message = 'File is too damn big'
+			err.message = 'After resizing, image size is larger than 1MB. Please upload a smaller image'
 			next(err)
 		} else if (err) {
 			// INVALID FILE TYPE, message will return from fileFilter callback
 			res.status(422)
-			err.message = 'Invalid file. Only jpg/png files allowed'
+			err.message = 'Only .jpg and .png images are allowed'
 			next(err)
 		} else if (!req.file) {
 			// FILE NOT SELECTED
 			res.status(404)
-			err.message = 'File not found'
+			err.message = 'File not found. Try again'
 			next(err)
 		} else {
 			next()
@@ -38,10 +38,8 @@ const uploadAvatar = (req, res, next) => {
 }
 
 const checkFileType = (file, cb) => {
-	console.log(file)
 	// Allowed ext
 	const filetypes = /jpeg|jpg|png/
-	// const filetypes = /pdf/
 	// Check ext
 	const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
 	// Check mime
@@ -51,14 +49,27 @@ const checkFileType = (file, cb) => {
 		return cb(null, true)
 	} else {
 		return cb(new Error(), false)
-		// cb(null, false)
 	}
 }
 
 const resizeAvatar = asyncHandler(async (req, res, next) => {
 	try {
-		const sharpBuffer = await sharp(req.file.buffer).resize(100).toBuffer()
-		req.file.buffer = sharpBuffer
+		console.log('resAvatar before', req.file)
+		const resized = await sharp(req.file.buffer)
+			.resize(96)
+			.toFormat('webp')
+			.webp({ quality: 95 })
+			.toBuffer({ resolveWithObject: true })
+
+		req.file = {
+			...req.file,
+			mimetype : 'image/webp',
+			size     : resized.info.size,
+			buffer   : resized.data
+		}
+		console.log('resized', resized)
+		console.log('resAvatar after', req.file)
+
 		next()
 	} catch (error) {
 		res.status(503)

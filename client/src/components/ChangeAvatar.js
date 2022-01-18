@@ -32,14 +32,20 @@ import { changeAvatar } from '../actions/userActions'
 
 // @ Styles
 const MyAvatar = styled(Avatar)(({ theme }) => ({
-	width           : theme.spacing(16),
-	height          : theme.spacing(16),
+	width           : theme.spacing(14),
+	height          : theme.spacing(14),
 	backgroundColor : theme.palette.primary.main,
+	imageRendering  : '-webkit-optimize-contrast',
 	transition      : 'background 0.5s',
 	cursor          : 'pointer',
 	'&:hover'       : {
 		backgroundColor : 'rgba(0, 0, 0, 0.7)',
 		color           : 'rgba(0, 0, 0, 0.7)'
+	},
+	'&>img'         : {
+		backgroundColor : 'rgba(0, 0, 0, 0.7)',
+		color           : 'rgba(0, 0, 0, 0.7)',
+		height          : theme.spacing(14)
 	}
 }))
 
@@ -67,7 +73,6 @@ const ChangeAvatar = () => {
 			showSnackbar.success({ text: 'Avatar changed successfully' })
 		},
 		onError   : (error) => {
-			console.log(error.response)
 			showSnackbar.error({ text: `${error.response.data.message}` })
 		}
 	})
@@ -83,12 +88,27 @@ const ChangeAvatar = () => {
 
 	const handleImageChange = (e) => {
 		const uploadedImg = e.target.files[0]
+		console.log(uploadedImg)
+		if (!uploadedImg) return
+
+		if (uploadedImg.type !== 'image/jpeg' && uploadedImg.type !== 'image/png') {
+			showSnackbar.error({ text: 'Only .jpg and .png images are allowed' })
+			setImage(null)
+			return
+		}
+
+		if (uploadedImg.size > 5 * 1024 * 1024) {
+			showSnackbar.error({ text: 'Image too large. Maximum size is 5MB' })
+			setImage(null)
+			return
+		}
+
 		if (uploadedImg) {
 			setPos({ x: 0.5, y: 0.5 })
 			setZoom(1.2)
 		}
 
-		uploadedImg ? setImage(uploadedImg) : setImage(null)
+		setImage(uploadedImg)
 	}
 
 	const handleZoomSlider = (e, newValue) => {
@@ -105,28 +125,38 @@ const ChangeAvatar = () => {
 	}
 
 	const handleSubmit = (e) => {
-		ref.current.getImageScaledToCanvas().toBlob(
-			(blob) => {
-				if (blob.size > 102400) {
-					showSnackbar.error({ text: 'Image too large. Maximum size is 100 kb' })
-					return
-				}
+		if (image.type === 'image/jpeg') {
+			ref.current.getImageScaledToCanvas().toBlob(
+				(blob) => {
+					console.log('blob', blob)
+					const fd = new FormData()
+					fd.append('avatar', blob, image.name)
 
+					mutation.mutate(fd)
+				},
+				'image/jpeg',
+				0.95
+			)
+		} else if (image.type === 'image/png') {
+			ref.current.getImageScaledToCanvas().toBlob((blob) => {
+				console.log('blob', blob)
 				const fd = new FormData()
 				fd.append('avatar', blob, image.name)
 
 				mutation.mutate(fd)
-			},
-			'image/jpeg',
-			0.95
-		)
+			})
+		} else {
+			showSnackbar.error({ text: 'Only .jpg and .png images are allowed' })
+			setImage(null)
+			return
+		}
 	}
 
 	return (
 		<Fragment>
 			<label htmlFor="avatar">
 				<FileInput
-					accept="image/*"
+					accept="image/jpeg, image/png"
 					id="avatar"
 					name="avatar"
 					type="file"

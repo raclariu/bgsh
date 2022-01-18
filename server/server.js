@@ -2,7 +2,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import colors from 'colors'
-import path from 'path'
 import cors from 'cors'
 import connectDB from './db/dbConnect.js'
 import { setInactiveTask, getKickstarters } from './tasks/tasks.js'
@@ -13,20 +12,22 @@ import gameRoutes from './routes/gameRoutes.js'
 import historyRoutes from './routes/historyRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import miscRoutes from './routes/miscRoutes.js'
-const __dirname = path.resolve()
 
 dotenv.config()
 
 connectDB()
 
 const app = express()
+app.disable('x-powered-by')
 
+// @ Middlewares
 app.use(cors())
 if (process.env.NODE_ENV === 'development') {
 	app.use(morgan('dev'))
 }
 app.use(express.json())
 
+// @ Routes middleware
 app.use('/api/users', userRoutes)
 app.use('/api/collections', collectionRoutes)
 app.use('/api/games', gameRoutes)
@@ -35,7 +36,7 @@ app.use('/api/messages', messageRoutes)
 app.use('/api/misc', miscRoutes)
 
 app.get('/', (req, res) => {
-	res.send('Api is running...')
+	res.status(200).send('Api is running...')
 })
 
 app.use(notFound)
