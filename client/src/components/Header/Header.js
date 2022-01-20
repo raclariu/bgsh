@@ -3,6 +3,7 @@ import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 // @ Mui
 import AppBar from '@mui/material/AppBar'
@@ -56,8 +57,10 @@ import NotificationsPopover from '../NotificationsPopover'
 import { signOut } from '../../actions/userActions'
 
 // @ Main
-const Header = () => {
+const Header = (props) => {
 	const dispatch = useDispatch()
+	const location = useLocation()
+	console.log('loc', location)
 
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openGames, setOpenGames ] = useState(false)

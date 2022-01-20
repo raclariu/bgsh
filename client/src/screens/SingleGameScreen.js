@@ -734,7 +734,7 @@ const SingleGameScreen = () => {
 						</Box>
 						<Grid container spacing={1}>
 							{isSuccessRec &&
-								recData.slice(0, !expanded ? 12 : 30).map((rec) => (
+								recData.slice(0, 12).map((rec) => (
 									<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
 										<Box
 											p={1}
@@ -794,6 +794,71 @@ const SingleGameScreen = () => {
 									</Grid>
 								))}
 						</Grid>
+
+						<Collapse in={expanded} sx={{ mt: 1 }} timeout="auto" unmountOnExit>
+							<Grid container spacing={1}>
+								{isSuccessRec &&
+									recData.slice(12, 30).map((rec) => (
+										<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
+											<Box
+												p={1}
+												display="flex"
+												boxShadow={1}
+												borderRadius="4px"
+												bgcolor="background.paper"
+											>
+												<LzLoad>
+													<a
+														href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
+														target="_blank"
+														rel="noreferrer"
+													>
+														<StyledRecImg src={rec.thumbnail} alt={rec.title} />
+													</a>
+												</LzLoad>
+
+												<Box
+													display="flex"
+													flexDirection="column"
+													justifyContent="center"
+													ml={1}
+													width="100%"
+													gap={0.5}
+												>
+													<StyledTitleBox fontWeight="fontWeightMedium">
+														{rec.title}
+													</StyledTitleBox>
+													<Box display="flex" gap={1}>
+														<Box
+															display="flex"
+															alignItems="center"
+															gap={0.25}
+															fontWeight="fontWeightMedium"
+															fontSize={14}
+															color="grey.500"
+														>
+															<StarPurple500Icon color="primary" fontSize="small" />
+															{approx(rec.stats.avgRating)}
+														</Box>
+
+														<Box
+															display="flex"
+															alignItems="center"
+															gap={0.25}
+															fontWeight="fontWeightMedium"
+															fontSize={14}
+															color="grey.500"
+														>
+															<MilitaryTechIcon color="primary" fontSize="small" />
+															{rec.stats.rank}
+														</Box>
+													</Box>
+												</Box>
+											</Box>
+										</Grid>
+									))}
+							</Grid>
+						</Collapse>
 
 						{isSuccessRec &&
 						recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
