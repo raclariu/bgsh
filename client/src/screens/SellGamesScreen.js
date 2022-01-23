@@ -61,7 +61,8 @@ const SellGamesScreen = () => {
 							version   : null,
 							condition : null,
 							extraInfo : '',
-							price     : ''
+							price     : '',
+							image     : null
 						}
 					})
 				)
@@ -102,6 +103,8 @@ const SellGamesScreen = () => {
 		},
 		[ saleList ]
 	)
+
+	console.log(values)
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 

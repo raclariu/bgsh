@@ -97,15 +97,13 @@ const HomeScreen = () => {
 			{errorHotGames && <CustomAlert>{errorHotGames.response.data.message}</CustomAlert>}
 
 			{isLoadingHotGames && (
-				<Grid container spacing={3} direction="row">
+				<Grid container spacing={1} direction="row">
 					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
-			<LzLoad offset={200}>asdad</LzLoad>
-
 			{isSuccessHotGames && (
-				<Grid container spacing={2}>
+				<Grid container spacing={1}>
 					{hotGamesList.slice(0, 6).map((data) => (
 						<Grid key={data.bggId} item xs={6} md={4}>
 							<LzLoad offset={200} once placeholder={<GameCardSkeleton />}>
@@ -146,13 +144,13 @@ const HomeScreen = () => {
 			{errorKs && <CustomAlert>{errorKs.response.data.message}</CustomAlert>}
 
 			{isLoadingKs && (
-				<Grid container spacing={3} direction="row">
+				<Grid container spacing={1} direction="row">
 					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
 			{isSuccessKs && (
-				<Grid container spacing={2}>
+				<Grid container spacing={1}>
 					{ksList.map((data) => (
 						<Grid key={data.ksId} item xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<GameCardSkeleton />}>

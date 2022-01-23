@@ -22,8 +22,6 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
-		console.log(item)
-
 		for (let game of ensureArray) {
 			const item = {
 				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
@@ -262,7 +260,7 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 const getBggReccomendations = asyncHandler(async (req, res) => {
 	try {
 		const { bggId } = req.query
-		console.log(bggId)
+
 		const { data } = await axios.get('https://api.geekdo.com/api/geekitem/recs', {
 			params : {
 				ajax       : 1,

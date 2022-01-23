@@ -108,7 +108,7 @@ const changePassword = asyncHandler(async (req, res) => {
 const changeAvatar = asyncHandler(async (req, res) => {
 	try {
 		const fileName = genNanoId(15)
-		const bucket = storage.bucket('avt_yz5cquiskvhqaztjc9ew54')
+		const bucket = storage.bucket(process.env.AVT_BUCKET)
 		const file = bucket.file(`${fileName}.webp`)
 
 		await file.save(req.file.buffer, {

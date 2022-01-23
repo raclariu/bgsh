@@ -220,6 +220,16 @@ export const apiAddSoldGamesToHistory = async (gamesData) => {
 	return await axsAUTH.post('/api/history/sell', gamesData)
 }
 
+export const apiUploadImage = async (img) => {
+	const { data } = await axsAUTH.post('/api/games/images', img)
+	return data
+}
+
+export const apiDeleteImage = async (url) => {
+	const { data } = await axsAUTH.delete('/api/games/images', { data: { url } })
+	return data
+}
+
 export const apiAddTradedGamesToHistory = async (gamesData) => {
 	return await axsAUTH.post('/api/history/trade', gamesData)
 }

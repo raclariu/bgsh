@@ -1,10 +1,12 @@
 // @ Libraries
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
+import { useMutation } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
+import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
@@ -15,16 +17,36 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import Button from '@mui/material/Button'
+import ButtonBase from '@mui/material/ButtonBase'
+import Divider from '@mui/material/Divider'
 
 // @ Components
 import Input from '../Input'
+import Loader from '../Loader'
 
 // @ Icons
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone'
+
+// @ Others
+import { apiUploadImage, apiDeleteImage } from '../../api/api'
+import { useNotification } from '../../hooks/hooks'
+
+// @ Styles
+const StyledImg = styled('img')({
+	objectFit    : 'cover',
+	width        : '100%',
+	height       : '100%',
+	borderRadius : '8px'
+})
 
 // @ Main
 const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
+
+	const [ image, setImage ] = useState(null)
+	const [ showSnackbar ] = useNotification()
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -33,6 +55,68 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 			return thumbnail ? thumbnail : '/images/gameImgPlaceholder.jpg'
 		}
 	}
+
+	const mutation = useMutation((imgFile) => apiUploadImage(imgFile), {
+		onSuccess : (imgData) => {
+			console.log(imgData)
+			handleGameInfo(imgData.image, game.bggId, 'image')
+			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
+		},
+		onError   : (error) => {
+			showSnackbar.error({ text: error.response.data.message })
+		}
+	})
+
+	const removeImageMutation = useMutation((url) => apiDeleteImage(url), {
+		onSuccess : () => {
+			handleGameInfo(null, game.bggId, 'image')
+			showSnackbar.info({ text: `Image for "${data.title}" deleted successfully` })
+		},
+		onError   : (error) => {
+			showSnackbar.error({ text: error.response.data.message })
+		}
+	})
+
+	useEffect(
+		() => {
+			if (image) {
+				const fd = new FormData()
+				fd.append('image', image, image.name)
+				fd.append('bggId', game.bggId)
+				mutation.mutate(fd)
+			}
+		},
+		[ image ]
+	)
+
+	const handleImages = (e) => {
+		const uploadedImg = e.target.files[0]
+		if (!uploadedImg) return
+
+		if (uploadedImg.type !== 'image/jpeg' && uploadedImg.type !== 'image/png') {
+			showSnackbar.error({ text: 'Only .jpg and .png images are allowed' })
+			setImage(null)
+			return
+		}
+
+		if (uploadedImg.size > 5 * 1024 * 1024) {
+			showSnackbar.error({ text: 'Image too large. Maximum size is 5MB' })
+			setImage(null)
+			return
+		}
+
+		setImage(uploadedImg)
+	}
+
+	const removeImage = (e) => {
+		removeImageMutation.mutate(data.image)
+	}
+
+	const handleImgLoad = (e) => {
+		console.log('here')
+	}
+
+	console.log(data)
 
 	return (
 		<Card elevation={1}>
@@ -63,6 +147,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 				alt={game.title}
 				title={game.title}
 			/>
+
 			<CardContent>
 				{mode === 'buy' &&
 				!isPack && (
@@ -145,7 +230,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 					fullWidth
 				/>
 
-				<Grid container>
+				<Grid container sx={{ marginBottom: 2 }}>
 					<Grid item xs={6}>
 						<FormControlLabel
 							control={
@@ -176,6 +261,94 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 						</Grid>
 					)}
 				</Grid>
+
+				<Divider textAlign="left">
+					<Box fontSize={'0.75rem'}>ADD IMAGE</Box>
+				</Divider>
+
+				<Box mt={2}>
+					{mutation.isLoading || removeImageMutation.isLoading ? (
+						<Box
+							sx={{
+								borderStyle    : 'dashed',
+								borderColor    : 'primary.main',
+								cursor         : 'pointer',
+								width          : 150,
+								height         : 100,
+								display        : 'flex',
+								justifyContent : 'center',
+								alignItems     : 'center',
+								borderRadius   : '8px'
+							}}
+						>
+							<Loader size={35} />
+						</Box>
+					) : (
+						data.image && (
+							<Box
+								sx={{
+									width    : 150,
+									height   : 100,
+									position : 'relative'
+								}}
+							>
+								<StyledImg
+									src={data.image.thumbnail}
+									alt={data.title}
+									title={data.title}
+									onLoad={handleImgLoad}
+								/>
+
+								<IconButton
+									sx={{
+										position : 'absolute',
+
+										right    : '-5px',
+										top      : '-5px'
+									}}
+									color="error"
+									onClick={removeImage}
+								>
+									<HighlightOffIcon />
+								</IconButton>
+							</Box>
+						)
+					)}
+
+					{!data.image &&
+					!mutation.isLoading &&
+					!removeImageMutation.isLoading && (
+						<label htmlFor={`${data.bggId}-image`}>
+							<input
+								accept="image/jpeg, image/png"
+								id={`${data.bggId}-image`}
+								name="image"
+								type="file"
+								hidden
+								onChange={handleImages}
+								onClick={(e) => (e.target.value = null)}
+							/>
+
+							<ButtonBase component="div">
+								<Box
+									sx={{
+										borderStyle    : 'dashed',
+										borderColor    : 'primary.main',
+										cursor         : 'pointer',
+										width          : 150,
+										height         : 100,
+										display        : 'flex',
+										justifyContent : 'center',
+										alignItems     : 'center',
+										borderRadius   : '8px'
+									}}
+								>
+									<AddPhotoAlternateTwoToneIcon fontSize="large" color="primary" />
+								</Box>
+							</ButtonBase>
+						</label>
+					)}
+				</Box>
 			</CardContent>
 		</Card>
 	)

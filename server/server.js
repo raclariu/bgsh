@@ -47,7 +47,7 @@ app.listen(PORT, () => {
 	const used = process.memoryUsage().heapUsed / 1024 / 1024
 	console.log(`~Ram used: ${Math.round(used * 100) / 100} MB`.black.bgBrightWhite.bold)
 	setInactiveTask.start()
-	//getKickstarters.start()
+	// getKickstarters.start()
 	console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.white.bgMagenta.bold)
 	console.log(`setInactiveTask starting... running every day at 03:00 and 15:00`.yellow.bgBlue.bold)
 })

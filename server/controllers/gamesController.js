@@ -5,6 +5,8 @@ import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
 import Notification from '../models/notificationModel.js'
 import Wishlist from '../models/wishlistModel.js'
+import storage from '../helpers/storage.js'
+import { genNanoId } from '../helpers/helpers.js'
 
 // * @desc    Add games for sale
 // * @route   POST  /api/games/sell
@@ -102,6 +104,63 @@ const listSaleGames = asyncHandler(async (req, res) => {
 				}
 			}
 		}
+	}
+})
+
+// * @desc    Upload game image
+// * @route   POST  /api/games/images
+// * @access  Private route
+const uploadImage = asyncHandler(async (req, res) => {
+	try {
+		console.log('in ctrl => ', req.file)
+		const { full, thumb } = req.resizedFiles
+		console.log(full, thumb)
+		const fileName = genNanoId(15)
+		const bucket = storage.bucket(process.env.IMG_BUCKET)
+		const fileFull = bucket.file(`full_${fileName}.webp`)
+		const fileThumb = bucket.file(`thumb_${fileName}.webp`)
+
+		await fileFull.save(full.buffer, {
+			resumable : false,
+			metadata  : {
+				contentType  : 'image/webp',
+				cacheControl : 'public, max-age=31536000'
+			}
+		})
+
+		await fileThumb.save(thumb.buffer, {
+			resumable : false,
+			metadata  : {
+				contentType  : 'image/webp',
+				cacheControl : 'public, max-age=31536000'
+			}
+		})
+
+		await fileFull.makePublic()
+		await fileThumb.makePublic()
+		const publicFullUrl = `https://storage.googleapis.com/${fileFull.metadata.bucket}/${fileFull.metadata.name}`
+		const publicThumbUrl = `https://storage.googleapis.com/${fileThumb.metadata.bucket}/${fileThumb.metadata.name}`
+
+		return res.status(200).json({ image: { full: publicFullUrl, thumbnail: publicThumbUrl } })
+	} catch (error) {
+		res.status(503)
+		throw { message: 'Error while uploading image. Try again' }
+	}
+})
+
+// ! @desc    Delete game image
+// ! @route   Delete  /api/games/images
+// ! @access  Private route
+const deleteImage = asyncHandler(async (req, res) => {
+	try {
+		const { url } = req.body
+		const fileName = url.split('/').pop()
+		await storage.bucket(process.env.IMG_BUCKET).file(fileName).delete({ ignoreNotFound: true })
+
+		res.status(204).end()
+	} catch (error) {
+		res.status(503)
+		throw { message: 'Error while removing image. Try again' }
 	}
 })
 
@@ -534,5 +593,7 @@ export {
 	getSingleGameSavedStatus,
 	getUserListedGames,
 	deleteOneGame,
-	reactivateGame
+	reactivateGame,
+	uploadImage,
+	deleteImage
 }

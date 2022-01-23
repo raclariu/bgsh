@@ -4,18 +4,20 @@ import asyncHandler from 'express-async-handler'
 import path from 'path'
 
 const memStorage = multer.memoryStorage()
-const upload = multer({
+
+// @ Avatar
+const multerAvatar = multer({
 	storage    : memStorage,
 	limits     : {
 		fileSize : 1 * 1024 * 1024 // Maximum file size is 1MB
 	},
 	fileFilter : (req, file, cb) => {
-		checkFileType(file, cb)
+		checkAvatarFileType(file, cb)
 	}
 }).single('avatar')
 
 const uploadAvatar = (req, res, next) => {
-	upload(req, res, (err) => {
+	multerAvatar(req, res, (err) => {
 		// FILE SIZE ERROR
 		if (err instanceof multer.MulterError) {
 			res.status(400)
@@ -37,7 +39,7 @@ const uploadAvatar = (req, res, next) => {
 	})
 }
 
-const checkFileType = (file, cb) => {
+const checkAvatarFileType = (file, cb) => {
 	// Allowed ext
 	const filetypes = /jpeg|jpg|png/
 	// Check ext
@@ -54,7 +56,7 @@ const checkFileType = (file, cb) => {
 
 const resizeAvatar = asyncHandler(async (req, res, next) => {
 	try {
-		console.log('resAvatar before', req.file)
+		console.log('file before => ', req.file)
 		const resized = await sharp(req.file.buffer)
 			.resize(96)
 			.toFormat('webp')
@@ -67,8 +69,8 @@ const resizeAvatar = asyncHandler(async (req, res, next) => {
 			size     : resized.info.size,
 			buffer   : resized.data
 		}
-		console.log('resized', resized)
-		console.log('resAvatar after', req.file)
+		console.log('resized file => ', resized)
+		console.log('file after => ', req.file)
 
 		next()
 	} catch (error) {
@@ -78,4 +80,96 @@ const resizeAvatar = asyncHandler(async (req, res, next) => {
 	}
 })
 
-export { uploadAvatar, resizeAvatar }
+// @ Game image
+const multerGameImage = multer({
+	storage    : memStorage,
+	limits     : {
+		fileSize : 2 * 1024 * 1024 // Maximum file size is 2MB
+	},
+	fileFilter : (req, file, cb) => {
+		checkGameImageFileType(file, cb)
+	}
+}).single('image')
+
+const uploadGameImage = (req, res, next) => {
+	multerGameImage(req, res, (err) => {
+		// FILE SIZE ERROR
+		if (err instanceof multer.MulterError) {
+			res.status(400)
+			err.message = 'Image size is larger than 2MB. Please upload a smaller image'
+			next(err)
+		} else if (err) {
+			// INVALID FILE TYPE, message will return from fileFilter callback
+			res.status(422)
+			err.message = 'Only .jpg and .png images are allowed'
+			next(err)
+		} else if (!req.file) {
+			// FILE NOT SELECTED
+			res.status(404)
+			err.message = 'File not found. Try again'
+			next(err)
+		} else {
+			next()
+		}
+	})
+}
+
+const checkGameImageFileType = (file, cb) => {
+	// Allowed ext
+	const filetypes = /jpeg|jpg|png/
+	// Check ext
+	const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+	// Check mime
+	const mimetype = filetypes.test(file.mimetype)
+
+	if (mimetype && extname) {
+		return cb(null, true)
+	} else {
+		return cb(new Error(), false)
+	}
+}
+
+const resizeGameImage = asyncHandler(async (req, res, next) => {
+	try {
+		const resizedFull = await sharp(req.file.buffer)
+			.resize({
+				fit    : 'contain',
+				height : 720
+			})
+			.toFormat('webp')
+			.webp({ quality: 80 })
+			.toBuffer({ resolveWithObject: true })
+
+		const resizedThumb = await sharp(req.file.buffer)
+			.resize({
+				fit    : 'contain',
+				height : 120
+			})
+			.toFormat('webp')
+			.webp({ quality: 60 })
+			.toBuffer({ resolveWithObject: true })
+
+		const full = {
+			...req.file,
+			mimetype : 'image/webp',
+			size     : resizedFull.info.size,
+			buffer   : resizedFull.data
+		}
+		const thumb = {
+			...req.file,
+			mimetype : 'image/webp',
+			size     : resizedThumb.info.size,
+			buffer   : resizedThumb.data
+		}
+
+		req.resizedFiles = { full, thumb }
+
+		next()
+	} catch (error) {
+		res.status(503)
+		error.message = 'Error while uploading image. Please try again'
+		next(error)
+	}
+})
+
+export { uploadAvatar, resizeAvatar, uploadGameImage, resizeGameImage }
