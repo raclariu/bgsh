@@ -113,35 +113,34 @@ const listSaleGames = asyncHandler(async (req, res) => {
 const uploadImage = asyncHandler(async (req, res) => {
 	try {
 		console.log('in ctrl => ', req.file)
-		const { full, thumb } = req.resizedFiles
-		console.log(full, thumb)
+		const { full, thumbnail } = req.resizedFiles
+		console.log(full, thumbnail)
 		const fileName = genNanoId(15)
 		const bucket = storage.bucket(process.env.IMG_BUCKET)
-		const fileFull = bucket.file(`full_${fileName}.webp`)
-		const fileThumb = bucket.file(`thumb_${fileName}.webp`)
+		const fullBucketFile = bucket.file(`f/${fileName}.webp`)
+		const thumbnailBucketFile = bucket.file(`t/${fileName}.webp`)
 
-		await fileFull.save(full.buffer, {
+		const options = {
 			resumable : false,
 			metadata  : {
 				contentType  : 'image/webp',
 				cacheControl : 'public, max-age=31536000'
 			}
-		})
+		}
 
-		await fileThumb.save(thumb.buffer, {
-			resumable : false,
-			metadata  : {
-				contentType  : 'image/webp',
-				cacheControl : 'public, max-age=31536000'
+		await fullBucketFile.save(full.buffer, options)
+		await thumbnailBucketFile.save(thumbnail.buffer, options)
+
+		await fullBucketFile.makePublic()
+		await thumbnailBucketFile.makePublic()
+
+		return res.status(200).json({
+			image : {
+				full      : fullBucketFile.publicUrl(),
+				thumbnail : thumbnailBucketFile.publicUrl(),
+				name      : `${fileName}.webp`
 			}
 		})
-
-		await fileFull.makePublic()
-		await fileThumb.makePublic()
-		const publicFullUrl = `https://storage.googleapis.com/${fileFull.metadata.bucket}/${fileFull.metadata.name}`
-		const publicThumbUrl = `https://storage.googleapis.com/${fileThumb.metadata.bucket}/${fileThumb.metadata.name}`
-
-		return res.status(200).json({ image: { full: publicFullUrl, thumbnail: publicThumbUrl } })
 	} catch (error) {
 		res.status(503)
 		throw { message: 'Error while uploading image. Try again' }
@@ -153,9 +152,9 @@ const uploadImage = asyncHandler(async (req, res) => {
 // ! @access  Private route
 const deleteImage = asyncHandler(async (req, res) => {
 	try {
-		const { url } = req.body
-		const fileName = url.split('/').pop()
-		await storage.bucket(process.env.IMG_BUCKET).file(fileName).delete({ ignoreNotFound: true })
+		const { fileName } = req.body
+		await storage.bucket(process.env.IMG_BUCKET).file(`f/${fileName}`).delete({ ignoreNotFound: true })
+		await storage.bucket(process.env.IMG_BUCKET).file(`t/${fileName}`).delete({ ignoreNotFound: true })
 
 		res.status(204).end()
 	} catch (error) {

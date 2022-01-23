@@ -109,7 +109,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	}
 
 	const removeImage = (e) => {
-		removeImageMutation.mutate(data.image)
+		removeImageMutation.mutate(data.image.name)
 	}
 
 	const handleImgLoad = (e) => {

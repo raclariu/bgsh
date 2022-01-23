@@ -155,14 +155,14 @@ const resizeGameImage = asyncHandler(async (req, res, next) => {
 			size     : resizedFull.info.size,
 			buffer   : resizedFull.data
 		}
-		const thumb = {
+		const thumbnail = {
 			...req.file,
 			mimetype : 'image/webp',
 			size     : resizedThumb.info.size,
 			buffer   : resizedThumb.data
 		}
 
-		req.resizedFiles = { full, thumb }
+		req.resizedFiles = { full, thumbnail }
 
 		next()
 	} catch (error) {

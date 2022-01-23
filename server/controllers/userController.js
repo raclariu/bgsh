@@ -120,7 +120,7 @@ const changeAvatar = asyncHandler(async (req, res) => {
 		})
 
 		await file.makePublic()
-		const publicUrl = `https://storage.googleapis.com/${file.metadata.bucket}/${file.metadata.name}`
+		const publicUrl = file.publicUrl()
 		const user = await User.findById({ _id: req.user._id }).select('_id avatar')
 		if (user.avatar) {
 			const extractName = user.avatar.split('/').pop()
@@ -128,7 +128,6 @@ const changeAvatar = asyncHandler(async (req, res) => {
 		}
 		user.avatar = publicUrl
 		user.save()
-		console.log('done, see @ ', publicUrl)
 
 		return res.status(200).json({ avatar: publicUrl })
 	} catch (error) {
