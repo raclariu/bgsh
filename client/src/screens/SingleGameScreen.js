@@ -166,9 +166,8 @@ const SingleGameScreen = () => {
 			return apiFetchGallery(bggIds)
 		},
 		{
-			enabled              : isSuccess && galleryInView,
-			staleTime            : 1000 * 60 * 60,
-			refetchOnWindowFocus : false
+			enabled   : isSuccess && galleryInView,
+			staleTime : 1000 * 60 * 60
 		}
 	)
 
@@ -186,10 +185,9 @@ const SingleGameScreen = () => {
 			return apiFetchRecommendations(currBggId)
 		},
 		{
-			enabled              : isSuccess && recsInView,
-			staleTime            : 1000 * 60 * 60,
-			refetchOnWindowFocus : false,
-			keepPreviousData     : true
+			enabled          : isSuccess && recsInView,
+			staleTime        : 1000 * 60 * 60,
+			keepPreviousData : true
 		}
 	)
 
@@ -555,7 +553,7 @@ const SingleGameScreen = () => {
 													Personal shipping is available in
 												</Box>
 												<StyledChipsBox>
-													{data.shipCities.map((city, index) => (
+													{data.shipCities.map((city) => (
 														<Chip
 															key={city}
 															icon={<RoomTwoToneIcon />}
@@ -606,7 +604,7 @@ const SingleGameScreen = () => {
 
 						{isLoadingGallery && (
 							<Grid container spacing={1}>
-								{[ ...Array(8).keys() ].map((i, k) => <GallerySkeleton />)}
+								{[ ...Array(8).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
 							</Grid>
 						)}
 

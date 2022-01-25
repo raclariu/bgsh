@@ -11,13 +11,13 @@ import Brightness7Icon from '@mui/icons-material/Brightness7'
 
 // @ Others
 import { setCurrentTheme } from '../actions/userActions'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const Theme = () => {
 	const dispatch = useDispatch()
 
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const theme = useSelector((state) => state.userPreferences.theme)
 

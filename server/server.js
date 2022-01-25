@@ -12,6 +12,7 @@ import gameRoutes from './routes/gameRoutes.js'
 import historyRoutes from './routes/historyRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import miscRoutes from './routes/miscRoutes.js'
+import listRoutes from './routes/listRoutes.js'
 
 dotenv.config()
 
@@ -33,6 +34,7 @@ app.use('/api/collections', collectionRoutes)
 app.use('/api/games', gameRoutes)
 app.use('/api/history', historyRoutes)
 app.use('/api/messages', messageRoutes)
+app.use('/api/list', listRoutes)
 app.use('/api/misc', miscRoutes)
 
 app.get('/', (req, res) => {

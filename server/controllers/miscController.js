@@ -32,6 +32,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 					? game.name.find((obj) => obj.type === 'primary').value
 					: game.name.value,
 				year               : +game.yearpublished.value || 'N/A',
+				description        : game.description || null,
 				designers          : game.link
 					.filter((link) => link.type === 'boardgamedesigner')
 					.map((designer) => designer.value),
@@ -137,9 +138,11 @@ const bggGetHotGamesList = asyncHandler(async (req, res) => {
 		const hotArr = []
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
+		console.log(ensureArray)
+
 		for (let game of ensureArray) {
 			const hotGame = {
-				bggId     : game.id,
+				bggId     : game.id || null,
 				// rank      : game.rank ? +game.rank : null,
 				thumbnail : game.thumbnail ? game.thumbnail.value : null,
 				title     : game.name ? game.name.value : '',

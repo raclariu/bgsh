@@ -37,7 +37,8 @@ const NotificationsPopover = () => {
 	const open = Boolean(anchorEl)
 
 	const { data, isSuccess } = useQuery([ 'notifications' ], apiGetNotifications, {
-		staleTime : 1000 * 60 * 60
+		refetchInterval : 1000 * 60 * 2,
+		refetchOnMount  : false
 	})
 
 	return (

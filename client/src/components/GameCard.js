@@ -40,7 +40,7 @@ const StyledTitleBox = styled(Box)({
 })
 
 // @ Main
-const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
+const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 	return (
 		<Card elevation={1}>
 			<StyledCardMedia
@@ -93,7 +93,7 @@ const GameCard = ({ data, saleListHandler, isChecked, isDisabled }) => {
 							<Checkbox
 								checked={isChecked}
 								disabled={isDisabled}
-								onChange={(e) => saleListHandler(e, data.bggId)}
+								onChange={(e) => listHandler(e, data)}
 								icon={<AddBoxOutlinedIcon />}
 							/>
 						</CustomTooltip>

@@ -135,7 +135,7 @@ const uploadImage = asyncHandler(async (req, res) => {
 		await thumbnailBucketFile.makePublic()
 
 		return res.status(200).json({
-			image : {
+			userImage : {
 				full      : fullBucketFile.publicUrl(),
 				thumbnail : thumbnailBucketFile.publicUrl(),
 				name      : `${fileName}.webp`

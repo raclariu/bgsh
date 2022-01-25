@@ -16,7 +16,7 @@ import LoadingBtn from './LoadingBtn'
 // @ Others
 import { clearSaleList } from '../actions/saleListActions'
 import { apiFetchBggCollection } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const CollectionFetchBox = () => {
@@ -24,7 +24,7 @@ const CollectionFetchBox = () => {
 	const queryClient = useQueryClient()
 
 	const [ bggUsername, setBggUsername ] = useState('')
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
 		onSuccess : () => {

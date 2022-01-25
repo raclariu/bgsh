@@ -22,7 +22,8 @@ import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
-import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
+import { apiFetchGameDetails, apiListGamesForSale, apiGetList } from '../api/api'
+import { useDeleteFromListMutation } from '../hooks/hooks'
 
 // @ Main
 const SellGamesScreen = () => {
@@ -45,14 +46,23 @@ const SellGamesScreen = () => {
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState([])
+	console.log(values)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
+	const userList = useQuery([ 'list' ], apiGetList, {
+		staleTime : Infinity,
+		onSettled : async (data) => {
+			setValues((val) => val.filter(({ bggId }) => data.list.find((el) => el.bggId === bggId)))
+		}
+	})
+
+	const { isLoading, isError, error, data, isSuccess, refetch } = useQuery(
 		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
+		() => apiFetchGameDetails(userList.data.list.map((el) => el.bggId)),
 		{
 			staleTime : Infinity,
-			enabled   : !!saleList.length,
+			enabled   : !!userList.data,
 			onSuccess : (data) => {
+				console.log('here')
 				setValues(
 					data.map((game) => {
 						return {
@@ -62,13 +72,24 @@ const SellGamesScreen = () => {
 							condition : null,
 							extraInfo : '',
 							price     : '',
-							image     : null
+							userImage : null
 						}
 					})
 				)
 			}
 		}
 	)
+
+	useEffect(
+		() => {
+			return () => {
+				queryClient.invalidateQueries([ 'bggGamesDetails' ])
+			}
+		},
+		[ queryClient ]
+	)
+
+	const deleteMutation = useDeleteFromListMutation()
 
 	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
@@ -87,29 +108,10 @@ const SellGamesScreen = () => {
 		history.push('/sell')
 	}
 
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries([ 'bggGamesDetails' ])
-			}
-		},
-		[ queryClient ]
-	)
-
-	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
-	useEffect(
-		() => {
-			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-		},
-		[ saleList ]
-	)
-
-	console.log(values)
-
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 
-	const removeFromSaleListHandler = (id) => {
-		dispatch(removeFromSaleList(id))
+	const removeFromSaleListHandler = (bggId, title) => {
+		deleteMutation.mutate({ bggId, title })
 	}
 
 	const handleGameInfo = (value, id, key) => {

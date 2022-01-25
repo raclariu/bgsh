@@ -23,7 +23,7 @@ import LoadingBtn from './LoadingBtn'
 // @ Others
 import { changePassword } from '../actions/userActions'
 import { USER_CHANGE_PASSWORD_RESET } from '../constants/userConstants'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 import { apiUserChangePassword } from '../api/api'
 
 // @ Main
@@ -34,7 +34,7 @@ const ChangePasswordForm = () => {
 	const [ passCurrentVisibility, setPassCurrentVisibility ] = useState(false)
 	const [ passNewVisibility, setPassNewVisibility ] = useState(false)
 	const [ passNewConfirmationVisibility, setPassNewConfirmationVisibility ] = useState(false)
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { isLoading, mutate, isError, error, isSuccess } = useMutation(
 		({ passwordCurrent, passwordNew, passwordNewConfirmation }) =>

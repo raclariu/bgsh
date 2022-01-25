@@ -27,7 +27,7 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut'
 
 // @ Others
 import { apiUserChangeAvatar } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 import { changeAvatar } from '../actions/userActions'
 
 // @ Styles
@@ -63,7 +63,7 @@ const ChangeAvatar = () => {
 	const [ zoom, setZoom ] = useState(1.2)
 	const [ pos, setPos ] = useState({ x: 0.5, y: 0.5 })
 	const [ openDialog, setOpenDialog ] = useState(false)
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const mutation = useMutation((imgBlob) => apiUserChangeAvatar(imgBlob), {
 		onSuccess : (data) => {

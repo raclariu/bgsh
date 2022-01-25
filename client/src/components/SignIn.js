@@ -20,7 +20,7 @@ import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { signIn } from '../actions/userActions'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const SignIn = () => {
@@ -32,7 +32,7 @@ const SignIn = () => {
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const userAuth = useSelector((state) => state.userAuth)
 	const { loading, error, success, userData } = userAuth

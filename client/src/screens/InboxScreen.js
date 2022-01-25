@@ -45,7 +45,7 @@ import MessageCard from '../components/MessageCard'
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Skeleton
 const MessageSkeleton = () => {
@@ -91,7 +91,7 @@ const InboxScreen = () => {
 	const [ selected, setSelected ] = useState([])
 	const [ isChecked, setIsChecked ] = useState(false)
 	const [ expanded, setExpanded ] = useState([])
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { isLoading, isSuccess, data } = useQuery(
 		[ location.pathname === '/received' ? 'msgReceived' : 'msgSent', { search, page } ],
@@ -104,12 +104,11 @@ const InboxScreen = () => {
 			}
 		},
 		{
-			refetchOnWindowFocus : false,
-			onError              : (err) => {
+			onError   : (err) => {
 				const text = err.response.data.message || 'Error occured while fetching messages'
 				showSnackbar.error({ text })
 			},
-			onSuccess            : (data) => {
+			onSuccess : (data) => {
 				data.messages.length === 0 && showSnackbar.warning({ text: 'No messages found' })
 			}
 		}

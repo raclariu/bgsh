@@ -36,7 +36,7 @@ import {
 	apiReactivateListedGame,
 	apiAddTradedGamesToHistory
 } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
@@ -48,7 +48,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState(listedPrice ? listedPrice : '')
 	const [ extraInfo, setExtraInfo ] = useState('')
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const addGame = useMutation(
 		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) => {

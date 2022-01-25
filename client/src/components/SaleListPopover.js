@@ -1,8 +1,8 @@
 // @ Libraries
 import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
+import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -29,20 +29,20 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import SaleListPopoverDialog from './SaleListPopoverDialog'
 
 // @ Others
-import { removeFromSaleList } from '../actions/saleListActions'
-import { saleListLimit } from '../constants/saleListConstants'
-import { useNotification } from '../hooks/hooks'
+import { addToSaleList } from '../actions/saleListActions'
+import { useNotiSnackbar } from '../hooks/hooks'
+import { useDeleteFromListMutation, useGetListQuery } from '../hooks/hooks'
+import { apiGetList, apiDeleteOneFromList } from '../api/api'
 
 // @ Main
 const SaleListPopover = () => {
-	const dispatch = useDispatch()
-
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ mode, setMode ] = useState('')
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
-	const saleList = useSelector((state) => state.saleList)
+	const { isLoading, isSuccess, data } = useGetListQuery()
+	const deleteMutation = useDeleteFromListMutation()
 
 	const open = Boolean(anchorEl)
 
@@ -50,9 +50,8 @@ const SaleListPopover = () => {
 		setAnchorEl(null)
 	}
 
-	const removeFromSaleListHandler = (id, title) => {
-		dispatch(removeFromSaleList(id))
-		showSnackbar.info({ text: `${title} removed from list` })
+	const deleteFromListHandler = (bggId, title) => {
+		deleteMutation.mutate({ bggId, title })
 	}
 
 	const handleCloseDialog = () => {
@@ -67,130 +66,134 @@ const SaleListPopover = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
-				<Badge color="secondary" badgeContent={saleList.length} showZero>
+			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} disabled={isLoading} color="primary" size="large">
+				<Badge color="secondary" badgeContent={data && data.list.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>
 			</IconButton>
 
-			<Popover
-				PaperProps={{
-					sx : {
-						width : {
-							sm : 450,
-							xs : '100vw'
+			{isSuccess && (
+				<Popover
+					PaperProps={{
+						sx : {
+							width : {
+								sm : 450,
+								xs : '100vw'
+							}
 						}
-					}
-				}}
-				open={open}
-				anchorEl={anchorEl}
-				onClose={handleClose}
-				transitionDuration={350}
-				anchorOrigin={{
-					vertical   : 'bottom',
-					horizontal : 'center'
-				}}
-				transformOrigin={{
-					vertical   : 'top',
-					horizontal : 'center'
-				}}
-			>
-				{/* Content */}
-				<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
-					My list ({saleList.length}/{saleListLimit})
-				</Box>
-				<Divider />
-
-				{saleList.length === 0 && (
-					<Fragment>
-						<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
-							Add games
-						</Box>
-
-						<Box display="flex" justifyContent="center" my={1} color="primary">
-							<ButtonGroup color="primary" size="small">
-								<Button component={RouterLink} to="/profile" onClick={handleClose}>
-									Profile
-								</Button>
-								<Button component={RouterLink} to="/collection" onClick={handleClose}>
-									Collection
-								</Button>
-								<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
-									Wishlist
-								</Button>
-							</ButtonGroup>
-						</Box>
-					</Fragment>
-				)}
-
-				<List disablePadding>
-					{saleList.map((game) => (
-						<ListItem key={game.bggId} divider>
-							<ListItemAvatar>
-								<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
-									{game.title.substring(0, 2).toUpperCase()}
-								</Avatar>
-							</ListItemAvatar>
-							<ListItemText
-								primary={game.title}
-								secondary={game.year}
-								primaryTypographyProps={{
-									color   : 'primary',
-									variant : 'subtitle2'
-								}}
-								secondaryTypographyProps={{
-									variant : 'caption'
-								}}
-							/>
-							<ListItemSecondaryAction>
-								<IconButton
-									edge="end"
-									onClick={() => removeFromSaleListHandler(game.bggId, game.title)}
-									size="large"
-								>
-									<HighlightOffIcon color="error" />
-								</IconButton>
-							</ListItemSecondaryAction>
-						</ListItem>
-					))}
-				</List>
-
-				<Divider />
-
-				{saleList.length > 0 && (
-					<Box display="flex" justifyContent="flex-end" m={1}>
-						{saleList.length === 1 && (
-							<ButtonGroup color="primary" size="small">
-								<Button component={RouterLink} to="/sell" onClick={handleClose}>
-									Sell
-								</Button>
-								<Button component={RouterLink} to="/trade" onClick={handleClose}>
-									Trade
-								</Button>
-								<Button component={RouterLink} to="/buy" onClick={handleClose}>
-									Buy
-								</Button>
-								<Button component={RouterLink} to="/want" onClick={handleClose}>
-									Wanted
-								</Button>
-							</ButtonGroup>
-						)}
-
-						{saleList.length > 1 && (
-							<ButtonGroup color="primary" size="small">
-								<Button onClick={() => handleModeClick('sell')}>Sell</Button>
-								<Button onClick={() => handleModeClick('trade')}>Trade</Button>
-								<Button onClick={() => handleModeClick('buy')}>Buy</Button>
-								<Button component={RouterLink} to="/want" onClick={handleClose}>
-									Wanted
-								</Button>
-							</ButtonGroup>
-						)}
+					}}
+					open={open}
+					anchorEl={anchorEl}
+					onClose={handleClose}
+					transitionDuration={350}
+					anchorOrigin={{
+						vertical   : 'bottom',
+						horizontal : 'center'
+					}}
+					transformOrigin={{
+						vertical   : 'top',
+						horizontal : 'center'
+					}}
+				>
+					{/* Content */}
+					<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
+						My list ({data.list.length}/6)
 					</Box>
-				)}
+					<Divider />
 
-				<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
-			</Popover>
+					{data.list.length === 0 && (
+						<Fragment>
+							<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
+								Add games
+							</Box>
+
+							<Box display="flex" justifyContent="center" my={1} color="primary">
+								<ButtonGroup color="primary" size="small">
+									<Button component={RouterLink} to="/profile" onClick={handleClose}>
+										Profile
+									</Button>
+									<Button component={RouterLink} to="/collection" onClick={handleClose}>
+										Collection
+									</Button>
+									<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
+										Wishlist
+									</Button>
+								</ButtonGroup>
+							</Box>
+						</Fragment>
+					)}
+
+					<List disablePadding>
+						{data.list.map((game) => (
+							<ListItem key={game.bggId} divider>
+								<ListItemAvatar>
+									<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
+										{game.title.substring(0, 2).toUpperCase()}
+									</Avatar>
+								</ListItemAvatar>
+								<ListItemText
+									primary={game.title}
+									secondary={game.year}
+									primaryTypographyProps={{
+										color   : 'primary',
+										variant : 'subtitle2'
+									}}
+									secondaryTypographyProps={{
+										variant : 'caption'
+									}}
+								/>
+								<ListItemSecondaryAction>
+									<IconButton
+										disabled={deleteMutation.isLoading}
+										edge="end"
+										onClick={() => deleteFromListHandler(game.bggId, game.title)}
+										size="large"
+										color="error"
+									>
+										<HighlightOffIcon />
+									</IconButton>
+								</ListItemSecondaryAction>
+							</ListItem>
+						))}
+					</List>
+
+					<Divider />
+
+					{data.list.length > 0 && (
+						<Box display="flex" justifyContent="flex-end" m={1}>
+							{data.list.length === 1 && (
+								<ButtonGroup color="primary" size="small">
+									<Button component={RouterLink} to="/sell" onClick={handleClose}>
+										Sell
+									</Button>
+									<Button component={RouterLink} to="/trade" onClick={handleClose}>
+										Trade
+									</Button>
+									<Button component={RouterLink} to="/buy" onClick={handleClose}>
+										Buy
+									</Button>
+									<Button component={RouterLink} to="/want" onClick={handleClose}>
+										Wanted
+									</Button>
+								</ButtonGroup>
+							)}
+
+							{data.list.length > 1 && (
+								<ButtonGroup color="primary" size="small">
+									<Button onClick={() => handleModeClick('sell')}>Sell</Button>
+									<Button onClick={() => handleModeClick('trade')}>Trade</Button>
+									<Button onClick={() => handleModeClick('buy')}>Buy</Button>
+									<Button component={RouterLink} to="/want" onClick={handleClose}>
+										Wanted
+									</Button>
+								</ButtonGroup>
+							)}
+						</Box>
+					)}
+
+					<SaleListPopoverDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} mode={mode} />
+				</Popover>
+			)}
 		</Fragment>
 	)
 }

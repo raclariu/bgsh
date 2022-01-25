@@ -23,7 +23,7 @@ import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { fetchGames } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const GamesIndexScreen = () => {
@@ -35,7 +35,7 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { isLoading, data, isSuccess } = useQuery(
 		[ qryKey, { sort, search, page } ],

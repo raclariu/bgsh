@@ -22,7 +22,7 @@ import LzLoad from '../components/LzLoad'
 
 // @ Others
 import { apiFetchSavedGames } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { useNotiSnackbar } from '../hooks/hooks'
 
 // @ Main
 const SavedGamesScreen = () => {
@@ -31,7 +31,7 @@ const SavedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'savedGames', { search, page } ],

@@ -89,7 +89,7 @@ const multerGameImage = multer({
 	fileFilter : (req, file, cb) => {
 		checkGameImageFileType(file, cb)
 	}
-}).single('image')
+}).single('userImage')
 
 const uploadGameImage = (req, res, next) => {
 	multerGameImage(req, res, (err) => {

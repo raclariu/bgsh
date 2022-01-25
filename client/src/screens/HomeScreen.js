@@ -35,10 +35,8 @@ const HomeScreen = () => {
 	})
 
 	const options = {
-		refetchOnWindowFocus : false,
-		refetchOnMount       : false,
-		refetchOnReconnect   : false,
-		staleTime            : 1000 * 60 * 60
+		staleTime      : 1000 * 60 * 60,
+		refetchOnMount : false
 	}
 
 	const {

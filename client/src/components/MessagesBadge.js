@@ -15,10 +15,8 @@ import { apiGetNewMessagesCount } from '../api/api'
 // @ Main
 const MessagesBadge = () => {
 	const { isSuccess, data: count } = useQuery([ 'msgReceivedCount' ], apiGetNewMessagesCount, {
-		refetchInterval      : 1000 * 60 * 2,
-		refetchOnWindowFocus : false,
-		refetchOnMount       : false,
-		refetchOnReconnect   : false
+		refetchInterval : 1000 * 60 * 2,
+		refetchOnMount  : false
 	})
 
 	return (

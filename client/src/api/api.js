@@ -279,3 +279,19 @@ export const apiGetProfileData = async (username) => {
 	const { data } = await axsAUTH.get(`/api/users/${username}`)
 	return data
 }
+
+export const apiGetList = async () => {
+	const { data } = await axsAUTH.get(`/api/list`)
+	return data
+}
+
+export const apiAddOneToList = async (update) => {
+	const { data } = await axsAUTH.patch(`/api/list`, update)
+	return data
+}
+
+export const apiDeleteOneFromList = async (bggId) => {
+	console.log(bggId)
+	const { data } = await axsAUTH.delete(`/api/list`, { data: { bggId } })
+	return data
+}

@@ -31,7 +31,7 @@ import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateT
 
 // @ Others
 import { apiUploadImage, apiDeleteImage } from '../../api/api'
-import { useNotification } from '../../hooks/hooks'
+import { useNotiSnackbar } from '../../hooks/hooks'
 
 // @ Styles
 const StyledImg = styled('img')({
@@ -46,7 +46,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
 	const [ image, setImage ] = useState(null)
-	const [ showSnackbar ] = useNotification()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -58,7 +58,6 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 	const mutation = useMutation((imgFile) => apiUploadImage(imgFile), {
 		onSuccess : (imgData) => {
-			console.log(imgData)
 			handleGameInfo(imgData.image, game.bggId, 'image')
 			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
 		},
@@ -116,15 +115,13 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 		console.log('here')
 	}
 
-	console.log(data)
-
 	return (
 		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.type} • ${game.year}`}
 				action={
-					<IconButton onClick={() => removeFromSaleListHandler(game.bggId)} size="large">
+					<IconButton onClick={() => removeFromSaleListHandler(game.bggId, game.title)} size="large">
 						<HighlightOffIcon color="error" />
 					</IconButton>
 				}

@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
 import queryString from 'query-string'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -22,37 +22,31 @@ import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { addToSaleList, removeFromSaleList } from '../actions/saleListActions'
-import { saleListLimit } from '../constants/saleListConstants'
-import { apiFetchOwnedCollection } from '../api/api'
-import { useNotification } from '../hooks/hooks'
+import { apiFetchOwnedCollection, apiGetList, apiAddOneToList, apiDeleteOneFromList } from '../api/api'
+import {
+	useNotiSnackbar,
+	useGetListQuery,
+	useGetOwnedCollectionQuery,
+	useDeleteFromListMutation,
+	useAddToListMutation
+} from '../hooks/hooks'
 
 // @ Main
 const CollectionScreen = () => {
-	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const saleList = useSelector((state) => state.saleList)
+	const userList = useGetListQuery()
 
-	const [ showSnackbar ] = useNotification()
+	const { isLoading, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
 
-	const { isLoading, isSuccess, data } = useQuery(
-		[ 'collection', { search, page } ],
-		() => apiFetchOwnedCollection(search, page),
-		{
-			staleTime : Infinity,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching collection'
-				showSnackbar.error({ text })
-			},
-			onSuccess : (data) => {
-				data.owned.length === 0 && showSnackbar.warning({ text: 'Collection not found' })
-			}
-		}
-	)
+	const addMutation = useAddToListMutation()
+
+	const deleteMutation = useDeleteFromListMutation()
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -69,14 +63,12 @@ const CollectionScreen = () => {
 		history.push(`${location.pathname}?${query}`)
 	}
 
-	const saleListHandler = (e, id) => {
-		const { bggId, title, year, thumbnail, image } = data.owned.find((el) => el.bggId === id)
+	const listHandler = (e, game) => {
+		const { bggId, title, year, thumbnail, image } = game
 		if (e.target.checked) {
-			dispatch(addToSaleList({ bggId, title, year, thumbnail, image }))
-			showSnackbar.info({ text: `${title} added to list` })
+			addMutation.mutate({ bggId, title, year, thumbnail, image })
 		} else {
-			dispatch(removeFromSaleList(id))
-			showSnackbar.info({ text: `${title} removed from list` })
+			deleteMutation.mutate({ bggId, title })
 		}
 	}
 
@@ -109,10 +101,10 @@ const CollectionScreen = () => {
 							<LzLoad placeholder={<GameCardSkeleton />}>
 								<GameCard
 									data={data}
-									saleListHandler={saleListHandler}
-									isChecked={saleList.some((el) => el.bggId === data.bggId)}
+									listHandler={listHandler}
+									isChecked={userList.data.list.some((el) => el.bggId === data.bggId)}
 									isDisabled={
-										saleList.length === saleListLimit ? saleList.some(
+										userList.data.list.length === 6 ? userList.data.list.some(
 											(el) => el.bggId === data.bggId
 										) ? (
 											false
