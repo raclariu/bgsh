@@ -15,6 +15,11 @@ const getList = asyncHandler(async (req, res) => {
 		userList = await List.find({ addedBy: req.user._id })
 	}
 
+	if (userList.list.length > 6) {
+		userList.list = userList.list.slice(0, 6)
+		return res.status(200).json(userList)
+	}
+
 	return res.status(200).json(userList)
 })
 
@@ -26,11 +31,7 @@ const addOneToList = asyncHandler(async (req, res) => {
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
 	if (!userList) {
-		userList = await List.create({
-			addedBy : req.user._id,
-			list    : []
-		})
-		userList = await List.findOne({ addedBy: req.user._id }).lean()
+		userList = userList = await List.findOne({ addedBy: req.user._id }).lean()
 	}
 
 	if (userList.list.length === 6) {
@@ -39,12 +40,14 @@ const addOneToList = asyncHandler(async (req, res) => {
 			message : 'Maximum of 6 games can be added to your list'
 		}
 	}
+
 	if (userList.list.some((item) => item.bggId === bggId)) {
 		res.status(400)
 		throw {
 			message : `${title} already in your list`
 		}
 	}
+
 	userList.list.push({ bggId, title, year, thumbnail, image })
 	const updatedUserList = await List.findOneAndUpdate(
 		{ _id: userList._id },
@@ -72,10 +75,7 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 	}
 
 	if (userList.list.length === 0) {
-		res.status(400)
-		throw {
-			message : 'List is already empty'
-		}
+		return res.status(200).json(userList)
 	}
 
 	const filtered = userList.list.filter((item) => item.bggId !== bggId)

@@ -11,6 +11,7 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
+import Box from '@mui/material/Box'
 
 // @ Components
 import SellGameCard from '../components/SellGamesScreen/SellGameCard'
@@ -23,7 +24,7 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForSale, apiGetList } from '../api/api'
-import { useDeleteFromListMutation } from '../hooks/hooks'
+import { useDeleteFromListMutation, useGetListQuery } from '../hooks/hooks'
 
 // @ Main
 const SellGamesScreen = () => {
@@ -46,23 +47,19 @@ const SellGamesScreen = () => {
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState([])
-	console.log(values)
 
-	const userList = useQuery([ 'list' ], apiGetList, {
-		staleTime : Infinity,
-		onSettled : async (data) => {
-			setValues((val) => val.filter(({ bggId }) => data.list.find((el) => el.bggId === bggId)))
-		}
-	})
+	const userList = useGetListQuery((listData) =>
+		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
+	)
 
-	const { isLoading, isError, error, data, isSuccess, refetch } = useQuery(
+	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
 		() => apiFetchGameDetails(userList.data.list.map((el) => el.bggId)),
 		{
-			staleTime : Infinity,
-			enabled   : !!userList.data,
-			onSuccess : (data) => {
-				console.log('here')
+			staleTime      : Infinity,
+			enabled        : !!userList.data && userList.data.list.length > 0,
+			refetchOnMount : 'always',
+			onSuccess      : (data) => {
 				setValues(
 					data.map((game) => {
 						return {
@@ -80,31 +77,24 @@ const SellGamesScreen = () => {
 		}
 	)
 
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries([ 'bggGamesDetails' ])
-			}
-		},
-		[ queryClient ]
-	)
+	console.log(values)
 
 	const deleteMutation = useDeleteFromListMutation()
 
-	const mutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
+	const listMutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
-			queryClient.invalidateQueries('saleGames')
-			queryClient.invalidateQueries('myListedGames')
+			queryClient.invalidateQueries([ 'saleGames' ])
+			queryClient.invalidateQueries([ 'myListedGames' ])
 		}
 	})
 
 	if (isPack !== false && isPack !== true) {
-		mutation.reset()
+		listMutation.reset()
 		history.push('/sell')
 	}
 
 	if (saleList.length === 1 && isPack) {
-		mutation.reset()
+		listMutation.reset()
 		history.push('/sell')
 	}
 
@@ -166,7 +156,7 @@ const SellGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		if (saleList.length === 0) return
+		if (userList.data.list.length === 0) return
 
 		const verifiedGames = values.map((val) => {
 			if (isPack) {
@@ -196,132 +186,141 @@ const SellGamesScreen = () => {
 			totalPrice       : isPack ? totalPrice : null
 		}
 
-		mutation.mutate(gamesData)
+		listMutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit} autoComplete="off">
-			<div>
-				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-				{mutation.isError &&
-					Object.values(mutation.error.response.data.message).map((err, i) => (
+			{listMutation.isError && (
+				<Box display="flex" flexDirection="column" gap={1} my={2}>
+					{Object.values(listMutation.error.response.data.message).map((err, i) => (
 						<CustomAlert key={i}>{err}</CustomAlert>
 					))}
+				</Box>
+			)}
 
-				{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
-			</div>
+			{userList.isSuccess &&
+			userList.data.list.length === 0 && (
+				<Box my={2}>
+					<CustomAlert severity="warning">Your list is empty</CustomAlert>
+				</Box>
+			)}
 
 			{isLoading && <Loader />}
 
-			{isSuccess &&
-			saleList.length > 0 && (
-				<Fragment>
-					<Grid container spacing={3}>
-						{data.map(
-							(game) =>
-								// Because we may have 6 fetched games, but values could have only 3 because
-								// user deleted 3, we need to only render a list of the ones that are in values
-								values.find((val) => val.bggId === game.bggId) && (
-									<Grid item key={game.bggId} md={6} xs={12}>
-										<SellGameCard
-											game={game}
-											isPack={isPack}
-											mode="sell"
-											data={values.find((val) => val.bggId === game.bggId)}
-											removeFromSaleListHandler={removeFromSaleListHandler}
-											handleGameInfo={handleGameInfo}
-										/>
-									</Grid>
-								)
-						)}
-					</Grid>
-
-					<Divider />
-
-					{/* Shipping Area */}
-					<Grid container direction="row" spacing={2}>
-						<Grid item sm={6} xs={12}>
-							<ShippingSection
-								handleShippingInfo={handleShippingInfo}
-								mode="sell"
-								shipError={shipError}
-								shipData={{
-									shipPost,
-									shipCourier,
-									shipPersonal,
-									shipPostPayer,
-									shipCourierPayer,
-									shipCities
-								}}
-							/>
+			{userList.isSuccess &&
+				userList.data.list.length > 0 &&
+				(isSuccess && (
+					<Fragment>
+						<Grid container spacing={3}>
+							{data.map(
+								(game) =>
+									// Because we may have 6 fetched games, but values could have only 3 because
+									// user deleted 3, we need to only render a list of the ones that are in values
+									values.find((val) => val.bggId === game.bggId) && (
+										<Grid item key={game.bggId} md={6} xs={12}>
+											<SellGameCard
+												game={game}
+												isPack={isPack}
+												mode="sell"
+												data={values.find((val) => val.bggId === game.bggId)}
+												removeFromSaleListHandler={removeFromSaleListHandler}
+												handleGameInfo={handleGameInfo}
+											/>
+										</Grid>
+									)
+							)}
 						</Grid>
 
-						<Grid item sm={6} xs={12}>
-							<Grid container direction="column">
-								{isPack && (
-									<Fragment>
-										<Grid item>
-											<Input
-												onChange={handleTotalPrice}
-												value={totalPrice}
-												error={
-													mutation.isError && mutation.error.response.data.message.totalPrice
-												}
-												helperText={
-													mutation.isError && mutation.error.response.data.message.totalPrice
-												}
-												name="total-price"
-												label="Pack price"
-												type="number"
-												InputProps={{
-													startAdornment : (
-														<InputAdornment position="start">RON</InputAdornment>
-													)
-												}}
-												fullWidth
-												required
-											/>
-										</Grid>
-										<Grid item>
-											<Input
-												onChange={handleExtraInfoPack}
-												value={extraInfoPack}
-												name="extra-info-pack"
-												label={`Extra info ${extraInfoPack.length}/500`}
-												size="medium"
-												multiline
-												minRows={3}
-												maxRows={10}
-												type="text"
-												inputProps={{
-													maxLength   : 500,
-													placeholder :
-														'Any other info regarding the pack goes in here (500 characters limit)'
-												}}
-												fullWidth
-											/>
-										</Grid>
-									</Fragment>
-								)}
+						<Divider />
 
-								<Grid item>
-									<LoadingBtn
-										type="submit"
-										disabled={shipError}
-										variant="contained"
-										color="primary"
-										loading={mutation.isLoading}
-										fullWidth
-									>
-										Sell
-									</LoadingBtn>
+						{/* Shipping Area */}
+						<Grid container direction="row" spacing={2}>
+							<Grid item sm={6} xs={12}>
+								<ShippingSection
+									handleShippingInfo={handleShippingInfo}
+									mode="sell"
+									shipError={shipError}
+									shipData={{
+										shipPost,
+										shipCourier,
+										shipPersonal,
+										shipPostPayer,
+										shipCourierPayer,
+										shipCities
+									}}
+								/>
+							</Grid>
+
+							<Grid item sm={6} xs={12}>
+								<Grid container direction="column">
+									{isPack && (
+										<Fragment>
+											<Grid item>
+												<Input
+													onChange={handleTotalPrice}
+													value={totalPrice}
+													error={
+														listMutation.isError &&
+														listMutation.error.response.data.message.totalPrice
+													}
+													helperText={
+														listMutation.isError &&
+														listMutation.error.response.data.message.totalPrice
+													}
+													name="total-price"
+													label="Pack price"
+													type="number"
+													InputProps={{
+														startAdornment : (
+															<InputAdornment position="start">RON</InputAdornment>
+														)
+													}}
+													fullWidth
+													required
+												/>
+											</Grid>
+											<Grid item>
+												<Input
+													onChange={handleExtraInfoPack}
+													value={extraInfoPack}
+													name="extra-info-pack"
+													label={`Extra info ${extraInfoPack.length}/500`}
+													size="medium"
+													multiline
+													minRows={3}
+													maxRows={10}
+													type="text"
+													inputProps={{
+														maxLength   : 500,
+														placeholder :
+															'Any other info regarding the pack goes in here (500 characters limit)'
+													}}
+													fullWidth
+												/>
+											</Grid>
+										</Fragment>
+									)}
+
+									<Grid item>
+										<LoadingBtn
+											type="submit"
+											disabled={shipError}
+											variant="contained"
+											color="primary"
+											loading={listMutation.isLoading}
+											fullWidth
+										>
+											Sell
+										</LoadingBtn>
+									</Grid>
 								</Grid>
 							</Grid>
 						</Grid>
-					</Grid>
-				</Fragment>
-			)}
+					</Fragment>
+				))}
 		</form>
 	)
 }

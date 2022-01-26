@@ -45,7 +45,6 @@ const StyledImg = styled('img')({
 const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
-	const [ image, setImage ] = useState(null)
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	const displayImageHandler = (image, thumbnail) => {
@@ -58,7 +57,8 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 	const mutation = useMutation((imgFile) => apiUploadImage(imgFile), {
 		onSuccess : (imgData) => {
-			handleGameInfo(imgData.image, game.bggId, 'image')
+			console.log(imgData)
+			handleGameInfo(imgData, game.bggId, 'userImage')
 			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
 		},
 		onError   : (error) => {
@@ -68,7 +68,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 
 	const removeImageMutation = useMutation((url) => apiDeleteImage(url), {
 		onSuccess : () => {
-			handleGameInfo(null, game.bggId, 'image')
+			handleGameInfo(null, game.bggId, 'userImage')
 			showSnackbar.info({ text: `Image for "${data.title}" deleted successfully` })
 		},
 		onError   : (error) => {
@@ -76,39 +76,30 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 		}
 	})
 
-	useEffect(
-		() => {
-			if (image) {
-				const fd = new FormData()
-				fd.append('image', image, image.name)
-				fd.append('bggId', game.bggId)
-				mutation.mutate(fd)
-			}
-		},
-		[ image ]
-	)
-
 	const handleImages = (e) => {
 		const uploadedImg = e.target.files[0]
 		if (!uploadedImg) return
 
 		if (uploadedImg.type !== 'image/jpeg' && uploadedImg.type !== 'image/png') {
 			showSnackbar.error({ text: 'Only .jpg and .png images are allowed' })
-			setImage(null)
+
 			return
 		}
 
 		if (uploadedImg.size > 5 * 1024 * 1024) {
 			showSnackbar.error({ text: 'Image too large. Maximum size is 5MB' })
-			setImage(null)
+
 			return
 		}
 
-		setImage(uploadedImg)
+		const fd = new FormData()
+		fd.append('userImage', uploadedImg, uploadedImg.name)
+		fd.append('bggId', game.bggId)
+		mutation.mutate(fd)
 	}
 
 	const removeImage = (e) => {
-		removeImageMutation.mutate(data.image.name)
+		removeImageMutation.mutate(data.userImage.name)
 	}
 
 	const handleImgLoad = (e) => {
@@ -281,7 +272,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 							<Loader size={35} />
 						</Box>
 					) : (
-						data.image && (
+						data.userImage && (
 							<Box
 								sx={{
 									width    : 150,
@@ -290,7 +281,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 								}}
 							>
 								<StyledImg
-									src={data.image.thumbnail}
+									src={data.userImage.thumbnail}
 									alt={data.title}
 									title={data.title}
 									onLoad={handleImgLoad}
@@ -312,7 +303,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 						)
 					)}
 
-					{!data.image &&
+					{!data.userImage &&
 					!mutation.isLoading &&
 					!removeImageMutation.isLoading && (
 						<label htmlFor={`${data.bggId}-image`}>

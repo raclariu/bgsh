@@ -62,15 +62,18 @@ export const useDeleteFromListMutation = () => {
 			// Return a context object with the snapshotted value
 			return { prevList }
 		},
-		onError   : (err, { title }, ctx) => {
+		onError   : async (err, { title }, ctx) => {
+			// For sell/trade/wanted/buy screen
+			const gamesDetails = await queryClient.getQueryData([ 'bggGamesDetails' ])
+			// Show error snackbar
 			showSnackbar.error({
 				text : err.response.data.message || `Error occured while removing ${title} from your list`
 			})
 			// If the mutation fails, use the context returned from onMutate to roll back
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
+			queryClient.setQueryData([ 'bggGamesDetails' ], gamesDetails)
 		},
 		onSuccess : (data) => {
-			// queryClient.invalidateQueries('list')
 			queryClient.setQueryData([ 'list' ], data)
 		}
 	})
@@ -102,13 +105,12 @@ export const useAddToListMutation = () => {
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
 		},
 		onSuccess : (data) => {
-			queryClient.invalidateQueries([ 'bggGamesDetails' ])
 			queryClient.setQueryData([ 'list' ], data)
 		}
 	})
 }
 
-export const useGetListQuery = () => {
+export const useGetListQuery = (onSettled) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useQuery([ 'list' ], api.apiGetList, {
@@ -116,7 +118,8 @@ export const useGetListQuery = () => {
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching your list'
 			showSnackbar.error({ text })
-		}
+		},
+		onSettled
 	})
 }
 

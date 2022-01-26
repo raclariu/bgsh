@@ -134,13 +134,13 @@ const uploadImage = asyncHandler(async (req, res) => {
 		await fullBucketFile.makePublic()
 		await thumbnailBucketFile.makePublic()
 
-		return res.status(200).json({
-			userImage : {
-				full      : fullBucketFile.publicUrl(),
-				thumbnail : thumbnailBucketFile.publicUrl(),
-				name      : `${fileName}.webp`
-			}
-		})
+		const userImage = {
+			full      : fullBucketFile.publicUrl(),
+			thumbnail : thumbnailBucketFile.publicUrl(),
+			name      : `${fileName}.webp`
+		}
+
+		return res.status(200).json(userImage)
 	} catch (error) {
 		res.status(503)
 		throw { message: 'Error while uploading image. Try again' }
