@@ -18,20 +18,22 @@ const errorHandler = (err, req, res, next) => {
 
 	if (process.env.NODE_ENV === 'development') {
 		console.log(chalk.hex('#737373')('________________________________________________'))
-		console.log('\n' + chalk.bgHex('#f7edcb').hex('#1c1c1c').bold('ERROR HANDLER => '), err)
-		console.log(
-			chalk.bgHex('#c21313').hex('#f7edcb').bold(
-				'\n' +
-					'Error(s): ' +
+		console.log(chalk.bgHex('#f7edcb').hex('#1c1c1c').bold('\nERROR HANDLER\n'), err)
+		if (typeof err.message === 'object') {
+			console.log(
+				chalk.bgHex('#c21313').hex('#f7edcb').bold(
 					'\n' +
-					`${Object.keys(err.message)
-						.map((k) => {
-							return `${k}: ${err.message[k]}`
-						})
-						.join('\n')}` +
-					'\n'
+						'Error(s)' +
+						'\n' +
+						`${Object.keys(err.message)
+							.map((k) => {
+								return `${k}: ${err.message[k]}`
+							})
+							.join('\n')}` +
+						'\n'
+				)
 			)
-		)
+		}
 		console.log(chalk.hex('#737373')('________________________________________________'))
 	}
 
