@@ -1,12 +1,13 @@
 import mongoose from 'mongoose'
+import chalk from 'chalk'
 
 const connectDB = async () => {
 	try {
 		const conn = await mongoose.connect(process.env.MONGO_URI)
 
-		console.log(`MongoDB Connected: ${conn.connection.host}`.white.bgCyan.bold)
+		console.log(chalk.bgHex('#31754d').hex('#f7edcb').bold(`MongoDB Connected: ${conn.connection.host}`))
 	} catch (error) {
-		console.log(`Error: ${error.message}`.white.bgRed.bold)
+		console.log(`Error: ${error.message}`)
 		process.exit(1)
 	}
 }

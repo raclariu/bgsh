@@ -1,11 +1,11 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import morgan from 'morgan'
-import colors from 'colors'
+import chalk from 'chalk'
 import cors from 'cors'
 import connectDB from './db/dbConnect.js'
 import { setInactiveTask, getKickstarters } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
+import morganLogger from './middlewares/morganMiddleware.js'
 import userRoutes from './routes/userRoutes.js'
 import collectionRoutes from './routes/collectionRoutes.js'
 import gameRoutes from './routes/gameRoutes.js'
@@ -23,9 +23,7 @@ app.disable('x-powered-by')
 
 // @ Middlewares
 app.use(cors())
-if (process.env.NODE_ENV === 'development') {
-	app.use(morgan('dev'))
-}
+app.use(morganLogger())
 app.use(express.json())
 
 // @ Routes middleware
@@ -38,7 +36,7 @@ app.use('/api/list', listRoutes)
 app.use('/api/misc', miscRoutes)
 
 app.get('/', (req, res) => {
-	res.status(200).send('Api is running...')
+	return res.status(200).send('Api is running...')
 })
 
 app.use(notFound)
@@ -47,9 +45,9 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	const used = process.memoryUsage().heapUsed / 1024 / 1024
-	console.log(`~Ram used: ${Math.round(used * 100) / 100} MB`.black.bgBrightWhite.bold)
 	setInactiveTask.start()
 	// getKickstarters.start()
-	console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.white.bgMagenta.bold)
-	console.log(`setInactiveTask starting... running every day at 03:00 and 15:00`.yellow.bgBlue.bold)
+	console.log(chalk.bgMagenta.hex('#f7edcb').bold(`Memory usage: ~${Math.round(used * 100) / 100} MB`))
+	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 03:00 and 15:00`))
+	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
 })

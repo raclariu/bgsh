@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+
 const notFound = (req, res, next) => {
 	if (process.env.NODE_ENV === 'development') {
 		const error = new Error(`Not found for method ${req.method} @ path ${req.path}`)
@@ -14,8 +16,24 @@ const errorHandler = (err, req, res, next) => {
 	const statusCode = res.statusCode === 200 ? 500 : res.statusCode
 	res.status(statusCode)
 
-	console.log('ERROR IN HANDLER => ', err)
-	console.log(`Error: ${err.message}`.white.bgRed.bold)
+	if (process.env.NODE_ENV === 'development') {
+		console.log(chalk.hex('#737373')('________________________________________________'))
+		console.log('\n' + chalk.bgHex('#f7edcb').hex('#1c1c1c').bold('ERROR HANDLER => '), err)
+		console.log(
+			chalk.bgHex('#c21313').hex('#f7edcb').bold(
+				'\n' +
+					'Error(s): ' +
+					'\n' +
+					`${Object.keys(err.message)
+						.map((k) => {
+							return `${k}: ${err.message[k]}`
+						})
+						.join('\n')}` +
+					'\n'
+			)
+		)
+		console.log(chalk.hex('#737373')('________________________________________________'))
+	}
 
 	if (process.env.NODE_ENV === 'development') {
 		res.json({

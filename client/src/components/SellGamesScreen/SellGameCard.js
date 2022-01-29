@@ -56,9 +56,9 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	}
 
 	const mutation = useMutation((imgFile) => apiUploadImage(imgFile), {
-		onSuccess : (imgData) => {
-			console.log(imgData)
-			handleGameInfo(imgData, game.bggId, 'userImage')
+		onSuccess : (userImageObj) => {
+			console.log(userImageObj)
+			handleGameInfo(userImageObj, game.bggId, 'userImage')
 			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
 		},
 		onError   : (error) => {
@@ -66,7 +66,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 		}
 	})
 
-	const removeImageMutation = useMutation((url) => apiDeleteImage(url), {
+	const removeImageMutation = useMutation((fileName) => apiDeleteImage(fileName), {
 		onSuccess : () => {
 			handleGameInfo(null, game.bggId, 'userImage')
 			showSnackbar.info({ text: `Image for "${data.title}" deleted successfully` })
@@ -77,6 +77,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 	})
 
 	const handleImages = (e) => {
+		console.log(e.target.files[0])
 		const uploadedImg = e.target.files[0]
 		if (!uploadedImg) return
 
@@ -269,7 +270,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 								borderRadius   : '8px'
 							}}
 						>
-							<Loader size={35} />
+							<Loader size={30} />
 						</Box>
 					) : (
 						data.userImage && (

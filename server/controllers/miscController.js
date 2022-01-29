@@ -138,7 +138,6 @@ const bggGetHotGamesList = asyncHandler(async (req, res) => {
 		const hotArr = []
 		let { item } = await parseXML(data)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
-		console.log(ensureArray)
 
 		for (let game of ensureArray) {
 			const hotGame = {
@@ -154,7 +153,7 @@ const bggGetHotGamesList = asyncHandler(async (req, res) => {
 
 		return res.status(200).json(hotArr)
 	} catch (error) {
-		res.status(503)
+		res.status(400)
 		throw {
 			message : 'Failed to retrieve data from BGG',
 			devErr  : error.stack

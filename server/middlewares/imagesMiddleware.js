@@ -84,7 +84,7 @@ const resizeAvatar = asyncHandler(async (req, res, next) => {
 const multerGameImage = multer({
 	storage    : memStorage,
 	limits     : {
-		fileSize : 2 * 1024 * 1024 // Maximum file size is 2MB
+		fileSize : 5 * 1024 * 1024 // Maximum file size is 5MB
 	},
 	fileFilter : (req, file, cb) => {
 		checkGameImageFileType(file, cb)
@@ -96,7 +96,7 @@ const uploadGameImage = (req, res, next) => {
 		// FILE SIZE ERROR
 		if (err instanceof multer.MulterError) {
 			res.status(400)
-			err.message = 'Image size is larger than 2MB. Please upload a smaller image'
+			err.message = 'Image size is larger than 5MB. Please upload a smaller image'
 			next(err)
 		} else if (err) {
 			// INVALID FILE TYPE, message will return from fileFilter callback
