@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles'
 import AvatarEditor from 'react-avatar-editor'
 import { useDebounce } from 'use-debounce'
 import { alpha } from '@mui/material/styles'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient, useQuery } from 'react-query'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
@@ -26,7 +26,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import ZoomOutIcon from '@mui/icons-material/ZoomOut'
 
 // @ Others
-import { apiUserChangeAvatar } from '../api/api'
+import { apiUserChangeAvatar, apiGetOwnAvatar } from '../api/api'
 import { useNotiSnackbar } from '../hooks/hooks'
 import { changeAvatar } from '../actions/userActions'
 
@@ -55,8 +55,11 @@ const FileInput = styled('input')({
 
 const ChangeAvatar = () => {
 	const dispatch = useDispatch()
+	const queryClient = useQueryClient()
 
-	const userAvatar = useSelector((state) => state.userAuth.userData.avatar)
+	const { isSuccess, data: ownAvatarData } = useQuery([ 'ownAvatar' ], apiGetOwnAvatar, {
+		staleTime : Infinity
+	})
 
 	const ref = useRef()
 	const [ image, setImage ] = useState(null)
@@ -66,14 +69,15 @@ const ChangeAvatar = () => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	const mutation = useMutation((imgBlob) => apiUserChangeAvatar(imgBlob), {
-		onSuccess : (data) => {
+		onSuccess : (avatarObj) => {
 			setOpenDialog(false)
 			setImage(null)
-			dispatch(changeAvatar(data.avatar))
+			queryClient.setQueryData([ 'ownAvatar' ], avatarObj)
 			showSnackbar.success({ text: 'Avatar changed successfully' })
 		},
-		onError   : (error) => {
-			showSnackbar.error({ text: `${error.response.data.message}` })
+		onError   : (err) => {
+			queryClient.invalidateQueries([ 'ownAvatar' ])
+			showSnackbar.error({ text: `${err.response.data.message}` })
 		}
 	})
 
@@ -154,19 +158,21 @@ const ChangeAvatar = () => {
 
 	return (
 		<Fragment>
-			<label htmlFor="avatar">
-				<FileInput
-					accept="image/jpeg, image/png"
-					id="avatar"
-					name="avatar"
-					type="file"
-					onChange={handleImageChange}
-					onClick={(e) => (e.target.value = null)}
-				/>
-				<MyAvatar src={userAvatar}>
-					<PhotoCameraIcon fontSize="large" />
-				</MyAvatar>
-			</label>
+			{isSuccess && (
+				<label htmlFor="avatar">
+					<FileInput
+						accept="image/jpeg, image/png"
+						id="avatar"
+						name="avatar"
+						type="file"
+						onChange={handleImageChange}
+						onClick={(e) => (e.target.value = null)}
+					/>
+					<MyAvatar src={ownAvatarData.avatar}>
+						<PhotoCameraIcon fontSize="large" />
+					</MyAvatar>
+				</label>
+			)}
 
 			<Dialog maxWidth="xs" open={openDialog} onClose={handleCloseDialog} disableEscapeKeyDown>
 				<DialogContent>

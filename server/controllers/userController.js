@@ -181,4 +181,12 @@ const getNotifications = asyncHandler(async (req, res) => {
 	res.status(200).json({ notifications })
 })
 
-export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications, changeAvatar }
+// ~ @desc    Get own avatar
+// ~ @route   GET /api/users/avatar
+// ~ @access  Private route
+const getOwnAvatar = asyncHandler(async (req, res) => {
+	const user = await User.findOne({ _id: req.user._id }).select('avatar').lean()
+	return res.status(200).json({ avatar: user.avatar })
+})
+
+export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications, changeAvatar, getOwnAvatar }

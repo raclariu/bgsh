@@ -8,7 +8,8 @@ import {
 	changePassword,
 	getUserProfileData,
 	getNotifications,
-	changeAvatar
+	changeAvatar,
+	getOwnAvatar
 } from '../controllers/userController.js'
 import {
 	validateSignIn,
@@ -22,7 +23,7 @@ router.route('/signin').post(validateSignIn, userAuth)
 router.route('/notifications').get([ protect ], getNotifications)
 router.route('/signup').post(validateSignUp, userRegister)
 router.route('/password').post([ protect, ...validatePasswordChange ], changePassword)
+router.route('/avatar').post([ protect, uploadAvatar, resizeAvatar ], changeAvatar).get([ protect ], getOwnAvatar)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
-router.route('/avatar').post([ protect, uploadAvatar, resizeAvatar ], changeAvatar)
 
 export default router

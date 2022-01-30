@@ -30,7 +30,7 @@ const userSchema = mongoose.Schema({
 	},
 	avatar     : {
 		type    : String,
-		default : ''
+		default : null
 	},
 	savedGames : [
 		{

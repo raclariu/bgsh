@@ -291,7 +291,11 @@ export const apiAddOneToList = async (update) => {
 }
 
 export const apiDeleteOneFromList = async (bggId) => {
-	console.log(bggId)
 	const { data } = await axsAUTH.delete(`/api/list`, { data: { bggId } })
+	return data
+}
+
+export const apiGetOwnAvatar = async () => {
+	const { data } = await axsAUTH.get(`/api/users/avatar`)
 	return data
 }

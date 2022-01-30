@@ -50,7 +50,7 @@ import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 import MessagesBadge from '../MessagesBadge'
 import SaleListPopover from '../SaleListPopover'
 import Theme from '../Theme'
-import CustomAvatar from '../CustomAvatar'
+import MyAvatar from '../MyAvatar'
 import NotificationsPopover from '../NotificationsPopover'
 
 // @ Others
@@ -161,9 +161,9 @@ const Header = (props) => {
 									<Box fontWeight="fontWeightMedium" mr={1}>
 										{userData.username}
 									</Box>
-									<CustomAvatar size={6} defaultAvatar inactive>
+									<MyAvatar size={6}>
 										<Box fontSize={14}>{userData.username.substring(0, 2).toUpperCase()}</Box>
-									</CustomAvatar>
+									</MyAvatar>
 								</Box>
 								{/* <IconButton
 										color="primary"
