@@ -18,7 +18,19 @@ const collectionSchema = mongoose.Schema(
 				thumbnail : String,
 				image     : String,
 				added     : Date,
-				_id       : false
+				_id       : false,
+				stats     : {
+					rated     : Number,
+					avgRating : Number
+				},
+				version   : {
+					type    : {
+						title : String,
+						year  : String
+					},
+					default : null,
+					_id     : false
+				}
 			}
 		],
 		ownedCount : Number

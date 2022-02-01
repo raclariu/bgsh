@@ -115,6 +115,7 @@ export const useGetListQuery = (onSettled) => {
 
 	return useQuery([ 'list' ], api.apiGetList, {
 		staleTime : Infinity,
+		retry     : 4,
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching your list'
 			showSnackbar.error({ text })

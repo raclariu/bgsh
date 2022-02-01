@@ -13,50 +13,64 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 		const { bggUsername } = req.body
 
 		// >> Owned
+		// no expansions = https://api.geekdo.com/xmlapi2/collection?username=axtro&own=1&brief=1&excludesubtype=boardgameexpansion
+		// expansions only = https://api.geekdo.com/xmlapi2/collection?username=axtro&own=1&brief=1&subtype=boardgameexpansion
+
 		const { data: ownedData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',
 				own      : 1,
-				wishlist : 0
+				wishlist : 0,
+				version  : 1,
+				stats    : 1
 			}
 		})
 
 		// If there is only one game in collection, parser returns object instead of array, that's why the if/else is needed
 		let parsedOwned = await parseXML(ownedData)
 
+		// res.status(200).json({
+		// 	asd : parsedOwned.item.map((obj) => {
+		// 		return {
+		// 			hasItem : obj.version && !!obj.version.item,
+		// 			title   : obj.originalname ? obj.originalname : obj.name._ || null,
+		// 			version : obj.version
+		// 		}
+		// 	})
+		// })
+
 		let bggOwned = []
 		if (parsedOwned.totalitems !== '0') {
-			if (Array.isArray(parsedOwned.item)) {
-				for (let game of parsedOwned.item) {
-					const item = {
-						bggId     : game.objectid,
-						title     : game.originalname ? game.originalname : game.name._ || null,
-						year      : game.yearpublished ? +game.yearpublished : null,
-						thumbnail : game.thumbnail ? game.thumbnail : null,
-						image     : game.image ? game.image : null,
-						added     : game.status.lastmodified
-					}
-
-					bggOwned.push(item)
-				}
-			} else {
-				const {
-					objectid,
-					name,
-					originalname,
-					yearpublished,
-					thumbnail,
-					image,
-					status        : { lastmodified }
-				} = parsedOwned.item
+			const ensureParsedOwnedIsArray = Array.isArray(parsedOwned.item) ? parsedOwned.item : [ parsedOwned.item ]
+			for (let game of ensureParsedOwnedIsArray) {
 				const item = {
-					bggId     : objectid,
-					title     : originalname ? originalname : name._ || null,
-					year      : yearpublished ? +yearpublished : null,
-					thumbnail : thumbnail ? thumbnail : null,
-					image     : image ? image : null,
-					added     : lastmodified
+					bggId     : game.objectid,
+					title     : game.originalname ? game.originalname : game.name._ || null,
+					year      : game.yearpublished ? +game.yearpublished : null,
+					thumbnail : game.thumbnail ? game.thumbnail : null,
+					image     : game.image ? game.image : null,
+					added     : game.status.lastmodified,
+					stats     : {
+						rated     :
+							game.stats.rating.value && !isNaN(game.stats.rating.value)
+								? +parseFloat(game.stats.rating.value).toFixed(2)
+								: null,
+						avgRating : +parseFloat(game.stats.rating.average.value).toFixed(2)
+					},
+					version   : !game.version
+						? null
+						: game.version.item
+							? {
+									title : Array.isArray(game.version.item.name)
+										? game.version.item.name.find((obj) => obj.type === 'primary').value
+										: typeof game.version.item.name === 'object' ? game.version.item.name.value : null,
+
+									year  : +game.version.item.yearpublished.value
+										? +game.version.item.yearpublished.value
+										: null
+								}
+							: null
 				}
 
 				bggOwned.push(item)

@@ -5,6 +5,9 @@ import approx from 'approximate-number'
 // @ Mui
 import Box from '@mui/material/Box'
 
+// @ Components
+import CustomTooltip from '../CustomTooltip'
+
 // @ Helpers
 const defaultBigBox = {
 	display        : 'flex',
@@ -56,9 +59,11 @@ const RatingBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box fontSize="0.875rem" bgcolor={handleRatingBgColor()} sx={defaultMiniBox}>
-					{approx(stats.avgRating)}
-				</Box>
+				<CustomTooltip title={`Average rating`}>
+					<Box fontSize="0.875rem" bgcolor={handleRatingBgColor()} sx={defaultMiniBox}>
+						{approx(stats.avgRating)}
+					</Box>
+				</CustomTooltip>
 			) : (
 				<Box bgcolor={handleRatingBgColor()} sx={defaultBigBox}>
 					{approx(stats.avgRating)}
@@ -83,9 +88,11 @@ const RankBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' && (
-				<Box fontSize="0.875rem" bgcolor={handleRankBgColor()} sx={defaultMiniBox}>
-					{!stats.rank ? <Box color="grey.200">N/A</Box> : <Box color="grey.200">{stats.rank}</Box>}
-				</Box>
+				<CustomTooltip title="Overall rank">
+					<Box fontSize="0.875rem" bgcolor={handleRankBgColor()} sx={defaultMiniBox}>
+						{!stats.rank ? <Box color="grey.200">N/A</Box> : <Box color="grey.200">{stats.rank}</Box>}
+					</Box>
+				</CustomTooltip>
 			)}
 
 			{variant === 'full' && (
@@ -127,13 +134,15 @@ const ComplexityBox = ({ variant, complexity }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<Box fontSize="0.875rem" bgcolor={handleComplexityBgColor()} sx={defaultMiniBox}>
-					{!complexity.weight ? (
-						<Box color="grey.200">N/A</Box>
-					) : (
-						<Box color="grey.200">{(Math.round(complexity.weight * 100) / 100).toFixed(2)}</Box>
-					)}
-				</Box>
+				<CustomTooltip title="Weight">
+					<Box fontSize="0.875rem" bgcolor={handleComplexityBgColor()} sx={defaultMiniBox}>
+						{!complexity.weight ? (
+							<Box color="grey.200">N/A</Box>
+						) : (
+							<Box color="grey.200">{(Math.round(complexity.weight * 100) / 100).toFixed(2)}</Box>
+						)}
+					</Box>
+				</CustomTooltip>
 			) : (
 				<Box bgcolor={handleComplexityBgColor()} sx={defaultBigBox}>
 					{!complexity.weight ? (

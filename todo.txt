@@ -17,3 +17,4 @@ da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dr
 - de rezolvat addWantedgames , sellGames, tradeGames screens sa fie la fel ca buyGamesScreen pentru ca e mai optimizat
 - de facut instanta la axios pentru protect si fara si in interceptor daca e 403 sa dea logout la user sa nu mai verific jwt de fiecare data daca
   oricum se verifica in backend
+- Lies_vhis colectie 0 // Temprament colectie 2000 + // 
