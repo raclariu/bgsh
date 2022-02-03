@@ -48,9 +48,16 @@ const SellGamesScreen = () => {
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	const userList = useGetListQuery((listData) =>
-		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
-	)
+	const userList = useGetListQuery((listData) => {
+		console.log('listData', listData.list.length)
+		setValues((val) =>
+			val.filter(({ bggId }) => {
+				console.log(bggId)
+				return listData.list.find((el) => el.bggId === bggId)
+			})
+		)
+		console.log('values', values)
+	})
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
@@ -65,7 +72,7 @@ const SellGamesScreen = () => {
 						return {
 							...game,
 							isSleeved : false,
-							version   : null,
+							version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
 							condition : null,
 							extraInfo : '',
 							price     : '',
@@ -76,8 +83,6 @@ const SellGamesScreen = () => {
 			}
 		}
 	)
-
-	console.log(values)
 
 	const deleteMutation = useDeleteFromListMutation()
 
@@ -100,7 +105,7 @@ const SellGamesScreen = () => {
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 
-	const removeFromSaleListHandler = (bggId, title) => {
+	const removeFromListHandler = (bggId, title) => {
 		deleteMutation.mutate({ bggId, title })
 	}
 
@@ -226,7 +231,7 @@ const SellGamesScreen = () => {
 												isPack={isPack}
 												mode="sell"
 												data={values.find((val) => val.bggId === game.bggId)}
-												removeFromSaleListHandler={removeFromSaleListHandler}
+												removeFromListHandler={removeFromListHandler}
 												handleGameInfo={handleGameInfo}
 											/>
 										</Grid>

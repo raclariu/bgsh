@@ -21,6 +21,10 @@ const listSchema = mongoose.Schema(
 					type    : Object,
 					default : null
 				},
+				version   : {
+					type    : Object,
+					default : null
+				},
 				_id       : false
 			}
 		]

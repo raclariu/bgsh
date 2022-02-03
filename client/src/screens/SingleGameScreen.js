@@ -345,7 +345,7 @@ const SingleGameScreen = () => {
 							{/* Subtitle */}
 							<Grid item>
 								<Box fontSize={12} fontStyle="italic" color="grey.600" textAlign="center">
-									{`${data.games[index].type} • ${data.games[index].year}`}
+									{`${data.games[index].subtype} • ${data.games[index].year}`}
 								</Box>
 							</Grid>
 

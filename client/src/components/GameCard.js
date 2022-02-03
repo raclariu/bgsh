@@ -1,7 +1,7 @@
 // @ Libraries
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // @ Mui
@@ -14,9 +14,11 @@ import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
+import Chip from '@mui/material/Chip'
 
 // @ Components
 import CustomTooltip from './CustomTooltip'
+import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
 // @ Icons
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
@@ -24,8 +26,7 @@ import SearchIcon from '@mui/icons-material/Search'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	margin    : theme.spacing(1, 0, 1, 0),
-	padding   : theme.spacing(0, 1, 0, 1),
+	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -41,14 +42,25 @@ const StyledTitleBox = styled(Box)({
 
 // @ Main
 const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
+	const location = useLocation()
+	const currLoc = location.pathname === '/collection' ? 'collection' : 'wishlist'
+
 	return (
-		<Card elevation={1}>
+		<Card raised={isChecked}>
 			<StyledCardMedia
 				component="img"
 				alt={data.title}
 				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
 				title={data.title}
 			/>
+
+			{data.stats && (
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1} mb={1}>
+					{data.stats.userRating && <StatsBoxes stats={data.stats} type="userRating" />}
+
+					<StatsBoxes variant="mini" stats={data.stats} type="rating" />
+				</Box>
+			)}
 
 			<Divider />
 
@@ -68,6 +80,40 @@ const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 
 			<Divider />
 
+			<CardContent>
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					flexDirection="column"
+					gap={0.5}
+					minHeight="4rem"
+				>
+					<Chip
+						size="small"
+						color={data.subtype === 'boardgame' ? 'primary' : 'secondary'}
+						variant="outlined"
+						label={data.subtype}
+					/>
+
+					{data.version && (
+						<Chip
+							sx={{ maxWidth: '100%' }}
+							size="small"
+							color="primary"
+							variant="outlined"
+							label={`${data.version.title} • ${data.version.year}`}
+						/>
+					)}
+
+					{data.priority && (
+						<Chip size="small" color="primary" variant="outlined" label={`Priority: ${data.priority}`} />
+					)}
+				</Box>
+			</CardContent>
+
+			<Divider />
+
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
 					<CustomTooltip title="See on BGG">
@@ -82,11 +128,14 @@ const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 					</CustomTooltip>
 
 					<Box display="flex" gap={1} alignItems="center">
-						<CustomTooltip title={'Search for this game'}>
-							<IconButton component={RouterLink} to={`/games?search=${data.bggId}`}>
-								<SearchIcon />
-							</IconButton>
-						</CustomTooltip>
+						{currLoc === 'wishlist' && (
+							<CustomTooltip title={'Search for this game'}>
+								<IconButton component={RouterLink} to={`/games?search=${data.bggId}`}>
+									<SearchIcon />
+								</IconButton>
+							</CustomTooltip>
+						)}
+
 						<CustomTooltip
 							title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}
 						>

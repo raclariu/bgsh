@@ -27,7 +27,9 @@ const CollectionFetchBox = () => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
-		onSuccess : () => {
+		retry      : 5,
+		retryDelay : 3000,
+		onSuccess  : () => {
 			queryClient.invalidateQueries([ 'collection' ])
 			queryClient.invalidateQueries([ 'wishlist' ])
 			dispatch(clearSaleList())
@@ -50,9 +52,6 @@ const CollectionFetchBox = () => {
 	return (
 		<form onSubmit={submitToBGGHandler} autoComplete="off">
 			<Box fontWeight="fontWeightMedium">Import your BoardGameGeek collection</Box>
-			<Box color="grey.500" mb={2} fontStyle="italic" fontSize="caption.fontSize">
-				Warning: Your sale/trade/wanted list will reset
-			</Box>
 
 			<Input
 				onChange={(e) => setBggUsername(e.target.value)}

@@ -37,6 +37,12 @@ const StyledTitleBox = styled(Box)({
 	textAlign       : 'center'
 })
 
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+	padding   : theme.spacing(1, 1, 1, 1),
+	objectFit : 'contain',
+	height    : '180px'
+}))
+
 // @ Main
 const GameIndexCard = ({ data }) => {
 	const [ index, setIndex ] = useState(0)
@@ -56,39 +62,20 @@ const GameIndexCard = ({ data }) => {
 
 	return (
 		<Card sx={{ position: 'relative' }} elevation={1}>
-			<Box py={1}>
-				<CardMedia
-					sx={{
-						objectFit : 'contain',
-						height    : '180px'
-					}}
+			<Box mb={1}>
+				<StyledCardMedia
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
 					title={data.games[index].title}
 				/>
 
-				<Box display="flex" justifyContent="center" alignItems="center" width="100%" mt={1} gap={1}>
-					<StatsBoxes
-						variant="mini"
-						complexity={data.games[index].complexity}
-						stats={data.games[index].stats}
-						type="rating"
-					/>
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
+					<StatsBoxes variant="mini" stats={data.games[index].stats} type="rating" />
 
-					<StatsBoxes
-						variant="mini"
-						complexity={data.games[index].complexity}
-						stats={data.games[index].stats}
-						type="rank"
-					/>
+					<StatsBoxes variant="mini" stats={data.games[index].stats} type="rank" />
 
-					<StatsBoxes
-						variant="mini"
-						complexity={data.games[index].complexity}
-						stats={data.games[index].stats}
-						type="complexity"
-					/>
+					<StatsBoxes variant="mini" complexity={data.games[index].complexity} type="complexity" />
 				</Box>
 			</Box>
 
@@ -125,7 +112,7 @@ const GameIndexCard = ({ data }) => {
 							>
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<StyledTitleBox>{data.games[index].title}</StyledTitleBox>
+							<StyledTitleBox>{`${data.games[index].title} (${data.games[index].year})`}</StyledTitleBox>
 							<IconButton
 								color="primary"
 								disabled={data.games.length === index + 1}
@@ -136,10 +123,12 @@ const GameIndexCard = ({ data }) => {
 							</IconButton>
 						</Fragment>
 					) : (
-						<StyledTitleBox sx={{ width: '100%' }}>{data.games[index].title}</StyledTitleBox>
+						<StyledTitleBox sx={{ width: '100%' }}>{`${data.games[index].title} (${data.games[index]
+							.year})`}</StyledTitleBox>
 					)}
 				</Box>
 			</CardContent>
+
 			<Divider />
 
 			<CardContent>
@@ -148,12 +137,13 @@ const GameIndexCard = ({ data }) => {
 						<Fragment>
 							<Chip
 								size="small"
-								color={data.games[index].type === 'boardgame' ? 'primary' : 'secondary'}
+								color={data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}
 								variant="outlined"
-								label={`${data.games[index].type} • ${data.games[index].condition}`}
+								label={`${data.games[index].subtype} • ${data.games[index].condition}`}
 							/>
 
 							<Chip
+								sx={{ maxWidth: '100%' }}
 								size="small"
 								color="primary"
 								variant="outlined"
@@ -164,9 +154,9 @@ const GameIndexCard = ({ data }) => {
 						<Fragment>
 							<Chip
 								size="small"
-								color={data.games[index].type === 'boardgame' ? 'primary' : 'secondary'}
+								color={data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}
 								variant="outlined"
-								label={data.games[index].type}
+								label={data.games[index].subtype}
 							/>
 
 							<Chip

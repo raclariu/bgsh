@@ -13,6 +13,7 @@ const wishlistSchema = mongoose.Schema(
 					type     : String,
 					required : true
 				},
+				subtype   : String,
 				title     : String,
 				year      : Number,
 				thumbnail : String,

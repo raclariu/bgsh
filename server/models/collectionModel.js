@@ -13,6 +13,7 @@ const collectionSchema = mongoose.Schema(
 					type     : String,
 					required : true
 				},
+				subtype   : String,
 				title     : String,
 				year      : Number,
 				thumbnail : String,
@@ -20,8 +21,9 @@ const collectionSchema = mongoose.Schema(
 				added     : Date,
 				_id       : false,
 				stats     : {
-					rated     : Number,
-					avgRating : Number
+					userRating : Number,
+					avgRating  : Number,
+					ratings    : Number
 				},
 				version   : {
 					type    : {

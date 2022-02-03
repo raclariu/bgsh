@@ -35,6 +35,7 @@ const defaultMiniBox = {
 }
 
 const RatingBox = ({ variant, stats }) => {
+	console.log(stats)
 	const handleRatingBgColor = () => {
 		const { ratings, avgRating } = stats
 		if (ratings > 30) {
@@ -48,6 +49,8 @@ const RatingBox = ({ variant, stats }) => {
 				return '#5369a2'
 			} else if (avgRating >= 4) {
 				return '#d71925'
+			} else if (avgRating >= 1) {
+				return '#b2151f'
 			} else {
 				return '#666e75'
 			}
@@ -59,7 +62,7 @@ const RatingBox = ({ variant, stats }) => {
 	return (
 		<Fragment>
 			{variant === 'mini' ? (
-				<CustomTooltip title={`Average rating`}>
+				<CustomTooltip title="Average rating">
 					<Box fontSize="0.875rem" bgcolor={handleRatingBgColor()} sx={defaultMiniBox}>
 						{approx(stats.avgRating)}
 					</Box>
@@ -73,6 +76,39 @@ const RatingBox = ({ variant, stats }) => {
 				</Box>
 			)}
 		</Fragment>
+	)
+}
+
+const UserRatingBox = ({ stats }) => {
+	const handleRatingBgColor = () => {
+		const { userRating } = stats
+		if (userRating) {
+			if (userRating >= 9) {
+				return '#186b40'
+			} else if (userRating >= 8) {
+				return '#1d804c'
+			} else if (userRating >= 7) {
+				return '#1978b3'
+			} else if (userRating >= 5) {
+				return '#5369a2'
+			} else if (userRating >= 4) {
+				return '#d71925'
+			} else if (userRating >= 1) {
+				return '#b2151f'
+			} else {
+				return '#666e75'
+			}
+		} else {
+			return '#666e75'
+		}
+	}
+
+	return (
+		<CustomTooltip title="My rating">
+			<Box fontSize="0.875rem" bgcolor={handleRatingBgColor()} sx={defaultMiniBox}>
+				{stats.userRating ? approx(stats.userRating) : 'N/A'}
+			</Box>
+		</CustomTooltip>
 	)
 }
 
@@ -121,7 +157,7 @@ const RankBox = ({ variant, stats }) => {
 const ComplexityBox = ({ variant, complexity }) => {
 	const handleComplexityBgColor = () => {
 		if (complexity.votes > 10) {
-			if (complexity.weight > 3.0) {
+			if (complexity.weight > 3) {
 				return '#f06524'
 			} else if (complexity.weight > 0) {
 				return '#3ec781'
@@ -175,6 +211,8 @@ const StatsBoxes = ({ complexity, stats, variant, type }) => {
 			{type === 'rank' && <RankBox variant={variant} stats={stats} />}
 
 			{type === 'complexity' && <ComplexityBox variant={variant} complexity={complexity} />}
+
+			{type === 'userRating' && <UserRatingBox stats={stats} />}
 		</Fragment>
 	)
 }

@@ -12,51 +12,75 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 	try {
 		const { bggUsername } = req.body
 
-		// >> Owned
-		// no expansions = https://api.geekdo.com/xmlapi2/collection?username=axtro&own=1&brief=1&excludesubtype=boardgameexpansion
-		// expansions only = https://api.geekdo.com/xmlapi2/collection?username=axtro&own=1&brief=1&subtype=boardgameexpansion
+		// @ --------
+		// @ Owned---
+		// @ --------
+		const { data: ownedBoardgamesData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+			params : {
+				username       : bggUsername,
+				subtype        : 'boardgame',
+				own            : 1,
+				wishlist       : 0,
+				version        : 1,
+				stats          : 1,
+				excludesubtype : 'boardgameexpansion'
+			}
+		})
 
-		const { data: ownedData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+		const { data: ownedExpansionsData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',
 				own      : 1,
 				wishlist : 0,
 				version  : 1,
-				stats    : 1
+				stats    : 1,
+				subtype  : 'boardgameexpansion'
 			}
 		})
 
-		// If there is only one game in collection, parser returns object instead of array, that's why the if/else is needed
-		let parsedOwned = await parseXML(ownedData)
+		let parsedOwnedBoardgames = await parseXML(ownedBoardgamesData)
+		let parsedOwnedExpansions = await parseXML(ownedExpansionsData)
 
-		// res.status(200).json({
-		// 	asd : parsedOwned.item.map((obj) => {
-		// 		return {
-		// 			hasItem : obj.version && !!obj.version.item,
-		// 			title   : obj.originalname ? obj.originalname : obj.name._ || null,
-		// 			version : obj.version
-		// 		}
-		// 	})
-		// })
+		// ensure owned boardgames is array if total items is 0,1 or more
+		const ensureParsedOwnedBoardgamesIsArray =
+			parsedOwnedBoardgames.totalitems === '0'
+				? []
+				: Array.isArray(parsedOwnedBoardgames.item)
+					? parsedOwnedBoardgames.item
+					: [ parsedOwnedBoardgames.item ]
+
+		// ensure owned expansions is array if total items is 0,1 or more
+		const ensureParsedOwnedExpansionsIsArray =
+			parsedOwnedExpansions.totalitems === '0'
+				? []
+				: Array.isArray(parsedOwnedExpansions.item)
+					? parsedOwnedExpansions.item
+					: [ parsedOwnedExpansions.item ]
+
+		// combine arrays of boardgames and expansions
+		const entireOwnedCollection = ensureParsedOwnedBoardgamesIsArray.concat(ensureParsedOwnedExpansionsIsArray)
+
+		// return res.json(entireOwnedCollection)
 
 		let bggOwned = []
-		if (parsedOwned.totalitems !== '0') {
-			const ensureParsedOwnedIsArray = Array.isArray(parsedOwned.item) ? parsedOwned.item : [ parsedOwned.item ]
-			for (let game of ensureParsedOwnedIsArray) {
+		if (entireOwnedCollection.length > 0) {
+			for (let game of entireOwnedCollection) {
 				const item = {
 					bggId     : game.objectid,
+					subtype   : game.subtype === 'boardgame' ? 'boardgame' : 'expansion',
 					title     : game.originalname ? game.originalname : game.name._ || null,
 					year      : game.yearpublished ? +game.yearpublished : null,
 					thumbnail : game.thumbnail ? game.thumbnail : null,
 					image     : game.image ? game.image : null,
 					added     : game.status.lastmodified,
 					stats     : {
-						rated     :
+						userRating :
 							game.stats.rating.value && !isNaN(game.stats.rating.value)
 								? +parseFloat(game.stats.rating.value).toFixed(2)
 								: null,
-						avgRating : +parseFloat(game.stats.rating.average.value).toFixed(2)
+						avgRating  : +parseFloat(game.stats.rating.average.value).toFixed(2),
+						ratings    : +game.stats.rating.usersrated.value
 					},
 					version   : !game.version
 						? null
@@ -77,52 +101,65 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			}
 		}
 
-		// @ Wishlist
-		const { data: wishlistData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+		// @ ----------
+		// @ Wishlist--
+		// @ ----------
+		const { data: wishlistBoardgamesData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+			params : {
+				username       : bggUsername,
+				subtype        : 'boardgame',
+				own            : 0,
+				wishlist       : 1,
+				excludesubtype : 'boardgameexpansion'
+			}
+		})
+
+		const { data: wishlistExpansionsData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
 				subtype  : 'boardgame',
 				own      : 0,
-				wishlist : 1
+				wishlist : 1,
+				subtype  : 'boardgameexpansion'
 			}
 		})
 
-		// If there is only one game in wishlist, parser returns object instead of array, that's why the if/else is needed
-		let parsedWishlist = await parseXML(wishlistData)
+		let parsedWishlistBoardgames = await parseXML(wishlistBoardgamesData)
+		let parsedWishlistExpansions = await parseXML(wishlistExpansionsData)
+
+		// ensure wishlist boardgames is array if total items is 0,1 or more
+		const ensureParsedWishlistBoardgamesIsArray =
+			parsedWishlistBoardgames.totalitems === '0'
+				? []
+				: Array.isArray(parsedWishlistBoardgames.item)
+					? parsedWishlistBoardgames.item
+					: [ parsedWishlistBoardgames.item ]
+
+		// ensure wishlist expansions is array if total items is 0,1 or more
+		const ensureParsedWishlistExpansionsIsArray =
+			parsedWishlistExpansions.totalitems === '0'
+				? []
+				: Array.isArray(parsedWishlistExpansions.item)
+					? parsedWishlistExpansions.item
+					: [ parsedWishlistExpansions.item ]
+
+		// combine arrays of boardgames and expansions
+		const entireWishlistCollection = ensureParsedWishlistBoardgamesIsArray.concat(
+			ensureParsedWishlistExpansionsIsArray
+		)
 
 		let bggWishlist = []
-		if (parsedWishlist.totalitems !== '0') {
-			if (parsedWishlist.totalitems !== '1') {
-				for (let game of parsedWishlist.item) {
-					const item = {
-						bggId     : game.objectid,
-						title     : game.name ? game.name._ : null,
-						year      : game.yearpublished ? +game.yearpublished : null,
-						thumbnail : game.thumbnail ? game.thumbnail : null,
-						image     : game.image ? game.image : null,
-						priority  : +game.status.wishlistpriority,
-						added     : game.status.lastmodified
-					}
-
-					bggWishlist.push(item)
-				}
-			} else {
-				const {
-					objectid,
-					name,
-					yearpublished,
-					thumbnail,
-					image,
-					status        : { lastmodified, wishlistpriority }
-				} = parsedWishlist.item
+		if (entireWishlistCollection.length > 0) {
+			for (let game of entireWishlistCollection) {
 				const item = {
-					bggId     : objectid,
-					title     : name ? name._ : null,
-					year      : yearpublished ? +yearpublished : null,
-					thumbnail : thumbnail ? thumbnail : null,
-					image     : image ? image : null,
-					priority  : +wishlistpriority,
-					added     : lastmodified
+					bggId     : game.objectid,
+					subtype   : game.subtype === 'boardgame' ? 'boardgame' : 'expansion',
+					title     : game.name ? game.name._ : null,
+					year      : game.yearpublished ? +game.yearpublished : null,
+					thumbnail : game.thumbnail ? game.thumbnail : null,
+					image     : game.image ? game.image : null,
+					priority  : +game.status.wishlistpriority,
+					added     : game.status.lastmodified
 				}
 
 				bggWishlist.push(item)
@@ -149,11 +186,11 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 
 		await Wishlist.create({
 			user          : req.user._id,
-			wishlist      : bggWishlist.length > 0 ? bggWishlist.sort((a, b) => b.priority - a.priority) : [],
+			wishlist      : bggWishlist.length > 0 ? bggWishlist.sort((a, b) => (a.title > b.title ? 1 : -1)) : [],
 			wishlistCount : bggWishlist.length
 		})
 
-		res.status(204).end()
+		return res.status(204).end()
 	} catch (error) {
 		res.status(500)
 		throw {
@@ -194,7 +231,7 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 			perPage    : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			owned      : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
 			pagination
 		})
@@ -212,7 +249,7 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 			itemsPerPage : resultsPerPage
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			owned,
 			pagination
 		})

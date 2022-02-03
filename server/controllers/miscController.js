@@ -24,7 +24,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 
 		for (let game of ensureArray) {
 			const item = {
-				type               : game.type === 'boardgame' ? 'boardgame' : 'expansion',
+				subtype            : game.type === 'boardgame' ? 'boardgame' : 'expansion',
 				bggId              : game.id,
 				thumbnail          : game.thumbnail || null,
 				image              : game.image || null,

@@ -65,11 +65,13 @@ export const useDeleteFromListMutation = () => {
 		onError   : async (err, { title }, ctx) => {
 			// For sell/trade/wanted/buy screen
 			const gamesDetails = await queryClient.getQueryData([ 'bggGamesDetails' ])
+			// console.log('gamesDetails', gamesDetails)
 			// Show error snackbar
 			showSnackbar.error({
 				text : err.response.data.message || `Error occured while removing ${title} from your list`
 			})
 			// If the mutation fails, use the context returned from onMutate to roll back
+			// console.log('ctx.prevList', ctx.prevList)
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
 			queryClient.setQueryData([ 'bggGamesDetails' ], gamesDetails)
 		},
@@ -115,7 +117,6 @@ export const useGetListQuery = (onSettled) => {
 
 	return useQuery([ 'list' ], api.apiGetList, {
 		staleTime : Infinity,
-		retry     : 4,
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching your list'
 			showSnackbar.error({ text })

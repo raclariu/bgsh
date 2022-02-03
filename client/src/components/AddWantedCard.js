@@ -47,7 +47,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
-				subheader={`${game.type} • ${game.year}`}
+				subheader={`${game.subtype} • ${game.year}`}
 				action={
 					<IconButton onClick={() => removeFromSaleListHandler(game.bggId)} size="large">
 						<HighlightOffIcon color="error" />

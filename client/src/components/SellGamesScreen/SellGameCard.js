@@ -42,7 +42,7 @@ const StyledImg = styled('img')({
 })
 
 // @ Main
-const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, handleGameInfo }) => {
+const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
 	const [ showSnackbar ] = useNotiSnackbar()
@@ -111,9 +111,9 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromSaleListHandler, han
 		<Card elevation={1}>
 			<CardHeader
 				title={game.title}
-				subheader={`${game.type} • ${game.year}`}
+				subheader={`${game.subtype} • ${game.year}`}
 				action={
-					<IconButton onClick={() => removeFromSaleListHandler(game.bggId, game.title)} size="large">
+					<IconButton onClick={() => removeFromListHandler(game.bggId, game.title)} size="large">
 						<HighlightOffIcon color="error" />
 					</IconButton>
 				}

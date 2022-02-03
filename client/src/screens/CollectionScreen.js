@@ -35,8 +35,6 @@ import {
 const CollectionScreen = () => {
 	const history = useHistory()
 	const location = useLocation()
-	const queryClient = useQueryClient()
-	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
@@ -64,9 +62,9 @@ const CollectionScreen = () => {
 	}
 
 	const listHandler = (e, game) => {
-		const { bggId, title, year, thumbnail, image } = game
+		const { bggId, title, year, thumbnail, image, version } = game
 		if (e.target.checked) {
-			addMutation.mutate({ bggId, title, year, thumbnail, image })
+			addMutation.mutate({ bggId, title, year, thumbnail, image, version })
 		} else {
 			deleteMutation.mutate({ bggId, title })
 		}

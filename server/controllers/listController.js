@@ -27,7 +27,7 @@ const getList = asyncHandler(async (req, res) => {
 // <> @route   PATCH  /api/list/add
 // <> @access  Private route
 const addOneToList = asyncHandler(async (req, res) => {
-	const { bggId, title, year, thumbnail, image } = req.body
+	const { bggId, title, year, thumbnail, image, version = null } = req.body
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
 	if (!userList) {
@@ -48,7 +48,7 @@ const addOneToList = asyncHandler(async (req, res) => {
 		}
 	}
 
-	userList.list.push({ bggId, title, year, thumbnail, image })
+	userList.list.push({ bggId, title, year, thumbnail, image, version })
 	const updatedUserList = await List.findOneAndUpdate(
 		{ _id: userList._id },
 		{ list: userList.list },
