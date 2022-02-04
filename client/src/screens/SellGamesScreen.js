@@ -48,16 +48,9 @@ const SellGamesScreen = () => {
 	const [ totalPrice, setTotalPrice ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	const userList = useGetListQuery((listData) => {
-		console.log('listData', listData.list.length)
-		setValues((val) =>
-			val.filter(({ bggId }) => {
-				console.log(bggId)
-				return listData.list.find((el) => el.bggId === bggId)
-			})
-		)
-		console.log('values', values)
-	})
+	const userList = useGetListQuery((listData) =>
+		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
+	)
 
 	const { isLoading, isError, error, data, isSuccess } = useQuery(
 		[ 'bggGamesDetails' ],
@@ -76,13 +69,15 @@ const SellGamesScreen = () => {
 							condition : null,
 							extraInfo : '',
 							price     : '',
-							userImage : null
+							userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
 						}
 					})
 				)
 			}
 		}
 	)
+
+	console.log(values)
 
 	const deleteMutation = useDeleteFromListMutation()
 
@@ -109,9 +104,15 @@ const SellGamesScreen = () => {
 		deleteMutation.mutate({ bggId, title })
 	}
 
-	const handleGameInfo = (value, id, key) => {
-		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
-	}
+	const handleGameInfo = (value, bggId, key) =>
+		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
+
+	// setValues((vals) => [ ...vals, (vals[vals.findIndex((val) => val.bggId === bggId)][key] = value) ])
+	// setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
+	// const idx = values.findIndex((val) => val.bggId === bggId)
+	// const newVals = [ ...values ]
+	// newVals[idx][key] = value
+	// setValues(newVals)
 
 	const handleExtraInfoPack = (e) => {
 		setExtraInfoPack(e.target.value)

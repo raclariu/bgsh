@@ -112,9 +112,10 @@ const listSaleGames = asyncHandler(async (req, res) => {
 // * @access  Private route
 const uploadImage = asyncHandler(async (req, res) => {
 	try {
-		console.log('in ctrl => ', req.file)
+		const { bggId } = req.body
+
 		const { full, thumbnail } = req.resizedFiles
-		console.log(full, thumbnail)
+
 		const fileName = genNanoId(15)
 		const bucket = storage.bucket(process.env.IMG_BUCKET)
 		const fullBucketFile = bucket.file(`f/${fileName}.webp`)

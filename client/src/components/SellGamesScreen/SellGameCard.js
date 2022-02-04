@@ -55,7 +55,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 		}
 	}
 
-	const mutation = useMutation((imgFile) => apiUploadImage(imgFile), {
+	const uploadImageMutation = useMutation((imgFile) => apiUploadImage(imgFile), {
 		onSuccess : (userImageObj) => {
 			console.log(userImageObj)
 			handleGameInfo(userImageObj, game.bggId, 'userImage')
@@ -96,7 +96,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 		const fd = new FormData()
 		fd.append('userImage', uploadedImg, uploadedImg.name)
 		fd.append('bggId', game.bggId)
-		mutation.mutate(fd)
+		uploadImageMutation.mutate(fd)
 	}
 
 	const removeImage = (e) => {
@@ -256,7 +256,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				</Divider>
 
 				<Box mt={2}>
-					{mutation.isLoading || removeImageMutation.isLoading ? (
+					{uploadImageMutation.isLoading || removeImageMutation.isLoading ? (
 						<Box
 							sx={{
 								borderStyle    : 'dashed',
@@ -305,7 +305,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					)}
 
 					{!data.userImage &&
-					!mutation.isLoading &&
+					!uploadImageMutation.isLoading &&
 					!removeImageMutation.isLoading && (
 						<label htmlFor={`${data.bggId}-image`}>
 							<input

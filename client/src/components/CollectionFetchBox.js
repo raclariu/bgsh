@@ -32,10 +32,6 @@ const CollectionFetchBox = () => {
 		onSuccess  : () => {
 			queryClient.invalidateQueries([ 'collection' ])
 			queryClient.invalidateQueries([ 'wishlist' ])
-			dispatch(clearSaleList())
-			showSnackbar.info({
-				text : 'Your list was cleared'
-			})
 			showSnackbar.success({
 				text : `Collection data from BGG for user ${bggUsername} was successfully fetched`
 			})

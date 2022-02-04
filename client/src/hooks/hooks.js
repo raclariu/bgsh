@@ -49,33 +49,29 @@ export const useDeleteFromListMutation = () => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation(({ bggId }) => api.apiDeleteOneFromList(bggId), {
-		onMutate  : async ({ bggId, title }) => {
+		onMutate  : async ({ bggId }) => {
 			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
 			await queryClient.cancelQueries([ 'list' ])
 			// Snapshot the previous value
 			const prevList = queryClient.getQueryData([ 'list' ])
 			// Optimistically update to the new value
 			queryClient.setQueryData([ 'list' ], (old) => {
-				showSnackbar.info({ text: `${title} has been removed from your list` })
 				return { ...old, list: old.list.filter((item) => item.bggId !== bggId) }
 			})
 			// Return a context object with the snapshotted value
 			return { prevList }
 		},
 		onError   : async (err, { title }, ctx) => {
-			// For sell/trade/wanted/buy screen
-			const gamesDetails = await queryClient.getQueryData([ 'bggGamesDetails' ])
-			// console.log('gamesDetails', gamesDetails)
 			// Show error snackbar
 			showSnackbar.error({
 				text : err.response.data.message || `Error occured while removing ${title} from your list`
 			})
 			// If the mutation fails, use the context returned from onMutate to roll back
-			// console.log('ctx.prevList', ctx.prevList)
+			queryClient.invalidateQueries([ 'bggGamesDetails' ])
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
-			queryClient.setQueryData([ 'bggGamesDetails' ], gamesDetails)
 		},
-		onSuccess : (data) => {
+		onSuccess : (data, { title }) => {
+			showSnackbar.info({ text: `${title} has been removed from your list` })
 			queryClient.setQueryData([ 'list' ], data)
 		}
 	})
@@ -94,7 +90,6 @@ export const useAddToListMutation = () => {
 			// Optimistically update to the new value
 			queryClient.setQueryData([ 'list' ], (old) => {
 				const listArr = [ ...old.list, game ]
-				showSnackbar.info({ text: `${game.title} has been added to your list` })
 				return { ...old, list: listArr }
 			})
 			// Return a context object with the snapshotted value
@@ -106,7 +101,8 @@ export const useAddToListMutation = () => {
 			})
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
 		},
-		onSuccess : (data) => {
+		onSuccess : (data, { game }) => {
+			showSnackbar.info({ text: `${game.title} has been added to your list` })
 			queryClient.setQueryData([ 'list' ], data)
 		}
 	})

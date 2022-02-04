@@ -67,7 +67,6 @@ const userRegister = asyncHandler(async (req, res) => {
 		if (user) {
 			res.status(201).json({
 				_id      : user._id,
-				email    : user.email,
 				username : user.username,
 				isAdmin  : user.isAdmin,
 				token    : generateToken(user._id)

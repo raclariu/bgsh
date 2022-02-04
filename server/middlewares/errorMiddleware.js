@@ -33,7 +33,10 @@ const errorHandler = (err, req, res, next) => {
 						'\n'
 				)
 			)
+		} else if (typeof err.message === 'string') {
+			console.log(chalk.bgHex('#c21313').hex('#f7edcb').bold('\n' + 'Error(s)' + '\n' + `${err.message}` + '\n'))
 		}
+
 		console.log(chalk.hex('#737373')('________________________________________________'))
 	}
 

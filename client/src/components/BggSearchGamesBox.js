@@ -17,6 +17,7 @@ import Input from './Input'
 // @ Others
 import { addToSaleList } from '../actions/saleListActions'
 import { apiBggSearchGames } from '../api/api'
+import { useAddToListMutation } from '../hooks/hooks'
 
 // @ Main
 const BggSearchGamesBox = () => {
@@ -35,6 +36,8 @@ const BggSearchGamesBox = () => {
 	})
 
 	const { mutate, reset } = mutation
+
+	const addToListMutation = useAddToListMutation()
 
 	useEffect(
 		() => {
@@ -62,9 +65,11 @@ const BggSearchGamesBox = () => {
 		mutation.reset()
 	}
 
+	console.log('selected option', selectedOption)
+
 	const addToSaleListHandler = () => {
 		if (selectedOption) {
-			dispatch(addToSaleList(selectedOption))
+			addToListMutation.mutate(selectedOption)
 			resetHandler()
 		}
 	}
