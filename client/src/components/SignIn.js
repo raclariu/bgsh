@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import IconButton from '@mui/material/IconButton'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
+import Link from '@mui/material/Link'
 
 // @ Icons
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
@@ -27,7 +29,6 @@ const SignIn = () => {
 	const dispatch = useDispatch()
 	const history = useHistory()
 	const location = useLocation()
-	console.log(location)
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
@@ -107,6 +108,12 @@ const SignIn = () => {
 			<LoadingBtn type="submit" variant="contained" color="primary" size="large" loading={loading} fullWidth>
 				Sign in
 			</LoadingBtn>
+
+			<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
+				<Link component={RouterLink} to="/signup" underline="none">
+					Create account
+				</Link>
+			</Box>
 		</form>
 	)
 }

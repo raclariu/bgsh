@@ -2,12 +2,14 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
+import Link from '@mui/material/Link'
+import Box from '@mui/material/Box'
 
 // @ Icons
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
@@ -142,6 +144,12 @@ const SignUp = () => {
 			<LoadingBtn type="submit" variant="contained" color="primary" size="large" loading={loading} fullWidth>
 				Sign up
 			</LoadingBtn>
+
+			<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
+				<Link component={RouterLink} to="/signin" underline="none">
+					Already have an account?
+				</Link>
+			</Box>
 		</form>
 	)
 }

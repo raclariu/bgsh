@@ -32,6 +32,7 @@ import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateT
 // @ Others
 import { apiUploadImage, apiDeleteImage } from '../../api/api'
 import { useNotiSnackbar } from '../../hooks/hooks'
+import { useQueryClient } from 'react-query'
 
 // @ Styles
 const StyledImg = styled('img')({
@@ -44,6 +45,7 @@ const StyledImg = styled('img')({
 // @ Main
 const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
+	const queryClient = useQueryClient()
 
 	const [ showSnackbar ] = useNotiSnackbar()
 
@@ -55,24 +57,36 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 		}
 	}
 
-	const uploadImageMutation = useMutation((imgFile) => apiUploadImage(imgFile), {
-		onSuccess : (userImageObj) => {
-			console.log(userImageObj)
-			handleGameInfo(userImageObj, game.bggId, 'userImage')
+	const uploadImageMutation = useMutation((formData) => apiUploadImage(formData), {
+		onSuccess : (userImageObj, vars) => {
+			const bggId = vars.get('bggId')
+			handleGameInfo(userImageObj, bggId, 'userImage')
+			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
+				const copyUserListObj = { ...oldUserListObj }
+				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === bggId)
+				copyUserListObj.list[idx].userImage = userImageObj
+				return copyUserListObj
+			})
 			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
 		},
 		onError   : (error) => {
-			showSnackbar.error({ text: error.response.data.message })
+			showSnackbar.error({ text: error.response.data.message || 'Error occured while uploading image' })
 		}
 	})
 
-	const removeImageMutation = useMutation((fileName) => apiDeleteImage(fileName), {
-		onSuccess : () => {
-			handleGameInfo(null, game.bggId, 'userImage')
+	const removeImageMutation = useMutation(({ fileName, bggId }) => apiDeleteImage(fileName, bggId), {
+		onSuccess : (data, vars) => {
+			handleGameInfo(null, vars.bggId, 'userImage')
+			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
+				const copyUserListObj = { ...oldUserListObj }
+				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === vars.bggId)
+				copyUserListObj.list[idx].userImage = null
+				return copyUserListObj
+			})
 			showSnackbar.info({ text: `Image for "${data.title}" deleted successfully` })
 		},
 		onError   : (error) => {
-			showSnackbar.error({ text: error.response.data.message })
+			showSnackbar.error({ text: error.response.data.message || 'Error occured while removing uploaded image' })
 		}
 	})
 
@@ -100,7 +114,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 	}
 
 	const removeImage = (e) => {
-		removeImageMutation.mutate(data.userImage.name)
+		removeImageMutation.mutate({ fileName: data.userImage.name, bggId: game.bggId })
 	}
 
 	const handleImgLoad = (e) => {

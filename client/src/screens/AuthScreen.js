@@ -5,19 +5,18 @@ import { useHistory } from 'react-router-dom'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import Divider from '@mui/material/Divider'
 
 // @ Icons
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
 
 // @ Components
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
-import Theme from '../components/Theme'
 
 // @ Main
 const AuthScreen = () => {
@@ -25,54 +24,52 @@ const AuthScreen = () => {
 
 	const { location: { pathname } } = history
 
-	const [ selectedTab, setSelectedTab ] = useState(pathname.replace('/', ''))
-
-	const handleChange = (e, val) => {
-		setSelectedTab(val)
-	}
-
 	return (
-		<Grid style={{ height: '100vh' }} container direction="column" justifyContent="center" alignItems="center">
-			<Box display="flex" alignItems="center" justifyContent="center">
-				<IconButton color="primary" onClick={() => history.push('/')} size="large">
-					<ArrowBackIcon />
-				</IconButton>
+		<Box
+			sx={{
+				position  : 'absolute',
+				left      : '50%',
+				top       : '50%',
+				transform : 'translate(-50%,-50%)',
+				width     : '95%'
+			}}
+			display="flex"
+			justifyContent="center"
+			alignItems="center"
+		>
+			<Box
+				container
+				direction="column"
+				justifyContent="center"
+				alignItems="center"
+				sx={{
+					width : {
+						xs : '100%',
+						sm : '75%',
+						md : '50%',
+						xl : '30%'
+					}
+				}}
+				p={2}
+				bgcolor="background.paper"
+				boxShadow={2}
+				borderRadius="4px"
+			>
+				<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
+					<IconButton color="primary" onClick={() => history.push('/')} size="large" edge="start">
+						<HomeTwoToneIcon />
+					</IconButton>
+					<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
+						{pathname === '/signin' ? 'Sign In' : 'Sign Up'}
+					</Box>
+				</Box>
 
-				<Theme />
+				<Box display="flex" alignItems="center" justifyContent="center">
+					{pathname === '/signin' && <SignIn />}
+					{pathname === '/signup' && <SignUp />}
+				</Box>
 			</Box>
-
-			<Grid item md={4} sm={7} xs={12}>
-				<Tabs value={selectedTab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
-					<Tab
-						value="signin"
-						onClick={() => history.replace('/signin')}
-						label={
-							<Box display="flex" alignItems="center">
-								<LockOpenIcon />
-								<Box sx={{ textTransform: 'none' }} ml={1}>
-									Sign In
-								</Box>
-							</Box>
-						}
-					/>
-					<Tab
-						value="signup"
-						onClick={() => history.replace('/signup')}
-						label={
-							<Box display="flex" alignItems="center">
-								<LockOpenIcon />
-								<Box sx={{ textTransform: 'none' }} ml={1}>
-									Sign Up
-								</Box>
-							</Box>
-						}
-					/>
-				</Tabs>
-
-				{selectedTab === 'signin' && <SignIn />}
-				{selectedTab === 'signup' && <SignUp />}
-			</Grid>
-		</Grid>
+		</Box>
 	)
 }
 

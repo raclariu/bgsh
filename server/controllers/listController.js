@@ -1,5 +1,6 @@
 import List from '../models/listModel.js'
 import asyncHandler from 'express-async-handler'
+import storage from '../helpers/storage.js'
 
 // ~ @desc    Get list
 // ~ @route   GET  /api/list
@@ -79,9 +80,22 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 	}
 
 	const filtered = userList.list.filter((item) => item.bggId !== bggId)
+	const toBeDeleted = userList.list.find((item) => item.bggId === bggId)
+
 	const updatedUserList = await List.findOneAndUpdate({ _id: userList._id }, { list: filtered }, { new: true }).lean()
 
-	return res.status(200).json(updatedUserList)
+	res.status(200).json(updatedUserList)
+
+	if (toBeDeleted.userImage) {
+		await storage
+			.bucket(process.env.IMG_BUCKET)
+			.file(`f/${toBeDeleted.userImage.name}`)
+			.delete({ ignoreNotFound: true })
+		await storage
+			.bucket(process.env.IMG_BUCKET)
+			.file(`t/${toBeDeleted.userImage.name}`)
+			.delete({ ignoreNotFound: true })
+	}
 })
 
 export { addOneToList, deleteOneFromList, getList }

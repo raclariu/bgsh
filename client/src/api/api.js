@@ -225,8 +225,8 @@ export const apiUploadImage = async (img) => {
 	return data
 }
 
-export const apiDeleteImage = async (fileName) => {
-	const { data } = await axsAUTH.delete('/api/games/images', { data: { fileName } })
+export const apiDeleteImage = async (fileName, bggId) => {
+	const { data } = await axsAUTH.delete('/api/games/images', { data: { fileName, bggId } })
 	return data
 }
 

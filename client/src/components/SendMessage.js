@@ -29,16 +29,11 @@ const SendMessage = ({ recipientUsername = '' }) => {
 
 	const currUsername = useSelector((state) => state.userAuth.userData.username)
 
-	const mutation = useMutation(
-		({ subject, message, recipient }) => {
-			return apiSendMessage(subject, message, recipient)
-		},
-		{
-			onSuccess : () => {
-				queryClient.invalidateQueries([ 'msgSent' ])
-			}
+	const mutation = useMutation(({ subject, message, recipient }) => apiSendMessage(subject, message, recipient), {
+		onSuccess : () => {
+			queryClient.invalidateQueries([ 'msgSent' ])
 		}
-	)
+	})
 
 	const [ open, setOpen ] = useState(false)
 	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')

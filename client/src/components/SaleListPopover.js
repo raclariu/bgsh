@@ -78,7 +78,7 @@ const SaleListPopover = () => {
 						sx : {
 							width : {
 								sm : 450,
-								xs : '100vw'
+								xs : '100%'
 							}
 						}
 					}}

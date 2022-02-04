@@ -5,6 +5,7 @@ import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
 import Notification from '../models/notificationModel.js'
 import Wishlist from '../models/wishlistModel.js'
+import List from '../models/listModel.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
 
@@ -141,6 +142,11 @@ const uploadImage = asyncHandler(async (req, res) => {
 			name      : `${fileName}.webp`
 		}
 
+		const userList = await List.findOne({ addedBy: req.user._id }).select('list').lean()
+		const idx = userList.list.findIndex((obj) => obj.bggId === bggId)
+		userList.list[idx].userImage = userImage
+		await List.updateOne({ _id: userList._id }, { list: userList.list })
+
 		return res.status(200).json(userImage)
 	} catch (error) {
 		res.status(503)
@@ -153,9 +159,15 @@ const uploadImage = asyncHandler(async (req, res) => {
 // ! @access  Private route
 const deleteImage = asyncHandler(async (req, res) => {
 	try {
-		const { fileName } = req.body
+		const { fileName, bggId } = req.body
+
 		await storage.bucket(process.env.IMG_BUCKET).file(`f/${fileName}`).delete({ ignoreNotFound: true })
 		await storage.bucket(process.env.IMG_BUCKET).file(`t/${fileName}`).delete({ ignoreNotFound: true })
+
+		const userList = await List.findOne({ addedBy: req.user._id }).select('list').lean()
+		const idx = userList.list.findIndex((obj) => obj.bggId === bggId)
+		userList.list[idx].userImage = null
+		await List.updateOne({ _id: userList._id }, { list: userList.list })
 
 		res.status(204).end()
 	} catch (error) {

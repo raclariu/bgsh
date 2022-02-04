@@ -58,9 +58,9 @@ const NotificationsPopover = () => {
 					sx : {
 						width     : {
 							sm : 350,
-							xs : '100vw'
+							xs : '100%'
 						},
-						maxHeight : '50vh'
+						maxHeight : '50%'
 					}
 				}}
 				open={open}

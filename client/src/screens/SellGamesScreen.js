@@ -77,8 +77,6 @@ const SellGamesScreen = () => {
 		}
 	)
 
-	console.log(values)
-
 	const deleteMutation = useDeleteFromListMutation()
 
 	const listMutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {

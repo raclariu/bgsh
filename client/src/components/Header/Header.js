@@ -57,20 +57,16 @@ import NotificationsPopover from '../NotificationsPopover'
 import { signOut } from '../../actions/userActions'
 
 // @ Main
-const Header = (props) => {
+const Header = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
-	console.log('loc', location)
 
 	const [ isOpen, setIsOpen ] = useState(false)
-	const [ openGames, setOpenGames ] = useState(false)
-	const [ openHistory, setOpenHistory ] = useState(false)
-	const [ openInbox, setOpenInbox ] = useState(false)
+	const [ openCollapseType, setOpenCollapseType ] = useState(null)
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
 	const [ openDialog, setOpenDialog ] = useState(false)
 
-	const userAuth = useSelector((state) => state.userAuth)
-	const { userData } = userAuth
+	const { userData } = useSelector((state) => state.userAuth)
 
 	const signOutHandler = () => {
 		dispatch(signOut())
@@ -79,14 +75,10 @@ const Header = (props) => {
 	}
 
 	const handleExpandClick = (type) => {
-		if (type === 'games') {
-			setOpenGames(!openGames)
-		}
-		if (type === 'history') {
-			setOpenHistory(!openHistory)
-		}
-		if (type === 'inbox') {
-			setOpenInbox(!openInbox)
+		if (type === openCollapseType) {
+			setOpenCollapseType(null)
+		} else {
+			setOpenCollapseType(type)
 		}
 	}
 
@@ -105,18 +97,15 @@ const Header = (props) => {
 
 	return (
 		<AppBar elevation={1} position="static" color="transparent">
-			<Toolbar>
-				<Typography
+			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
+				{/* <Typography
 					variant="h6"
 					sx={{
-						flexGrow : 1,
-						mt       : (theme) => {
-							console.log(theme)
-						}
+						flexGrow : 1
 					}}
 				>
 					BoardGames
-				</Typography>
+				</Typography> */}
 
 				{!userData && (
 					<Box mr={1}>
@@ -143,19 +132,7 @@ const Header = (props) => {
 							<MenuIcon />
 						</IconButton>
 
-						<Drawer
-							PaperProps={{
-								sx : {
-									borderRadius : (theme) => theme.spacing(2),
-									mt           : '2vh',
-									mr           : '1vh',
-									height       : '96vh'
-								}
-							}}
-							anchor="right"
-							open={isOpen}
-							onClose={() => setIsOpen(!isOpen)}
-						>
+						<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2}>
 								<Box display="flex" alignItems="center">
 									<Box fontWeight="fontWeightMedium" mr={1}>
@@ -165,14 +142,6 @@ const Header = (props) => {
 										<Box fontSize={14}>{userData.username.substring(0, 2).toUpperCase()}</Box>
 									</MyAvatar>
 								</Box>
-								{/* <IconButton
-										color="primary"
-										onClick={() => setIsOpen(false)}
-										component={RouterLink}
-										to="/settings"
-									>
-										<SettingsTwoToneIcon />
-									</IconButton> */}
 							</Box>
 
 							<Box>
@@ -212,18 +181,18 @@ const Header = (props) => {
 													fontSize="subtitle2.fontSize"
 													color="text.secondary"
 												>
-													Board games
+													Boardgames
 												</Box>
 											}
 										/>
-										{openGames ? (
+										{openCollapseType === 'games' ? (
 											<ArrowDropUpIcon color="disabled" />
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
 									</ListItem>
 
-									<Collapse in={openGames} timeout="auto" unmountOnExit>
+									<Collapse in={openCollapseType === 'games'} timeout="auto" unmountOnExit>
 										<List disablePadding>
 											<ListItem
 												sx={{ pl: (theme) => theme.spacing(4) }}
@@ -422,14 +391,14 @@ const Header = (props) => {
 												</Box>
 											}
 										/>
-										{openGames ? (
+										{openCollapseType === 'inbox' ? (
 											<ArrowDropUpIcon color="disabled" />
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
 									</ListItem>
 
-									<Collapse in={openInbox} timeout="auto" unmountOnExit>
+									<Collapse in={openCollapseType === 'inbox'} timeout="auto" unmountOnExit>
 										<List disablePadding>
 											<ListItem
 												sx={{ pl: (theme) => theme.spacing(4) }}
@@ -529,13 +498,13 @@ const Header = (props) => {
 												</Box>
 											}
 										/>
-										{openHistory ? (
+										{openCollapseType === 'history' ? (
 											<ArrowDropUpIcon color="disabled" />
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
 									</ListItem>
-									<Collapse in={openHistory} timeout="auto" unmountOnExit>
+									<Collapse in={openCollapseType === 'history'} timeout="auto" unmountOnExit>
 										<List disablePadding>
 											<ListItem
 												sx={{ pl: (theme) => theme.spacing(4) }}
