@@ -25,7 +25,7 @@ morgan.token('coloredMethod', (req) => {
 	} else if (req.method === 'DELETE') {
 		return chalk.hex('#f72d3a').bold(req.method)
 	} else {
-		return chalk.hex('#9e9e9e').bold(req.method)
+		return chalk.hex('#8f8f8f').bold(req.method)
 	}
 })
 
@@ -37,7 +37,7 @@ const logger = () => {
 				tokens.coloredStatus(res),
 				chalk.hex('#e38914').bold(tokens.url(req, res)),
 				chalk.hex('#2ed573').bold(tokens['response-time'](req, res) + ' ms'),
-				chalk.hex('#c9c9c9').bold('from ' + tokens.referrer(req, res))
+				chalk.hex('#8f8f8f').bold.italic(`from ${tokens.referrer(req, res)}`)
 				// chalk.hex('#f78fb3').bold('@ ' + tokens.date(req, res)),
 				// chalk.yellow(tokens['remote-addr'](req, res)),
 				// chalk.hex('#1e90ff')(tokens['user-agent'](req, res)),

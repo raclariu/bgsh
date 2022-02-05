@@ -22,7 +22,6 @@ import Loader from '../components/Loader'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
-import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForSale, apiGetList } from '../api/api'
 import { useDeleteFromListMutation, useGetListQuery } from '../hooks/hooks'
 
@@ -35,8 +34,6 @@ const SellGamesScreen = () => {
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
-
-	const saleList = useSelector((state) => state.saleList)
 
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
@@ -91,7 +88,7 @@ const SellGamesScreen = () => {
 		history.push('/sell')
 	}
 
-	if (saleList.length === 1 && isPack) {
+	if (userList.isSuccess && userList.data.list.length === 1 && isPack) {
 		listMutation.reset()
 		history.push('/sell')
 	}
