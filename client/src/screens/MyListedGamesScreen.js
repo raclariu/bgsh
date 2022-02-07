@@ -11,40 +11,25 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 
 // @ Components
-import ListedGameCard from '../components/ListedGameCard'
+import MyListedGameCard from '../components/MyListedGameCard'
 import BackButton from '../components/BackButton'
 import SearchBox from '../components/SearchBox'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
-import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiFetchListedGames } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import { useGetMyListedGames } from '../hooks/hooks'
 
 // @ Main
-const UserListedGamesScreen = () => {
-	const dispatch = useDispatch()
+const MyListedGamesScreen = () => {
 	const history = useHistory()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'myListedGames', { search, page } ],
-		() => apiFetchListedGames(search, page),
-		{
-			staleTime : 1000 * 60 * 60,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching listed games'
-				showSnackbar.error({ text })
-			}
-		}
-	)
+	const { isLoading, data, isSuccess } = useGetMyListedGames(search, page)
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -63,19 +48,27 @@ const UserListedGamesScreen = () => {
 
 	return (
 		<Fragment>
-			<Hero>
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search your listed games" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
-				{search && (
-					<Box display="flex" alignItems="center" width="100%">
-						<BackButton />
-						{data && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+			</Box>
+
+			{isSuccess &&
+			search && (
+				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+					<BackButton />
+					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+						Found {data.pagination.totalItems || 0} game(s)
 					</Box>
-				)}
-			</Hero>
+				</Box>
+			)}
+
+			{isSuccess &&
+			data.listedGames.length === 0 &&
+			!search && <CustomAlert severity="warning">You have no listed games</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -83,12 +76,13 @@ const UserListedGamesScreen = () => {
 				</Grid>
 			)}
 
-			{data && (
+			{data &&
+			data.listedGames.length > 0 && (
 				<Grid container spacing={3}>
 					{data.listedGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<GameCardSkeleton />}>
-								<ListedGameCard data={data} />
+								<MyListedGameCard data={data} />
 							</LzLoad>
 						</Grid>
 					))}
@@ -113,4 +107,4 @@ const UserListedGamesScreen = () => {
 	)
 }
 
-export default UserListedGamesScreen
+export default MyListedGamesScreen

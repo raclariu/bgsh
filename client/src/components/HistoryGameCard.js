@@ -59,7 +59,7 @@ const HistoryGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card sx={{ position: 'relative' }} elevation={1}>
+		<Card sx={{ position: 'relative' }} elevation={2}>
 			<StyledCardMedia
 				component="img"
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}

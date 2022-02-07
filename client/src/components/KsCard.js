@@ -28,7 +28,7 @@ const StyledTitleBox = styled(Box)({
 // @ Main
 const KsCard = ({ data }) => {
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<CardMedia
 				sx={{
 					objectFit      : 'fill',

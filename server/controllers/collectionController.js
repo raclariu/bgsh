@@ -205,22 +205,24 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const page = +req.query.page
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 	const search = req.query.search
 
-	const findCollection = await Collection.findOne({ user: req.user._id }).select('ownedCount').lean()
+	const getCollectionCount = await Collection.findOne({ user: req.user._id }).select('ownedCount').lean()
+	console.log(getCollectionCount)
 
-	if (!findCollection) {
-		res.status(404)
-		throw {
-			message : 'Collection not found. Add your BGG username in your profile to retrieve your collection'
-		}
+	if (!getCollectionCount) {
+		return res.status(200).json({ owned: [], pagination: {} })
+	}
+
+	if (getCollectionCount.ownedCount === 0) {
+		return res.status(200).json({ owned: [], pagination: {} })
 	}
 
 	if (search) {
 		const { owned } = await Collection.findOne({ user: req.user._id }).select('owned').lean()
 
-		const fuse = new Fuse(owned, { keys: [ 'title' ], threshold: 0.3, distance: 200 })
+		const fuse = new Fuse(owned, { keys: [ 'title', 'subtype', 'bggId' ], threshold: 0.3, distance: 200 })
 
 		const results = fuse.search(search).map((game) => game.item)
 
@@ -261,22 +263,23 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getWishlistFromDB = asyncHandler(async (req, res) => {
 	const page = +req.query.page
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 	const search = req.query.search
 
-	const findWishlist = await Wishlist.findOne({ user: req.user._id }).select('wishlistCount').lean()
+	const getWishlistCount = await Wishlist.findOne({ user: req.user._id }).select('wishlistCount').lean()
 
-	if (!findWishlist) {
-		res.status(404)
-		throw {
-			message : 'Wishlist not found. Add your BGG username in your profile to retrieve your wishlist'
-		}
+	if (!getWishlistCount) {
+		return res.status(200).json({ wishlist: [], pagination: {} })
+	}
+
+	if (getWishlistCount.wishlistCount === 0) {
+		return res.status(200).json({ wishlist: [], pagination: {} })
 	}
 
 	if (search) {
 		const { wishlist } = await Wishlist.findOne({ user: req.user._id }).select('wishlist').lean()
 
-		const fuse = new Fuse(wishlist, { keys: [ 'title' ], threshold: 0.3, distance: 200 })
+		const fuse = new Fuse(wishlist, { keys: [ 'title', 'subtype', 'bggId' ], threshold: 0.3, distance: 200 })
 
 		const results = fuse.search(search).map((game) => game.item)
 

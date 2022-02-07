@@ -52,7 +52,7 @@ const SignIn = () => {
 	useEffect(
 		() => {
 			if (success && userData) {
-				showSnackbar.success({ text: `You are now logged in as 👉 ${userData.username}` })
+				showSnackbar.success({ text: `You are now logged in as ${userData.username}` })
 			}
 		},
 		[ success, showSnackbar, userData ]

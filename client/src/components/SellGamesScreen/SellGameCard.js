@@ -122,7 +122,7 @@ const SellGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 	}
 
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.subtype} • ${game.year}`}

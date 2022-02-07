@@ -101,7 +101,7 @@ export const useAddToListMutation = () => {
 			})
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
 		},
-		onSuccess : (data, { game }) => {
+		onSuccess : (data, game) => {
 			showSnackbar.info({ text: `${game.title} has been added to your list` })
 			queryClient.setQueryData([ 'list' ], data)
 		}
@@ -131,9 +131,6 @@ export const useGetOwnedCollectionQuery = (search, page) => {
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching collection'
 			showSnackbar.error({ text })
-		},
-		onSuccess : (data) => {
-			data.owned.length === 0 && showSnackbar.warning({ text: 'Collection not found' })
 		}
 	})
 }
@@ -148,9 +145,30 @@ export const useGetWishlistCollectionQuery = (search, page) => {
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching wishlist'
 			showSnackbar.error({ text })
-		},
-		onSuccess : (data) => {
-			data.wishlist.length === 0 && showSnackbar.warning({ text: 'Wishlist not found' })
+		}
+	})
+}
+
+export const useGetSavedGamesListQuery = (search, page) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useQuery([ 'savedGames', { search, page } ], () => api.apiFetchSavedGames(search, page), {
+		staleTime : 1000 * 60 * 60,
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while fetching saved games'
+			showSnackbar.error({ text })
+		}
+	})
+}
+
+export const useGetMyListedGames = (search, page) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useQuery([ 'myListedGames', { search, page } ], () => api.apiFetchMyListedGames(search, page), {
+		staleTime : 1000 * 60 * 60,
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while fetching listed games'
+			showSnackbar.error({ text })
 		}
 	})
 }

@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
+import Paper from '@mui/material/Paper'
 
 // @ Components
 import GameCard from '../components/GameCard'
@@ -18,7 +19,6 @@ import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
-import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -72,19 +72,27 @@ const CollectionScreen = () => {
 
 	return (
 		<Fragment>
-			<Hero>
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item md={4} sm={5} xs={12}>
 						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
-				{search && (
-					<Box display="flex" alignItems="center" width="100%">
-						<BackButton />
-						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+			</Box>
+
+			{isSuccess &&
+			search && (
+				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+					<BackButton />
+					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+						Found {data.pagination.totalItems || 0} game(s)
 					</Box>
-				)}
-			</Hero>
+				</Box>
+			)}
+
+			{isSuccess &&
+			data.owned.length === 0 &&
+			!search && <CustomAlert severity="warning">Your collection is empty</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -92,7 +100,8 @@ const CollectionScreen = () => {
 				</Grid>
 			)}
 
-			{isSuccess && (
+			{isSuccess &&
+			data.owned.length > 0 && (
 				<Grid container spacing={3} direction="row">
 					{data.owned.map((data) => (
 						<Grid item key={data.bggId} xs={12} sm={6} md={4}>

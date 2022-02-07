@@ -60,7 +60,7 @@ const SavedGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card sx={{ position: 'relative' }} elevation={1}>
+		<Card sx={{ position: 'relative' }} elevation={2}>
 			<StyledCardMedia
 				component="img"
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -82,63 +82,63 @@ const SavedGameCard = ({ data }) => {
 					/>
 
 					{data.mode === 'sell' && (
-						<CustomTooltip title="For sale">
-							<Box
-								sx={{
-									position : 'absolute',
-									top      : '36px',
-									left     : '8px'
-								}}
-							>
+						<Box
+							sx={{
+								position : 'absolute',
+								top      : '36px',
+								left     : '8px'
+							}}
+						>
+							<CustomTooltip title="For sale">
 								<MonetizationOnOutlinedIcon color="secondary" />
-							</Box>
-						</CustomTooltip>
+							</CustomTooltip>
+						</Box>
 					)}
 
 					{data.mode === 'trade' && (
-						<CustomTooltip title="For trade">
-							<Box
-								sx={{
-									position : 'absolute',
-									top      : '36px',
-									left     : '8px'
-								}}
-							>
+						<Box
+							sx={{
+								position : 'absolute',
+								top      : '36px',
+								left     : '8px'
+							}}
+						>
+							<CustomTooltip title="For trade">
 								<SwapHorizontalCircleOutlinedIcon color="secondary" />
-							</Box>
-						</CustomTooltip>
+							</CustomTooltip>
+						</Box>
 					)}
 				</Fragment>
 			)}
 
 			{!data.isPack &&
 			data.mode === 'sell' && (
-				<CustomTooltip title="For sale">
-					<Box
-						sx={{
-							position : 'absolute',
-							top      : '8px',
-							left     : '8px'
-						}}
-					>
+				<Box
+					sx={{
+						position : 'absolute',
+						top      : '8px',
+						left     : '8px'
+					}}
+				>
+					<CustomTooltip title="For sale">
 						<MonetizationOnOutlinedIcon color="secondary" />
-					</Box>
-				</CustomTooltip>
+					</CustomTooltip>
+				</Box>
 			)}
 
 			{!data.isPack &&
 			data.mode === 'trade' && (
-				<CustomTooltip title="For trade">
-					<Box
-						sx={{
-							position : 'absolute',
-							top      : '8px',
-							left     : '8px'
-						}}
-					>
+				<Box
+					sx={{
+						position : 'absolute',
+						top      : '8px',
+						left     : '8px'
+					}}
+				>
+					<CustomTooltip title="For trade">
 						<SwapHorizontalCircleOutlinedIcon color="secondary" />
-					</Box>
-				</CustomTooltip>
+					</CustomTooltip>
+				</Box>
 			)}
 
 			<Divider />

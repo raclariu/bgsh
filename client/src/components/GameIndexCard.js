@@ -61,7 +61,7 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	return (
-		<Card sx={{ position: 'relative' }} elevation={1}>
+		<Card sx={{ position: 'relative' }} elevation={2}>
 			<Box mb={1}>
 				<StyledCardMedia
 					component="img"

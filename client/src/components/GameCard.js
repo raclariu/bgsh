@@ -46,7 +46,7 @@ const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 	const currLoc = location.pathname === '/collection' ? 'collection' : 'wishlist'
 
 	return (
-		<Card raised={isChecked}>
+		<Card elevation={2}>
 			<StyledCardMedia
 				component="img"
 				alt={data.title}

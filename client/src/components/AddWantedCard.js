@@ -44,7 +44,7 @@ const AddWantedCard = ({ game, removeFromSaleListHandler, handleGameInfo, data }
 	const prefModeError = !data.prefMode.buy && !data.prefMode.trade
 
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<CardHeader
 				title={game.title}
 				subheader={`${game.subtype} • ${game.year}`}

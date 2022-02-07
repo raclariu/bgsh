@@ -25,7 +25,8 @@ export default function StickyFooter() {
 	return (
 		<Box
 			sx={{
-				padding         : (theme) => theme.spacing(3, 2),
+				height          : '180px',
+				padding         : (theme) => theme.spacing(8, 2),
 				marginTop       : 'auto',
 				backgroundColor : (theme) =>
 					theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.paper

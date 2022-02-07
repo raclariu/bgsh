@@ -6,19 +6,19 @@ import { useHistory } from 'react-router-dom'
 import IconButton from '@mui/material/IconButton'
 
 // @ Icons
-import KeyboardBackspaceTwoToneIcon from '@mui/icons-material/KeyboardBackspaceTwoTone'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 // @ Main
 const BackButton = () => {
 	const history = useHistory()
 
 	return (
-        <Fragment>
-			<IconButton onClick={() => history.goBack()} size="large">
-				<KeyboardBackspaceTwoToneIcon color="primary" />
+		<Fragment>
+			<IconButton onClick={() => history.goBack()} color="primary">
+				<ArrowBackIcon />
 			</IconButton>
 		</Fragment>
-    );
+	)
 }
 
 export default BackButton

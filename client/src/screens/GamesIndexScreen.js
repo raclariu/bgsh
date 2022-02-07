@@ -18,7 +18,6 @@ import SortGames from '../components/Filters/SortGames'
 import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import DrawerFilter from '../components/Filters/DrawerFilter'
-import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -82,20 +81,18 @@ const GamesIndexScreen = () => {
 
 	return (
 		<Fragment>
-			<Hero>
-				<Grid container justifyContent="center" spacing={2}>
-					<Grid item md={4} sm={5} xs={12}>
-						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
-					</Grid>
+			<Grid container justifyContent="center" spacing={2}>
+				<Grid item md={4} sm={5} xs={12}>
+					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
 				</Grid>
+			</Grid>
 
-				<Box display="flex" width="100%" alignItems="center">
-					<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
-						<BackButton />
-					</Box>
-					<SortGames mode={currLoc} handleFilters={handleFilters} />
+			<Box display="flex" width="100%" alignItems="center">
+				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
+					<BackButton />
 				</Box>
-			</Hero>
+				<SortGames mode={currLoc} handleFilters={handleFilters} />
+			</Box>
 
 			<Box>
 				<DrawerFilter />

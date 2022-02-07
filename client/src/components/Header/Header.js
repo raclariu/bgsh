@@ -95,23 +95,18 @@ const Header = () => {
 		setOpenDialog(false)
 	}
 
+	const ClgTheme = styled('span')(({ theme }) => console.log(theme))
+
 	return (
 		<AppBar elevation={1} position="static" color="transparent">
 			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
-				{/* <Typography
-					variant="h6"
-					sx={{
-						flexGrow : 1
-					}}
-				>
-					BoardGames
-				</Typography> */}
-
 				{!userData && (
 					<Box mr={1}>
 						<Theme />
 					</Box>
 				)}
+
+				<ClgTheme />
 
 				{userData ? (
 					<Fragment>

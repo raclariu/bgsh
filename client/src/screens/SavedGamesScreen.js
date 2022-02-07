@@ -1,10 +1,7 @@
 // @ Libraries
 import React, { Fragment } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -17,12 +14,10 @@ import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
-import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiFetchSavedGames } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import { useGetSavedGamesListQuery } from '../hooks/hooks'
 
 // @ Main
 const SavedGamesScreen = () => {
@@ -31,24 +26,7 @@ const SavedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'savedGames', { search, page } ],
-		() => apiFetchSavedGames(search, page),
-		{
-			staleTime : 1000 * 60 * 60,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching saved games'
-				showSnackbar.error({ text })
-			},
-			onSuccess : (data) => {
-				data.list.length === 0 && showSnackbar.warning({ text: 'No saved games found' })
-			}
-		}
-	)
-
-	console.log(data && data)
+	const { isLoading, data, isSuccess } = useGetSavedGamesListQuery(search, page)
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -67,19 +45,27 @@ const SavedGamesScreen = () => {
 
 	return (
 		<Fragment>
-			<Hero>
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-						<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search saved games" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
-				{search && (
-					<Box display="flex" alignItems="center" width="100%">
-						<BackButton />
-						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+			</Box>
+
+			{isSuccess &&
+			search && (
+				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+					<BackButton />
+					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+						Found {data.pagination.totalItems || 0} game(s)
 					</Box>
-				)}
-			</Hero>
+				</Box>
+			)}
+
+			{isSuccess &&
+			data.list.length === 0 &&
+			!search && <CustomAlert severity="warning">Your saved games list is empty</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -87,7 +73,8 @@ const SavedGamesScreen = () => {
 				</Grid>
 			)}
 
-			{isSuccess && (
+			{isSuccess &&
+			data.list.length > 0 && (
 				<Grid container spacing={3}>
 					{data.list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>

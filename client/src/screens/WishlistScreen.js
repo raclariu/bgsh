@@ -17,7 +17,6 @@ import GameCard from '../components/GameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
-import Hero from '../components/Hero'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -72,19 +71,27 @@ const WishlistScreen = () => {
 
 	return (
 		<Fragment>
-			<Hero>
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search wishlist" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
-				{search && (
-					<Box display="flex" alignItems="center" width="100%">
-						<BackButton />
-						{isSuccess && <Box fontSize={12}>Found {data.pagination.totalItems} games</Box>}
+			</Box>
+
+			{isSuccess &&
+			search && (
+				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+					<BackButton />
+					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+						Found {data.pagination.totalItems || 0} game(s)
 					</Box>
-				)}
-			</Hero>
+				</Box>
+			)}
+
+			{isSuccess &&
+			data.wishlist.length === 0 &&
+			!search && <CustomAlert severity="warning">Your wishlist is empty</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -92,7 +99,8 @@ const WishlistScreen = () => {
 				</Grid>
 			)}
 
-			{isSuccess && (
+			{isSuccess &&
+			data.wishlist.length > 0 && (
 				<Grid container spacing={3} direction="row">
 					{data.wishlist.map((data) => (
 						<Grid item key={data.bggId} md={4} sm={6} xs={12}>

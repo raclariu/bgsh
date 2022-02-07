@@ -203,7 +203,7 @@ export const apiBggSearchGames = async (search) => {
 	return data
 }
 
-export const apiFetchListedGames = async (search, page) => {
+export const apiFetchMyListedGames = async (search, page) => {
 	const { userAuth: { userData } } = store.getState()
 	const config = {
 		params : {

@@ -35,7 +35,7 @@ const StyledTitleBox = styled(Box)({
 // @ Main
 const HotGameCard = ({ data }) => {
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<StyledCardMedia
 				component="img"
 				alt={data.title}

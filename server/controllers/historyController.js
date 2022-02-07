@@ -206,7 +206,7 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 const getGamesHistory = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 	const mode = req.query.mode
 
 	const completeList = await History.find({ addedBy: req.user._id, mode })

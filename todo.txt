@@ -18,3 +18,9 @@ da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dr
 - de facut instanta la axios pentru protect si fara si in interceptor daca e 403 sa dea logout la user sa nu mai verific jwt de fiecare data daca
   oricum se verifica in backend
 - Lies_vhis colectie 0 // Temprament colectie 2000 + // 
+- trebuie facute cardurile la imagini ca la GameCard
+- trebuie hookuri pt use query
+- trebuie partea de sus din pagini cu jocuri facuta ca la collectionScreen
+- mai tarziu rezolvat cu paginarea spatiere etc
+- de umblat la fusejs la keyuri ca la owned
+- de componentizat chipurile si icoanele care apar la saved games si mylistedgames

@@ -35,7 +35,6 @@ const defaultMiniBox = {
 }
 
 const RatingBox = ({ variant, stats }) => {
-	console.log(stats)
 	const handleRatingBgColor = () => {
 		const { ratings, avgRating } = stats
 		if (ratings > 30) {

@@ -279,7 +279,7 @@ const getGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const sortBy = req.query.sort
 	const mode = req.query.mode
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 
 	if (search) {
 		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id avatar').lean()
@@ -364,7 +364,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 	const { id } = req.params
 	const page = +req.query.page
 	const search = req.query.search
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 
 	const allUserGames = await Game.find({ addedBy: id }).lean()
 
@@ -522,7 +522,7 @@ const getSingleGameSavedStatus = asyncHandler(async (req, res) => {
 const getSavedGames = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
-	const resultsPerPage = 24
+	const resultsPerPage = 18
 
 	const user = await User.findById({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
 

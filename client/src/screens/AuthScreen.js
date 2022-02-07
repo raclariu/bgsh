@@ -25,18 +25,7 @@ const AuthScreen = () => {
 	const { location: { pathname } } = history
 
 	return (
-		<Box
-			sx={{
-				position  : 'absolute',
-				left      : '50%',
-				top       : '50%',
-				transform : 'translate(-50%,-50%)',
-				width     : '95%'
-			}}
-			display="flex"
-			justifyContent="center"
-			alignItems="center"
-		>
+		<Box display="flex" justifyContent="center" alignItems="center" height="100%">
 			<Box
 				container
 				direction="column"

@@ -8,7 +8,7 @@ import { isMobile } from 'react-device-detect'
 import CssBaseline from '@mui/material/CssBaseline'
 
 // @ CSS
-import './fonts.css'
+import './css/App.css'
 
 // @ Mui
 import Container from '@mui/material/Container'
@@ -41,7 +41,7 @@ const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
 const Inbox = lazy(() => import('./screens/InboxScreen'))
-const UserListedGames = lazy(() => import('./screens/UserListedGamesScreen'))
+const MyListedGames = lazy(() => import('./screens/MyListedGamesScreen'))
 const GamesHistory = lazy(() => import('./screens/GamesHistoryScreen'))
 const HotGames = lazy(() => import('./screens/HotGamesScreen'))
 const UserProfile = lazy(() => import('./screens/UserProfileScreen'))
@@ -50,6 +50,7 @@ const NotFound = lazy(() => import('./screens/NotFoundScreen'))
 // @ Main
 const App = () => {
 	const theme = useSelector((state) => state.userPreferences.theme)
+
 	const location = useLocation()
 	const notistackRef = React.createRef()
 	const onClickDismiss = (key) => () => {
@@ -73,7 +74,7 @@ const App = () => {
 					{location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
 
 					<Suspense fallback={<LinearProgress />}>
-						<Container maxWidth="md" component="main">
+						<Container maxWidth="md" component="main" sx={{ minHeight: 'calc(100% - 244px)' }}>
 							<Switch>
 								<Route path="/" exact>
 									<Home />
@@ -144,7 +145,7 @@ const App = () => {
 								</ProtectedRoute>
 
 								<ProtectedRoute path="/user/listed" exact>
-									<UserListedGames />
+									<MyListedGames />
 								</ProtectedRoute>
 
 								<ProtectedRoute path="/user/history/sold" exact>
