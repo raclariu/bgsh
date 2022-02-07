@@ -1,8 +1,7 @@
 // @ Libraries
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState, Fragment, useCallback } from 'react'
 import { styled } from '@mui/material/styles'
-import { useParams, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useParams } from 'react-router-dom'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Zoom from 'react-medium-image-zoom'
 import { useInView } from 'react-intersection-observer'
@@ -29,6 +28,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
 import Collapse from '@mui/material/Collapse'
 import Skeleton from '@mui/material/Skeleton'
+import Fade from '@mui/material/Fade'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -61,9 +61,14 @@ import HelmetComponent from '../components/HelmetComponent'
 import CustomAlert from '../components/CustomAlert'
 import CustomTooltip from '../components/CustomTooltip'
 import LzLoad from '../components/LzLoad'
+import CustomButton from '../components/CustomButton'
 
 // @ Others
-import { apiFetchSingleGame, apiFetchGallery, apiFetchRecommendations } from '../api/api'
+import {
+	useGetSingleGameQuery,
+	useGetSingleGameGalleryQuery,
+	useGetSingleGameRecommendationsQuery
+} from '../hooks/hooks'
 
 const StyledChipsBox = styled(Box)(({ theme }) => ({
 	display        : 'flex',
@@ -115,11 +120,16 @@ const StyledTitleBox = styled(Box)({
 // @ Gallery skeleton
 const GallerySkeleton = () => {
 	return (
-		<Grid item xs={6} sm={4} md={3}>
-			<Box borderRadius="8px" boxShadow={1} p={2} bgcolor="background.paper" width="100%">
-				<Skeleton animation="wave" variant="rectangular" width="100%" height={150} />
-			</Box>
-		</Grid>
+		<Box
+			borderRadius="8px"
+			boxShadow={1}
+			p={2}
+			bgcolor="background.paper"
+			width="100%"
+			height={Math.floor(Math.random() * (300 - 100 + 1) + 100)}
+		>
+			<Skeleton animation="wave" variant="rectangular" width="100%" height="100%" />
+		</Box>
 	)
 }
 
@@ -145,13 +155,7 @@ const SingleGameScreen = () => {
 	const [ imgLoaded, setImgLoaded ] = useState(false)
 	const [ expanded, setExpanded ] = useState(false)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'singleGame', altId ],
-		() => apiFetchSingleGame(altId),
-		{
-			staleTime : 1000 * 60 * 3
-		}
-	)
+	const { isLoading, isError, error, data, isSuccess } = useGetSingleGameQuery(altId)
 
 	const {
 		isLoading : isLoadingGallery,
@@ -159,37 +163,13 @@ const SingleGameScreen = () => {
 		error     : errorGallery,
 		data      : galleryData,
 		isSuccess : isSuccessGallery
-	} = useQuery(
-		[ 'gallery', altId ],
-		() => {
-			const bggIds = data.games.map((game) => game.bggId)
-			return apiFetchGallery(bggIds)
-		},
-		{
-			enabled   : isSuccess && galleryInView,
-			staleTime : 1000 * 60 * 60
-		}
-	)
+	} = useGetSingleGameGalleryQuery({ altId, galleryInView, index })
 
 	const {
 		isLoading : isLoadingRecs,
-		isError   : isErrorRecs,
-		error     : errorRecs,
 		data      : recData,
-		isSuccess : isSuccessRec,
-		refetch   : refetchRecs
-	} = useQuery(
-		[ 'recommendations', { altId, index } ],
-		() => {
-			const currBggId = data.games[index].bggId
-			return apiFetchRecommendations(currBggId)
-		},
-		{
-			enabled          : isSuccess && recsInView,
-			staleTime        : 1000 * 60 * 60,
-			keepPreviousData : true
-		}
-	)
+		isSuccess : isSuccessRec
+	} = useGetSingleGameRecommendationsQuery({ altId, recsInView, index })
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -235,7 +215,7 @@ const SingleGameScreen = () => {
 			}
 		}
 		if (type === 'forward') {
-			if (galleryData[index].length > imgIndex + 1) {
+			if (galleryData.length > imgIndex + 1) {
 				setImgLoaded(false)
 				setImgIndex(imgIndex + 1)
 			}
@@ -603,25 +583,21 @@ const SingleGameScreen = () => {
 						)}
 
 						{isLoadingGallery && (
-							<Grid container spacing={1}>
-								{[ ...Array(8).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
-							</Grid>
+							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
+								<Masonry gutter="10px">
+									{[ ...Array(12).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
+								</Masonry>
+							</ResponsiveMasonry>
 						)}
 
 						{isSuccessGallery &&
-						galleryData[index].length > 0 && (
+						galleryData.length > 0 && (
 							<Box>
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 									<Masonry gutter="10px">
-										{galleryData[index].map((obj, i) => (
-											<LzLoad>
-												<Box
-													key={obj.imageid}
-													borderRadius="8px"
-													boxShadow={1}
-													p={1}
-													bgcolor="background.paper"
-												>
+										{galleryData.map((obj, i) => (
+											<LzLoad key={obj.imageid}>
+												<Box borderRadius="8px" boxShadow={1} p={1} bgcolor="background.paper">
 													<StyledMasonryImg
 														onClick={() => handleOpenImage(i)}
 														src={obj.thumbnail}
@@ -643,9 +619,9 @@ const SingleGameScreen = () => {
 									<DialogTitle>
 										<Box display="flex" alignItems="center">
 											<Box display="flex" flexDirection="column" flexGrow={1} gap={0.5}>
-												<Box fontSize="1rem">{galleryData[index][imgIndex].caption}</Box>
+												<Box fontSize="1rem">{galleryData[imgIndex].caption}</Box>
 												<Box fontSize="0.75rem" color="grey.500">
-													{`Posted on BGG by ${galleryData[index][imgIndex].postedBy}`}
+													{`Posted on BGG by ${galleryData[imgIndex].postedBy}`}
 												</Box>
 											</Box>
 											<IconButton onClick={handleCloseImage} color="secondary" size="large">
@@ -659,8 +635,8 @@ const SingleGameScreen = () => {
 										sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 									>
 										<StyledDialogImg
-											alt={galleryData[index][imgIndex].caption}
-											src={galleryData[index][imgIndex].image}
+											alt={galleryData[imgIndex].caption}
+											src={galleryData[imgIndex].image}
 											hidden={!imgLoaded}
 											onLoad={onImgLoad}
 										/>
@@ -687,7 +663,7 @@ const SingleGameScreen = () => {
 												</CustomTooltip>
 												<CustomTooltip title="Next image">
 													<IconButton
-														disabled={galleryData[index].length === imgIndex + 1}
+														disabled={galleryData.length === imgIndex + 1}
 														color="primary"
 														onClick={() => cycleImages('forward')}
 														size="large"
@@ -697,16 +673,14 @@ const SingleGameScreen = () => {
 												</CustomTooltip>
 											</Box>
 
-											<Button
-												color="primary"
+											<CustomButton
 												variant="outlined"
-												href={`https://boardgamegeek.com${galleryData[index][imgIndex]
-													.extLink}`}
+												href={`https://boardgamegeek.com${galleryData[imgIndex].extLink}`}
 												target="_blank"
 												rel="noreferrer"
 											>
 												See on BGG
-											</Button>
+											</CustomButton>
 										</Box>
 									</DialogActions>
 								</Dialog>
@@ -714,9 +688,7 @@ const SingleGameScreen = () => {
 						)}
 
 						{isSuccessGallery &&
-						galleryData[index].length === 0 && (
-							<CustomAlert severity="warning">No images found</CustomAlert>
-						)}
+						galleryData.length === 0 && <CustomAlert severity="warning">No images found</CustomAlert>}
 					</Box>
 
 					<Divider light />
@@ -862,9 +834,9 @@ const SingleGameScreen = () => {
 						recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
 
 						<Box display="flex" justifyContent="flex-end" mt={1}>
-							<Button onClick={() => setExpanded((expanded) => !expanded)}>
+							<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
 								{expanded ? 'See less' : 'See more'}
-							</Button>
+							</CustomButton>
 						</Box>
 					</Box>
 

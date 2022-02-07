@@ -11,10 +11,11 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
+import Box from '@mui/material/Box'
 
 // @ Components
-import SellGameCard from '../components/SellGamesScreen/SellGameCard'
-import ShippingSection from '../components/SellGamesScreen/ShippingSection'
+import ListGameCard from '../components/ListGameCard'
+import ShippingSection from '../components/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
@@ -23,6 +24,7 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddBoughtGamesToHistory } from '../api/api'
+import { useGetListQuery, useGetBggGamesDetailsQuery, useDeleteFromListMutation } from '../hooks/hooks'
 
 // @ Main
 const BuyGamesScreen = () => {
@@ -34,69 +36,55 @@ const BuyGamesScreen = () => {
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
 
-	const saleList = useSelector((state) => state.saleList)
+	const userList = useGetListQuery((listData) =>
+		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
+	)
 
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState('')
 	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
-		{
-			staleTime : Infinity,
-			enabled   : !!saleList.length,
-			onSuccess : (data) => {
-				setValues(
-					data.map((game) => {
-						return {
-							...game,
-							isSleeved     : false,
-							version       : null,
-							extraInfo     : '',
-							price         : '',
-							otherUsername : ''
-						}
-					})
-				)
-			}
-		}
-	)
+	const {
+		isError,
+		error,
+		data,
+		isFetching,
+		isSuccess  : isSuccessDetails,
+		status
+	} = useGetBggGamesDetailsQuery((data) => {
+		setValues(
+			data.map((game) => {
+				return {
+					...game,
+					isSleeved     : false,
+					version       : null,
+					extraInfo     : '',
+					price         : '',
+					otherUsername : ''
+				}
+			})
+		)
+	})
 
-	const mutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData), {
-		onSuccess : () => queryClient.invalidateQueries([ 'buyHistory' ])
+	const deleteMutation = useDeleteFromListMutation()
+
+	const addMutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData), {
+		onSuccess : () => queryClient.invalidateQueries([ 'history', 'buy' ])
 	})
 
 	if (isPack !== false && isPack !== true) {
-		mutation.reset()
-		history.push('/buy')
+		addMutation.reset()
+		history.push('/sell')
 	}
 
-	if (saleList.length === 1 && isPack) {
-		mutation.reset()
-		history.push('/buy')
+	if (userList.isSuccess && userList.data.list.length === 1 && isPack) {
+		addMutation.reset()
+		history.push('/sell')
 	}
 
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries([ 'bggGamesDetails' ])
-			}
-		},
-		[ queryClient ]
-	)
-
-	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
-	useEffect(
-		() => {
-			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-		},
-		[ saleList ]
-	)
-
-	const removeFromSaleListHandler = (id) => {
-		dispatch(removeFromSaleList(id))
+	const removeFromListHandler = (bggId, title) => {
+		deleteMutation.mutate({ bggId, title })
 	}
 
 	const handleGameInfo = (value, id, key) => {
@@ -118,7 +106,7 @@ const BuyGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		if (saleList.length === 0) return
+		if (userList.data.list.length === 0) return
 
 		const verifiedGames = values.map((val) => {
 			if (isPack) {
@@ -358,32 +346,43 @@ const BuyGamesScreen = () => {
 			finalPrice    : '',
 			otherUsername : null
 		}
-		mutation.mutate(gamesData)
+		addMutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit} autoComplete="off">
-			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{mutation.isError &&
-				Object.values(mutation.error.response.data.message).map((err, i) => (
-					<CustomAlert key={i}>{err}</CustomAlert>
-				))}
+			{addMutation.isError && (
+				<Box display="flex" flexDirection="column" gap={1} my={2}>
+					{Object.values(addMutation.error.response.data.message).map((err, i) => (
+						<CustomAlert key={i}>{err}</CustomAlert>
+					))}
+				</Box>
+			)}
 
-			{isLoading && <Loader />}
+			{userList.isSuccess &&
+			userList.data.list.length === 0 && (
+				<Box my={2}>
+					<CustomAlert severity="warning">Your list is empty</CustomAlert>
+				</Box>
+			)}
 
-			{isSuccess &&
-			saleList.length > 0 && (
+			{isFetching && <Loader />}
+
+			{userList.isSuccess &&
+			userList.data.list.length > 0 &&
+			isSuccessDetails && (
 				<Fragment>
 					<Grid container spacing={3}>
 						{values.map((game) => (
 							<Grid item key={game.bggId} xs={12} sm={6} md={4}>
-								<SellGameCard
+								<ListGameCard
 									game={game}
 									isPack={isPack}
 									mode="buy"
 									data={values.find((val) => val.bggId === game.bggId)}
-									removeFromSaleListHandler={removeFromSaleListHandler}
+									removeFromListHandler={removeFromListHandler}
 									handleGameInfo={handleGameInfo}
 								/>
 							</Grid>
@@ -450,7 +449,7 @@ const BuyGamesScreen = () => {
 									type="submit"
 									variant="contained"
 									color="primary"
-									loading={mutation.isLoading}
+									loading={addMutation.isLoading}
 									fullWidth
 								>
 									Buy

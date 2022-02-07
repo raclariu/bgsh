@@ -11,6 +11,9 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 
+// @ Components
+import CustomButton from './CustomButton'
+
 // @ Main
 const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 	return (
@@ -24,14 +27,14 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 
 				<DialogActions>
 					<ButtonGroup color="primary">
-						<Button
+						<CustomButton
 							onClick={handleCloseDialog}
 							component={Link}
 							to={mode === 'sell' ? '/sell' : mode === 'trade' ? '/trade' : '/buy'}
 						>
 							Individually
-						</Button>
-						<Button
+						</CustomButton>
+						<CustomButton
 							onClick={handleCloseDialog}
 							component={Link}
 							to={
@@ -45,7 +48,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 							}
 						>
 							Pack
-						</Button>
+						</CustomButton>
 					</ButtonGroup>
 				</DialogActions>
 			</Dialog>

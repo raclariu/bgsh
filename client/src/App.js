@@ -74,7 +74,7 @@ const App = () => {
 					{location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
 
 					<Suspense fallback={<LinearProgress />}>
-						<Container maxWidth="md" component="main" sx={{ minHeight: 'calc(100% - 244px)' }}>
+						<Container maxWidth="md" component="main" sx={{ minHeight: '100%' }}>
 							<Switch>
 								<Route path="/" exact>
 									<Home />

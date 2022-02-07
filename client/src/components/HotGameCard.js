@@ -13,6 +13,7 @@ import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 
 // @ Components
+import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 
 // @ Styles
@@ -64,14 +65,13 @@ const HotGameCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
 					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
+						<CustomButton
 							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
 							target="_blank"
 							rel="noreferrer"
 						>
 							BGG
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 				</Box>
 			</CardActions>

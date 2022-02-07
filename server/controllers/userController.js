@@ -29,10 +29,10 @@ const userAuth = asyncHandler(async (req, res) => {
 		user.save()
 		res.status(200).json({
 			_id      : user._id,
-			email    : user.email,
+			// email    : user.email,
 			username : user.username,
-			isAdmin  : user.isAdmin,
-			avatar   : user.avatar,
+			// isAdmin  : user.isAdmin,
+			// avatar   : user.avatar,
 			token    : generateToken(user._id)
 		})
 	}

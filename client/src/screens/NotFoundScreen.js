@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
+// @ Components
+import CustomButton from '../components/CustomButton'
+
 // @ Main
 const NotFoundScreen = () => {
 	return (
@@ -26,9 +29,9 @@ const NotFoundScreen = () => {
 				</Box>
 				<Box>Go to</Box>
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%">
-					<Button component={Link} to="/" variant="contained" color="primary">
+					<CustomButton component={Link} to="/" variant="contained">
 						Home
-					</Button>
+					</CustomButton>
 				</Box>
 			</Box>
 		</Box>

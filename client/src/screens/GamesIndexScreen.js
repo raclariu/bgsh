@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import queryString from 'query-string'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -19,10 +18,10 @@ import Paginate from '../components/Paginate'
 import GameIndexCardSkeleton from '../components/Skeletons/GameIndexCardSkeleton'
 import DrawerFilter from '../components/Filters/DrawerFilter'
 import LzLoad from '../components/LzLoad'
+import CustomAlert from '../components/CustomAlert'
 
 // @ Others
-import { fetchGames } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import { useGetGamesIndexQuery } from '../hooks/hooks'
 
 // @ Main
 const GamesIndexScreen = () => {
@@ -34,31 +33,7 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	const { isLoading, data, isSuccess } = useQuery(
-		[ qryKey, { sort, search, page } ],
-		() => {
-			const params = {
-				search,
-				page,
-				sort,
-				mode   : currLoc
-			}
-
-			return fetchGames(params)
-		},
-		{
-			staleTime : 1000 * 60 * 5,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching games'
-				showSnackbar.error({ text })
-			},
-			onSuccess : (data) => {
-				data.gamesData.length === 0 && showSnackbar.warning({ text: 'Games not found' })
-			}
-		}
-	)
+	const { isLoading, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -81,22 +56,38 @@ const GamesIndexScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title or designer" handleFilters={handleFilters} />
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search boardgames" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+			</Box>
 
-			<Box display="flex" width="100%" alignItems="center">
-				<Box display="flex" justifyContent="flex-start" alignItems="center" width="100%">
-					<BackButton />
+			<Box display="flex" width="100%" alignItems="flex-end">
+				<Box flexGrow={1}>
+					{isSuccess &&
+					search && (
+						<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+							<BackButton />
+							<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+								Found {data.pagination.totalItems || 0} game(s)
+							</Box>
+						</Box>
+					)}
 				</Box>
 				<SortGames mode={currLoc} handleFilters={handleFilters} />
 			</Box>
 
-			<Box>
+			{/* <Box>
 				<DrawerFilter />
-			</Box>
+			</Box> */}
+
+			{console.count('render')}
+
+			{isSuccess &&
+			data.gamesData.length === 0 &&
+			!search && <CustomAlert severity="warning">No games listed</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -104,9 +95,10 @@ const GamesIndexScreen = () => {
 				</Grid>
 			)}
 
-			<Grid container spacing={3}>
-				{isSuccess &&
-					data.gamesData.map((data) => (
+			{isSuccess &&
+			data.gamesData.length > 0 && (
+				<Grid container spacing={3} direction="row">
+					{data.gamesData.map((data) => (
 						<Grid item key={data._id} md={4} sm={6} xs={12}>
 							<LzLoad
 								placeholder={
@@ -119,7 +111,8 @@ const GamesIndexScreen = () => {
 							</LzLoad>
 						</Grid>
 					))}
-			</Grid>
+				</Grid>
+			)}
 
 			{isSuccess &&
 			data.pagination && (

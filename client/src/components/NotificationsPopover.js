@@ -21,6 +21,9 @@ import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
 
+// @ Components
+import CustomButton from './CustomButton'
+
 // @ Icons
 import NotificationsNoneTwoToneIcon from '@mui/icons-material/NotificationsNoneTwoTone'
 import FavoriteIcon from '@mui/icons-material/Favorite'
@@ -120,9 +123,9 @@ const NotificationsPopover = () => {
 				{isSuccess &&
 				data.notifications.length > 0 && (
 					<Box textAlign="center" p={1}>
-						<Button startIcon={<HighlightOffIcon />} color="secondary" size="small">
+						<CustomButton startIcon={<HighlightOffIcon />} color="secondary" size="small">
 							Clear all
-						</Button>
+						</CustomButton>
 					</Box>
 				)}
 			</Popover>

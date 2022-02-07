@@ -14,7 +14,7 @@ import { apiGetNewMessagesCount } from '../api/api'
 
 // @ Main
 const MessagesBadge = () => {
-	const { isSuccess, data: count } = useQuery([ 'msgReceivedCount' ], apiGetNewMessagesCount, {
+	const { isSuccess, data: count } = useQuery([ 'inbox', 'count' ], apiGetNewMessagesCount, {
 		refetchInterval : 1000 * 60 * 2,
 		refetchOnMount  : false
 	})

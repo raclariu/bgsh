@@ -66,7 +66,8 @@ export const apiGetReceivedMessages = async (search, page) => {
 }
 
 export const apiUpdateMessageStatus = async (id) => {
-	return await axsAUTH.patch(`/api/messages/update/${id}`, {})
+	const { data } = await axsAUTH.patch(`/api/messages/update/${id}`, {})
+	return data
 }
 
 export const apiGetNewMessagesCount = async () => {
@@ -75,14 +76,7 @@ export const apiGetNewMessagesCount = async () => {
 }
 
 export const apiDeleteMessages = async (ids, type) => {
-	const config = {
-		params           : {
-			type,
-			ids
-		},
-		paramsSerializer : (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
-	}
-	return await axsAUTH.delete('/api/messages/delete', config)
+	return await axsAUTH.delete('/api/messages/delete', { data: { ids, type } })
 }
 
 export const apiFetchOwnedCollection = async (search, page) => {
@@ -148,12 +142,11 @@ export const apiUpdateSavedGameStatus = async (altId) => {
 	return data
 }
 
-export const apiFetchGallery = async (bggIds) => {
+export const apiFetchGallery = async (bggId) => {
 	const config = {
-		params           : {
-			bggIds
-		},
-		paramsSerializer : (params) => queryString.stringify(params, { arrayFormat: 'bracket' })
+		params : {
+			bggId
+		}
 	}
 
 	const { data } = await axsAUTH.get('/api/misc/bgg/gallery', config)

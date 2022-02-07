@@ -20,8 +20,7 @@ import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiFetchGamesHistory } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import { useGetGamesHistoryListQuery } from '../hooks/hooks'
 
 // @ Main
 const GamesHistoryScreen = () => {
@@ -32,28 +31,9 @@ const GamesHistoryScreen = () => {
 			? 'sell'
 			: location.pathname === '/user/history/traded' ? 'trade' : 'buy'
 
-	const qryKey = currLoc === 'sell' ? 'soldHistory' : currLoc === 'trade' ? 'tradedHistory' : 'buyHistory'
-
-	console.log({ currLoc, qryKey })
-
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	const { isLoading, data, isSuccess } = useQuery(
-		[ qryKey, { search, page } ],
-		() => apiFetchGamesHistory({ search, page, mode: currLoc }),
-		{
-			staleTime : 1000 * 60 * 60,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching history'
-				showSnackbar.error({ text })
-			},
-			onSuccess : (data) => {
-				data.historyList.length === 0 && showSnackbar.warning({ text: 'No games found' })
-			}
-		}
-	)
+	const { isLoading, data, isSuccess } = useGetGamesHistoryListQuery({ search, page, mode: currLoc })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -72,18 +52,27 @@ const GamesHistoryScreen = () => {
 
 	return (
 		<Fragment>
-			<Grid container justifyContent="center" spacing={2}>
-				<Grid item xl={4} lg={4} md={4} sm={5} xs={12}>
-					<SearchBox placeholder="Enter game title" handleFilters={handleFilters} />
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search boardgames" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+			</Box>
 
-			{search && (
-				<Box display="flex" alignItems="center" width="100%">
+			{isSuccess &&
+			search && (
+				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
 					<BackButton />
-					{isSuccess && <Box fontSize={12}>Found {data.historyList.length} games</Box>}
+					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
+						Found {data.pagination.totalItems || 0} game(s)
+					</Box>
 				</Box>
 			)}
+
+			{isSuccess &&
+			data.historyList.length === 0 &&
+			!search && <CustomAlert severity="warning">{`Your ${currLoc} history list is empty`}</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
@@ -91,7 +80,8 @@ const GamesHistoryScreen = () => {
 				</Grid>
 			)}
 
-			{isSuccess && (
+			{isSuccess &&
+			data.historyList.length > 0 && (
 				<Grid container spacing={3}>
 					{data.historyList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>

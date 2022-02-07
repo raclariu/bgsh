@@ -13,7 +13,7 @@ import Divider from '@mui/material/Divider'
 import Paper from '@mui/material/Paper'
 
 // @ Components
-import GameCard from '../components/GameCard'
+import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
@@ -22,7 +22,6 @@ import Paginate from '../components/Paginate'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiFetchOwnedCollection, apiGetList, apiAddOneToList, apiDeleteOneFromList } from '../api/api'
 import {
 	useNotiSnackbar,
 	useGetListQuery,
@@ -106,7 +105,7 @@ const CollectionScreen = () => {
 					{data.owned.map((data) => (
 						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<GameCardSkeleton />}>
-								<GameCard
+								<CollectionGameCard
 									data={data}
 									listHandler={listHandler}
 									isChecked={userList.data.list.some((el) => el.bggId === data.bggId)}

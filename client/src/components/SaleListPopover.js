@@ -26,6 +26,7 @@ import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwo
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 // @ Components
+import CustomButton from './CustomButton'
 import SaleListPopoverDialog from './SaleListPopoverDialog'
 
 // @ Others
@@ -109,15 +110,15 @@ const SaleListPopover = () => {
 
 							<Box display="flex" justifyContent="center" my={1} color="primary">
 								<ButtonGroup color="primary" size="small">
-									<Button component={RouterLink} to="/profile" onClick={handleClose}>
+									<CustomButton component={RouterLink} to="/profile" onClick={handleClose}>
 										Profile
-									</Button>
-									<Button component={RouterLink} to="/collection" onClick={handleClose}>
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/collection" onClick={handleClose}>
 										Collection
-									</Button>
-									<Button component={RouterLink} to="/wishlist" onClick={handleClose}>
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/wishlist" onClick={handleClose}>
 										Wishlist
-									</Button>
+									</CustomButton>
 								</ButtonGroup>
 							</Box>
 						</Fragment>
@@ -163,29 +164,29 @@ const SaleListPopover = () => {
 						<Box display="flex" justifyContent="flex-end" m={1}>
 							{data.list.length === 1 && (
 								<ButtonGroup color="primary" size="small">
-									<Button component={RouterLink} to="/sell" onClick={handleClose}>
+									<CustomButton component={RouterLink} to="/sell" onClick={handleClose}>
 										Sell
-									</Button>
-									<Button component={RouterLink} to="/trade" onClick={handleClose}>
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/trade" onClick={handleClose}>
 										Trade
-									</Button>
-									<Button component={RouterLink} to="/buy" onClick={handleClose}>
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/buy" onClick={handleClose}>
 										Buy
-									</Button>
-									<Button component={RouterLink} to="/want" onClick={handleClose}>
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
-									</Button>
+									</CustomButton>
 								</ButtonGroup>
 							)}
 
 							{data.list.length > 1 && (
 								<ButtonGroup color="primary" size="small">
-									<Button onClick={() => handleModeClick('sell')}>Sell</Button>
-									<Button onClick={() => handleModeClick('trade')}>Trade</Button>
-									<Button onClick={() => handleModeClick('buy')}>Buy</Button>
-									<Button component={RouterLink} to="/want" onClick={handleClose}>
+									<CustomButton onClick={() => handleModeClick('sell')}>Sell</CustomButton>
+									<CustomButton onClick={() => handleModeClick('trade')}>Trade</CustomButton>
+									<CustomButton onClick={() => handleModeClick('buy')}>Buy</CustomButton>
+									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
-									</Button>
+									</CustomButton>
 								</ButtonGroup>
 							)}
 						</Box>

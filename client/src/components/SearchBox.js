@@ -30,7 +30,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 			sx={{
 				padding : (theme) => theme.spacing(1.2, 1.5, 1.2, 1.5)
 			}}
-			elevation={1}
+			elevation={2}
 			onSubmit={submitSearchHandler}
 			noValidate
 			autoComplete="off"

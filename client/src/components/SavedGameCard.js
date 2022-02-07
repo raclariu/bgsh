@@ -22,6 +22,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
+import CustomButton from './CustomButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
 
@@ -186,14 +187,13 @@ const SavedGameCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
+						<CustomButton
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
 							target="_blank"
 							rel="noreferrer"
 						>
 							BGG
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 
 					<GameDetailsButton altId={data.altId} />

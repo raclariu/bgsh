@@ -14,50 +14,31 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 
-// @ icons
+// @ Icons
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
+import CustomButton from '../CustomButton'
 import CustomTooltip from '../CustomTooltip'
 import GameDetailsButton from '../GameDetailsButton'
 
-const PREFIX = 'UserProfileGameCard'
-
-const classes = {
-	card       : `${PREFIX}-card`,
-	media      : `${PREFIX}-media`,
-	overlayTop : `${PREFIX}-overlayTop`,
-	title      : `${PREFIX}-title`
-}
-
-const StyledCard = styled(Card)(({ theme }) => ({
-	[`&.${classes.card}`]: {
-		position : 'relative'
-	},
-
-	[`& .${classes.media}`]: {
-		margin    : theme.spacing(1, 0, 1, 0),
-		padding   : theme.spacing(0, 1, 0, 1),
-		objectFit : 'contain',
-		height    : '180px'
-	},
-
-	[`& .${classes.overlayTop}`]: {
-		position : 'absolute',
-		top      : '8px',
-		left     : '8px'
-	},
-
-	[`& .${classes.title}`]: {
-		display         : '-webkit-box',
-		WebkitLineClamp : '2',
-		WebkitBoxOrient : 'vertical',
-		overflow        : 'hidden',
-		width           : '100%',
-		textAlign       : 'center'
-	}
+// @ Styles
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+	margin    : theme.spacing(1, 0, 1, 0),
+	padding   : theme.spacing(0, 1, 0, 1),
+	objectFit : 'contain',
+	height    : '180px'
 }))
+
+const StyledTitleBox = styled(CardMedia)({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%',
+	textAlign       : 'center'
+})
 
 // @ Main
 const UserProfileGameCard = ({ data }) => {
@@ -77,9 +58,8 @@ const UserProfileGameCard = ({ data }) => {
 	}
 
 	return (
-		<StyledCard className={classes.card} elevation={1}>
-			<CardMedia
-				className={classes.media}
+		<Card sx={{ position: 'relative' }} elevation={2}>
+			<StyledCardMedia
 				component="img"
 				alt={data.games[index].title}
 				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -91,7 +71,11 @@ const UserProfileGameCard = ({ data }) => {
 					<Chip
 						size="small"
 						color="secondary"
-						className={classes.overlayTop}
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
 						label={`${data.games.length} pack`}
 					/>
 				</Fragment>
@@ -112,9 +96,9 @@ const UserProfileGameCard = ({ data }) => {
 							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')} size="large">
 								<ArrowBackIcon fontSize="small" />
 							</IconButton>
-							<Box className={classes.title}>
+							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
-							</Box>
+							</StyledTitleBox>
 							<IconButton
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
@@ -124,9 +108,9 @@ const UserProfileGameCard = ({ data }) => {
 							</IconButton>
 						</Fragment>
 					) : (
-						<Box className={classes.title}>
+						<StyledTitleBox>
 							{data.games[index].title} ({data.games[index].year})
-						</Box>
+						</StyledTitleBox>
 					)}
 				</Box>
 			</CardContent>
@@ -136,20 +120,19 @@ const UserProfileGameCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
+						<CustomButton
 							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
 							target="_blank"
 							rel="noreferrer"
 						>
 							BGG
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 
 					<GameDetailsButton altId={data.altId} />
 				</Box>
 			</CardActions>
-		</StyledCard>
+		</Card>
 	)
 }
 

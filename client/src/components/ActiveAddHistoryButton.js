@@ -23,6 +23,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 // @ Components
+import CustomButton from './CustomButton'
 import Loader from './Loader'
 import CustomTooltip from './CustomTooltip'
 import CustomAlert from './CustomAlert'
@@ -108,14 +109,14 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	})
 
 	const invalidate = () => {
-		queryClient.invalidateQueries('myListedGames')
+		queryClient.invalidateQueries([ 'myListedGames' ])
 		if (mode === 'sell') {
-			queryClient.invalidateQueries('saleGames')
-			queryClient.invalidateQueries('soldHistory')
+			queryClient.invalidateQueries([ 'index', 'sell' ])
+			queryClient.invalidateQueries([ 'history', 'sell' ])
 		}
 		if (mode === 'trade') {
-			queryClient.invalidateQueries('tradeGames')
-			queryClient.invalidateQueries('tradedHistory')
+			queryClient.invalidateQueries([ 'index', 'trade' ])
+			queryClient.invalidateQueries([ 'history', 'trade' ])
 		}
 	}
 
@@ -244,9 +245,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								</Box>
 							</DialogContent>
 							<DialogActions>
-								<Button disabled={addGame.isLoading} onClick={handleCloseDialog} color="primary">
+								<CustomButton disabled={addGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</Button>
+								</CustomButton>
 
 								<LoadingBtn
 									type="submit"
@@ -279,9 +280,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							<Divider />
 
 							<DialogActions>
-								<Button disabled={deleteGame.isLoading} onClick={handleCloseDialog} color="primary">
+								<CustomButton disabled={deleteGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</Button>
+								</CustomButton>
 
 								<LoadingBtn
 									type="submit"
@@ -314,9 +315,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							<Divider />
 
 							<DialogActions>
-								<Button disabled={reactivateGame.isLoading} onClick={handleCloseDialog} color="primary">
+								<CustomButton disabled={reactivateGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</Button>
+								</CustomButton>
 
 								<LoadingBtn
 									type="submit"

@@ -10,13 +10,13 @@ import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 
 // @ Components
+import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
 
@@ -41,7 +41,7 @@ const StyledTitleBox = styled(Box)({
 })
 
 // @ Main
-const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
+const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 	const location = useLocation()
 	const currLoc = location.pathname === '/collection' ? 'collection' : 'wishlist'
 
@@ -117,14 +117,13 @@ const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
 					<CustomTooltip title="See on BGG">
-						<Button
-							color="primary"
+						<CustomButton
 							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
 							target="_blank"
 							rel="noreferrer"
 						>
 							BGG
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 
 					<Box display="flex" gap={1} alignItems="center">
@@ -153,4 +152,4 @@ const GameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 	)
 }
 
-export default GameCard
+export default CollectionGameCard

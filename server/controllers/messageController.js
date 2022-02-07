@@ -183,8 +183,15 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 		if (messageExists.read) {
 			return res.status(204).end()
 		} else {
-			await Message.updateOne({ _id: id }, { read: true, readAt: Date.now() })
-			return res.status(204).end()
+			const updatedMsg = await Message.findOneAndUpdate(
+				{ _id: id },
+				{ read: true, readAt: Date.now() },
+				{ new: true }
+			)
+				.populate('sender')
+				.lean()
+
+			return res.status(200).json(updatedMsg)
 		}
 	} else {
 		res.status(404)
@@ -198,7 +205,7 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 // ! @route   DELETE  /api/messages/delete
 // ! @access  Private route
 const deleteMessages = asyncHandler(async (req, res) => {
-	const { ids, type } = req.query
+	const { ids, type } = req.body
 
 	if (type === 'received') {
 		await Message.updateMany({ _id: { $in: ids } }, { delRecipient: true })

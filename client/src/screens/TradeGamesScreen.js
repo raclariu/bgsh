@@ -10,18 +10,20 @@ import queryString from 'query-string'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 
 // @ Components
+import ListGameCard from '../components/ListGameCard'
+import ShippingSection from '../components/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
-import SellGameCard from '../components/SellGamesScreen/SellGameCard'
-import ShippingSection from '../components/SellGamesScreen/ShippingSection'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
+import { useGetListQuery, useDeleteFromListMutation, useGetBggGamesDetailsQuery } from '../hooks/hooks'
 
 // @ Main
 const TradeGamesScreen = () => {
@@ -42,70 +44,52 @@ const TradeGamesScreen = () => {
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
-		{
-			staleTime : 1000 * 60 * 60,
-			enabled   : !!saleList.length,
-			onSuccess : (data) => {
-				setValues(
-					data.map((game) => {
-						return {
-							...game,
-							isSleeved : false,
-							version   : null,
-							condition : null,
-							extraInfo : ''
-						}
-					})
-				)
-			}
-		}
+	const userList = useGetListQuery((listData) =>
+		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const mutation = useMutation((gamesData) => apiListGamesForTrade(gamesData), {
+	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery((data) =>
+		setValues(
+			data.map((game) => {
+				return {
+					...game,
+					isSleeved : false,
+					version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
+					condition : null,
+					extraInfo : '',
+					userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
+				}
+			})
+		)
+	)
+
+	const deleteMutation = useDeleteFromListMutation()
+
+	const listMutation = useMutation((gamesData) => apiListGamesForTrade(gamesData), {
 		onSuccess : () => {
-			queryClient.invalidateQueries('tradeGames')
-			queryClient.invalidateQueries('myListedGames')
+			queryClient.invalidateQueries([ 'index', 'trade' ])
+			queryClient.invalidateQueries([ 'myListedGames' ])
 		}
 	})
 
 	if (isPack !== false && isPack !== true) {
-		mutation.reset()
-		history.push('/trade')
+		listMutation.reset()
+		history.push('/sell')
 	}
 
-	if (saleList.length === 1 && isPack) {
-		mutation.reset()
-		history.push('/trade')
+	if (userList.isSuccess && userList.data.list.length === 1 && isPack) {
+		listMutation.reset()
+		history.push('/sell')
 	}
-
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries([ 'bggGamesDetails' ])
-			}
-		},
-		[ queryClient ]
-	)
-
-	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
-	useEffect(
-		() => {
-			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-		},
-		[ saleList ]
-	)
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
 
-	const removeFromSaleListHandler = (id) => {
-		dispatch(removeFromSaleList(id))
+	const removeFromListHandler = (bggId, title) => {
+		deleteMutation.mutate({ bggId, title })
 	}
 
-	const handleGameInfo = (value, id, key) => {
-		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
+	const handleGameInfo = (value, bggId, key) => {
+		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
 	}
 
 	const handleExtraInfoPack = (e) => {
@@ -134,7 +118,7 @@ const TradeGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		if (saleList.length === 0) return
+		if (userList.data.list.length === 0) return
 
 		const verifiedGames = values.map((val) => {
 			return {
@@ -153,37 +137,45 @@ const TradeGamesScreen = () => {
 			extraInfoPack : isPack ? extraInfoPack.trim() : null
 		}
 
-		mutation.mutate(gamesData)
+		listMutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<div>
-				{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
+			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-				{mutation.isError &&
-					Object.values(mutation.error.response.data.message).map((err, i) => (
+			{listMutation.isError && (
+				<Box display="flex" flexDirection="column" gap={1} my={2}>
+					{Object.values(listMutation.error.response.data.message).map((err, i) => (
 						<CustomAlert key={i}>{err}</CustomAlert>
 					))}
+				</Box>
+			)}
 
-				{saleList.length === 0 && <CustomAlert severity="warning">Your trade list is empty</CustomAlert>}
-			</div>
+			{userList.isSuccess &&
+			userList.data.list.length === 0 && (
+				<Box my={2}>
+					<CustomAlert severity="warning">Your list is empty</CustomAlert>
+				</Box>
+			)}
 
-			{isLoading && <Loader />}
+			{isFetching && <Loader />}
 
-			{isSuccess && (
+			{userList.isSuccess &&
+			userList.data.list.length > 0 &&
+			isSuccessDetails && (
 				<Fragment>
 					<Grid container spacing={3}>
 						{data.map(
 							(game) =>
 								values.find((val) => val.bggId === game.bggId) && (
 									<Grid item key={game.bggId} md={6} xs={12}>
-										<SellGameCard
+										<ListGameCard
 											game={game}
 											isPack={isPack}
 											mode="trade"
 											data={values.find((val) => val.bggId === game.bggId)}
-											removeFromSaleListHandler={removeFromSaleListHandler}
+											removeFromListHandler={removeFromListHandler}
 											handleGameInfo={handleGameInfo}
 										/>
 									</Grid>
@@ -235,7 +227,7 @@ const TradeGamesScreen = () => {
 										disabled={shipError}
 										variant="contained"
 										color="primary"
-										loading={mutation.isLoading}
+										loading={listMutation.isLoading}
 										fullWidth
 									>
 										Trade

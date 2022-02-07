@@ -41,11 +41,17 @@ import CustomAvatar from '../components/CustomAvatar'
 import SearchBox from '../components/SearchBox'
 import CustomTooltip from '../components/CustomTooltip'
 import MessageCard from '../components/MessageCard'
+import BackButton from '../components/BackButton'
 
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import {
+	useNotiSnackbar,
+	useGetMessagesQuery,
+	useUpdateMessageStatusMutation,
+	useDeleteMessagesMutation
+} from '../hooks/hooks'
 
 // @ Skeleton
 const MessageSkeleton = () => {
@@ -87,81 +93,15 @@ const InboxScreen = () => {
 	const queryClient = useQueryClient()
 
 	const { search, page = 1 } = queryString.parse(location.search)
+	const currLoc = location.pathname === '/received' ? 'received' : 'sent'
 
 	const [ selected, setSelected ] = useState([])
 	const [ isChecked, setIsChecked ] = useState(false)
 	const [ expanded, setExpanded ] = useState([])
-	const [ showSnackbar ] = useNotiSnackbar()
 
-	const { isLoading, isSuccess, data } = useQuery(
-		[ location.pathname === '/received' ? 'msgReceived' : 'msgSent', { search, page } ],
-		() => {
-			if (location.pathname === '/received') {
-				return apiGetReceivedMessages(search, page)
-			}
-			if (location.pathname === '/sent') {
-				return apiGetSentMessages(search, page)
-			}
-		},
-		{
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching messages'
-				showSnackbar.error({ text })
-			},
-			onSuccess : (data) => {
-				data.messages.length === 0 && showSnackbar.warning({ text: 'No messages found' })
-			}
-		}
-	)
-
-	const deleteMutation = useMutation(
-		({ ids, type }) => {
-			return apiDeleteMessages(ids, type)
-		},
-		{
-			onError   : (err) => {
-				const text = err.response.data.message || 'Message could not be deleted'
-				showSnackbar.error({ text })
-			},
-			onSuccess : () => {
-				if (location.pathname === '/received') {
-					queryClient.invalidateQueries([ 'msgReceived' ])
-					queryClient.invalidateQueries([ 'msgReceivedCount' ])
-				}
-				if (location.pathname === '/sent') {
-					queryClient.invalidateQueries([ 'msgSent' ])
-				}
-				const text = selected.length > 1 ? 'Messages deleted successfully' : 'Message deleted successfully'
-				showSnackbar.success({ text })
-				setSelected([])
-			}
-		}
-	)
-
-	const statusMutation = useMutation((id) => apiUpdateMessageStatus(id), {
-		onMutate  : async (id) => {
-			await queryClient.cancelQueries([ 'msgReceived', { page, search } ])
-			const data = queryClient.getQueryData([ 'msgReceived', { page, search } ])
-			queryClient.setQueryData([ 'msgReceived', { page, search } ], (oldMsg) => {
-				const index = oldMsg.messages.findIndex((msg) => msg._id === id)
-				oldMsg.messages[index].read = true
-				oldMsg.messages[index].readAt = new Date().toISOString()
-				return oldMsg
-			})
-
-			return { data }
-		},
-		onError   : (err, id, context) => {
-			const text = err.response.data.message || 'Message could not be updated'
-			showSnackbar.error({ text })
-			queryClient.setQueryData([ 'msgReceived', { page } ], context.data)
-		},
-		onSuccess : () => {
-			showSnackbar.info({ text: 'Message has been read' })
-			queryClient.invalidateQueries([ 'msgReceived', { page } ])
-			queryClient.invalidateQueries([ 'msgReceivedCount' ])
-		}
-	})
+	const { isLoading, isSuccess, data } = useGetMessagesQuery({ search, page, type: currLoc })
+	const deleteMutation = useDeleteMessagesMutation(currLoc)
+	const statusMutation = useUpdateMessageStatusMutation({ page, search })
 
 	useEffect(
 		() => {
@@ -182,6 +122,16 @@ const InboxScreen = () => {
 			setSelected([])
 		},
 		[ page ]
+	)
+
+	useEffect(
+		() => {
+			if (deleteMutation.isSuccess) {
+				setSelected([])
+				deleteMutation.reset()
+			}
+		},
+		[ deleteMutation ]
 	)
 
 	const handleFilters = (filter, type) => {
@@ -214,10 +164,10 @@ const InboxScreen = () => {
 	const handleDelete = () => {
 		setIsChecked(false)
 
-		if (location.pathname === '/received') {
+		if (currLoc === 'received') {
 			deleteMutation.mutate({ ids: selected, type: 'received' })
 		}
-		if (location.pathname === '/sent') {
+		if (currLoc === 'sent') {
 			deleteMutation.mutate({ ids: selected, type: 'sent' })
 		}
 	}
@@ -228,7 +178,7 @@ const InboxScreen = () => {
 		} else {
 			setExpanded([ { id, open: true } ])
 			if (!read) {
-				if (location.pathname === '/received') {
+				if (currLoc === 'received') {
 					statusMutation.mutate(id)
 				}
 			}
@@ -236,20 +186,25 @@ const InboxScreen = () => {
 	}
 
 	return (
-		<Grid container spacing={2} justifyContent="center">
-			<Grid container justifyContent="center">
-				<Grid item xs={12} sm={5} md={4}>
-					<SearchBox placeholder="Search users" handleFilters={handleFilters} />
+		<Fragment>
+			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
+				<Grid container justifyContent="center" spacing={2}>
+					<Grid item md={4} sm={5} xs={12}>
+						<SearchBox placeholder="Search messages" handleFilters={handleFilters} />
+					</Grid>
 				</Grid>
-			</Grid>
+			</Box>
 
-			<Grid item xs={12} sm={9} md={7}>
-				<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={60}>
+			<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={50} mb={1}>
+				<Box display="flex" alignItems="center" gap={2}>
+					{search && <BackButton />}
+
 					<FormControlLabel
-						label="Select all"
+						label={selected.length > 0 ? `Select all (${selected.length})` : 'Select all'}
 						disabled={!isSuccess}
 						control={
 							<Checkbox
+								sx={{ mr: 1 }}
 								label="Select all"
 								indeterminate={isChecked && data && data.messages.length !== selected.length}
 								checked={isChecked}
@@ -257,30 +212,35 @@ const InboxScreen = () => {
 							/>
 						}
 					/>
-
-					{selected.length > 0 && (
-						<IconButton onClick={handleDelete} size="large">
-							<DeleteOutlineIcon color="error" />
-						</IconButton>
-					)}
 				</Box>
-			</Grid>
+
+				{selected.length > 0 && (
+					<IconButton onClick={handleDelete} color="error">
+						<DeleteOutlineIcon />
+					</IconButton>
+				)}
+			</Box>
+
+			{isSuccess && data.messages.length === 0 && <CustomAlert severity="warning">No messages</CustomAlert>}
 
 			{isLoading && [ ...Array(12).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
 
-			{isSuccess &&
-				data.messages.map((msg) => (
-					<Grid item key={msg._id} xs={12} sm={9} md={7}>
-						<MessageCard
-							msg={msg}
-							expanded={expanded.some((obj) => obj.id === msg._id)}
-							isChecked={selected.some((el) => el === msg._id)}
-							handleExpandClick={handleExpandClick}
-							handleSelect={handleSelect}
-							path={location.pathname === '/received' ? 'received' : 'sent'}
-						/>
-					</Grid>
-				))}
+			{isSuccess && (
+				<Grid container spacing={2}>
+					{data.messages.map((msg) => (
+						<Grid item key={msg._id} xs={12} md={6}>
+							<MessageCard
+								msg={msg}
+								expanded={expanded.some((obj) => obj.id === msg._id)}
+								isChecked={selected.some((el) => el === msg._id)}
+								handleExpandClick={handleExpandClick}
+								handleSelect={handleSelect}
+								path={currLoc}
+							/>
+						</Grid>
+					))}
+				</Grid>
+			)}
 
 			{isSuccess &&
 				data.pagination &&
@@ -297,7 +257,7 @@ const InboxScreen = () => {
 						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
 					</Box>
 				))}
-		</Grid>
+		</Fragment>
 	)
 }
 

@@ -14,7 +14,7 @@ const BackButton = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={() => history.goBack()} color="primary">
+			<IconButton onClick={() => history.goBack()} color="primary" edge="start">
 				<ArrowBackIcon />
 			</IconButton>
 		</Fragment>

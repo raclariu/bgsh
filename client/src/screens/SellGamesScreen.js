@@ -14,8 +14,8 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Box from '@mui/material/Box'
 
 // @ Components
-import SellGameCard from '../components/SellGamesScreen/SellGameCard'
-import ShippingSection from '../components/SellGamesScreen/ShippingSection'
+import ListGameCard from '../components/ListGameCard'
+import ShippingSection from '../components/ShippingSection'
 import Input from '../components/Input'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
@@ -23,7 +23,7 @@ import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
 import { apiFetchGameDetails, apiListGamesForSale, apiGetList } from '../api/api'
-import { useDeleteFromListMutation, useGetListQuery } from '../hooks/hooks'
+import { useDeleteFromListMutation, useGetListQuery, useGetBggGamesDetailsQuery } from '../hooks/hooks'
 
 // @ Main
 const SellGamesScreen = () => {
@@ -49,36 +49,34 @@ const SellGamesScreen = () => {
 		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(userList.data.list.map((el) => el.bggId)),
-		{
-			staleTime      : Infinity,
-			enabled        : !!userList.data && userList.data.list.length > 0,
-			refetchOnMount : 'always',
-			onSuccess      : (data) => {
-				setValues(
-					data.map((game) => {
-						return {
-							...game,
-							isSleeved : false,
-							version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
-							condition : null,
-							extraInfo : '',
-							price     : '',
-							userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
-						}
-					})
-				)
-			}
-		}
+	const {
+		isError,
+		error,
+		data,
+		isFetching,
+		isSuccess  : isSuccessDetails,
+		status
+	} = useGetBggGamesDetailsQuery((data) =>
+		setValues(
+			data.map((game) => {
+				return {
+					...game,
+					isSleeved : false,
+					version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
+					condition : null,
+					extraInfo : '',
+					price     : '',
+					userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
+				}
+			})
+		)
 	)
 
 	const deleteMutation = useDeleteFromListMutation()
 
 	const listMutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
 		onSuccess : () => {
-			queryClient.invalidateQueries([ 'saleGames' ])
+			queryClient.invalidateQueries([ 'index', 'sell' ])
 			queryClient.invalidateQueries([ 'myListedGames' ])
 		}
 	})
@@ -101,13 +99,6 @@ const SellGamesScreen = () => {
 
 	const handleGameInfo = (value, bggId, key) =>
 		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
-
-	// setValues((vals) => [ ...vals, (vals[vals.findIndex((val) => val.bggId === bggId)][key] = value) ])
-	// setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
-	// const idx = values.findIndex((val) => val.bggId === bggId)
-	// const newVals = [ ...values ]
-	// newVals[idx][key] = value
-	// setValues(newVals)
 
 	const handleExtraInfoPack = (e) => {
 		setExtraInfoPack(e.target.value)
@@ -209,11 +200,11 @@ const SellGamesScreen = () => {
 				</Box>
 			)}
 
-			{isLoading && <Loader />}
+			{isFetching && <Loader />}
 
 			{userList.isSuccess &&
 				userList.data.list.length > 0 &&
-				(isSuccess && (
+				(isSuccessDetails && (
 					<Fragment>
 						<Grid container spacing={3}>
 							{data.map(
@@ -222,7 +213,7 @@ const SellGamesScreen = () => {
 									// user deleted 3, we need to only render a list of the ones that are in values
 									values.find((val) => val.bggId === game.bggId) && (
 										<Grid item key={game.bggId} md={6} xs={12}>
-											<SellGameCard
+											<ListGameCard
 												game={game}
 												isPack={isPack}
 												mode="sell"

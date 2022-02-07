@@ -14,10 +14,10 @@ import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
 
 // @ Components
-import Input from '../Input'
+import Input from './Input'
 
 // @ Others
-import citiesArr from '../../constants/cities'
+import citiesArr from '../constants/cities'
 
 // @ Main
 const ShippingSection = ({

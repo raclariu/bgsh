@@ -32,7 +32,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
 	return (
-		<Card>
+		<Card elevation={2}>
 			<CardHeader
 				avatar={
 					<CustomAvatar
@@ -89,9 +89,9 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			<Divider />
 
 			<CardActions>
-				<Box display="flex" justifyContent="space-between" width="100%">
+				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Checkbox checked={isChecked} onChange={(e) => handleSelect(e, msg._id, 'received')} size="small" />
-					<IconButton onClick={() => handleExpandClick(msg._id, msg.read)} size="large">
+					<IconButton onClick={() => handleExpandClick(msg._id, msg.read)}>
 						{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
 					</IconButton>
 				</Box>

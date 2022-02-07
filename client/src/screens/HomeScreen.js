@@ -11,6 +11,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
 // @ Components
+import CustomButton from '../components/CustomButton'
 import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
@@ -86,9 +87,9 @@ const HomeScreen = () => {
 			>
 				<Box>BGG Hot games</Box>
 				{!errorHotGames && (
-					<Button component={RouterLink} to="/hot" variant="outlined" size="small" color="inherit">
+					<CustomButton component={RouterLink} to="/hot" variant="outlined" size="small" color="inherit">
 						See all
-					</Button>
+					</CustomButton>
 				)}
 			</Box>
 
@@ -127,7 +128,7 @@ const HomeScreen = () => {
 				my={4}
 			>
 				<Box>Popular kickstarters</Box>
-				<Button
+				<CustomButton
 					href={`https://www.kickstarter.com/discover/advanced?category_id=34&sort=popularity`}
 					target="_blank"
 					rel="noreferrer"
@@ -136,7 +137,7 @@ const HomeScreen = () => {
 					color="inherit"
 				>
 					See more
-				</Button>
+				</CustomButton>
 			</Box>
 
 			{errorKs && <CustomAlert>{errorKs.response.data.message}</CustomAlert>}
@@ -174,7 +175,7 @@ const HomeScreen = () => {
 				my={4}
 			>
 				<Box>Latest r/boardgames posts</Box>
-				<Button
+				<CustomButton
 					href={`https://reddit.com/r/boardgames`}
 					target="_blank"
 					rel="noreferrer"
@@ -183,7 +184,7 @@ const HomeScreen = () => {
 					color="inherit"
 				>
 					See more
-				</Button>
+				</CustomButton>
 			</Box>
 
 			{isSuccessRedditPosts && (
@@ -236,15 +237,14 @@ const HomeScreen = () => {
 											<Box fontSize="0.75rem" color="grey.500" fontStyle="italic">
 												by {data.author}
 											</Box>
-											<Button
-												color="primary"
+											<CustomButton
 												href={`https://reddit.com/${data.permalink}`}
 												target="_blank"
 												rel="noreferrer"
 												size="small"
 											>
 												See on Reddit
-											</Button>
+											</CustomButton>
 										</Box>
 									</Box>
 								</Box>

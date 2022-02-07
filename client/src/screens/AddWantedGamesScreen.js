@@ -12,8 +12,8 @@ import Chip from '@mui/material/Chip'
 import Button from '@mui/material/Button'
 
 // @ Components
+import ListGameCard from '../components/ListGameCard'
 import CustomAlert from '../components/CustomAlert'
-import AddWantedCard from '../components/AddWantedCard'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
@@ -21,70 +21,57 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
+import { useGetBggGamesDetailsQuery, useGetListQuery, useDeleteFromListMutation } from '../hooks/hooks'
 
 // @ Main
 const AddWantedGamesScreen = () => {
 	const dispatch = useDispatch()
 	const queryClient = useQueryClient()
 
-	const saleList = useSelector((state) => state.saleList)
-
 	const [ shipPreffered, setShipPreffered ] = useState([])
 	const [ values, setValues ] = useState([])
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'bggGamesDetails' ],
-		() => apiFetchGameDetails(saleList.map((el) => el.bggId)),
-		{
-			staleTime : 1000 * 60 * 60,
-			enabled   : !!saleList.length,
-			onSuccess : (data) => {
-				setValues(
-					data.map((game) => {
-						return {
-							...game,
-							prefVersion : null,
-							prefMode    : {
-								buy   : true,
-								trade : false
-							}
-						}
-					})
-				)
-			}
-		}
+	const userList = useGetListQuery((listData) =>
+		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const mutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
-		onSuccess : () => {
-			queryClient.invalidateQueries('wantedGames')
-			queryClient.invalidateQueries('myWantedGames')
-		}
+	const {
+		isError,
+		error,
+		data,
+		isFetching,
+		isSuccess  : isSuccessDetails,
+		status
+	} = useGetBggGamesDetailsQuery((data) => {
+		setValues(
+			data.map((game) => {
+				return {
+					...game,
+					prefVersion : null,
+					prefMode    : {
+						buy   : true,
+						trade : false
+					}
+				}
+			})
+		)
 	})
 
-	useEffect(
-		() => {
-			return () => {
-				queryClient.invalidateQueries([ 'bggGamesDetails' ])
-			}
-		},
-		[ queryClient ]
-	)
+	const deleteMutation = useDeleteFromListMutation()
 
-	// When saleList changes, usually as a result of removing a saleList item, set values accordingly to the new saleList
-	useEffect(
-		() => {
-			setValues((val) => val.filter(({ bggId }) => saleList.find((el) => el.bggId === bggId)))
-		},
-		[ saleList ]
-	)
+	const listMutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
+		onSuccess : () => {
+			queryClient.invalidateQueries([ 'index', 'want' ])
+			queryClient.invalidateQueries([ 'myListedGames' ])
+		}
+	})
 
 	const handleGameInfo = (value, id, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
-	const removeFromSaleListHandler = (id) => {
-		dispatch(removeFromSaleList(id))
+	const removeFromListHandler = (bggId, title) => {
+		deleteMutation.mutate({ bggId, title })
 	}
 
 	console.log(values)
@@ -92,7 +79,7 @@ const AddWantedGamesScreen = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		if (saleList.length === 0) return
+		if (userList.data.list.length === 0) return
 
 		const verifiedGames = values.map((val) => {
 			return {
@@ -105,23 +92,33 @@ const AddWantedGamesScreen = () => {
 			shipPreffered
 		}
 
-		mutation.mutate(gamesData)
+		listMutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit} autoComplete="off">
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{mutation.isError &&
-				Object.values(mutation.error.response.data.message).map((err, i) => (
-					<CustomAlert key={i}>{err}</CustomAlert>
-				))}
+			{listMutation.isError && (
+				<Box display="flex" flexDirection="column" gap={1} my={2}>
+					{Object.values(listMutation.error.response.data.message).map((err, i) => (
+						<CustomAlert key={i}>{err}</CustomAlert>
+					))}
+				</Box>
+			)}
 
-			{saleList.length === 0 && <CustomAlert severity="warning">Your sale list is empty</CustomAlert>}
+			{userList.isSuccess &&
+			userList.data.list.length === 0 && (
+				<Box my={2}>
+					<CustomAlert severity="warning">Your list is empty</CustomAlert>
+				</Box>
+			)}
 
-			{isLoading && <Loader />}
+			{isFetching && <Loader />}
 
-			{isSuccess && (
+			{userList.isSuccess &&
+			userList.data.list.length > 0 &&
+			isSuccessDetails && (
 				<Fragment>
 					<Grid container spacing={3}>
 						{data.map(
@@ -130,9 +127,10 @@ const AddWantedGamesScreen = () => {
 								// user deleted 3, we need to only render a list of the ones that are in values
 								values.find((val) => val.bggId === game.bggId) && (
 									<Grid item xs={12} md={6} key={game.bggId}>
-										<AddWantedCard
+										<ListGameCard
 											game={game}
-											removeFromSaleListHandler={removeFromSaleListHandler}
+											mode="want"
+											removeFromListHandler={removeFromListHandler}
 											handleGameInfo={handleGameInfo}
 											data={values.find((val) => val.bggId === game.bggId)}
 										/>
@@ -171,7 +169,7 @@ const AddWantedGamesScreen = () => {
 							type="submit"
 							variant="contained"
 							color="primary"
-							loading={mutation.isLoading}
+							loading={listMutation.isLoading}
 							fullWidth
 						>
 							Add wanted games

@@ -13,6 +13,7 @@ import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 
 // @ Components
+import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 
 // @ Styles
@@ -60,15 +61,15 @@ const KsCard = ({ data }) => {
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
 					<CustomTooltip title="See on Kickstarter">
-						<Button color="primary" href={`${data.url}`} target="_blank" rel="noreferrer">
+						<CustomButton href={`${data.url}`} target="_blank" rel="noreferrer">
 							Page
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 
 					<CustomTooltip title="Rewards page">
-						<Button color="primary" href={`${data.url}/rewards`} target="_blank" rel="noreferrer">
+						<CustomButton href={`${data.url}/rewards`} target="_blank" rel="noreferrer">
 							Rewards
-						</Button>
+						</CustomButton>
 					</CustomTooltip>
 				</Box>
 			</CardActions>

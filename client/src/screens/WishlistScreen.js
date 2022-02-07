@@ -13,7 +13,7 @@ import Box from '@mui/material/Box'
 // @ Components
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
-import GameCard from '../components/GameCard'
+import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
@@ -105,7 +105,7 @@ const WishlistScreen = () => {
 					{data.wishlist.map((data) => (
 						<Grid item key={data.bggId} md={4} sm={6} xs={12}>
 							<LzLoad placeholder={<GameCardSkeleton />}>
-								<GameCard
+								<CollectionGameCard
 									data={data}
 									listHandler={listHandler}
 									isChecked={userList.data.list.some((el) => el.bggId === data.bggId)}

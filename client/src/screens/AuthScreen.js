@@ -27,10 +27,6 @@ const AuthScreen = () => {
 	return (
 		<Box display="flex" justifyContent="center" alignItems="center" height="100%">
 			<Box
-				container
-				direction="column"
-				justifyContent="center"
-				alignItems="center"
 				sx={{
 					width : {
 						xs : '100%',

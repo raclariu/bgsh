@@ -47,6 +47,7 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 
 // @ Components
+import CustomButton from '../CustomButton'
 import MessagesBadge from '../MessagesBadge'
 import SaleListPopover from '../SaleListPopover'
 import Theme from '../Theme'
@@ -98,7 +99,7 @@ const Header = () => {
 	const ClgTheme = styled('span')(({ theme }) => console.log(theme))
 
 	return (
-		<AppBar elevation={1} position="static" color="transparent">
+		<AppBar elevation={2} position="static" color="transparent">
 			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
 				{!userData && (
 					<Box mr={1}>
@@ -128,7 +129,7 @@ const Header = () => {
 						</IconButton>
 
 						<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
-							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2}>
+							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
 								<Box display="flex" alignItems="center">
 									<Box fontWeight="fontWeightMedium" mr={1}>
 										{userData.username}
@@ -643,21 +644,19 @@ const Header = () => {
 
 							<DialogActions>
 								<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-									<Button onClick={handleCloseDialog} color="primary">
-										No
-									</Button>
-									<Button onClick={signOutHandler} variant="contained" color="primary">
+									<CustomButton onClick={handleCloseDialog}>No</CustomButton>
+									<CustomButton onClick={signOutHandler} variant="contained">
 										Yes
-									</Button>
+									</CustomButton>
 								</Box>
 							</DialogActions>
 						</Dialog>
 					</Fragment>
 				) : (
 					<Fragment>
-						<Button color="primary" variant="outlined" component={RouterLink} to="/signin">
+						<CustomButton variant="outlined" component={RouterLink} to="/signin">
 							Sign In
-						</Button>
+						</CustomButton>
 					</Fragment>
 				)}
 			</Toolbar>
