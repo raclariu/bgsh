@@ -12,10 +12,10 @@ export const useNotiSnackbar = () => {
 		})
 	}
 
-	const showErrorSnackbar = ({ text }) => {
+	const showErrorSnackbar = ({ text, preventDuplicate }) => {
 		enqueueSnackbar(text, {
 			variant          : 'error',
-			preventDuplicate : true,
+			preventDuplicate : preventDuplicate || false,
 			autoHideDuration : 8000
 		})
 	}

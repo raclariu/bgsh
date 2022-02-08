@@ -8,11 +8,8 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 import Collapse from '@mui/material/Collapse'
-import Divider from '@mui/material/Divider'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
@@ -23,6 +20,8 @@ import SendIcon from '@mui/icons-material/Send'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomTooltip from './CustomTooltip'
 import CustomAvatar from './CustomAvatar'
 
@@ -86,14 +85,14 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 				}
 			/>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Checkbox checked={isChecked} onChange={(e) => handleSelect(e, msg._id, 'received')} size="small" />
-					<IconButton onClick={() => handleExpandClick(msg._id, msg.read)}>
+					<CustomIconBtn onClick={() => handleExpandClick(msg._id, msg.read)}>
 						{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
-					</IconButton>
+					</CustomIconBtn>
 				</Box>
 			</CardActions>
 

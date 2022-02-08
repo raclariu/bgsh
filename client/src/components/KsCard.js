@@ -9,10 +9,9 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
 
 // @ Components
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 
@@ -42,7 +41,7 @@ const KsCard = ({ data }) => {
 				title={data.title}
 			/>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -56,7 +55,7 @@ const KsCard = ({ data }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">

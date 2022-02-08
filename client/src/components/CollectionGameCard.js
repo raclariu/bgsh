@@ -10,12 +10,12 @@ import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
-import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
-import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 import StatsBoxes from './SingleGameScreen/StatsBoxes'
@@ -62,7 +62,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 				</Box>
 			)}
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -78,7 +78,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -112,7 +112,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
@@ -129,9 +129,9 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 					<Box display="flex" gap={1} alignItems="center">
 						{currLoc === 'wishlist' && (
 							<CustomTooltip title={'Search for this game'}>
-								<IconButton component={RouterLink} to={`/games?search=${data.bggId}`}>
+								<CustomIconBtn component={RouterLink} to={`/games?search=${data.bggId}`}>
 									<SearchIcon />
-								</IconButton>
+								</CustomIconBtn>
 							</CustomTooltip>
 						)}
 

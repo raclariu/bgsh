@@ -19,7 +19,6 @@ import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Button from '@mui/material/Button'
 import ButtonBase from '@mui/material/ButtonBase'
-import Divider from '@mui/material/Divider'
 import FormControl from '@mui/material/FormControl'
 import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
@@ -27,6 +26,8 @@ import Checkbox from '@mui/material/Checkbox'
 import FormHelperText from '@mui/material/FormHelperText'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import Input from './Input'
 import Loader from './Loader'
 
@@ -136,9 +137,9 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				title={game.title}
 				subheader={`${game.subtype} • ${game.year}`}
 				action={
-					<IconButton onClick={() => removeFromListHandler(game.bggId, game.title)} size="large">
+					<CustomIconBtn onClick={() => removeFromListHandler(game.bggId, game.title)} size="large">
 						<HighlightOffIcon color="error" />
-					</IconButton>
+					</CustomIconBtn>
 				}
 				titleTypographyProps={{
 					color   : 'primary',
@@ -225,7 +226,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				!isPack && (
 					<Input
 						value={data.otherUsername}
-						onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'otherUsername')}
+						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'otherUsername')}
 						inputProps={{
 							maxLength : 20
 						}}
@@ -290,7 +291,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					<Input
 						sx={{ margin: (theme) => theme.spacing(2, 0, 2, 0) }}
 						value={data.extraInfo}
-						onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'extraInfo')}
+						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'extraInfo')}
 						inputProps={{
 							maxLength   : 500,
 							placeholder : 'Any other info goes in here (500 characters limit)'
@@ -324,7 +325,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 						!isPack && (
 							<Grid item xs={6}>
 								<Input
-									onChange={(e) => handleGameInfo(e.target.value, game.bggId, 'price')}
+									onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'price')}
 									value={data.price}
 									name={`price-${game.bggId}`}
 									label="Price"
@@ -342,9 +343,9 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 
 				{(mode === 'sell' || mode === 'trade') && (
 					<Fragment>
-						<Divider textAlign="left">
+						<CustomDivider textAlign="left">
 							<Box fontSize={'0.75rem'}>ADD IMAGE</Box>
-						</Divider>
+						</CustomDivider>
 
 						<Box mt={2}>
 							{uploadImageMutation.isLoading || removeImageMutation.isLoading ? (
@@ -379,7 +380,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 											onLoad={handleImgLoad}
 										/>
 
-										<IconButton
+										<CustomIconBtn
 											sx={{
 												position : 'absolute',
 
@@ -390,7 +391,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 											onClick={removeImage}
 										>
 											<HighlightOffIcon />
-										</IconButton>
+										</CustomIconBtn>
 									</Box>
 								)
 							)}

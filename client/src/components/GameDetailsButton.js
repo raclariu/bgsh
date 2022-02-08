@@ -2,10 +2,8 @@
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
-// @ Mui
-import IconButton from '@mui/material/IconButton'
-
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
 import CustomTooltip from './CustomTooltip'
 
 // @ Icons
@@ -15,9 +13,9 @@ import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTo
 const GameDetailsButton = ({ altId }) => {
 	return (
 		<CustomTooltip title="Details">
-			<IconButton component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary" size="large">
+			<CustomIconBtn component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary" size="large">
 				<CenterFocusWeakTwoToneIcon fontSize="small" />
-			</IconButton>
+			</CustomIconBtn>
 		</CustomTooltip>
 	)
 }

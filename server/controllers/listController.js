@@ -67,6 +67,10 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
+	throw {
+		message : 'boty'
+	}
+
 	if (!userList) {
 		userList = await List.create({
 			addedBy : req.user._id,

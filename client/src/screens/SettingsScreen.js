@@ -5,9 +5,9 @@ import React, { Fragment, useState } from 'react'
 import Box from '@mui/material/Box'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import Divider from '@mui/material/Divider'
 
 // @ Components
+import CustomDivider from '../components/CustomDivider'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
@@ -59,7 +59,7 @@ const SettingsScreen = () => {
 					<Box mt={2}>
 						<ChangeAvatar />
 					</Box>
-					<Divider flexItem />
+					<CustomDivider flexItem />
 					<Box
 						sx={{
 							width : {
@@ -82,7 +82,7 @@ const SettingsScreen = () => {
 					>
 						<BggSearchGamesBox />
 					</Box>
-					<Divider flexItem />
+					<CustomDivider flexItem />
 				</Box>
 			)}
 		</Fragment>

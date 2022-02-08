@@ -13,12 +13,12 @@ import './css/App.css'
 // @ Mui
 import Container from '@mui/material/Container'
 import LinearProgress from '@mui/material/LinearProgress'
-import IconButton from '@mui/material/IconButton'
 
 // @ Icons
 import ClearIcon from '@mui/icons-material/Clear'
 
 // @ Components
+import CustomIconBtn from './components/CustomIconBtn'
 import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header/Header'
 import Footer from './components/Footer'
@@ -65,16 +65,24 @@ const App = () => {
 					dense={isMobile ? true : false}
 					ref={notistackRef}
 					action={(key) => (
-						<IconButton color="inherit" size="small" onClick={onClickDismiss(key)}>
+						<CustomIconBtn size="small" onClick={onClickDismiss(key)}>
 							<ClearIcon fontSize="small" />
-						</IconButton>
+						</CustomIconBtn>
 					)}
 				>
 					<CssBaseline />
 					{location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
 
 					<Suspense fallback={<LinearProgress />}>
-						<Container maxWidth="md" component="main" sx={{ minHeight: '100%' }}>
+						<Container
+							maxWidth="md"
+							component="main"
+							// sx={{
+							// 	minHeight     : 'calc(100% - 244px)',
+							// 	paddingTop    : '32px',
+							// 	paddingBottom : '32px'
+							// }}
+						>
 							<Switch>
 								<Route path="/" exact>
 									<Home />

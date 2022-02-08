@@ -5,17 +5,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 
 // @ Mui Icons
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomTooltip from './CustomTooltip'
 import Input from './Input'
 import LoadingBtn from './LoadingBtn'
@@ -57,14 +56,14 @@ const SendMessage = ({ recipientUsername = '' }) => {
 	return (
 		<Fragment>
 			<CustomTooltip title="Send message">
-				<IconButton
+				<CustomIconBtn
 					disabled={currUsername === recipientUsername}
 					color="primary"
 					onClick={handleOpenDialog}
 					size="large"
 				>
 					<MailTwoToneIcon />
-				</IconButton>
+				</CustomIconBtn>
 			</CustomTooltip>
 
 			<Dialog fullWidth maxWidth="sm" open={open} onClose={handleCloseDialog}>
@@ -76,7 +75,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 								mutation.isError && mutation.error.response.data.message.recipientError ? true : false
 							}
 							helperText={mutation.isError ? mutation.error.response.data.message.recipientError : false}
-							onChange={(e) => setRecipient(e.target.value)}
+							onChange={(inputVal) => setRecipient(inputVal)}
 							value={recipient}
 							inputProps={{
 								minLength : 4,
@@ -96,7 +95,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 							sx={{ minHeight: '90px' }}
 							error={mutation.isError && mutation.error.response.data.message.subjectError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.subjectError : false}
-							onChange={(e) => setSubject(e.target.value)}
+							onChange={(inputVal) => setSubject(inputVal)}
 							value={subject}
 							inputProps={{
 								minLength : 1,
@@ -114,7 +113,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						<Input
 							error={mutation.isError && mutation.error.response.data.message.messageError ? true : false}
 							helperText={mutation.isError ? mutation.error.response.data.message.messageError : false}
-							onChange={(e) => setMessage(e.target.value)}
+							onChange={(inputVal) => setMessage(inputVal)}
 							value={message}
 							inputProps={{
 								minLength : 1,
@@ -133,7 +132,7 @@ const SendMessage = ({ recipientUsername = '' }) => {
 						/>
 					</DialogContent>
 
-					<Divider />
+					<CustomDivider />
 
 					<DialogActions>
 						<LoadingBtn

@@ -9,10 +9,10 @@ import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomAvatar from './CustomAvatar'
 import CustomTooltip from './CustomTooltip'
 
@@ -80,7 +80,7 @@ const HistoryGameCard = ({ data }) => {
 				/>
 			)}
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -92,25 +92,27 @@ const HistoryGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={index === 0}
 								onClick={() => handleIndex('minus')}
 								size="large"
+								edge="start"
 							>
 								<ArrowBackIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
 								size="large"
+								edge="end"
 							>
 								<ArrowForwardIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 						</Fragment>
 					) : (
 						<StyledTitleBox>
@@ -120,7 +122,7 @@ const HistoryGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				{/* <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
@@ -148,7 +150,7 @@ const HistoryGameCard = ({ data }) => {
 							{calculateTimeAgo(data.createdAt)}
 						</Box>
 					</Box>
-					<Divider orientation="vertical" flexItem />
+					<CustomDivider orientation="vertical" flexItem />
 				</Box> */}
 
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
@@ -162,7 +164,7 @@ const HistoryGameCard = ({ data }) => {
 							'N/A'
 						)}
 					</Box>
-					<Divider orientation="vertical" flexItem />
+					<CustomDivider orientation="vertical" flexItem />
 					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
 						<Box>
 							{data.finalPrice ? (

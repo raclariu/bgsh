@@ -9,16 +9,11 @@ import { useLocation } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Divider from '@mui/material/Divider'
-import Avatar from '@mui/material/Avatar'
 import Collapse from '@mui/material/Collapse'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -47,6 +42,8 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 
 // @ Components
+import CustomIconBtn from '../CustomIconBtn'
+import CustomDivider from '../CustomDivider'
 import CustomButton from '../CustomButton'
 import MessagesBadge from '../MessagesBadge'
 import SaleListPopover from '../SaleListPopover'
@@ -124,9 +121,14 @@ const Header = () => {
 							<Theme />
 						</Box>
 
-						<IconButton color="primary" onClick={() => setIsOpen(!isOpen)} aria-label="menu" size="large">
+						<CustomIconBtn
+							color="primary"
+							onClick={() => setIsOpen(!isOpen)}
+							aria-label="menu"
+							size="large"
+						>
 							<MenuIcon />
-						</IconButton>
+						</CustomIconBtn>
 
 						<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
@@ -141,7 +143,7 @@ const Header = () => {
 							</Box>
 
 							<Box>
-								<Divider />
+								<CustomDivider />
 								<List disablePadding sx={{ width: 250 }}>
 									<ListItem
 										button
@@ -640,7 +642,7 @@ const Header = () => {
 								<Box textAlign="center">Are you sure you want to sign out?</Box>
 							</DialogTitle>
 
-							<Divider />
+							<CustomDivider />
 
 							<DialogActions>
 								<Box display="flex" justifyContent="center" alignItems="center" gap={1}>

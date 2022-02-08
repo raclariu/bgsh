@@ -4,17 +4,13 @@ import { styled } from '@mui/material/styles'
 import { useHistory } from 'react-router-dom'
 
 // @ Mui
-import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Divider from '@mui/material/Divider'
 
 // @ Icons
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
 
 // @ Components
+import CustomIconBtn from '../components/CustomIconBtn'
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
 
@@ -41,9 +37,9 @@ const AuthScreen = () => {
 				borderRadius="4px"
 			>
 				<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
-					<IconButton color="primary" onClick={() => history.push('/')} size="large" edge="start">
+					<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
 						<HomeTwoToneIcon />
-					</IconButton>
+					</CustomIconBtn>
 					<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
 						{pathname === '/signin' ? 'Sign In' : 'Sign Up'}
 					</Box>

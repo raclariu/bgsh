@@ -9,10 +9,10 @@ import { useQuery } from 'react-query'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Popover from '@mui/material/Popover'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import SendMessage from './SendMessage'
 import CustomTooltip from './CustomTooltip'
 
@@ -80,16 +80,16 @@ const CustomAvatar = ({ size, username, src }) => {
 							<Box fontSize={12}>{username.substring(0, 2).toUpperCase()}</Box>
 						</StyledAvatar>
 
-						<Divider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
+						<CustomDivider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
 
 						<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 							<Box fontWeight="fontWeightMedium">{username}</Box>
 
 							<Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={0.5}>
 								<CustomTooltip title="View profile">
-									<IconButton color="primary" onClick={handleProfileClick} size="large">
+									<CustomIconBtn color="primary" onClick={handleProfileClick} size="large">
 										<AccountCircleTwoToneIcon />
-									</IconButton>
+									</CustomIconBtn>
 								</CustomTooltip>
 
 								<SendMessage recipientUsername={username} />

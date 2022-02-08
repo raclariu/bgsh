@@ -5,12 +5,14 @@ import { styled } from '@mui/material/styles'
 // @ Mui
 import Paper from '@mui/material/Paper'
 import InputBase from '@mui/material/InputBase'
-import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
 import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
+
+// @ Components
+import CustomIconBtn from './CustomIconBtn'
 
 // @ Main
 const SearchBox = ({ placeholder, handleFilters }) => {
@@ -50,9 +52,9 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				endAdornment={
 					<InputAdornment position="end">
 						{keyword.length > 0 && (
-							<IconButton onClick={() => setKeyword('')}>
+							<CustomIconBtn onClick={() => setKeyword('')}>
 								<ClearIcon color="disabled" />
-							</IconButton>
+							</CustomIconBtn>
 						)}
 					</InputAdornment>
 				}

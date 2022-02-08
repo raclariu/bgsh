@@ -11,8 +11,6 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
 
 // @ Icons
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
@@ -22,6 +20,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import ActiveAddHistoryButton from './ActiveAddHistoryButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
@@ -157,7 +157,7 @@ const ListedGameCard = ({ data }) => {
 				</Box>
 			)}
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -169,25 +169,27 @@ const ListedGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={index === 0}
 								onClick={() => handleIndex('minus')}
 								size="large"
+								edge="start"
 							>
 								<ArrowBackIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
 								size="large"
+								edge="end"
 							>
 								<ArrowForwardIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 						</Fragment>
 					) : (
 						<StyledTitleBox>
@@ -197,7 +199,7 @@ const ListedGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">

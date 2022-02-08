@@ -50,7 +50,7 @@ const CollectionFetchBox = () => {
 			<Box fontWeight="fontWeightMedium">Import your BoardGameGeek collection</Box>
 
 			<Input
-				onChange={(e) => setBggUsername(e.target.value)}
+				onChange={(inputVal) => setBggUsername(inputVal)}
 				value={bggUsername}
 				error={mutation.isError ? true : false}
 				helperText={mutation.isError ? mutation.error.response.data.message : false}

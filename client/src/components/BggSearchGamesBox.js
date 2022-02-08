@@ -54,9 +54,9 @@ const BggSearchGamesBox = () => {
 		[ dispatch, debKeyword, mutate, reset ]
 	)
 
-	const handleInput = (e) => {
+	const handleInput = (inputVal) => {
 		if (options.length === 0) {
-			setInputText(e.target.value)
+			setInputText(inputVal)
 		}
 	}
 

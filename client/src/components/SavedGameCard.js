@@ -11,9 +11,6 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
-import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
 
 // @ icons
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
@@ -22,6 +19,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
@@ -142,7 +141,7 @@ const SavedGameCard = ({ data }) => {
 				</Box>
 			)}
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -154,25 +153,27 @@ const SavedGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={index === 0}
 								onClick={() => handleIndex('minus')}
 								size="large"
+								edge="start"
 							>
 								<ArrowBackIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
-							<IconButton
+							<CustomIconBtn
 								color="primary"
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
 								size="large"
+								edge="end"
 							>
 								<ArrowForwardIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 						</Fragment>
 					) : (
 						<StyledTitleBox>
@@ -182,7 +183,7 @@ const SavedGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">

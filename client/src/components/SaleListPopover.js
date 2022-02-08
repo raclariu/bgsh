@@ -11,21 +11,20 @@ import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
 import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemText from '@mui/material/ListItemText'
 import Avatar from '@mui/material/Avatar'
-import Divider from '@mui/material/Divider'
 
 // @ Icons
 import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwoTone'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import SaleListPopoverDialog from './SaleListPopoverDialog'
 
@@ -67,11 +66,16 @@ const SaleListPopover = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} disabled={isLoading} color="primary" size="large">
+			<CustomIconBtn
+				onClick={(e) => setAnchorEl(e.currentTarget)}
+				disabled={isLoading}
+				color="primary"
+				size="large"
+			>
 				<Badge color="secondary" badgeContent={data && data.list.length} showZero>
 					<FeaturedPlayListTwoToneIcon />
 				</Badge>
-			</IconButton>
+			</CustomIconBtn>
 
 			{isSuccess && (
 				<Popover
@@ -100,7 +104,7 @@ const SaleListPopover = () => {
 					<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
 						My list ({data.list.length}/6)
 					</Box>
-					<Divider />
+					<CustomDivider />
 
 					{data.list.length === 0 && (
 						<Fragment>
@@ -144,7 +148,7 @@ const SaleListPopover = () => {
 									}}
 								/>
 								<ListItemSecondaryAction>
-									<IconButton
+									<CustomIconBtn
 										disabled={deleteMutation.isLoading}
 										edge="end"
 										onClick={() => deleteFromListHandler(game.bggId, game.title)}
@@ -152,13 +156,13 @@ const SaleListPopover = () => {
 										color="error"
 									>
 										<HighlightOffIcon />
-									</IconButton>
+									</CustomIconBtn>
 								</ListItemSecondaryAction>
 							</ListItem>
 						))}
 					</List>
 
-					<Divider />
+					<CustomDivider />
 
 					{data.list.length > 0 && (
 						<Box display="flex" justifyContent="flex-end" m={1}>

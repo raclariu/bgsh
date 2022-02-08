@@ -24,6 +24,7 @@ function Copyright() {
 export default function StickyFooter() {
 	return (
 		<Box
+			component="footer"
 			sx={{
 				height          : '180px',
 				padding         : (theme) => theme.spacing(8, 2),

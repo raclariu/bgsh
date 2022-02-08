@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
@@ -13,6 +11,7 @@ import FavoriteBorder from '@mui/icons-material/FavoriteBorder'
 import Favorite from '@mui/icons-material/Favorite'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
 import Loader from './Loader'
 
 // @ Others
@@ -76,9 +75,9 @@ const SaveGameButton = ({ altId, addedById }) => {
 	return (
 		<Fragment>
 			{isLoading && (
-				<IconButton disabled disableRipple size="large">
+				<CustomIconBtn disabled disableRipple size="large">
 					<Loader size={20} />
-				</IconButton>
+				</CustomIconBtn>
 			)}
 
 			{isSuccess && (

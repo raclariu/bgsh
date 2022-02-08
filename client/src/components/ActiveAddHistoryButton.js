@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -14,7 +13,6 @@ import DialogContent from '@mui/material/DialogContent'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'
-import Divider from '@mui/material/Divider'
 import InputAdornment from '@mui/material/InputAdornment'
 
 // @ Icons
@@ -23,6 +21,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import Loader from './Loader'
 import CustomTooltip from './CustomTooltip'
@@ -153,9 +153,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'add' && (
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
-						<IconButton disabled={!isActive} onClick={handleOpenDialog} color="primary" size="large">
+						<CustomIconBtn disabled={!isActive} onClick={handleOpenDialog} color="primary" size="large">
 							<CheckCircleOutlineOutlinedIcon fontSize="small" />
-						</IconButton>
+						</CustomIconBtn>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
@@ -183,7 +183,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										}}
 										error={!!otherUsernameError}
 										helperText={otherUsernameError}
-										onChange={(e) => setOtherUsername(e.target.value)}
+										onChange={(inputVal) => setOtherUsername(inputVal)}
 										value={otherUsername}
 										inputProps={{
 											maxLength : 20
@@ -207,7 +207,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 											}}
 											error={!!finalPriceError}
 											helperText={finalPriceError}
-											onChange={(e) => setFinalPrice(e.target.value)}
+											onChange={(inputVal) => setFinalPrice(inputVal)}
 											value={finalPrice}
 											name="final-price"
 											label="Final price"
@@ -229,7 +229,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										error={!!extraInfoError}
 										helperText={extraInfoError}
 										value={extraInfo}
-										onChange={(e) => setExtraInfo(e.target.value)}
+										onChange={(inputVal) => setExtraInfo(inputVal)}
 										size="medium"
 										multiline
 										minRows={3}
@@ -266,9 +266,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'delete' && (
 				<Fragment>
 					<CustomTooltip title="Delete">
-						<IconButton onClick={handleOpenDialog} size="large">
+						<CustomIconBtn onClick={handleOpenDialog} size="large">
 							<DeleteOutlineIcon color="error" fontSize="small" />
-						</IconButton>
+						</CustomIconBtn>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
@@ -277,7 +277,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								<Box align="center">Are you sure you want to delete this game?</Box>
 							</DialogTitle>
 
-							<Divider />
+							<CustomDivider />
 
 							<DialogActions>
 								<CustomButton disabled={deleteGame.isLoading} onClick={handleCloseDialog}>
@@ -301,9 +301,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'reactivate' && (
 				<Fragment>
 					<CustomTooltip title="Reactivate">
-						<IconButton disabled={isActive} onClick={handleOpenDialog} color="primary" size="large">
+						<CustomIconBtn disabled={isActive} onClick={handleOpenDialog} color="primary" size="large">
 							<RefreshIcon fontSize="small" />
-						</IconButton>
+						</CustomIconBtn>
 					</CustomTooltip>
 
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
@@ -312,7 +312,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								<Box align="center">Are you sure you want to reactivate this board game?</Box>
 							</DialogTitle>
 
-							<Divider />
+							<CustomDivider />
 
 							<DialogActions>
 								<CustomButton disabled={reactivateGame.isLoading} onClick={handleCloseDialog}>

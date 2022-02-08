@@ -12,20 +12,7 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import Checkbox from '@mui/material/Checkbox'
-import Avatar from '@mui/material/Avatar'
-import ButtonBase from '@mui/material/ButtonBase'
-import IconButton from '@mui/material/IconButton'
-import Fade from '@mui/material/Fade'
-import Divider from '@mui/material/Divider'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardMedia from '@mui/material/CardMedia'
-import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import Collapse from '@mui/material/Collapse'
-import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
 
 // @ Icons
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
@@ -33,7 +20,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import EventIcon from '@mui/icons-material/Event'
 
 // @ Components
-import SendMessage from '../components/SendMessage'
+import CustomIconBtn from '../components/CustomIconBtn'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Paginate from '../components/Paginate'
@@ -215,9 +202,9 @@ const InboxScreen = () => {
 				</Box>
 
 				{selected.length > 0 && (
-					<IconButton onClick={handleDelete} color="error">
+					<CustomIconBtn onClick={handleDelete} color="error">
 						<DeleteOutlineIcon />
-					</IconButton>
+					</CustomIconBtn>
 				)}
 			</Box>
 

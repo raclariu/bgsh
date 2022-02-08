@@ -8,12 +8,11 @@ import queryString from 'query-string'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Box from '@mui/material/Box'
 
 // @ Components
+import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
 import ShippingSection from '../components/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
@@ -89,18 +88,6 @@ const BuyGamesScreen = () => {
 
 	const handleGameInfo = (value, id, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
-	}
-
-	const handleExtraInfoPack = (e) => {
-		setExtraInfoPack(e.target.value)
-	}
-
-	const handleFinalPrice = (e) => {
-		setFinalPrice(e.target.value)
-	}
-
-	const handleOtherUsername = (e) => {
-		setOtherUsername(e.target.value)
 	}
 
 	const handleSubmit = (e) => {
@@ -389,7 +376,7 @@ const BuyGamesScreen = () => {
 						))}
 					</Grid>
 
-					<Divider />
+					<CustomDivider />
 
 					<Grid item sm={6} xs={12}>
 						<Grid container direction="column">
@@ -397,7 +384,7 @@ const BuyGamesScreen = () => {
 								<Fragment>
 									<Input
 										value={data.otherUsername}
-										onChange={handleOtherUsername}
+										onChange={(inputVal) => setOtherUsername(inputVal)}
 										inputProps={{
 											maxLength : 20
 										}}
@@ -410,9 +397,9 @@ const BuyGamesScreen = () => {
 									/>
 									<Grid item>
 										<Input
-											type="number"
 											value={finalPrice}
-											onChange={handleFinalPrice}
+											onChange={(inputVal) => setFinalPrice(inputVal)}
+											type="number"
 											label="Pack price"
 											name="final-price"
 											InputProps={{
@@ -424,8 +411,8 @@ const BuyGamesScreen = () => {
 									</Grid>
 									<Grid item>
 										<Input
-											onChange={handleExtraInfoPack}
 											value={extraInfoPack}
+											onChange={(inputVal) => setExtraInfoPack(inputVal)}
 											name="extra-info-pack"
 											label={`Extra info ${extraInfoPack.length}/500`}
 											type="text"

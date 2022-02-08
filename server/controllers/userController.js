@@ -24,14 +24,14 @@ const userAuth = asyncHandler(async (req, res) => {
 		}
 	} else {
 		const { email } = req.body
-		const user = await User.findOne({ email }).select('_id email username isAdmin token avatar')
+		const user = await User.findOne({ email }).select('_id username isAdmin token').lean()
 		user.lastSeen = Date.now()
 		user.save()
 		res.status(200).json({
 			_id      : user._id,
 			// email    : user.email,
 			username : user.username,
-			// isAdmin  : user.isAdmin,
+			isAdmin  : user.isAdmin,
 			// avatar   : user.avatar,
 			token    : generateToken(user._id)
 		})

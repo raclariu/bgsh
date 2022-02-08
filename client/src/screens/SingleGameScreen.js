@@ -14,12 +14,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import LinearProgress from '@mui/material/LinearProgress'
 import Chip from '@mui/material/Chip'
-import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
 import Fab from '@mui/material/Fab'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -51,6 +46,8 @@ import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
 
 // @ Components
+import CustomIconBtn from '../components/CustomIconBtn'
+import CustomDivider from '../components/CustomDivider'
 import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
@@ -451,7 +448,7 @@ const SingleGameScreen = () => {
 						</Grid>
 					</Grid>
 
-					<Divider light />
+					<CustomDivider light />
 
 					{/* Shipping */}
 					<Box id="shipping" mt={2} mb={4}>
@@ -564,7 +561,7 @@ const SingleGameScreen = () => {
 						</Grid>
 					</Box>
 
-					<Divider light />
+					<CustomDivider light />
 
 					{/* Gallery */}
 					<Box id="gallery" mt={2} mb={4}>
@@ -624,9 +621,9 @@ const SingleGameScreen = () => {
 													{`Posted on BGG by ${galleryData[imgIndex].postedBy}`}
 												</Box>
 											</Box>
-											<IconButton onClick={handleCloseImage} color="secondary" size="large">
+											<CustomIconBtn onClick={handleCloseImage} color="secondary" size="large">
 												<CloseIcon />
-											</IconButton>
+											</CustomIconBtn>
 										</Box>
 									</DialogTitle>
 
@@ -652,24 +649,24 @@ const SingleGameScreen = () => {
 										<Box width="100%" display="flex" alignItems="center">
 											<Box flexGrow={1}>
 												<CustomTooltip title="Previous image">
-													<IconButton
+													<CustomIconBtn
 														disabled={imgIndex === 0}
 														color="primary"
 														onClick={() => cycleImages('back')}
 														size="large"
 													>
 														<ArrowBackIcon />
-													</IconButton>
+													</CustomIconBtn>
 												</CustomTooltip>
 												<CustomTooltip title="Next image">
-													<IconButton
+													<CustomIconBtn
 														disabled={galleryData.length === imgIndex + 1}
 														color="primary"
 														onClick={() => cycleImages('forward')}
 														size="large"
 													>
 														<ArrowForwardIcon />
-													</IconButton>
+													</CustomIconBtn>
 												</CustomTooltip>
 											</Box>
 
@@ -691,7 +688,7 @@ const SingleGameScreen = () => {
 						galleryData.length === 0 && <CustomAlert severity="warning">No images found</CustomAlert>}
 					</Box>
 
-					<Divider light />
+					<CustomDivider light />
 
 					{/* Recommendations */}
 					<Box id="recommendations" mt={2} mb={4}>
@@ -842,7 +839,7 @@ const SingleGameScreen = () => {
 
 					{console.count('renders')}
 
-					<Divider light />
+					<CustomDivider light />
 
 					{/* Chips */}
 					<StyledChipsBox>

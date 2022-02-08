@@ -8,11 +8,10 @@ import queryString from 'query-string'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 
 // @ Components
+import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
 import ShippingSection from '../components/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
@@ -90,10 +89,6 @@ const TradeGamesScreen = () => {
 
 	const handleGameInfo = (value, bggId, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
-	}
-
-	const handleExtraInfoPack = (e) => {
-		setExtraInfoPack(e.target.value)
 	}
 
 	const handleShippingInfo = (data, type) => {
@@ -183,7 +178,7 @@ const TradeGamesScreen = () => {
 						)}
 					</Grid>
 
-					<Divider />
+					<CustomDivider />
 
 					{/* Shipping Area */}
 					<Grid container direction="row" spacing={2}>
@@ -200,7 +195,7 @@ const TradeGamesScreen = () => {
 								<Fragment>
 									<Grid item>
 										<Input
-											onChange={handleExtraInfoPack}
+											onChange={(inputVal) => setExtraInfoPack(inputVal)}
 											value={extraInfoPack}
 											name="extra-info-pack"
 											label={`Extra info ${extraInfoPack.length}/500`}

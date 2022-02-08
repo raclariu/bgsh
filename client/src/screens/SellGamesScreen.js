@@ -8,12 +8,11 @@ import queryString from 'query-string'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Box from '@mui/material/Box'
 
 // @ Components
+import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
 import ShippingSection from '../components/ShippingSection'
 import Input from '../components/Input'
@@ -99,14 +98,6 @@ const SellGamesScreen = () => {
 
 	const handleGameInfo = (value, bggId, key) =>
 		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
-
-	const handleExtraInfoPack = (e) => {
-		setExtraInfoPack(e.target.value)
-	}
-
-	const handleTotalPrice = (e) => {
-		setTotalPrice(e.target.value)
-	}
 
 	const handleShippingInfo = (data, type) => {
 		if (type === 'post') {
@@ -226,7 +217,7 @@ const SellGamesScreen = () => {
 							)}
 						</Grid>
 
-						<Divider />
+						<CustomDivider />
 
 						{/* Shipping Area */}
 						<Grid container direction="row" spacing={2}>
@@ -252,7 +243,7 @@ const SellGamesScreen = () => {
 										<Fragment>
 											<Grid item>
 												<Input
-													onChange={handleTotalPrice}
+													onChange={(inputVal) => setTotalPrice(inputVal)}
 													value={totalPrice}
 													error={
 														listMutation.isError &&
@@ -276,7 +267,7 @@ const SellGamesScreen = () => {
 											</Grid>
 											<Grid item>
 												<Input
-													onChange={handleExtraInfoPack}
+													onChange={(inputVal) => setExtraInfoPack(inputVal)}
 													value={extraInfoPack}
 													name="extra-info-pack"
 													label={`Extra info ${extraInfoPack.length}/500`}

@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
@@ -16,7 +14,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
-import Loader from './Loader'
+import CustomIconBtn from './CustomIconBtn'
 import LoadingBtn from './LoadingBtn'
 import Input from './Input'
 
@@ -58,7 +56,7 @@ const SignUp = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.emailError ? true : false}
 				helperText={error ? error.emailError : false}
-				onChange={(e) => setEmail(e.target.value)}
+				onChange={(inputVal) => setEmail(inputVal)}
 				value={email}
 				size="medium"
 				id="email"
@@ -74,7 +72,7 @@ const SignUp = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.usernameError ? true : false}
 				helperText={error ? error.usernameError : false}
-				onChange={(e) => setUsername(e.target.value)}
+				onChange={(inputVal) => setUsername(inputVal)}
 				value={username}
 				size="medium"
 				id="username"
@@ -89,7 +87,7 @@ const SignUp = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.passwordError ? true : false}
 				helperText={error ? error.passwordError : false}
-				onChange={(e) => setPassword(e.target.value)}
+				onChange={(inputVal) => setPassword(inputVal)}
 				value={password}
 				size="medium"
 				id="password"
@@ -99,9 +97,9 @@ const SignUp = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => setPassVisibility(!passVisibility)} size="large">
+							<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
 								{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}
@@ -113,7 +111,7 @@ const SignUp = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.passwordConfirmationError ? true : false}
 				helperText={error ? error.passwordConfirmationError : false}
-				onChange={(e) => setPasswordConfirmation(e.target.value)}
+				onChange={(inputVal) => setPasswordConfirmation(inputVal)}
 				value={passwordConfirmation}
 				size="medium"
 				variant="outlined"
@@ -124,7 +122,7 @@ const SignUp = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton
+							<CustomIconBtn
 								onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}
 								size="large"
 							>
@@ -133,7 +131,7 @@ const SignUp = () => {
 								) : (
 									<VisibilityOffOutlinedIcon />
 								)}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}

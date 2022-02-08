@@ -5,7 +5,9 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
-import Divider from '@mui/material/Divider'
+
+// @ Components
+import CustomDivider from '../CustomDivider'
 
 // @ Main
 const GameIndexCardSkeleton = () => {
@@ -34,13 +36,13 @@ const GameIndexCardSkeleton = () => {
 					</Box>
 				</Box>
 
-				<Divider flexItem />
+				<CustomDivider flexItem />
 
 				<Box height={66} display="flex" justifyContent="center" alignItems="center">
 					<Skeleton animation="wave" variant="text" width={200} />
 				</Box>
 
-				<Divider flexItem />
+				<CustomDivider flexItem />
 
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" my={1}>
 					<Skeleton animation="wave" variant="text" width={200} height={30} />
@@ -50,7 +52,7 @@ const GameIndexCardSkeleton = () => {
 					<Skeleton animation="wave" variant="text" width={75} height={30} />
 				</Box>
 
-				<Divider flexItem />
+				<CustomDivider flexItem />
 
 				<Box display="flex" width="95%" justifyContent="space-between" alignItems="center" height={60}>
 					<Box display="flex" justifyContent="center" alignItems="center">

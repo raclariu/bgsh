@@ -11,7 +11,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar')
+			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar').lean()
 
 			if (!req.user) {
 				res.status(401)

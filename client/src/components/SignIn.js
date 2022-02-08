@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -16,7 +15,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
-import Loader from './Loader'
+import CustomIconBtn from './CustomIconBtn'
 import Input from './Input'
 import LoadingBtn from './LoadingBtn'
 
@@ -69,7 +68,7 @@ const SignIn = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.emailError ? true : false}
 				helperText={error ? error.emailError : false}
-				onChange={(e) => setEmail(e.target.value)}
+				onChange={(inputVal) => setEmail(inputVal)}
 				value={email}
 				size="medium"
 				id="email"
@@ -85,7 +84,7 @@ const SignIn = () => {
 				sx={{ minHeight: '90px' }}
 				error={error && error.passwordError ? true : false}
 				helperText={error ? error.passwordError : false}
-				onChange={(e) => setPassword(e.target.value)}
+				onChange={(inputVal) => setPassword(inputVal)}
 				value={password}
 				size="medium"
 				id="password"
@@ -95,9 +94,9 @@ const SignIn = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => setPassVisibility(!passVisibility)} size="large">
+							<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
 								{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}

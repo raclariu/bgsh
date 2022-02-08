@@ -9,8 +9,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Paper from '@mui/material/Paper'
 
 // @ Components
 import CollectionGameCard from '../components/CollectionGameCard'

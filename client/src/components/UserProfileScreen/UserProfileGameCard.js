@@ -9,9 +9,6 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
-import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 
 // @ Icons
@@ -19,6 +16,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
+import CustomIconBtn from '../CustomIconBtn'
+import CustomDivider from '../CustomDivider'
 import CustomButton from '../CustomButton'
 import CustomTooltip from '../CustomTooltip'
 import GameDetailsButton from '../GameDetailsButton'
@@ -81,7 +80,7 @@ const UserProfileGameCard = ({ data }) => {
 				</Fragment>
 			)}
 
-			<Divider />
+			<CustomDivider />
 
 			<CardContent>
 				<Box
@@ -93,19 +92,27 @@ const UserProfileGameCard = ({ data }) => {
 				>
 					{data.isPack ? (
 						<Fragment>
-							<IconButton disabled={index === 0} onClick={() => handleIndex('minus')} size="large">
+							<CustomIconBtn
+								color="primary"
+								disabled={index === 0}
+								onClick={() => handleIndex('minus')}
+								size="large"
+								edge="start"
+							>
 								<ArrowBackIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 							<StyledTitleBox>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
-							<IconButton
+							<CustomIconBtn
+								color="primary"
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
 								size="large"
+								edge="end"
 							>
 								<ArrowForwardIcon fontSize="small" />
-							</IconButton>
+							</CustomIconBtn>
 						</Fragment>
 					) : (
 						<StyledTitleBox>
@@ -115,7 +122,7 @@ const UserProfileGameCard = ({ data }) => {
 				</Box>
 			</CardContent>
 
-			<Divider />
+			<CustomDivider />
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Box from '@mui/material/Box'
@@ -15,6 +14,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
 import Loader from './Loader'
 import CustomAlert from '../components/CustomAlert'
 import Input from './Input'
@@ -79,7 +79,7 @@ const ChangePasswordForm = () => {
 				sx={{ minHeight: '90px' }}
 				error={isError && passwordCurrentErrorMsg ? true : false}
 				helperText={isError ? passwordCurrentErrorMsg : false}
-				onChange={(e) => setPasswordCurrent(e.target.value)}
+				onChange={(inputVal) => setPasswordCurrent(inputVal)}
 				value={passwordCurrent}
 				size="medium"
 				id="passwordCurrent"
@@ -89,9 +89,9 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => handlePassVisibility('passCurrent')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passCurrent')} size="large">
 								{passCurrentVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}
@@ -103,7 +103,7 @@ const ChangePasswordForm = () => {
 				sx={{ minHeight: '90px' }}
 				error={isError && passwordNewErrorMsg ? true : false}
 				helperText={isError ? passwordNewErrorMsg : false}
-				onChange={(e) => setPasswordNew(e.target.value)}
+				onChange={(inputVal) => setPasswordNew(inputVal)}
 				value={passwordNew}
 				size="medium"
 				id="passwordNew"
@@ -113,9 +113,9 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => handlePassVisibility('passNew')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passNew')} size="large">
 								{passNewVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}
@@ -127,7 +127,7 @@ const ChangePasswordForm = () => {
 				sx={{ minHeight: '90px' }}
 				error={isError && passwordNewConfirmationErrorMsg ? true : false}
 				helperText={isError ? passwordNewConfirmationErrorMsg : false}
-				onChange={(e) => setPasswordNewConfirmation(e.target.value)}
+				onChange={(inputVal) => setPasswordNewConfirmation(inputVal)}
 				value={passwordNewConfirmation}
 				size="medium"
 				id="passwordNewConfirmation"
@@ -137,13 +137,13 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<IconButton onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
 								{passNewConfirmationVisibility ? (
 									<VisibilityOutlinedIcon />
 								) : (
 									<VisibilityOffOutlinedIcon />
 								)}
-							</IconButton>
+							</CustomIconBtn>
 						</InputAdornment>
 					)
 				}}

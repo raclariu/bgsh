@@ -5,8 +5,8 @@ import React from 'react'
 import TextField from '@mui/material/TextField'
 
 // @ Main
-const Input = (props) => {
-	return <TextField {...props} />
+const Input = ({ onChange: propsOnChange, ...other }) => {
+	return <TextField onChange={(e) => propsOnChange(e.target.value)} {...other} />
 }
 
 // @ Default Props
@@ -17,7 +17,3 @@ Input.defaultProps = {
 }
 
 export default Input
-
-// InputProps={{
-// 	startAdornment : <InputAdornment position="start">RON</InputAdornment>
-// }}

@@ -5,9 +5,11 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useQuery } from 'react-query'
 
 // @ Mui
-import IconButton from '@mui/material/IconButton'
 import Badge from '@mui/material/Badge'
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone'
+
+// @ Components
+import CustomIconBtn from './CustomIconBtn'
 
 // @ Others
 import { apiGetNewMessagesCount } from '../api/api'
@@ -21,11 +23,11 @@ const MessagesBadge = () => {
 
 	return (
 		<Fragment>
-			<IconButton component={RouterLink} to="/received" color="primary" size="large">
+			<CustomIconBtn component={RouterLink} to="/received" color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
 					<EmailTwoToneIcon />
 				</Badge>
-			</IconButton>
+			</CustomIconBtn>
 		</Fragment>
 	)
 }

@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Popover from '@mui/material/Popover'
-import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 import Grow from '@mui/material/Grow'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
@@ -14,14 +13,11 @@ import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Divider from '@mui/material/Divider'
 import Badge from '@mui/material/Badge'
-import Button from '@mui/material/Button'
-import Avatar from '@mui/material/Avatar'
-import Chip from '@mui/material/Chip'
 
 // @ Components
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 
 // @ Icons
@@ -46,7 +42,7 @@ const NotificationsPopover = () => {
 
 	return (
 		<Fragment>
-			<IconButton onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
+			<CustomIconBtn onClick={(e) => setAnchorEl(e.currentTarget)} color="primary" size="large">
 				<Badge color="secondary" badgeContent={isSuccess ? data.notifications.length : 0}>
 					{isSuccess && data.notifications.length > 0 ? (
 						<NotificationsActiveTwoToneIcon />
@@ -54,7 +50,7 @@ const NotificationsPopover = () => {
 						<NotificationsNoneTwoToneIcon />
 					)}
 				</Badge>
-			</IconButton>
+			</CustomIconBtn>
 
 			<Popover
 				PaperProps={{
@@ -82,7 +78,7 @@ const NotificationsPopover = () => {
 				<Box textAlign="center" p={2} color="primary.main">
 					{isSuccess && data.notifications.length > 0 ? 'Notifications' : 'No notifications'}
 				</Box>
-				<Divider />
+				<CustomDivider />
 
 				{isSuccess && (
 					<List dense disablePadding>
@@ -111,9 +107,9 @@ const NotificationsPopover = () => {
 									}}
 								/>
 								<ListItemSecondaryAction>
-									<IconButton edge="end" size="large">
+									<CustomIconBtn edge="end" size="large">
 										<HighlightOffIcon color="error" />
-									</IconButton>
+									</CustomIconBtn>
 								</ListItemSecondaryAction>
 							</ListItem>
 						))}
