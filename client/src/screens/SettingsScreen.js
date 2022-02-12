@@ -29,8 +29,7 @@ const SettingsScreen = () => {
 				justifyContent="center"
 				bgcolor="background.paper"
 				boxShadow={2}
-				borderRadius="4px"
-				mt={4}
+				borderRadius={1}
 			>
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
 					<Tab value="profile" label="Profile" />
@@ -39,7 +38,7 @@ const SettingsScreen = () => {
 			</Box>
 
 			{tab === 'change-password' && (
-				<Box display="flex" justifyContent="center" width="100%" mt={2}>
+				<Box display="flex" justifyContent="center" width="100%" mt={3}>
 					<Box
 						sx={{
 							width : {
@@ -55,8 +54,8 @@ const SettingsScreen = () => {
 			)}
 
 			{tab === 'profile' && (
-				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={5}>
-					<Box mt={2}>
+				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3}>
+					<Box mt={3}>
 						<ChangeAvatar />
 					</Box>
 					<CustomDivider flexItem />
@@ -82,7 +81,6 @@ const SettingsScreen = () => {
 					>
 						<BggSearchGamesBox />
 					</Box>
-					<CustomDivider flexItem />
 				</Box>
 			)}
 		</Fragment>

@@ -1,6 +1,6 @@
 // @ Libraries
 import React, { Fragment } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 
 // @ Icons
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -11,10 +11,11 @@ import CustomIconBtn from './CustomIconBtn'
 // @ Main
 const BackButton = () => {
 	const history = useHistory()
+	const { pathname } = useLocation()
 
 	return (
 		<Fragment>
-			<CustomIconBtn onClick={() => history.goBack()} color="primary" edge="start">
+			<CustomIconBtn onClick={() => history.push(pathname)} color="primary" edge="start">
 				<ArrowBackIcon />
 			</CustomIconBtn>
 		</Fragment>

@@ -30,7 +30,6 @@ import { light, dark } from './constants/themes'
 const Home = lazy(() => import('./screens/HomeScreen'))
 const Auth = lazy(() => import('./screens/AuthScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
-const Profile = lazy(() => import('./screens/ProfileScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
 const SellGames = lazy(() => import('./screens/SellGamesScreen'))
 const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
@@ -77,6 +76,9 @@ const App = () => {
 						<Container
 							maxWidth="md"
 							component="main"
+							sx={{
+								py : 4
+							}}
 							// sx={{
 							// 	minHeight     : 'calc(100% - 244px)',
 							// 	paddingTop    : '32px',
@@ -91,10 +93,6 @@ const App = () => {
 								<Route path={[ '/signin', '/signup' ]} exact>
 									<Auth />
 								</Route>
-
-								<ProtectedRoute path="/profile" exact>
-									<Profile />
-								</ProtectedRoute>
 
 								<ProtectedRoute path="/user/settings" exact>
 									<Settings />

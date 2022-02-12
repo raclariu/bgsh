@@ -3,6 +3,7 @@ import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { useQuery } from 'react-query'
+import { TransitionGroup } from 'react-transition-group'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -17,6 +18,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemText from '@mui/material/ListItemText'
 import Avatar from '@mui/material/Avatar'
+import Collapse from '@mui/material/Collapse'
 
 // @ Icons
 import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwoTone'
@@ -106,6 +108,44 @@ const SaleListPopover = () => {
 					</Box>
 					<CustomDivider />
 
+					<List disablePadding>
+						<TransitionGroup>
+							{data.list.map((game) => (
+								<Collapse key={game.bggId}>
+									<ListItem divider>
+										<ListItemAvatar>
+											<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
+												{game.title.substring(0, 2).toUpperCase()}
+											</Avatar>
+										</ListItemAvatar>
+										<ListItemText
+											primary={game.title}
+											secondary={game.year}
+											primaryTypographyProps={{
+												color   : 'primary',
+												variant : 'subtitle2'
+											}}
+											secondaryTypographyProps={{
+												variant : 'caption'
+											}}
+										/>
+										<ListItemSecondaryAction>
+											<CustomIconBtn
+												disabled={deleteMutation.isLoading}
+												edge="end"
+												onClick={() => deleteFromListHandler(game.bggId, game.title)}
+												size="large"
+												color="error"
+											>
+												<HighlightOffIcon />
+											</CustomIconBtn>
+										</ListItemSecondaryAction>
+									</ListItem>
+								</Collapse>
+							))}
+						</TransitionGroup>
+					</List>
+
 					{data.list.length === 0 && (
 						<Fragment>
 							<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
@@ -127,40 +167,6 @@ const SaleListPopover = () => {
 							</Box>
 						</Fragment>
 					)}
-
-					<List disablePadding>
-						{data.list.map((game) => (
-							<ListItem key={game.bggId} divider>
-								<ListItemAvatar>
-									<Avatar variant="rounded" src={game.thumbnail} alt={game.title}>
-										{game.title.substring(0, 2).toUpperCase()}
-									</Avatar>
-								</ListItemAvatar>
-								<ListItemText
-									primary={game.title}
-									secondary={game.year}
-									primaryTypographyProps={{
-										color   : 'primary',
-										variant : 'subtitle2'
-									}}
-									secondaryTypographyProps={{
-										variant : 'caption'
-									}}
-								/>
-								<ListItemSecondaryAction>
-									<CustomIconBtn
-										disabled={deleteMutation.isLoading}
-										edge="end"
-										onClick={() => deleteFromListHandler(game.bggId, game.title)}
-										size="large"
-										color="error"
-									>
-										<HighlightOffIcon />
-									</CustomIconBtn>
-								</ListItemSecondaryAction>
-							</ListItem>
-						))}
-					</List>
 
 					<CustomDivider />
 

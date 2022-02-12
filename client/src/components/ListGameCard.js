@@ -53,8 +53,6 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 	const queryClient = useQueryClient()
 
-	console.log(data.version)
-
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	const displayImageHandler = (image, thumbnail) => {
@@ -91,7 +89,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				copyUserListObj.list[idx].userImage = null
 				return copyUserListObj
 			})
-			showSnackbar.info({ text: `Image for "${data.title}" deleted successfully` })
+			showSnackbar.info({ text: `Image for "${vars.title}" deleted successfully` })
 		},
 		onError   : (error) => {
 			showSnackbar.error({ text: error.response.data.message || 'Error occured while removing uploaded image' })
@@ -99,7 +97,6 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 	})
 
 	const handleImages = (e) => {
-		console.log(e.target.files[0])
 		const uploadedImg = e.target.files[0]
 		if (!uploadedImg) return
 
@@ -122,7 +119,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 	}
 
 	const removeImage = (e) => {
-		removeImageMutation.mutate({ fileName: data.userImage.name, bggId: game.bggId })
+		removeImageMutation.mutate({ fileName: data.userImage.name, bggId: game.bggId, title: game.title })
 	}
 
 	const handleImgLoad = (e) => {

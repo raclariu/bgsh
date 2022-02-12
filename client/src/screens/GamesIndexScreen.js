@@ -56,7 +56,7 @@ const GamesIndexScreen = () => {
 
 	return (
 		<Fragment>
-			<Box display="flex" width="100%" mt={3} mb={2} justifyContent="center" alignItems="center">
+			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item md={4} sm={5} xs={12}>
 						<SearchBox placeholder="Search boardgames" handleFilters={handleFilters} />

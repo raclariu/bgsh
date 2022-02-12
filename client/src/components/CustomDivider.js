@@ -5,7 +5,6 @@ import React, { Fragment } from 'react'
 import Divider from '@mui/material/Divider'
 
 const CustomDivider = ({ children, ...other }) => {
-	console.log(children)
 	return <Divider {...other}>{children}</Divider>
 }
 

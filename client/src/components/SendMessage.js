@@ -23,7 +23,7 @@ import LoadingBtn from './LoadingBtn'
 import { apiSendMessage } from '../api/api'
 
 // @Main
-const SendMessage = ({ recipientUsername = '' }) => {
+const SendMessage = ({ recipientUsername = '', ...other }) => {
 	const queryClient = useQueryClient()
 
 	const currUsername = useSelector((state) => state.userAuth.userData.username)
@@ -57,10 +57,11 @@ const SendMessage = ({ recipientUsername = '' }) => {
 		<Fragment>
 			<CustomTooltip title="Send message">
 				<CustomIconBtn
-					disabled={currUsername === recipientUsername}
+					// disabled={currUsername === recipientUsername}
 					color="primary"
 					onClick={handleOpenDialog}
 					size="large"
+					{...other}
 				>
 					<MailTwoToneIcon />
 				</CustomIconBtn>

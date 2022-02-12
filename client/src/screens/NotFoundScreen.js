@@ -1,5 +1,5 @@
 // @ Libraries
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
 // @ Mui
@@ -12,17 +12,18 @@ import CustomButton from '../components/CustomButton'
 // @ Main
 const NotFoundScreen = () => {
 	return (
-		<Box my={4}>
+		<Fragment>
 			<Box
 				display="flex"
 				flexDirection="column"
 				justifyContent="center"
 				alignItems="center"
 				bgcolor="background.paper"
-				borderRadius="4px"
+				borderRadius="8px"
 				boxShadow={2}
 				width="100%"
 				height={300}
+				mb={3}
 			>
 				<Box fontSize={30} my={3}>
 					Page not found
@@ -34,7 +35,7 @@ const NotFoundScreen = () => {
 					</CustomButton>
 				</Box>
 			</Box>
-		</Box>
+		</Fragment>
 	)
 }
 

@@ -26,7 +26,7 @@ const BggSearchGamesBox = () => {
 	const queryClient = useQueryClient()
 
 	const [ inputText, setInputText ] = useState('')
-	const [ debKeyword ] = useDebounce(inputText.trim(), 1500)
+	const [ debKeyword ] = useDebounce(inputText, 1500)
 	const [ options, setOptions ] = useState([])
 	const [ selectedOption, setSelectedOption ] = useState(null)
 
@@ -39,11 +39,14 @@ const BggSearchGamesBox = () => {
 	const { mutate, reset } = mutation
 
 	const addToListMutation = useAddToListMutation()
+	console.log(debKeyword)
 
 	useEffect(
 		() => {
-			if (debKeyword.length > 2) {
-				mutate(debKeyword)
+			if (debKeyword) {
+				if (debKeyword.length > 2) {
+					mutate(debKeyword)
+				}
 			}
 
 			return () => {

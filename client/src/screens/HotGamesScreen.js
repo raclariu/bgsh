@@ -6,6 +6,7 @@ import { useQuery } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
 
 // @ Components
 import HotGameCard from '../components/HotGameCard'

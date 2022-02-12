@@ -305,7 +305,11 @@ export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, index }) =>
 	return useQuery([ 'singleGame', 'gallery', { altId, index } ], () => api.apiFetchGallery(data.games[index].bggId), {
 		enabled          : isSuccess && galleryInView,
 		staleTime        : 1000 * 60 * 60,
-		keepPreviousData : true
+		keepPreviousData : true,
+		select           : (data) => {
+			console.log(data)
+			return data
+		}
 	})
 }
 

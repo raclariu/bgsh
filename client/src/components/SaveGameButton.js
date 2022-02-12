@@ -11,6 +11,7 @@ import FavoriteBorder from '@mui/icons-material/FavoriteBorder'
 import Favorite from '@mui/icons-material/Favorite'
 
 // @ Components
+import CustomTooltip from './CustomTooltip'
 import CustomIconBtn from './CustomIconBtn'
 import Loader from './Loader'
 
@@ -25,14 +26,18 @@ const SaveGameButton = ({ altId, addedById }) => {
 
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	const { isLoading, data, isSuccess } = useQuery([ 'savedStatus', altId ], () => apiFetchGameSavedStatus(altId), {
-		staleTime : 1000 * 60 * 3,
-		enabled   : !!altId,
-		onError   : (err) => {
-			const text = err.response.data.message || 'Error occured while fetching saved status'
-			showSnackbar.error({ text })
+	const { isLoading, isFetching, data, isSuccess, status } = useQuery(
+		[ 'savedStatus', altId ],
+		() => apiFetchGameSavedStatus(altId),
+		{
+			staleTime : 1000 * 60 * 3,
+			enabled   : !!altId,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching saved status'
+				showSnackbar.error({ text })
+			}
 		}
-	})
+	)
 
 	const updateSaveStatusMutation = useMutation((altId) => apiUpdateSavedGameStatus(altId), {
 		onMutate  : async (varAltId) => {
@@ -44,8 +49,8 @@ const SaveGameButton = ({ altId, addedById }) => {
 			queryClient.setQueryData([ 'savedStatus', altId ], (oldStatus) => {
 				const newStatus = { isSaved: !oldStatus.isSaved }
 				newStatus.isSaved
-					? showSnackbar.success({ text: 'Added to my saved list' })
-					: showSnackbar.success({ text: 'Removed from my saved list' })
+					? showSnackbar.info({ text: 'Added to my saved list' })
+					: showSnackbar.info({ text: 'Removed from my saved list' })
 
 				return newStatus
 			})
@@ -74,24 +79,31 @@ const SaveGameButton = ({ altId, addedById }) => {
 
 	return (
 		<Fragment>
-			{isLoading && (
+			{isFetching && (
 				<CustomIconBtn disabled disableRipple size="large">
 					<Loader size={20} />
 				</CustomIconBtn>
 			)}
 
-			{isSuccess && (
+			{isSuccess &&
+			!isFetching && (
 				// disabled={addedById === userId}
 
-				<Checkbox
-					id="save-button"
-					onChange={saveGameHandler}
-					icon={<FavoriteBorder />}
-					checkedIcon={<Favorite />}
-					name="saved"
-					size="small"
-					checked={data.isSaved}
-				/>
+				<CustomTooltip title={data.isSaved ? 'Unsave' : 'Save'}>
+					<Checkbox
+						sx={{
+							height : '48px',
+							width  : '48px'
+						}}
+						color="secondary"
+						id="save-button"
+						onChange={saveGameHandler}
+						icon={<FavoriteBorder />}
+						checkedIcon={<Favorite />}
+						name="saved"
+						checked={data.isSaved}
+					/>
+				</CustomTooltip>
 			)}
 		</Fragment>
 	)

@@ -108,6 +108,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		}
 	})
 
+	console.log(mode)
 	const invalidate = () => {
 		queryClient.invalidateQueries([ 'myListedGames' ])
 		if (mode === 'sell') {

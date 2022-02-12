@@ -203,7 +203,12 @@ const ListedGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-evenly" alignItems="center" width="100%">
-					<ActiveAddHistoryButton gameId={data._id} isActive={data.isActive} display="reactivate" />
+					<ActiveAddHistoryButton
+						gameId={data._id}
+						mode={data.mode}
+						isActive={data.isActive}
+						display="reactivate"
+					/>
 
 					{data.mode !== 'want' && (
 						<Fragment>
@@ -220,7 +225,7 @@ const ListedGameCard = ({ data }) => {
 						</Fragment>
 					)}
 
-					<ActiveAddHistoryButton gameId={data._id} display="delete" />
+					<ActiveAddHistoryButton gameId={data._id} mode={data.mode} display="delete" />
 				</Box>
 			</CardActions>
 		</Card>

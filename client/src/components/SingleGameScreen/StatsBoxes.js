@@ -18,7 +18,7 @@ const defaultBigBox = {
 	textAlign      : 'center',
 	borderRadius   : 4,
 	boxShadow      : 2,
-	height         : 60,
+	height         : 64,
 	width          : 100,
 	fontSize       : 20,
 	color          : '#fff'

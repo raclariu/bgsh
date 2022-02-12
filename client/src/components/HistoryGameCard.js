@@ -125,7 +125,7 @@ const HistoryGameCard = ({ data }) => {
 			<CustomDivider />
 
 			<CardContent>
-				{/* <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium">
 							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
@@ -151,7 +151,7 @@ const HistoryGameCard = ({ data }) => {
 						</Box>
 					</Box>
 					<CustomDivider orientation="vertical" flexItem />
-				</Box> */}
+				</Box>
 
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
 					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">

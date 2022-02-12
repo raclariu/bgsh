@@ -1,5 +1,5 @@
 // @ Libraries
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useCallback } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
@@ -130,7 +130,14 @@ const Header = () => {
 							<MenuIcon />
 						</CustomIconBtn>
 
-						<Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(!isOpen)}>
+						<Drawer
+							keepMounted
+							variant="temporary"
+							disableScrollLock
+							anchor="right"
+							open={isOpen}
+							onClose={() => setIsOpen(!isOpen)}
+						>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
 								<Box display="flex" alignItems="center">
 									<Box fontWeight="fontWeightMedium" mr={1}>
@@ -277,31 +284,6 @@ const Header = () => {
 											</ListItem>
 										</List>
 									</Collapse>
-
-									<ListItem
-										button
-										onClick={(e) => handleClick(e, 4)}
-										selected={selectedIndex === 4}
-										component={RouterLink}
-										to="/profile"
-									>
-										<ListItemIcon>
-											<AccountCircleTwoToneIcon
-												color={selectedIndex === 4 ? 'primary' : 'inherit'}
-											/>
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 4 ? 'primary.main' : 'text.secondary'}
-												>
-													Profile
-												</Box>
-											}
-										/>
-									</ListItem>
 
 									<ListItem
 										button

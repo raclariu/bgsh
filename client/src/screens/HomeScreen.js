@@ -83,7 +83,7 @@ const HomeScreen = () => {
 				fontSize={14}
 				p={1}
 				borderRadius="4px"
-				my={4}
+				mb={3}
 			>
 				<Box>BGG Hot games</Box>
 				{!errorHotGames && (

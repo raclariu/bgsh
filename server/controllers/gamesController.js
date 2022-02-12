@@ -582,7 +582,7 @@ const getSavedGames = asyncHandler(async (req, res) => {
 // ! @access  Private route
 const deleteOneGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
-	const game = await Game.findOneAndDelete({ _id: id })
+	const game = await Game.findOneAndDelete({ _id: id }).lean()
 
 	if (!game) {
 		res.status(404)
@@ -591,7 +591,20 @@ const deleteOneGame = asyncHandler(async (req, res) => {
 		}
 	}
 
-	res.status(204).end()
+	for (let obj of game.games) {
+		if (obj.userImage) {
+			await storage
+				.bucket(process.env.IMG_BUCKET)
+				.file(`f/${obj.userImage.name}`)
+				.delete({ ignoreNotFound: true })
+			await storage
+				.bucket(process.env.IMG_BUCKET)
+				.file(`t/${obj.userImage.name}`)
+				.delete({ ignoreNotFound: true })
+		}
+	}
+
+	return res.status(204).end()
 })
 
 export {

@@ -97,6 +97,16 @@ const SellGamesScreen = () => {
 	}
 
 	const handleGameInfo = (value, bggId, key) =>
+		// let items = [ ...values ]
+		// // 2. Make a shallow copy of the item you want to mutate
+		// const idx = items.findIndex((obj) => obj.bggId === bggId)
+		// let item = { ...items[idx] }
+		// // 3. Replace the property you're intested in
+		// item[key] = value
+		// // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+		// items[idx] = item
+		// // 5. Set the state to our new copy
+		// setValues(items)
 		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
 
 	const handleShippingInfo = (data, type) => {

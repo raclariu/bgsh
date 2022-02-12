@@ -44,7 +44,7 @@ const UserProfileScreen = () => {
 		<Fragment>
 			{isError && <Box>{error.response.data.message}</Box>}
 
-			<Box borderRadius="4px" boxShadow={2} my={2} bgcolor="background.paper">
+			<Box borderRadius="8px" boxShadow={2} bgcolor="background.paper">
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
 					<Tab value="sale" label="For sale" />
 					<Tab value="trade" label="For trade" />

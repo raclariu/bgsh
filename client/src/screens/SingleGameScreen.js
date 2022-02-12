@@ -8,8 +8,11 @@ import { useInView } from 'react-intersection-observer'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
 import approx from 'approximate-number'
+import { parseEntities } from 'parse-entities'
+import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Mui
+import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -44,8 +47,11 @@ import CloseIcon from '@mui/icons-material/Close'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
+import InfoTwoToneIcon from '@mui/icons-material/InfoTwoTone'
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
 
 // @ Components
+import CustomAvatar from '../components/CustomAvatar'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomDivider from '../components/CustomDivider'
 import Chips from '../components/SingleGameScreen/Chips'
@@ -71,24 +77,23 @@ const StyledChipsBox = styled(Box)(({ theme }) => ({
 	display        : 'flex',
 	justifyContent : 'center',
 	flexWrap       : 'wrap',
-	margin         : theme.spacing(2, 0, 2, 0),
 	gap            : theme.spacing(1)
 }))
 
 const StyledImg = styled('img')({
 	objectFit : 'contain',
-	height    : '220px',
-	width     : 'auto',
-	overflow  : 'auto'
+	width     : '100%',
+	overflow  : 'hidden'
 })
 
 const StyledMasonryImg = styled('img')({
-	verticalAlign : 'middle',
-	maxHeight     : '100%',
-	width         : '100%',
-	objectFit     : 'contain',
-	cursor        : 'zoom-in',
-	borderRadius  : '8px'
+	imageRendering : '-webkit-optimize-contrast',
+	verticalAlign  : 'middle',
+	maxHeight      : '100%',
+	width          : '100%',
+	objectFit      : 'contain',
+	cursor         : 'zoom-in',
+	borderRadius   : '8px'
 })
 
 const StyledDialogImg = styled('img')({
@@ -107,26 +112,47 @@ const StyledRecImg = styled('img')({
 
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
-	WebkitLineClamp : '1',
+	WebkitLineClamp : '2',
 	WebkitBoxOrient : 'vertical',
 	overflow        : 'hidden',
 	width           : '100%',
 	fontSize        : 14
 })
 
+const StyledParagraph = styled('p')({
+	marginTop : 0
+})
+
 // @ Gallery skeleton
 const GallerySkeleton = () => {
 	return (
 		<Box
-			borderRadius="8px"
+			borderRadius={1}
 			boxShadow={1}
-			p={2}
+			p={1}
 			bgcolor="background.paper"
 			width="100%"
-			height={Math.floor(Math.random() * (300 - 100 + 1) + 100)}
+			height={Math.floor(Math.random() * (270 - 100 + 1) + 100)}
 		>
-			<Skeleton animation="wave" variant="rectangular" width="100%" height="100%" />
+			<Skeleton animation="wave" variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 1 }} />
 		</Box>
+	)
+}
+
+// @ Recs skeleton
+const RecsSkeleton = () => {
+	return (
+		<Grid item xs={12} sm={6} md={4}>
+			<Box p={1} display="flex" boxShadow={1} borderRadius={1} bgcolor="background.paper" gap={1} width="100%">
+				<Box>
+					<Skeleton animation="wave" variant="rectangular" width={60} height={60} sx={{ borderRadius: 1 }} />
+				</Box>
+				<Box display="flex" flexDirection="column" width="100%" justifyContent="center">
+					<Skeleton animation="wave" variant="text" width="70%" />
+					<Skeleton animation="wave" variant="text" width="45%" />
+				</Box>
+			</Box>
+		</Grid>
 	)
 }
 
@@ -148,24 +174,26 @@ const SingleGameScreen = () => {
 
 	const [ index, setIndex ] = useState(0)
 	const [ imgIndex, setImgIndex ] = useState(0)
-	const [ open, setOpen ] = useState(false)
+	const [ openGalleryDialog, setOpenGalleryDialog ] = useState(false)
+	const [ openUserImageDialog, setOpenUserImageDialog ] = useState(false)
 	const [ imgLoaded, setImgLoaded ] = useState(false)
 	const [ expanded, setExpanded ] = useState(false)
+	const [ showMoreDescription, setShowMoreDescription ] = useState(false)
 
 	const { isLoading, isError, error, data, isSuccess } = useGetSingleGameQuery(altId)
 
 	const {
-		isLoading : isLoadingGallery,
-		isError   : isErrorGallery,
-		error     : errorGallery,
-		data      : galleryData,
-		isSuccess : isSuccessGallery
+		isFetching : isFetchingGallery,
+		isError    : isErrorGallery,
+		error      : errorGallery,
+		data       : galleryData,
+		isSuccess  : isSuccessGallery
 	} = useGetSingleGameGalleryQuery({ altId, galleryInView, index })
 
 	const {
-		isLoading : isLoadingRecs,
-		data      : recData,
-		isSuccess : isSuccessRec
+		isFetching : isFetchingRecs,
+		data       : recData,
+		isSuccess  : isSuccessRec
 	} = useGetSingleGameRecommendationsQuery({ altId, recsInView, index })
 
 	const displayImageHandler = (image, thumbnail) => {
@@ -176,13 +204,21 @@ const SingleGameScreen = () => {
 		}
 	}
 
-	const handleOpenImage = (imgIndexClicked) => {
+	const handleOpenGalleryImageDialog = (imgIndexClicked) => {
 		setImgIndex(imgIndexClicked)
-		setOpen(true)
+		setOpenGalleryDialog(true)
 	}
 
-	const handleCloseImage = () => {
-		setOpen(false)
+	const handleOpenUserImageDialog = () => {
+		setOpenUserImageDialog(true)
+	}
+
+	const handleCloseUserImageDialog = () => {
+		setOpenUserImageDialog(false)
+	}
+
+	const handleCloseGalleryImageDialog = () => {
+		setOpenGalleryDialog(false)
 		setImgLoaded(false)
 	}
 
@@ -219,6 +255,8 @@ const SingleGameScreen = () => {
 		}
 	}
 
+	console.log(data && data)
+
 	return (
 		<Fragment>
 			{isLoading && (
@@ -244,7 +282,8 @@ const SingleGameScreen = () => {
 								position  : 'fixed',
 								left      : '50%',
 								bottom    : (theme) => theme.spacing(3),
-								transform : 'translate(-50%, 0)'
+								transform : 'translate(-50%, 0)',
+								zIndex    : 1000
 							}}
 						>
 							<Fab
@@ -268,318 +307,410 @@ const SingleGameScreen = () => {
 						</Box>
 					)}
 
-					<Grid container justifyContent="center" alignItems="flex-start" direction="row">
-						{/* Thumbnail */}
-						<Grid item container md={4} xs={12} justifyContent="center">
-							<Box
-								bgcolor="background.paper"
-								borderRadius="4px"
-								boxShadow={2}
-								sx={{
-									display        : 'flex',
-									justifyContent : 'center',
-									alignItems     : 'center',
-									height         : '250px',
-									width          : '100%',
-									padding        : 1,
-									mb             : {
-										md : 0,
-										xs : 2
-									}
-								}}
-							>
-								<Zoom
-									// overlayBgColorStart="rgba(255, 255, 255, 0)"
-									// overlayBgColorEnd="rgba(255, 255, 255, 0)"
-									zoomMargin={40}
-								>
-									<StyledImg
-										src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
-										alt={data.games[index].title}
-									/>
-								</Zoom>
-							</Box>
-						</Grid>
-
-						{/* Right side */}
-
-						<Grid
-							item
-							container
-							direction="column"
-							justifyContent="center"
+					<Box
+						sx={{
+							display             : 'grid',
+							gridTemplateColumns : {
+								xs : '1fr',
+								md : '2fr 3fr'
+							},
+							gap                 : 2
+						}}
+						mb={2}
+					>
+						<Box
+							display="flex"
 							alignItems="center"
-							md={8}
-							xs={12}
+							justifyContent="center"
+							borderRadius={1}
+							boxShadow={1}
+							p={2}
+							bgcolor="background.paper"
 						>
-							{/* Title */}
-							<Grid item>
-								<Box fontSize={22} textAlign="center">
-									{data.games[index].title}
-								</Box>
-							</Grid>
-
-							{/* Subtitle */}
-							<Grid item>
-								<Box fontSize={12} fontStyle="italic" color="grey.600" textAlign="center">
-									{`${data.games[index].subtype} • ${data.games[index].year}`}
-								</Box>
-							</Grid>
-
-							{/* Stats boxes */}
-							<Grid
-								item
-								container
-								sx={{ mt: 1, mb: 1 }}
-								justifyContent="center"
-								alignItems="center"
-								spacing={1}
-							>
-								<Grid item>
-									<StatsBoxes variant="full" stats={data.games[index].stats} type="rating" />
-								</Grid>
-								<Grid item>
-									<StatsBoxes variant="full" stats={data.games[index].stats} type="rank" />
-								</Grid>
-								<Grid item>
-									<StatsBoxes
-										variant="full"
-										complexity={data.games[index].complexity}
-										type="complexity"
-									/>
-								</Grid>
-							</Grid>
-
-							{/* Desginers and language dependence */}
-							<Grid item sx={{ mt: 0.5 }}>
-								<Box
-									display="flex"
-									flexDirection="column"
-									alignItems="flex-start"
-									justifyContent="center"
-								>
-									<Typography variant="caption">
-										<Box display="flex">
-											<FaceTwoToneIcon fontSize="small" color="primary" />
-											<Box ml={0.5}>
-												{data.games[index].designers.length > 0 ? (
-													data.games[index].designers.join(', ')
-												) : (
-													'N/A'
-												)}
-											</Box>
-										</Box>
-
-										<Box display="flex">
-											<PublicTwoToneIcon fontSize="small" color="primary" />
-											<Box ml={0.5}>
-												{data.games[index].languageDependence === null ? (
-													'Not enough votes'
-												) : (
-													data.games[index].languageDependence
-												)}
-											</Box>
-										</Box>
-									</Typography>
-								</Box>
-							</Grid>
-
-							{/* Game info */}
-							<Grid
-								item
-								container
+							<StyledImg
+								src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
+								alt={data.games[index].title}
 								sx={{
-									mt    : 0.5,
-									width : {
-										xs : '90%',
-										sm : '70%',
-										md : '90%'
+									height : {
+										xs : '220px',
+										md : '320px'
 									}
 								}}
-								justifyContent="center"
-								alignItems="center"
-								spacing={1}
-							>
-								<Grid item xs={6} sm={3}>
-									<InfoBox
-										data={`${data.games[index].minPlayers} - ${data.games[index]
-											.maxPlayers} players`}
-									>
-										<PeopleAltTwoToneIcon fontSize="small" color="primary" />
-									</InfoBox>
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<InfoBox
-										data={
-											data.games[index].suggestedPlayers ? (
-												`${data.games[index].suggestedPlayers} players`
-											) : (
-												'N/A'
-											)
-										}
-									>
-										<PersonAddTwoToneIcon fontSize="small" color="primary" />
-									</InfoBox>
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<InfoBox
-										data={data.games[index].playTime ? `${data.games[index].playTime} min.` : 'N/A'}
-									>
-										<AccessTimeTwoToneIcon fontSize="small" color="primary" />
-									</InfoBox>
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<InfoBox data={data.games[index].minAge ? `${data.games[index].minAge}` : 'N/A'}>
-										<ChildCareTwoToneIcon fontSize="small" color="primary" />
-									</InfoBox>
-								</Grid>
-							</Grid>
+							/>
+						</Box>
 
-							<Grid sx={{ mt: 2 }} item container justifyContent="center" alignItems="center">
+						<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+							<Box fontSize="1.5rem" fontWeight="fontWeightMedium" textAlign="center">
+								{data.games[index].title}
+							</Box>
+							<Box fontSize={'0.75rem'} fontStyle="italic" color="grey.500">
+								{`${data.games[index].subtype} • ${data.games[index].year}`}
+							</Box>
+							<Box display="flex" gap={1} my={2}>
+								<StatsBoxes variant="full" stats={data.games[index].stats} type="rating" />
+
+								<StatsBoxes variant="full" stats={data.games[index].stats} type="rank" />
+
+								<StatsBoxes
+									variant="full"
+									complexity={data.games[index].complexity}
+									type="complexity"
+								/>
+							</Box>
+
+							<Box display="flex" alignItems="center">
+								<FaceTwoToneIcon fontSize="small" color="primary" />
+								<Box ml={0.5} fontSize="0.75rem">
+									{data.games[index].designers.length > 0 ? (
+										data.games[index].designers.join(', ')
+									) : (
+										'N/A'
+									)}
+								</Box>
+							</Box>
+
+							<Box display="flex" alignItems="center">
+								<PublicTwoToneIcon fontSize="small" color="primary" />
+								<Box ml={0.5} fontSize="0.75rem">
+									{data.games[index].languageDependence === null ? (
+										'Not enough votes'
+									) : (
+										data.games[index].languageDependence
+									)}
+								</Box>
+							</Box>
+
+							<Box
+								mt={2}
+								display="grid"
+								sx={{
+									gridTemplateColumns : {
+										xs : 'repeat(2, 1fr)',
+										md : 'repeat(4, 1fr)'
+									},
+									gap                 : 1
+								}}
+							>
+								<InfoBox
+									data={`${data.games[index].minPlayers} - ${data.games[index].maxPlayers} players`}
+								>
+									<PeopleAltTwoToneIcon fontSize="small" color="primary" />
+								</InfoBox>
+
+								<InfoBox
+									data={
+										data.games[index].suggestedPlayers ? (
+											`${data.games[index].suggestedPlayers} players`
+										) : (
+											'N/A'
+										)
+									}
+								>
+									<PersonAddTwoToneIcon fontSize="small" color="primary" />
+								</InfoBox>
+
+								<InfoBox
+									data={data.games[index].playTime ? `${data.games[index].playTime} min.` : 'N/A'}
+								>
+									<AccessTimeTwoToneIcon fontSize="small" color="primary" />
+								</InfoBox>
+
+								<InfoBox data={data.games[index].minAge ? `${data.games[index].minAge}` : 'N/A'}>
+									<ChildCareTwoToneIcon fontSize="small" color="primary" />
+								</InfoBox>
+							</Box>
+
+							<Box
+								mt={2}
+								p={1}
+								px={2}
+								display="flex"
+								alignItems="center"
+								justifyContent={data.mode === 'sell' ? 'space-between' : 'center'}
+								boxShadow={1}
+								borderRadius={1}
+								bgcolor="background.paper"
+								width="100%"
+							>
+								<Box display="flex" alignItems="center" gap={1}>
+									<SendMessage recipientUsername={data.addedBy.username} />
+									<SaveGameButton altId={altId} addedById={data.addedBy._id} />
+								</Box>
 								{data.mode === 'sell' && (
-									<Box fontWeight="fontWeightMedium">
-										<Box>{data.totalPrice} RON</Box>
+									<Box fontWeight="fontWeightMedium" fontSize="1.5rem" color="success.main">
+										{data.totalPrice} RON
 									</Box>
 								)}
-
-								<SendMessage recipientUsername={data.addedBy.username} />
-								<SaveGameButton altId={altId} addedById={data.addedBy._id} />
-							</Grid>
-						</Grid>
-					</Grid>
+							</Box>
+						</Box>
+					</Box>
 
 					<CustomDivider light />
 
-					{/* Shipping */}
-					<Box id="shipping" mt={2} mb={4}>
-						<Box display="flex" alignItems="center" mb={1}>
-							<LocalShippingTwoToneIcon color="primary" />
-							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
-								Shipping
+					{/* Information */}
+					<Box my={2}>
+						<Box
+							sx={{
+								display             : 'grid',
+								gridTemplateColumns : {
+									xs : '1fr',
+									md : '3fr auto 2fr'
+								},
+								gap                 : 2
+							}}
+						>
+							<Box
+								display="flex"
+								flexDirection="column"
+								gap={2}
+								id="information"
+								width="100%"
+								p={2}
+								boxShadow={1}
+								borderRadius={1}
+								bgcolor="background.paper"
+							>
+								<Box display="flex" alignItems="center" gap={1}>
+									<InfoTwoToneIcon color="primary" />
+									<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
+										Information
+									</Box>
+								</Box>
+
+								<Box display="flex" alignItems="center" fontSize="1rem">
+									<Box mr={1} fontWeight="fontWeightMedium">{`Added ${calculateTimeAgo(
+										data.createdAt
+									)} by`}</Box>
+									<CustomAvatar size={4} username={data.addedBy.username} src={data.addedBy.avatar} />
+									<Box ml={1} fontWeight="fontWeightMedium">
+										{data.addedBy.username}
+									</Box>
+								</Box>
+
+								<Box display="flex" gap={0.5} flexWrap="wrap">
+									<Chip size="small" color="primary" label={data.games[index].condition} />
+									<Chip
+										size="small"
+										color="primary"
+										label={`${data.games[index].version.title} (${data.games[index].version.year})`}
+									/>
+									<Chip
+										size="small"
+										color={data.games[index].isSleeved ? 'primary' : 'secondary'}
+										label={data.games[index].isSleeved ? 'Sleeved' : 'Not sleeved'}
+									/>
+								</Box>
+
+								{data.games[index].extraInfo && (
+									<Box display="flex" flexDirection="column">
+										<Box fontWeight="fontWeightMedium">Extra info</Box>
+										<Box fontStyle="italic" fontSize={12}>
+											{data.games[index].extraInfo}
+										</Box>
+									</Box>
+								)}
+
+								{data.isPack && (
+									<Box display="flex" flexDirection="column">
+										<Box fontWeight="fontWeightMedium">Pack info</Box>
+										<Box fontStyle="italic" fontSize={12}>
+											{data.extraInfoPack}
+										</Box>
+									</Box>
+								)}
+
+								{data.games[index].userImage && (
+									<Box display="flex" flexDirection="column">
+										<Box fontWeight="fontWeightMedium">User image</Box>
+										<Box width="150px">
+											<StyledMasonryImg
+												onClick={handleOpenUserImageDialog}
+												src={data.games[index].userImage.thumbnail}
+												alt={data.games[index].userImage.name}
+											/>
+										</Box>
+
+										<Dialog
+											fullScreen
+											open={openUserImageDialog}
+											TransitionComponent={Slide}
+											transitionDuration={350}
+											TransitionProps={{ direction: 'up' }}
+										>
+											<DialogTitle>
+												<Box display="flex" justifyContent="flex-end" width="100%">
+													<CustomIconBtn
+														onClick={handleCloseUserImageDialog}
+														color="secondary"
+														size="large"
+													>
+														<CloseIcon />
+													</CustomIconBtn>
+												</Box>
+											</DialogTitle>
+
+											<DialogContent
+												sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+											>
+												<StyledDialogImg
+													src={data.games[index].userImage.full}
+													alt={data.games[index].userImage.name}
+												/>
+											</DialogContent>
+										</Dialog>
+									</Box>
+								)}
+
+								{data.games[index].description && (
+									<Box display="flex" flexDirection="column">
+										<Box fontWeight="fontWeightMedium">Game description</Box>
+										<Box>
+											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
+												<Box fontStyle="italic" fontSize={12}>
+													{data.games[index].description
+														.split('&#10;')
+														.filter((part) => part.trim().length !== 0)
+														.map((txt, i) => (
+															<StyledParagraph key={i}>
+																{parseEntities(txt)}
+															</StyledParagraph>
+														))}
+												</Box>
+											</Collapse>
+										</Box>
+
+										<Box alignSelf="flex-end" fontSize={12} mt={1}>
+											<Link
+												sx={{ cursor: 'pointer' }}
+												underline="none"
+												onClick={() => setShowMoreDescription((val) => !val)}
+											>
+												{showMoreDescription ? 'Show less' : 'Show more'}
+											</Link>
+										</Box>
+									</Box>
+								)}
+							</Box>
+
+							<CustomDivider orientation={matches ? 'vertical' : 'horizontal'} flexItem />
+
+							{/* Shipping */}
+							<Box
+								display="flex"
+								flexDirection="column"
+								gap={2}
+								id="shipping"
+								width="100%"
+								p={2}
+								boxShadow={1}
+								borderRadius={1}
+								bgcolor="background.paper"
+							>
+								<Box display="flex" alignItems="center" gap={1}>
+									<LocalShippingTwoToneIcon color="primary" />
+									<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
+										Shipping
+									</Box>
+								</Box>
+
+								<Box
+									display="flex"
+									flexDirection="column"
+									justifyContent="center"
+									alignItems="center"
+									gap={1}
+								>
+									{data.shipping.shipPost ? (
+										<Fragment>
+											<MarkunreadMailboxTwoToneIcon color="primary" />
+											<Box textAlign="center">{`Shipping by post paid by ${data.shipping
+												.shipPostPayer === 'seller'
+												? `${data.addedBy.username}`
+												: 'buyer'}`}</Box>
+										</Fragment>
+									) : (
+										<Fragment>
+											<CancelRoundedIcon color="error" />
+											<Box textAlign="center">Shipping by post is not available</Box>
+										</Fragment>
+									)}
+								</Box>
+
+								<Box
+									display="flex"
+									flexDirection="column"
+									justifyContent="center"
+									alignItems="center"
+									gap={1}
+								>
+									{data.shipping.shipCourier ? (
+										<Fragment>
+											<LocalShippingTwoToneIcon color="primary" />
+											<Box textAlign="center">{`Shipping by courier paid by ${data.shipping
+												.shipPostPayer === 'seller'
+												? `${data.addedBy.username}`
+												: 'buyer'}`}</Box>
+										</Fragment>
+									) : (
+										<Fragment>
+											<CancelRoundedIcon color="error" />
+											<Box textAlign="center">Shipping by courier is not available</Box>
+										</Fragment>
+									)}
+								</Box>
+
+								<Box
+									display="flex"
+									flexDirection="column"
+									justifyContent="center"
+									alignItems="center"
+									gap={1}
+								>
+									{data.shipping.shipPersonal ? (
+										<Fragment>
+											<LocalLibraryTwoToneIcon color="primary" />
+											<Box textAlign="center">Personal shipping is available in</Box>
+											<StyledChipsBox>
+												{data.shipping.shipCities.map((city) => (
+													<Chip
+														key={city}
+														icon={<RoomTwoToneIcon />}
+														size="small"
+														color="primary"
+														variant="outlined"
+														label={city}
+													/>
+												))}
+											</StyledChipsBox>
+										</Fragment>
+									) : (
+										<Fragment>
+											<CancelRoundedIcon color="error" />
+											<Box textAlign="center">Personal shipping is not available</Box>
+										</Fragment>
+									)}
+								</Box>
 							</Box>
 						</Box>
-						<Grid container>
-							<Grid item container xs={12} direction="column">
-								<Box p={1}>
-									<Typography component="div">
-										{data.shipPost ? (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<MarkunreadMailboxTwoToneIcon color="primary" />
-												<Box
-													fontSize={16}
-													textAlign="center"
-													mt={1}
-												>{`Shipping by post is available, paid by ${data.shipPostPayer}`}</Box>
-											</Box>
-										) : (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<CancelRoundedIcon fontSize="small" color="error" />
-												<Box fontSize={16} textAlign="center" mt={1}>
-													Shipping by post is not available
-												</Box>
-											</Box>
-										)}
-
-										{data.shipCourier ? (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<LocalShippingTwoToneIcon color="primary" />
-												<Box
-													fontSize={16}
-													textAlign="center"
-													mt={1}
-												>{`Shipping by courier is available, paid by ${data.shipCourierPayer}`}</Box>
-											</Box>
-										) : (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<CancelRoundedIcon color="error" />
-												<Box fontSize={16} textAlign="center" mt={1}>
-													Shipping by courier is not available
-												</Box>
-											</Box>
-										)}
-
-										{data.shipPersonal ? (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<LocalLibraryTwoToneIcon color="primary" />
-												<Box fontSize={16} textAlign="center" mt={1}>
-													Personal shipping is available in
-												</Box>
-												<StyledChipsBox>
-													{data.shipCities.map((city) => (
-														<Chip
-															key={city}
-															icon={<RoomTwoToneIcon />}
-															size="small"
-															color="primary"
-															variant="outlined"
-															label={city}
-														/>
-													))}
-												</StyledChipsBox>
-											</Box>
-										) : (
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												alignItems="center"
-											>
-												<CancelRoundedIcon color="error" />
-												<Box fontSize={16} textAlign="center" mt={1}>
-													No personal shipping
-												</Box>
-											</Box>
-										)}
-									</Typography>
-								</Box>
-							</Grid>
-						</Grid>
 					</Box>
 
 					<CustomDivider light />
 
 					{/* Gallery */}
-					<Box id="gallery" mt={2} mb={4}>
-						<Box ref={galleryRef} display="flex" alignItems="center" mb={1}>
-							{isLoadingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" />}
+					<Box id="gallery" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box ref={galleryRef} display="flex" alignItems="center" gap={1}>
+							{isFetchingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" />}
 
-							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
+							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 								Gallery
 							</Box>
 						</Box>
 
 						{isErrorGallery && (
-							<Fragment>
-								<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
-							</Fragment>
+							<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
 						)}
 
-						{isLoadingGallery && (
+						{isFetchingGallery && (
 							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 								<Masonry gutter="10px">
 									{[ ...Array(12).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
@@ -594,9 +725,9 @@ const SingleGameScreen = () => {
 									<Masonry gutter="10px">
 										{galleryData.map((obj, i) => (
 											<LzLoad key={obj.imageid}>
-												<Box borderRadius="8px" boxShadow={1} p={1} bgcolor="background.paper">
+												<Box borderRadius={1} boxShadow={1} p={1} bgcolor="background.paper">
 													<StyledMasonryImg
-														onClick={() => handleOpenImage(i)}
+														onClick={() => handleOpenGalleryImageDialog(i)}
 														src={obj.thumbnail}
 														alt={obj.caption}
 													/>
@@ -608,7 +739,7 @@ const SingleGameScreen = () => {
 
 								<Dialog
 									fullScreen
-									open={open}
+									open={openGalleryDialog}
 									TransitionComponent={Slide}
 									transitionDuration={350}
 									TransitionProps={{ direction: 'up' }}
@@ -621,7 +752,11 @@ const SingleGameScreen = () => {
 													{`Posted on BGG by ${galleryData[imgIndex].postedBy}`}
 												</Box>
 											</Box>
-											<CustomIconBtn onClick={handleCloseImage} color="secondary" size="large">
+											<CustomIconBtn
+												onClick={handleCloseGalleryImageDialog}
+												color="secondary"
+												size="large"
+											>
 												<CloseIcon />
 											</CustomIconBtn>
 										</Box>
@@ -639,7 +774,7 @@ const SingleGameScreen = () => {
 										/>
 
 										{!imgLoaded && (
-											<Box p={10} display="flex" justifyContent="center" alignItems="center">
+											<Box display="flex" justifyContent="center" alignItems="center">
 												<Loader />
 											</Box>
 										)}
@@ -691,158 +826,126 @@ const SingleGameScreen = () => {
 					<CustomDivider light />
 
 					{/* Recommendations */}
-					<Box id="recommendations" mt={2} mb={4}>
-						<Box ref={recsRef} display="flex" alignItems="center" mb={1}>
-							{isLoadingRecs ? <Loader size={20} /> : <RecommendTwoToneIcon color="primary" />}
+					<Box id="recommendations" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box ref={recsRef} display="flex" alignItems="center" gap={1}>
+							{isFetchingRecs ? <Loader size={20} /> : <RecommendTwoToneIcon color="primary" />}
 
-							<Box ml={1} fontSize="1.3rem" fontWeight="fontWeightMedium">
+							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 								Recommendations
 							</Box>
 						</Box>
-						<Grid container spacing={1}>
-							{isSuccessRec &&
-								recData.slice(0, 12).map((rec) => (
-									<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
-										<Box
-											p={1}
-											display="flex"
-											boxShadow={1}
-											borderRadius="4px"
-											bgcolor="background.paper"
-										>
-											<LzLoad>
-												<a
-													href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
-													target="_blank"
-													rel="noreferrer"
-												>
-													<StyledRecImg src={rec.thumbnail} alt={rec.title} />
-												</a>
-											</LzLoad>
 
-											<Box
-												display="flex"
-												flexDirection="column"
-												justifyContent="center"
-												ml={1}
-												width="100%"
-												gap={0.5}
-											>
-												<StyledTitleBox fontWeight="fontWeightMedium">
-													{rec.title}
-												</StyledTitleBox>
-												<Box display="flex" gap={1}>
-													<Box
-														display="flex"
-														alignItems="center"
-														gap={0.25}
-														fontWeight="fontWeightMedium"
-														fontSize={14}
-														color="grey.500"
-													>
-														<StarPurple500Icon color="primary" fontSize="small" />
-														{approx(rec.stats.avgRating)}
-													</Box>
-
-													<Box
-														display="flex"
-														alignItems="center"
-														gap={0.25}
-														fontWeight="fontWeightMedium"
-														fontSize={14}
-														color="grey.500"
-													>
-														<MilitaryTechIcon color="primary" fontSize="small" />
-														{rec.stats.rank}
-													</Box>
-												</Box>
-											</Box>
-										</Box>
-									</Grid>
-								))}
-						</Grid>
-
-						<Collapse in={expanded} sx={{ mt: 1 }} timeout="auto" unmountOnExit>
+						{isFetchingRecs && (
 							<Grid container spacing={1}>
-								{isSuccessRec &&
-									recData.slice(12, 30).map((rec) => (
-										<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
-											<Box
-												p={1}
-												display="flex"
-												boxShadow={1}
-												borderRadius="4px"
-												bgcolor="background.paper"
-											>
-												<LzLoad>
-													<a
-														href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
-														target="_blank"
-														rel="noreferrer"
-													>
-														<StyledRecImg src={rec.thumbnail} alt={rec.title} />
-													</a>
-												</LzLoad>
-
-												<Box
-													display="flex"
-													flexDirection="column"
-													justifyContent="center"
-													ml={1}
-													width="100%"
-													gap={0.5}
-												>
-													<StyledTitleBox fontWeight="fontWeightMedium">
-														{rec.title}
-													</StyledTitleBox>
-													<Box display="flex" gap={1}>
-														<Box
-															display="flex"
-															alignItems="center"
-															gap={0.25}
-															fontWeight="fontWeightMedium"
-															fontSize={14}
-															color="grey.500"
-														>
-															<StarPurple500Icon color="primary" fontSize="small" />
-															{approx(rec.stats.avgRating)}
-														</Box>
-
-														<Box
-															display="flex"
-															alignItems="center"
-															gap={0.25}
-															fontWeight="fontWeightMedium"
-															fontSize={14}
-															color="grey.500"
-														>
-															<MilitaryTechIcon color="primary" fontSize="small" />
-															{rec.stats.rank}
-														</Box>
-													</Box>
-												</Box>
-											</Box>
-										</Grid>
-									))}
+								{[ ...Array(matches ? 12 : 4).keys() ].map((i, k) => <RecsSkeleton key={k} />)}
 							</Grid>
-						</Collapse>
+						)}
 
 						{isSuccessRec &&
+						recData.length > 0 && (
+							<Box>
+								<Collapse in={expanded} timeout="auto" collapsedSize="328px">
+									<Grid container spacing={1}>
+										{isSuccessRec &&
+											recData.slice(0, expanded ? recData.length : 12).map((rec) => (
+												<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
+													<Box
+														display="flex"
+														p={1}
+														boxShadow={1}
+														borderRadius={1}
+														bgcolor="background.paper"
+														gap={1}
+													>
+														<LzLoad>
+															<a
+																href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
+																target="_blank"
+																rel="noreferrer"
+															>
+																<StyledRecImg src={rec.thumbnail} alt={rec.title} />
+															</a>
+														</LzLoad>
+
+														<Box
+															display="flex"
+															flexDirection="column"
+															justifyContent="center"
+															width="100%"
+															gap={0.5}
+														>
+															<StyledTitleBox fontWeight="fontWeightMedium">
+																{rec.title}
+															</StyledTitleBox>
+															<Box display="flex" gap={1}>
+																<Box
+																	display="flex"
+																	alignItems="center"
+																	gap={0.25}
+																	fontWeight="fontWeightMedium"
+																	fontSize={14}
+																	color="grey.500"
+																>
+																	<StarPurple500Icon
+																		color="primary"
+																		fontSize="small"
+																	/>
+																	{approx(rec.stats.avgRating)}
+																</Box>
+
+																<Box
+																	display="flex"
+																	alignItems="center"
+																	gap={0.25}
+																	fontWeight="fontWeightMedium"
+																	fontSize={14}
+																	color="grey.500"
+																>
+																	<MilitaryTechIcon
+																		color="primary"
+																		fontSize="small"
+																	/>
+																	{rec.stats.rank}
+																</Box>
+															</Box>
+														</Box>
+													</Box>
+												</Grid>
+											))}
+									</Grid>
+								</Collapse>
+
+								<Box display="flex" justifyContent="flex-end" mt={1}>
+									<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
+										{expanded ? 'Show less' : 'Show more'}
+									</CustomButton>
+								</Box>
+							</Box>
+						)}
+						{isSuccessRec &&
 						recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
-
-						<Box display="flex" justifyContent="flex-end" mt={1}>
-							<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
-								{expanded ? 'See less' : 'See more'}
-							</CustomButton>
-						</Box>
 					</Box>
-
-					{console.count('renders')}
 
 					<CustomDivider light />
 
 					{/* Chips */}
-					<StyledChipsBox>
+					<StyledChipsBox sx={{ my: 2 }}>
+						{data.games[index].parent && (
+							<Chip
+								size="small"
+								color="success"
+								label={`Expansion for ${data.games[index].parent.title}`}
+							/>
+						)}
+						{data.games[index].expansions.length > 0 &&
+							data.games[index].expansions.map((exp) => (
+								<Chip
+									key={exp.bggId}
+									size="small"
+									color="warning"
+									label={`Has expansion ${exp.title}`}
+								/>
+							))}
 						<Chips categories={data.games[index].categories} mechanics={data.games[index].mechanics} />
 					</StyledChipsBox>
 				</Fragment>

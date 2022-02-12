@@ -101,8 +101,8 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 					game.type === 'boardgameexpansion'
 						? game.link.filter((link) => link.inbound && link.inbound === 'true').map((parent) => {
 								return { bggId: parent.id, title: parent.value }
-							})
-						: [],
+							})[0]
+						: null,
 				expansions         :
 					game.type === 'boardgame'
 						? game.link.filter((link) => link.type === 'boardgameexpansion').map((exp) => {

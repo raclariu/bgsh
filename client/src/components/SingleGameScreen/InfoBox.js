@@ -10,9 +10,11 @@ const defaultBox = {
 	flexDirection  : 'column',
 	alignItems     : 'center',
 	justifyContent : 'center',
+	height         : 64,
+	width          : 120,
 	boxShadow      : 2,
 	p              : 1,
-	borderRadius   : 4,
+	borderRadius   : '8px',
 	bgcolor        : 'background.paper'
 }
 
