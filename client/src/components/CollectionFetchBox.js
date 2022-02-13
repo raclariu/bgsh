@@ -47,7 +47,9 @@ const CollectionFetchBox = () => {
 
 	return (
 		<form onSubmit={submitToBGGHandler} autoComplete="off">
-			<Box fontWeight="fontWeightMedium">Import your BoardGameGeek collection</Box>
+			<Box fontWeight="fontWeightMedium" mb={2}>
+				Import your BoardGameGeek collection
+			</Box>
 
 			<Input
 				onChange={(inputVal) => setBggUsername(inputVal)}

@@ -37,7 +37,7 @@ const CollectionScreen = () => {
 
 	const userList = useGetListQuery()
 
-	const { isLoading, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
+	const { isFetching, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
 
 	const addMutation = useAddToListMutation()
 
@@ -91,9 +91,13 @@ const CollectionScreen = () => {
 			data.owned.length === 0 &&
 			!search && <CustomAlert severity="warning">Your collection is empty</CustomAlert>}
 
-			{isLoading && (
+			{isFetching && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid key={k} item xs={12} sm={6} md={4}>
+							<GameCardSkeleton />
+						</Grid>
+					))}
 				</Grid>
 			)}
 

@@ -26,8 +26,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	margin    : theme.spacing(1, 0, 1, 0),
-	padding   : theme.spacing(0, 1, 0, 1),
+	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))

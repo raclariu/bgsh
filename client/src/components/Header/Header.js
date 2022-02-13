@@ -11,13 +11,13 @@ import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Collapse from '@mui/material/Collapse'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
+import ListItemButton from '@mui/material/ListItemButton'
 
 // @ Icons
 import MenuIcon from '@mui/icons-material/Menu'
@@ -152,8 +152,7 @@ const Header = () => {
 							<Box>
 								<CustomDivider />
 								<List disablePadding sx={{ width: 250 }}>
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 1)}
 										selected={selectedIndex === 1}
 										component={RouterLink}
@@ -173,9 +172,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem button onClick={() => handleExpandClick('games')}>
+									<ListItemButton onClick={() => handleExpandClick('games')}>
 										<ListItemIcon>
 											<DashboardTwoToneIcon />
 										</ListItemIcon>
@@ -195,13 +194,12 @@ const Header = () => {
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
-									</ListItem>
+									</ListItemButton>
 
 									<Collapse in={openCollapseType === 'games'} timeout="auto" unmountOnExit>
 										<List disablePadding>
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 2)}
 												selected={selectedIndex === 2}
 												component={RouterLink}
@@ -225,11 +223,10 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 3)}
 												selected={selectedIndex === 3}
 												component={RouterLink}
@@ -253,11 +250,10 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 13)}
 												selected={selectedIndex === 13}
 												component={RouterLink}
@@ -281,12 +277,11 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 										</List>
 									</Collapse>
 
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 5)}
 										selected={selectedIndex === 5}
 										component={RouterLink}
@@ -308,10 +303,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 6)}
 										selected={selectedIndex === 6}
 										component={RouterLink}
@@ -331,10 +325,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 7)}
 										selected={selectedIndex === 7}
 										component={RouterLink}
@@ -354,9 +347,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem button onClick={() => handleExpandClick('inbox')}>
+									<ListItemButton onClick={() => handleExpandClick('inbox')}>
 										<ListItemIcon>
 											<EmailTwoToneIcon />
 										</ListItemIcon>
@@ -376,13 +369,12 @@ const Header = () => {
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
-									</ListItem>
+									</ListItemButton>
 
 									<Collapse in={openCollapseType === 'inbox'} timeout="auto" unmountOnExit>
 										<List disablePadding>
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 8)}
 												selected={selectedIndex === 8}
 												component={RouterLink}
@@ -406,11 +398,10 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 9)}
 												selected={selectedIndex === 9}
 												component={RouterLink}
@@ -434,12 +425,11 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 										</List>
 									</Collapse>
 
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 10)}
 										selected={selectedIndex === 10}
 										component={RouterLink}
@@ -461,9 +451,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem button onClick={() => handleExpandClick('history')}>
+									<ListItemButton onClick={() => handleExpandClick('history')}>
 										<ListItemIcon>
 											<ArchiveTwoToneIcon />
 										</ListItemIcon>
@@ -483,12 +473,12 @@ const Header = () => {
 										) : (
 											<ArrowDropDownIcon color="disabled" />
 										)}
-									</ListItem>
+									</ListItemButton>
+
 									<Collapse in={openCollapseType === 'history'} timeout="auto" unmountOnExit>
 										<List disablePadding>
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 11)}
 												selected={selectedIndex === 11}
 												component={RouterLink}
@@ -512,11 +502,10 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 12)}
 												selected={selectedIndex === 12}
 												component={RouterLink}
@@ -540,11 +529,10 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 
-											<ListItem
-												sx={{ pl: (theme) => theme.spacing(4) }}
-												button
+											<ListItemButton
+												sx={{ pl: 4 }}
 												onClick={(e) => handleClick(e, 112)}
 												selected={selectedIndex === 112}
 												component={RouterLink}
@@ -572,12 +560,11 @@ const Header = () => {
 														</Box>
 													}
 												/>
-											</ListItem>
+											</ListItemButton>
 										</List>
 									</Collapse>
 
-									<ListItem
-										button
+									<ListItemButton
 										onClick={(e) => handleClick(e, 14)}
 										selected={selectedIndex === 14}
 										component={RouterLink}
@@ -597,9 +584,9 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 
-									<ListItem button onClick={handleOpenDialog}>
+									<ListItemButton onClick={handleOpenDialog}>
 										<ListItemIcon>
 											<MeetingRoomTwoToneIcon />
 										</ListItemIcon>
@@ -614,7 +601,7 @@ const Header = () => {
 												</Box>
 											}
 										/>
-									</ListItem>
+									</ListItemButton>
 								</List>
 							</Box>
 						</Drawer>

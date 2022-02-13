@@ -154,14 +154,14 @@ const SaleListPopover = () => {
 
 							<Box display="flex" justifyContent="center" my={1} color="primary">
 								<ButtonGroup color="primary" size="small">
-									<CustomButton component={RouterLink} to="/profile" onClick={handleClose}>
-										Profile
-									</CustomButton>
 									<CustomButton component={RouterLink} to="/collection" onClick={handleClose}>
 										Collection
 									</CustomButton>
 									<CustomButton component={RouterLink} to="/wishlist" onClick={handleClose}>
 										Wishlist
+									</CustomButton>
+									<CustomButton component={RouterLink} to="/user/settings" onClick={handleClose}>
+										Settings
 									</CustomButton>
 								</ButtonGroup>
 							</Box>

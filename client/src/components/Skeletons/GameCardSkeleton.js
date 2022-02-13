@@ -2,40 +2,93 @@
 import React from 'react'
 
 // @ Mui
-import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
 
 // @ Components
+import CustomSkeleton from './CustomSkeleton'
 import CustomDivider from '../CustomDivider'
 
 // @ Main
 const GameCardSkeleton = () => {
 	return (
-		<Grid item xs={12} sm={6} md={4}>
-			<Box
-				display="flex"
-				flexDirection="column"
-				alignItems="center"
-				bgcolor="background.paper"
-				boxShadow={1}
-				borderRadius="4px"
-			>
-				<Skeleton animation="wave" variant="rectangular" width={200} height={180} sx={{ my: 1 }} />
-
-				<CustomDivider flexItem />
-
-				<Box display="flex" justifyContent="center" alignItems="center" height="80px">
-					<Skeleton animation="wave" variant="text" width={220} height={25} />
+		<Card elevation={1}>
+			<Box height={478} display="flex" flexDirection="column" alignItems="center">
+				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
+					<CustomSkeleton animation="wave" variant="rectangle" width={175} height="100%" />
+					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
+						<CustomSkeleton
+							animation="wave"
+							variant="rectangle"
+							width={45}
+							height={37}
+							sx={{ borderRadius: 2 }}
+						/>
+						<CustomSkeleton
+							animation="wave"
+							variant="rectangle"
+							width={45}
+							height={37}
+							sx={{ borderRadius: 2 }}
+						/>
+					</Box>
 				</Box>
 
 				<CustomDivider flexItem />
 
-				<Box height={60} width="90%" display="flex" justifyContent="center" alignItems="center">
-					<Skeleton animation="wave" variant="text" width="100%" height={25} />
+				<Box
+					height={80}
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					flexDirection="column"
+					width="100%"
+				>
+					<CustomSkeleton animation="wave" variant="text" width={180} />
+					<CustomSkeleton animation="wave" variant="text" width={100} />
+				</Box>
+
+				<CustomDivider flexItem />
+
+				<Box
+					height={96}
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					flexDirection="column"
+					width="100%"
+					gap={0.5}
+				>
+					<CustomSkeleton
+						animation="wave"
+						variant="rectangle"
+						width={85}
+						sx={{ borderRadius: 4, height: 24 }}
+					/>
+					<CustomSkeleton
+						animation="wave"
+						variant="rectangle"
+						width={190}
+						sx={{ borderRadius: 4, height: 24 }}
+					/>
+				</Box>
+
+				<CustomDivider flexItem />
+
+				<Box
+					display="flex"
+					alignItems="center"
+					justifyContent="space-between"
+					height={58}
+					gap={1}
+					p={2}
+					width="100%"
+				>
+					<CustomSkeleton animation="wave" variant="retangle" width={40} sx={{ borderRadius: 1 }} />
+					<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
 				</Box>
 			</Box>
-		</Grid>
+		</Card>
 	)
 }
 

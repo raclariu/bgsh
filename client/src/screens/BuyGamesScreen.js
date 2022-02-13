@@ -23,7 +23,12 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddBoughtGamesToHistory } from '../api/api'
-import { useGetListQuery, useGetBggGamesDetailsQuery, useDeleteFromListMutation } from '../hooks/hooks'
+import {
+	useGetListQuery,
+	useGetBggGamesDetailsQuery,
+	useDeleteFromListMutation,
+	useListGamesMutation
+} from '../hooks/hooks'
 
 // @ Main
 const BuyGamesScreen = () => {
@@ -44,14 +49,7 @@ const BuyGamesScreen = () => {
 	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ values, setValues ] = useState([])
 
-	const {
-		isError,
-		error,
-		data,
-		isFetching,
-		isSuccess  : isSuccessDetails,
-		status
-	} = useGetBggGamesDetailsQuery((data) => {
+	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery((data) => {
 		setValues(
 			data.map((game) => {
 				return {
@@ -67,10 +65,7 @@ const BuyGamesScreen = () => {
 	})
 
 	const deleteMutation = useDeleteFromListMutation()
-
-	const addMutation = useMutation((gamesData) => apiAddBoughtGamesToHistory(gamesData), {
-		onSuccess : () => queryClient.invalidateQueries([ 'history', 'buy' ])
-	})
+	const addMutation = useListGamesMutation('buy')
 
 	if (isPack !== false && isPack !== true) {
 		addMutation.reset()

@@ -9,15 +9,13 @@ import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import 'react-medium-image-zoom/dist/styles.css'
 import approx from 'approximate-number'
 import { parseEntities } from 'parse-entities'
-import { calculateTimeAgo, formatDate } from '../helpers/helpers'
+import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Mui
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import LinearProgress from '@mui/material/LinearProgress'
 import Chip from '@mui/material/Chip'
-import Typography from '@mui/material/Typography'
 import Fab from '@mui/material/Fab'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -26,7 +24,6 @@ import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
 import Collapse from '@mui/material/Collapse'
 import Skeleton from '@mui/material/Skeleton'
-import Fade from '@mui/material/Fade'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -49,12 +46,19 @@ import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
 import InfoTwoToneIcon from '@mui/icons-material/InfoTwoTone'
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
+import AllOutIcon from '@mui/icons-material/AllOut'
+import AccountTreeIcon from '@mui/icons-material/AccountTree'
+import ExtensionOutlinedIcon from '@mui/icons-material/ExtensionOutlined'
+import AllOutOutlinedIcon from '@mui/icons-material/AllOutOutlined'
+import CribOutlinedIcon from '@mui/icons-material/CribOutlined'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
+import DonutSmallOutlinedIcon from '@mui/icons-material/DonutSmallOutlined'
 
 // @ Components
 import CustomAvatar from '../components/CustomAvatar'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomDivider from '../components/CustomDivider'
-import Chips from '../components/SingleGameScreen/Chips'
 import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
@@ -80,10 +84,11 @@ const StyledChipsBox = styled(Box)(({ theme }) => ({
 	gap            : theme.spacing(1)
 }))
 
-const StyledImg = styled('img')({
-	objectFit : 'contain',
-	width     : '100%',
-	overflow  : 'hidden'
+const StyledCoverImg = styled('img')({
+	objectFit    : 'contain',
+	width        : '100%',
+	overflow     : 'hidden',
+	borderRadius : '8px'
 })
 
 const StyledMasonryImg = styled('img')({
@@ -92,6 +97,16 @@ const StyledMasonryImg = styled('img')({
 	maxHeight      : '100%',
 	width          : '100%',
 	objectFit      : 'contain',
+	cursor         : 'zoom-in',
+	borderRadius   : '8px'
+})
+
+const StyledUserImg = styled('img')({
+	imageRendering : '-webkit-optimize-contrast',
+	verticalAlign  : 'middle',
+	maxHeight      : '100%',
+	width          : '100%',
+	objectFit      : 'cover',
 	cursor         : 'zoom-in',
 	borderRadius   : '8px'
 })
@@ -169,7 +184,8 @@ const SingleGameScreen = () => {
 
 	const { ref: recsRef, inView: recsInView } = useInView({
 		threshold   : 0,
-		triggerOnce : true
+		triggerOnce : true,
+		delay       : 200
 	})
 
 	const [ index, setIndex ] = useState(0)
@@ -283,20 +299,15 @@ const SingleGameScreen = () => {
 								left      : '50%',
 								bottom    : (theme) => theme.spacing(3),
 								transform : 'translate(-50%, 0)',
-								zIndex    : 1000
+								zIndex    : 1000,
+								gap       : 3
 							}}
 						>
-							<Fab
-								size="small"
-								color="secondary"
-								disabled={index === 0}
-								onClick={() => cycleGames('back')}
-							>
+							<Fab color="secondary" disabled={index === 0} onClick={() => cycleGames('back')}>
 								<ArrowBackIcon />
 							</Fab>
-							<Box ml={2}>
+							<Box>
 								<Fab
-									size="small"
 									color="secondary"
 									disabled={data.games.length === index + 1}
 									onClick={() => cycleGames('forward')}
@@ -311,7 +322,7 @@ const SingleGameScreen = () => {
 						sx={{
 							display             : 'grid',
 							gridTemplateColumns : {
-								xs : '1fr',
+								xs : '100%',
 								md : '2fr 3fr'
 							},
 							gap                 : 2
@@ -322,21 +333,26 @@ const SingleGameScreen = () => {
 							display="flex"
 							alignItems="center"
 							justifyContent="center"
-							borderRadius={1}
 							boxShadow={1}
 							p={2}
 							bgcolor="background.paper"
 						>
-							<StyledImg
-								src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
-								alt={data.games[index].title}
-								sx={{
-									height : {
-										xs : '220px',
-										md : '320px'
-									}
-								}}
-							/>
+							<Zoom
+								zoomMargin={16}
+								overlayBgColorStart="rgba(0,0,0,0)"
+								overlayBgColorEnd="rgba(0,0,0,0.7)"
+							>
+								<StyledCoverImg
+									src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
+									alt={data.games[index].title}
+									sx={{
+										height : {
+											xs : '220px',
+											md : '320px'
+										}
+									}}
+								/>
+							</Zoom>
 						</Box>
 
 						<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
@@ -453,7 +469,7 @@ const SingleGameScreen = () => {
 							sx={{
 								display             : 'grid',
 								gridTemplateColumns : {
-									xs : '1fr',
+									xs : '100%',
 									md : '3fr auto 2fr'
 								},
 								gap                 : 2
@@ -520,10 +536,10 @@ const SingleGameScreen = () => {
 								)}
 
 								{data.games[index].userImage && (
-									<Box display="flex" flexDirection="column">
+									<Box display="flex" flexDirection="column" gap={0.5}>
 										<Box fontWeight="fontWeightMedium">User image</Box>
-										<Box width="150px">
-											<StyledMasonryImg
+										<Box width="160px" height="90px">
+											<StyledUserImg
 												onClick={handleOpenUserImageDialog}
 												src={data.games[index].userImage.thumbnail}
 												alt={data.games[index].userImage.name}
@@ -847,7 +863,7 @@ const SingleGameScreen = () => {
 								<Collapse in={expanded} timeout="auto" collapsedSize="328px">
 									<Grid container spacing={1}>
 										{isSuccessRec &&
-											recData.slice(0, expanded ? recData.length : 12).map((rec) => (
+											recData.map((rec) => (
 												<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
 													<Box
 														display="flex"
@@ -932,21 +948,31 @@ const SingleGameScreen = () => {
 					<StyledChipsBox sx={{ my: 2 }}>
 						{data.games[index].parent && (
 							<Chip
-								size="small"
-								color="success"
+								sx={{ maxWidth: '100%' }}
+								icon={<DonutSmallOutlinedIcon />}
 								label={`Expansion for ${data.games[index].parent.title}`}
+								color="success"
 							/>
 						)}
+
 						{data.games[index].expansions.length > 0 &&
 							data.games[index].expansions.map((exp) => (
 								<Chip
+									sx={{ maxWidth: '100%' }}
+									icon={<AllOutOutlinedIcon />}
 									key={exp.bggId}
-									size="small"
+									label={exp.title}
 									color="warning"
-									label={`Has expansion ${exp.title}`}
 								/>
 							))}
-						<Chips categories={data.games[index].categories} mechanics={data.games[index].mechanics} />
+
+						{data.games[index].categories.map((ctg) => (
+							<Chip key={ctg.id} icon={<CategoryOutlinedIcon />} label={ctg.name} color="secondary" />
+						))}
+
+						{data.games[index].mechanics.map((mec) => (
+							<Chip key={mec.id} icon={<SettingsOutlinedIcon />} label={mec.name} color="primary" />
+						))}
 					</StyledChipsBox>
 				</Fragment>
 			)}

@@ -17,8 +17,7 @@ import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	margin    : theme.spacing(1, 0, 1, 0),
-	padding   : theme.spacing(0, 1, 0, 1),
+	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -36,12 +35,14 @@ const StyledTitleBox = styled(Box)({
 const HotGameCard = ({ data }) => {
 	return (
 		<Card elevation={2}>
-			<StyledCardMedia
-				component="img"
-				alt={data.title}
-				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
-				title={data.title}
-			/>
+			<Box>
+				<StyledCardMedia
+					component="img"
+					alt={data.title}
+					image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
+					title={data.title}
+				/>
+			</Box>
 
 			<CustomDivider />
 

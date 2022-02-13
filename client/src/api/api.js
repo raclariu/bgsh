@@ -288,6 +288,10 @@ export const apiDeleteOneFromList = async (bggId) => {
 	return data
 }
 
+export const apiClearList = async () => {
+	await axsAUTH.delete(`/api/list/clear`)
+}
+
 export const apiGetOwnAvatar = async () => {
 	const { data } = await axsAUTH.get(`/api/users/avatar`)
 	return data

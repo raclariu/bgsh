@@ -22,7 +22,12 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
-import { useGetListQuery, useDeleteFromListMutation, useGetBggGamesDetailsQuery } from '../hooks/hooks'
+import {
+	useGetListQuery,
+	useDeleteFromListMutation,
+	useGetBggGamesDetailsQuery,
+	useListGamesMutation
+} from '../hooks/hooks'
 
 // @ Main
 const TradeGamesScreen = () => {
@@ -63,13 +68,7 @@ const TradeGamesScreen = () => {
 	)
 
 	const deleteMutation = useDeleteFromListMutation()
-
-	const listMutation = useMutation((gamesData) => apiListGamesForTrade(gamesData), {
-		onSuccess : () => {
-			queryClient.invalidateQueries([ 'index', 'trade' ])
-			queryClient.invalidateQueries([ 'myListedGames' ])
-		}
-	})
+	const listMutation = useListGamesMutation('trade')
 
 	if (isPack !== false && isPack !== true) {
 		listMutation.reset()

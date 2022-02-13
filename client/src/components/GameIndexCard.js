@@ -11,6 +11,7 @@ import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
+
 // @ Icons
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
@@ -36,7 +37,7 @@ const StyledTitleBox = styled(Box)({
 })
 
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
+	// padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -60,7 +61,7 @@ const GameIndexCard = ({ data }) => {
 
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
-			<Box mb={1}>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -75,20 +76,20 @@ const GameIndexCard = ({ data }) => {
 
 					<StatsBoxes variant="mini" complexity={data.games[index].complexity} type="complexity" />
 				</Box>
-			</Box>
 
-			{data.isPack && (
-				<Chip
-					sx={{
-						position : 'absolute',
-						top      : '8px',
-						left     : '8px'
-					}}
-					size="small"
-					color="secondary"
-					label={`${data.games.length} pack`}
-				/>
-			)}
+				{data.isPack && (
+					<Chip
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
+						size="small"
+						color="secondary"
+						label={`${data.games.length} pack`}
+					/>
+				)}
+			</Box>
 
 			<CustomDivider />
 
@@ -176,7 +177,7 @@ const GameIndexCard = ({ data }) => {
 
 					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium">
-							<Chip color="primary" label={`${data.totalPrice} RON`} />
+							<Chip color="success" label={`${data.totalPrice} RON`} />
 						</Box>
 					)}
 				</Box>

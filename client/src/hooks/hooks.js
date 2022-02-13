@@ -121,6 +121,64 @@ export const useGetListQuery = (onSettled) => {
 	})
 }
 
+export const useListGamesMutation = (mode) => {
+	console.log(mode)
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+	const clearListMutation = useClearListMutation()
+
+	return useMutation(
+		(gamesData) => {
+			if (mode === 'sell') {
+				return api.apiListGamesForSale(gamesData)
+			} else if (mode === 'trade') {
+				return api.apiListGamesForTrade(gamesData)
+			} else if (mode === 'want') {
+				return api.apiAddWantedGames(gamesData)
+			} else if (mode === 'buy') {
+				return api.apiAddBoughtGamesToHistory(gamesData)
+			}
+		},
+		{
+			onSuccess : () => {
+				if (mode === 'sell') {
+					showSnackbar.success({ text: 'Successfully listed game(s) for sale' })
+					clearListMutation.mutate()
+					queryClient.invalidateQueries([ 'index', 'sell' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+				} else if (mode === 'trade') {
+					showSnackbar.success({ text: 'Successfully listed game(s) for trade' })
+					clearListMutation.mutate()
+					queryClient.invalidateQueries([ 'index', 'trade' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+				} else if (mode === 'want') {
+					showSnackbar.success({ text: 'Successfully added wanted game(s)' })
+					clearListMutation.mutate()
+					queryClient.invalidateQueries([ 'index', 'want' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+				} else if (mode === 'buy') {
+					showSnackbar.success({ text: 'Successfully added game(s) to your buy history' })
+					clearListMutation.mutate()
+					queryClient.invalidateQueries([ 'history', 'buy' ])
+				}
+			}
+		}
+	)
+}
+
+export const useClearListMutation = () => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(api.apiClearList, {
+		onSuccess : async () => {
+			showSnackbar.info({ text: 'Your list was cleared' })
+			await queryClient.refetchQueries([ 'list' ])
+			queryClient.removeQueries([ 'bggGamesDetails' ])
+		}
+	})
+}
+
 export const useGetBggGamesDetailsQuery = (onSuccess) => {
 	const userList = useGetListQuery()
 
@@ -320,9 +378,8 @@ export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index 
 		[ 'singleGame', 'recs', { altId, index } ],
 		() => api.apiFetchRecommendations(data.games[index].bggId),
 		{
-			enabled          : isSuccess && recsInView,
-			staleTime        : 1000 * 60 * 60,
-			keepPreviousData : true
+			enabled   : isSuccess && recsInView,
+			staleTime : 1000 * 60 * 60
 		}
 	)
 }

@@ -60,7 +60,7 @@ const addOneToList = asyncHandler(async (req, res) => {
 })
 
 // ! @desc    Delete from list
-// ! @route   PATCH  /api/list
+// ! @route   DELETE  /api/list
 // ! @access  Private route
 const deleteOneFromList = asyncHandler(async (req, res) => {
 	const { bggId } = req.body
@@ -98,4 +98,22 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 	}
 })
 
-export { addOneToList, deleteOneFromList, getList }
+// ! @desc    Clear list
+// ! @route   DELETE  /api/list/clear
+// ! @access  Private route
+const clearList = async (req, res) => {
+	const userList = await List.findOne({ addedBy: req.user._id }).select('_id').lean()
+
+	if (!userList) {
+		res.status(404)
+		throw {
+			message : 'List not found'
+		}
+	}
+
+	await List.updateOne({ addedBy: req.user._id }, { list: [] })
+
+	return res.status(204).end()
+}
+
+export { addOneToList, deleteOneFromList, getList, clearList }

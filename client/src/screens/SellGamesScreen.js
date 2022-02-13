@@ -21,8 +21,15 @@ import Loader from '../components/Loader'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
-import { apiFetchGameDetails, apiListGamesForSale, apiGetList } from '../api/api'
-import { useDeleteFromListMutation, useGetListQuery, useGetBggGamesDetailsQuery } from '../hooks/hooks'
+import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
+import {
+	useDeleteFromListMutation,
+	useGetListQuery,
+	useGetBggGamesDetailsQuery,
+	useNotiSnackbar,
+	useClearListMutation,
+	useListGamesMutation
+} from '../hooks/hooks'
 
 // @ Main
 const SellGamesScreen = () => {
@@ -30,6 +37,7 @@ const SellGamesScreen = () => {
 	const location = useLocation()
 	const history = useHistory()
 	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
@@ -48,14 +56,7 @@ const SellGamesScreen = () => {
 		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const {
-		isError,
-		error,
-		data,
-		isFetching,
-		isSuccess  : isSuccessDetails,
-		status
-	} = useGetBggGamesDetailsQuery((data) =>
+	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery((data) =>
 		setValues(
 			data.map((game) => {
 				return {
@@ -72,13 +73,7 @@ const SellGamesScreen = () => {
 	)
 
 	const deleteMutation = useDeleteFromListMutation()
-
-	const listMutation = useMutation((gamesData) => apiListGamesForSale(gamesData), {
-		onSuccess : () => {
-			queryClient.invalidateQueries([ 'index', 'sell' ])
-			queryClient.invalidateQueries([ 'myListedGames' ])
-		}
-	})
+	const listMutation = useListGamesMutation('sell')
 
 	if (isPack !== false && isPack !== true) {
 		listMutation.reset()

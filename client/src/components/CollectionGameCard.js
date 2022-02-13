@@ -26,7 +26,6 @@ import SearchIcon from '@mui/icons-material/Search'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -47,20 +46,22 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 
 	return (
 		<Card elevation={2}>
-			<StyledCardMedia
-				component="img"
-				alt={data.title}
-				image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
-				title={data.title}
-			/>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
+				<StyledCardMedia
+					component="img"
+					alt={data.title}
+					image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
+					title={data.title}
+				/>
 
-			{data.stats && (
-				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1} mb={1}>
-					{data.stats.userRating && <StatsBoxes stats={data.stats} type="userRating" />}
+				{data.stats && (
+					<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
+						{data.stats.userRating && <StatsBoxes stats={data.stats} type="userRating" />}
 
-					<StatsBoxes variant="mini" stats={data.stats} type="rating" />
-				</Box>
-			)}
+						<StatsBoxes variant="mini" stats={data.stats} type="rating" />
+					</Box>
+				)}
+			</Box>
 
 			<CustomDivider />
 

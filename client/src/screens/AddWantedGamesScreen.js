@@ -21,7 +21,12 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
-import { useGetBggGamesDetailsQuery, useGetListQuery, useDeleteFromListMutation } from '../hooks/hooks'
+import {
+	useGetBggGamesDetailsQuery,
+	useGetListQuery,
+	useDeleteFromListMutation,
+	useListGamesMutation
+} from '../hooks/hooks'
 
 // @ Main
 const AddWantedGamesScreen = () => {
@@ -35,14 +40,7 @@ const AddWantedGamesScreen = () => {
 		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const {
-		isError,
-		error,
-		data,
-		isFetching,
-		isSuccess  : isSuccessDetails,
-		status
-	} = useGetBggGamesDetailsQuery((data) => {
+	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery((data) => {
 		setValues(
 			data.map((game) => {
 				return {
@@ -58,13 +56,7 @@ const AddWantedGamesScreen = () => {
 	})
 
 	const deleteMutation = useDeleteFromListMutation()
-
-	const listMutation = useMutation((gamesData) => apiAddWantedGames(gamesData), {
-		onSuccess : () => {
-			queryClient.invalidateQueries([ 'index', 'want' ])
-			queryClient.invalidateQueries([ 'myListedGames' ])
-		}
-	})
+	const listMutation = useListGamesMutation('want')
 
 	const handleGameInfo = (value, id, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))

@@ -33,7 +33,7 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const { isLoading, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
+	const { isFetching, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -83,15 +83,17 @@ const GamesIndexScreen = () => {
 				<DrawerFilter />
 			</Box> */}
 
-			{console.count('render')}
-
 			{isSuccess &&
 			data.gamesData.length === 0 &&
 			!search && <CustomAlert severity="warning">No games listed</CustomAlert>}
 
-			{isLoading && (
+			{isFetching && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameIndexCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid key={k} item xs={12} sm={6} md={4}>
+							<GameIndexCardSkeleton mode={currLoc} />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -99,7 +101,7 @@ const GamesIndexScreen = () => {
 			data.gamesData.length > 0 && (
 				<Grid container spacing={3} direction="row">
 					{data.gamesData.map((data) => (
-						<Grid item key={data._id} md={4} sm={6} xs={12}>
+						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LzLoad
 								placeholder={
 									<Box width="100%">
