@@ -92,14 +92,14 @@ const SaveGameButton = ({ altId, addedById }) => {
 				<CustomTooltip title={data.isSaved ? 'Unsave' : 'Save'}>
 					<Checkbox
 						sx={{
-							height : '48px',
-							width  : '48px'
+							height : '44px',
+							width  : '44px'
 						}}
 						color="secondary"
 						id="save-button"
 						onChange={saveGameHandler}
-						icon={<FavoriteBorder />}
-						checkedIcon={<Favorite />}
+						icon={<FavoriteBorder fontSize="small" />}
+						checkedIcon={<Favorite fontSize="small" />}
 						name="saved"
 						checked={data.isSaved}
 					/>

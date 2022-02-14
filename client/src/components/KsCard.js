@@ -31,9 +31,8 @@ const KsCard = ({ data }) => {
 		<Card elevation={2}>
 			<CardMedia
 				sx={{
-					objectFit      : 'fill',
-					height         : '180px',
-					objectPosition : 'center 10%'
+					objectFit : 'cover',
+					height    : '150px'
 				}}
 				component="img"
 				alt={data.title}

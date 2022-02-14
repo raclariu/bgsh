@@ -3,7 +3,7 @@ import {
 	USER_AUTH_REQUEST,
 	USER_AUTH_SUCCESS,
 	USER_AUTH_FAIL,
-	USER_SIGNOUT,
+	USER_LOGOUT,
 	USER_CHANGE_AVATAR,
 	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
@@ -59,10 +59,10 @@ export const changeAvatar = (url) => async (dispatch) => {
 	localStorage.setItem('userData', JSON.stringify(getLs))
 }
 
-export const signOut = () => async (dispatch) => {
+export const logOut = () => async (dispatch) => {
 	localStorage.removeItem('userData')
 
-	dispatch({ type: USER_SIGNOUT })
+	dispatch({ type: USER_LOGOUT })
 }
 
 export const setCurrentTheme = (theme) => async (dispatch) => {

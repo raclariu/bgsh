@@ -174,7 +174,7 @@ const App = () => {
 									<UserProfile />
 								</ProtectedRoute>
 
-								<ProtectedRoute path="/signout" exact>
+								<ProtectedRoute path="/logout" exact>
 									<Redirect to="/" />
 								</ProtectedRoute>
 

@@ -17,7 +17,7 @@ import CustomButton from './CustomButton'
 import CustomDivider from './CustomDivider'
 
 // @ Main
-const ExtLinkIconBtn = ({ url }) => {
+const ExtLinkIconBtn = ({ url, tooltip = 'See on BGG' }) => {
 	const [ openDialog, setOpenDialog ] = useState(false)
 
 	const handleOpenDialog = () => {
@@ -30,7 +30,7 @@ const ExtLinkIconBtn = ({ url }) => {
 
 	return (
 		<Fragment>
-			<CustomTooltip title="See on BGG">
+			<CustomTooltip title={tooltip}>
 				<CustomIconBtn onClick={handleOpenDialog} color="primary" size="large">
 					<LaunchIcon fontSize="small" />
 				</CustomIconBtn>
@@ -38,7 +38,16 @@ const ExtLinkIconBtn = ({ url }) => {
 
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle>
-					<Box textAlign="center">Are you sure you want to open external page to BoardGameGeek.com?</Box>
+					<Box textAlign="center">Follow external link?</Box>
+					<Box
+						textAlign="center"
+						color="text.secondary"
+						fontSize={12}
+						fontStyle="italic"
+						sx={{ wordBreak: 'break-word' }}
+					>
+						{url}
+					</Box>
 				</DialogTitle>
 
 				<CustomDivider />

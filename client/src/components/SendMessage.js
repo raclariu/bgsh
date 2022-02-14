@@ -63,7 +63,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 					size="large"
 					{...other}
 				>
-					<MailTwoToneIcon />
+					<MailTwoToneIcon fontSize="small" />
 				</CustomIconBtn>
 			</CustomTooltip>
 

@@ -69,6 +69,7 @@ import CustomAlert from '../components/CustomAlert'
 import CustomTooltip from '../components/CustomTooltip'
 import LzLoad from '../components/LzLoad'
 import CustomButton from '../components/CustomButton'
+import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
 
 // @ Others
 import {
@@ -297,7 +298,7 @@ const SingleGameScreen = () => {
 								display   : 'flex',
 								position  : 'fixed',
 								left      : '50%',
-								bottom    : (theme) => theme.spacing(3),
+								bottom    : (theme) => theme.spacing(5),
 								transform : 'translate(-50%, 0)',
 								zIndex    : 1000,
 								gap       : 3
@@ -355,7 +356,7 @@ const SingleGameScreen = () => {
 							</Zoom>
 						</Box>
 
-						<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+						<Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-end">
 							<Box fontSize="1.5rem" fontWeight="fontWeightMedium" textAlign="center">
 								{data.games[index].title}
 							</Box>
@@ -449,6 +450,9 @@ const SingleGameScreen = () => {
 								width="100%"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
+									<ExtLinkIconBtn
+										url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
+									/>
 									<SendMessage recipientUsername={data.addedBy.username} />
 									<SaveGameButton altId={altId} addedById={data.addedBy._id} />
 								</Box>

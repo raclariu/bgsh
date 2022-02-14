@@ -162,11 +162,11 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<form onSubmit={addGameHandler} autoComplete="off">
 							<DialogTitle>
-								<Box>
+								<Box textAlign="center">
 									Fill in the form below for history purposes. Username is not required, but it is
 									recommended to be filled in.
 								</Box>
-								<Box color="textSecondary">
+								<Box textAlign="center" mt={1} color="text.secondary" fontSize="subtitle2.fontSize">
 									Note: once you press the button below, this listing will be deleted and added to
 									your history.
 								</Box>
@@ -252,6 +252,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 								<LoadingBtn
 									type="submit"
+									variant="contained"
 									color="primary"
 									loading={addGame.isLoading}
 									disabled={currUsername.trim().toLowerCase() === otherUsername.trim().toLowerCase()}

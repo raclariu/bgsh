@@ -52,7 +52,7 @@ import MyAvatar from '../MyAvatar'
 import NotificationsPopover from '../NotificationsPopover'
 
 // @ Others
-import { signOut } from '../../actions/userActions'
+import { logOut } from '../../actions/userActions'
 
 // @ Main
 const Header = () => {
@@ -66,8 +66,8 @@ const Header = () => {
 
 	const { userData } = useSelector((state) => state.userAuth)
 
-	const signOutHandler = () => {
-		dispatch(signOut())
+	const logOutHandler = () => {
+		dispatch(logOut())
 		setOpenDialog(false)
 		setIsOpen(false)
 	}
@@ -597,7 +597,7 @@ const Header = () => {
 													fontSize="subtitle2.fontSize"
 													color="text.secondary"
 												>
-													Sign Out
+													Logout
 												</Box>
 											}
 										/>
@@ -608,7 +608,7 @@ const Header = () => {
 
 						<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 							<DialogTitle>
-								<Box textAlign="center">Are you sure you want to sign out?</Box>
+								<Box textAlign="center">Are you sure you want to log out?</Box>
 							</DialogTitle>
 
 							<CustomDivider />
@@ -616,7 +616,7 @@ const Header = () => {
 							<DialogActions>
 								<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
 									<CustomButton onClick={handleCloseDialog}>No</CustomButton>
-									<CustomButton onClick={signOutHandler} variant="contained">
+									<CustomButton onClick={logOutHandler} variant="contained">
 										Yes
 									</CustomButton>
 								</Box>

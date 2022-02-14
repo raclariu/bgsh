@@ -1,6 +1,6 @@
 import store from '../store'
 import axios from 'axios'
-import { signOut } from '../actions/userActions'
+import { logOut } from '../actions/userActions'
 
 const getBearer = () => {
 	const state = store.getState()
@@ -56,7 +56,7 @@ axsAUTH.interceptors.response.use(
 	(response) => response,
 	(error) => {
 		if (error.response.status === 401) {
-			store.dispatch(signOut())
+			store.dispatch(logOut())
 		}
 		return Promise.reject(error)
 	}
