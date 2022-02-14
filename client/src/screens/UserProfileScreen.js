@@ -13,7 +13,7 @@ import Tab from '@mui/material/Tab'
 // @ Components
 import UserProfileGameCard from '../components/UserProfileScreen/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -54,7 +54,7 @@ const UserProfileScreen = () => {
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(6).keys() ].map((i, k) => <CollectionCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
@@ -66,7 +66,7 @@ const UserProfileScreen = () => {
 						{isSuccess &&
 							data.saleGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
-									<LzLoad placeholder={<GameCardSkeleton />}>
+									<LzLoad placeholder={<CollectionCardSkeleton />}>
 										<UserProfileGameCard data={data} />
 									</LzLoad>
 								</Grid>

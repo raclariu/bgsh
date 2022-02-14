@@ -16,7 +16,7 @@ import Paginate from '../components/Paginate'
 import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -40,7 +40,7 @@ const WishlistScreen = () => {
 
 	const userList = useGetListQuery()
 
-	const { isLoading, isSuccess, data } = useGetWishlistCollectionQuery(search, page)
+	const { isFetching, isSuccess, data } = useGetWishlistCollectionQuery(search, page)
 
 	const addMutation = useAddToListMutation()
 	const deleteMutation = useDeleteFromListMutation()
@@ -90,12 +90,17 @@ const WishlistScreen = () => {
 			)}
 
 			{isSuccess &&
-			data.wishlist.length === 0 &&
-			!search && <CustomAlert severity="warning">Your wishlist is empty</CustomAlert>}
+			data.wishlist.length === 0 && (
+				<CustomAlert severity="warning">{search ? 'No results found' : 'Your wishlist is empty'}</CustomAlert>
+			)}
 
-			{isLoading && (
+			{isFetching && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid key={k} item xs={12} sm={6} md={4}>
+							<CollectionCardSkeleton page="wishlist" />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -104,7 +109,7 @@ const WishlistScreen = () => {
 				<Grid container spacing={3} direction="row">
 					{data.wishlist.map((data) => (
 						<Grid item key={data.bggId} md={4} sm={6} xs={12}>
-							<LzLoad placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<CollectionCardSkeleton />}>
 								<CollectionGameCard
 									data={data}
 									listHandler={listHandler}

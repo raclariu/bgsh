@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 import LzLoad from '../components/LzLoad'
@@ -71,7 +71,7 @@ const CollectionScreen = () => {
 		<Fragment>
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item md={4} sm={5} xs={12}>
+					<Grid item xs={12} sm={5} md={4}>
 						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
@@ -88,14 +88,15 @@ const CollectionScreen = () => {
 			)}
 
 			{isSuccess &&
-			data.owned.length === 0 &&
-			!search && <CustomAlert severity="warning">Your collection is empty</CustomAlert>}
+			data.owned.length === 0 && (
+				<CustomAlert severity="warning">{search ? 'No results found' : 'Your collection is empty'}</CustomAlert>
+			)}
 
 			{isFetching && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>
-							<GameCardSkeleton />
+							<CollectionCardSkeleton page="collection" />
 						</Grid>
 					))}
 				</Grid>
@@ -106,7 +107,7 @@ const CollectionScreen = () => {
 				<Grid container spacing={3} direction="row">
 					{data.owned.map((data) => (
 						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<CollectionCardSkeleton />}>
 								<CollectionGameCard
 									data={data}
 									listHandler={listHandler}

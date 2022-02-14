@@ -14,7 +14,7 @@ import Button from '@mui/material/Button'
 import CustomButton from '../components/CustomButton'
 import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
 
@@ -36,10 +36,10 @@ const HomeScreen = () => {
 	})
 
 	const {
-		isLoading : isLoadingHotGames,
-		error     : errorHotGames,
-		data      : hotGamesList,
-		isSuccess : isSuccessHotGames
+		isFetching : isFetchingHotGames,
+		error      : errorHotGames,
+		data       : hotGamesList,
+		isSuccess  : isSuccessHotGames
 	} = useQuery([ 'hotGames' ], apiFetchHotGames, {
 		staleTime      : 1000 * 60 * 60,
 		refetchOnMount : false
@@ -95,9 +95,13 @@ const HomeScreen = () => {
 
 			{errorHotGames && <CustomAlert>{errorHotGames.response.data.message}</CustomAlert>}
 
-			{isLoadingHotGames && (
+			{isFetchingHotGames && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid item key={k} xs={12} sm={6} md={4}>
+							<GeneralCardSkeleton />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -105,7 +109,7 @@ const HomeScreen = () => {
 				<Grid container spacing={3}>
 					{hotGamesList.slice(0, 6).map((data) => (
 						<Grid key={data.bggId} item xs={6} md={4}>
-							<LzLoad offset={200} once placeholder={<GameCardSkeleton />}>
+							<LzLoad offset={200} once placeholder={<GeneralCardSkeleton />}>
 								<HotGameCard data={data} />
 							</LzLoad>
 						</Grid>
@@ -144,7 +148,7 @@ const HomeScreen = () => {
 
 			{isLoadingKs && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(6).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(6).keys() ].map((i, k) => <GeneralCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
@@ -152,7 +156,7 @@ const HomeScreen = () => {
 				<Grid container spacing={3}>
 					{ksList.map((data) => (
 						<Grid key={data.ksId} item xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<GeneralCardSkeleton />}>
 								<KsCard data={data} />
 							</LzLoad>
 						</Grid>

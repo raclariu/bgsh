@@ -10,28 +10,30 @@ import CustomSkeleton from './CustomSkeleton'
 import CustomDivider from '../CustomDivider'
 
 // @ Main
-const GameCardSkeleton = () => {
+const CollectionCardSkeleton = ({ page }) => {
 	return (
 		<Card elevation={1}>
-			<Box height={478} display="flex" flexDirection="column" alignItems="center">
-				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
+			<Box height={page === 'collection' ? 478 : 433} display="flex" flexDirection="column" alignItems="center">
+				<Box display="flex" flexDirection="column" height={page === 'collection' ? 241 : 196} gap={1} p={1}>
 					<CustomSkeleton animation="wave" variant="rectangle" width={175} height="100%" />
-					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={45}
-							height={37}
-							sx={{ borderRadius: 2 }}
-						/>
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={45}
-							height={37}
-							sx={{ borderRadius: 2 }}
-						/>
-					</Box>
+					{page === 'collection' && (
+						<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
+							<CustomSkeleton
+								animation="wave"
+								variant="rectangle"
+								width={45}
+								height={37}
+								sx={{ borderRadius: 2 }}
+							/>
+							<CustomSkeleton
+								animation="wave"
+								variant="rectangle"
+								width={45}
+								height={37}
+								sx={{ borderRadius: 2 }}
+							/>
+						</Box>
+					)}
 				</Box>
 
 				<CustomDivider flexItem />
@@ -62,13 +64,13 @@ const GameCardSkeleton = () => {
 					<CustomSkeleton
 						animation="wave"
 						variant="rectangle"
-						width={85}
+						width={100}
 						sx={{ borderRadius: 4, height: 24 }}
 					/>
 					<CustomSkeleton
 						animation="wave"
 						variant="rectangle"
-						width={190}
+						width={page === 'collection' ? 190 : 75}
 						sx={{ borderRadius: 4, height: 24 }}
 					/>
 				</Box>
@@ -85,11 +87,19 @@ const GameCardSkeleton = () => {
 					width="100%"
 				>
 					<CustomSkeleton animation="wave" variant="retangle" width={40} sx={{ borderRadius: 1 }} />
-					<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+					{page === 'collection' && (
+						<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+					)}
+					{page === 'wishlist' && (
+						<Box display="flex" justifyContent="center" alignItems="center" gap={3}>
+							<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+							<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+						</Box>
+					)}
 				</Box>
 			</Box>
 		</Card>
 	)
 }
 
-export default GameCardSkeleton
+export default CollectionCardSkeleton

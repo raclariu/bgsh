@@ -13,7 +13,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -26,7 +26,7 @@ const SavedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isLoading, data, isSuccess } = useGetSavedGamesListQuery(search, page)
+	const { isFetching, data, isSuccess } = useGetSavedGamesListQuery(search, page)
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -64,12 +64,19 @@ const SavedGamesScreen = () => {
 			)}
 
 			{isSuccess &&
-			data.list.length === 0 &&
-			!search && <CustomAlert severity="warning">Your saved games list is empty</CustomAlert>}
+			data.list.length === 0 && (
+				<CustomAlert severity="warning">
+					{search ? 'No results found' : 'Your saved games list is empty'}
+				</CustomAlert>
+			)}
 
-			{isLoading && (
+			{isFetching && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid item key={k} xs={12} sm={6} md={4}>
+							<CollectionCardSkeleton />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -78,7 +85,7 @@ const SavedGamesScreen = () => {
 				<Grid container spacing={3}>
 					{data.list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<CollectionCardSkeleton />}>
 								<SavedGameCard data={data} />
 							</LzLoad>
 						</Grid>

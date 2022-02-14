@@ -24,10 +24,10 @@ import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
+import ExtLinkIconBtn from './ExtLinkIconBtn'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -60,12 +60,14 @@ const SavedGameCard = ({ data }) => {
 
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
-			<StyledCardMedia
-				component="img"
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-				alt={data.games[index].title}
-				title={data.games[index].title}
-			/>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
+				<StyledCardMedia
+					component="img"
+					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
+					alt={data.games[index].title}
+					title={data.games[index].title}
+				/>
+			</Box>
 
 			{data.isPack && (
 				<Fragment>
@@ -186,15 +188,7 @@ const SavedGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<CustomTooltip title="See on BGG">
-						<CustomButton
-							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							BGG
-						</CustomButton>
-					</CustomTooltip>
+					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 
 					<GameDetailsButton altId={data.altId} />
 				</Box>

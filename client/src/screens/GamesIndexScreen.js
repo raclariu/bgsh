@@ -84,8 +84,9 @@ const GamesIndexScreen = () => {
 			</Box> */}
 
 			{isSuccess &&
-			data.gamesData.length === 0 &&
-			!search && <CustomAlert severity="warning">No games listed</CustomAlert>}
+			data.gamesData.length === 0 && (
+				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
+			)}
 
 			{isFetching && (
 				<Grid container spacing={3} direction="row">

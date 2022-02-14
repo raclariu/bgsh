@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid'
 import HistoryGameCard from '../components/HistoryGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
-import GameCardSkeleton from '../components/Skeletons/GameCardSkeleton'
+import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
@@ -76,7 +76,7 @@ const GamesHistoryScreen = () => {
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <GameCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => <CollectionCardSkeleton key={k} />)}
 				</Grid>
 			)}
 
@@ -85,7 +85,7 @@ const GamesHistoryScreen = () => {
 				<Grid container spacing={3}>
 					{data.historyList.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<GameCardSkeleton />}>
+							<LzLoad placeholder={<CollectionCardSkeleton />}>
 								<HistoryGameCard data={data} />
 							</LzLoad>
 						</Grid>

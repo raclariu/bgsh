@@ -14,6 +14,7 @@ import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
 
 // @ Components
+import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
@@ -117,15 +118,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 
 			<CardActions>
 				<Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
-					<CustomTooltip title="See on BGG">
-						<CustomButton
-							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							BGG
-						</CustomButton>
-					</CustomTooltip>
+					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.bggId}`} />
 
 					<Box display="flex" gap={1} alignItems="center">
 						{currLoc === 'wishlist' && (

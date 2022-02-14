@@ -11,13 +11,13 @@ import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
 
 // @ Components
+import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -35,7 +35,7 @@ const StyledTitleBox = styled(Box)({
 const HotGameCard = ({ data }) => {
 	return (
 		<Card elevation={2}>
-			<Box>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
 					component="img"
 					alt={data.title}
@@ -64,15 +64,7 @@ const HotGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
-					<CustomTooltip title="See on BGG">
-						<CustomButton
-							href={`https://boardgamegeek.com/boardgame/${data.bggId}`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							BGG
-						</CustomButton>
-					</CustomTooltip>
+					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.bggId}`} />
 				</Box>
 			</CardActions>
 		</Card>
