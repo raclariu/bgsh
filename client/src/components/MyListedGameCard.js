@@ -28,7 +28,6 @@ import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
 	objectFit : 'contain',
 	height    : '180px'
 }))
@@ -61,12 +60,14 @@ const ListedGameCard = ({ data }) => {
 
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
-			<StyledCardMedia
-				component="img"
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-				alt={data.games[index].title}
-				title={data.games[index].title}
-			/>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
+				<StyledCardMedia
+					component="img"
+					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
+					alt={data.games[index].title}
+					title={data.games[index].title}
+				/>
+			</Box>
 
 			{data.isPack && (
 				<Fragment>

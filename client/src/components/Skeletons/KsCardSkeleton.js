@@ -13,9 +13,9 @@ import CustomSkeleton from './CustomSkeleton'
 const GeneralCardSkeleton = () => {
 	return (
 		<Card elevation={1}>
-			<Box height={338} display="flex" flexDirection="column" alignItems="center">
-				<Box display="flex" flexDirection="column" height={196} gap={1} p={1}>
-					<CustomSkeleton animation="wave" variant="rectangle" width={175} height="100%" />
+			<Box height={292} display="flex" flexDirection="column" alignItems="center">
+				<Box display="flex" flexDirection="column" height={150} gap={1} width="100%">
+					<CustomSkeleton animation="wave" variant="rectangle" width="100%" height="100%" />
 				</Box>
 
 				<CustomDivider flexItem />
@@ -34,8 +34,8 @@ const GeneralCardSkeleton = () => {
 
 				<CustomDivider flexItem />
 
-				<Box height={60} display="flex" justifyContent="center" alignItems="center" width="100%">
-					<CustomSkeleton animation="wave" variant="text" width="50%" />
+				<Box height={60} display="flex" justifyContent="flex-end" alignItems="center" width="100%">
+					<CustomSkeleton animation="wave" variant="retangle" width={40} sx={{ borderRadius: 1, mr: 2 }} />
 				</Box>
 			</Box>
 		</Card>

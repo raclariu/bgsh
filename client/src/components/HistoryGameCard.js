@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 
 // @ Mui
+import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
@@ -17,6 +18,7 @@ import CustomAvatar from './CustomAvatar'
 import CustomTooltip from './CustomTooltip'
 
 // @ Icons
+import BlockIcon from '@mui/icons-material/Block'
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
@@ -25,11 +27,10 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Styles
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
@@ -58,13 +59,15 @@ const HistoryGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card sx={{ position: 'relative' }} elevation={2}>
-			<StyledCardMedia
-				component="img"
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-				alt={data.games[index].title}
-				title={data.games[index].title}
-			/>
+		<Card sx={{ position: 'relative' }} elevation={1}>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
+				<StyledCardMedia
+					component="img"
+					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
+					alt={data.games[index].title}
+					title={data.games[index].title}
+				/>
+			</Box>
 
 			{data.games.length > 1 && (
 				<Chip
@@ -124,7 +127,7 @@ const HistoryGameCard = ({ data }) => {
 			<CustomDivider />
 
 			<CardContent>
-				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
 					{data.mode === 'sell' && (
 						<Box fontWeight="fontWeightMedium">
 							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
@@ -132,57 +135,30 @@ const HistoryGameCard = ({ data }) => {
 					)}
 
 					{data.otherUser ? (
-						<Box my={1} display="flex" alignItems="center">
+						<Box display="flex" alignItems="center" gap={0.5}>
 							<CustomAvatar size={5} username={data.otherUser.username} src={data.otherUser.avatar} />
-							<Box ml={1}>{data.otherUser.username}</Box>
+							<Box display="flex" alignItems="center">
+								<Box textAlign="center" ml={0.5}>
+									<CustomTooltip title={formatDate(data.createdAt)}>
+										{calculateTimeAgo(data.createdAt)}
+									</CustomTooltip>
+								</Box>
+							</Box>
 						</Box>
 					) : (
-						'N/A'
+						<Avatar color="primary" sx={{ height: 40, width: 40, backgroundColor: 'primary.main' }}>
+							<BlockIcon />
+						</Avatar>
 					)}
 
-					<Box display="flex" alignItems="center">
-						<CustomTooltip title={formatDate(data.createdAt)}>
-							<EventAvailableOutlinedIcon />
-						</CustomTooltip>
-
-						<Box textAlign="center" ml={0.5}>
-							{calculateTimeAgo(data.createdAt)}
-						</Box>
-					</Box>
 					<CustomDivider orientation="vertical" flexItem />
 				</Box>
 
-				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
-					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
-						{data.otherUser ? (
-							<Box my={1} display="flex" alignItems="center">
-								<CustomAvatar size={5} username={data.otherUser.username} src={data.otherUser.avatar} />
-								<Box ml={1}>{data.otherUser.username}</Box>
-							</Box>
-						) : (
-							'N/A'
-						)}
-					</Box>
-					<CustomDivider orientation="vertical" flexItem />
-					<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
-						<Box>
-							{data.finalPrice ? (
-								<Box fontWeight="fontWeightMedium">
-									<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
-								</Box>
-							) : (
-								'N/A'
-							)}
+				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
+					<Box>
+						<Box fontWeight="fontWeightMedium">
+							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
 						</Box>
-					</Box>
-				</Box>
-				<Box display="flex" alignItems="center">
-					<CustomTooltip title={formatDate(data.createdAt)}>
-						<EventAvailableOutlinedIcon />
-					</CustomTooltip>
-
-					<Box textAlign="center" ml={0.5}>
-						{calculateTimeAgo(data.createdAt)}
 					</Box>
 				</Box>
 			</CardContent>

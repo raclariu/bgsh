@@ -328,10 +328,12 @@ const getGames = asyncHandler(async (req, res) => {
 				return { totalPrice: 1 }
 			} else if (sortBy === 'price-high') {
 				return { totalPrice: -1 }
-			} else if (sortBy === 'rank') {
-				return { 'games.stats.rank': 1 }
+			} else if (sortBy === 'num-ratings') {
+				return { 'games.stats.ratings': -1 }
 			} else if (sortBy === 'year') {
 				return { 'games.year': -1 }
+			} else if (sortBy === 'avg-rating') {
+				return { 'games.stats.avgRating': -1 }
 			} else {
 				return { createdAt: -1 }
 			}

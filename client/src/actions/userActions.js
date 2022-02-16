@@ -4,7 +4,6 @@ import {
 	USER_AUTH_SUCCESS,
 	USER_AUTH_FAIL,
 	USER_LOGOUT,
-	USER_CHANGE_AVATAR,
 	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
@@ -46,17 +45,6 @@ export const signUp = (email, username, password, passwordConfirmation) => async
 			payload : error.response && error.response.data ? error.response.data.message : error.message
 		})
 	}
-}
-
-export const changeAvatar = (url) => async (dispatch) => {
-	dispatch({
-		type    : USER_CHANGE_AVATAR,
-		payload : url
-	})
-
-	const getLs = JSON.parse(localStorage.getItem('userData'))
-	getLs['avatar'] = url
-	localStorage.setItem('userData', JSON.stringify(getLs))
 }
 
 export const logOut = () => async (dispatch) => {

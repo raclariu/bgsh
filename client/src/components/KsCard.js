@@ -11,6 +11,7 @@ import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
 
 // @ Components
+import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
@@ -58,17 +59,7 @@ const KsCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="flex-end" width="100%">
-					<CustomTooltip title="See on Kickstarter">
-						<CustomButton href={`${data.url}`} target="_blank" rel="noreferrer">
-							Page
-						</CustomButton>
-					</CustomTooltip>
-
-					<CustomTooltip title="Rewards page">
-						<CustomButton href={`${data.url}/rewards`} target="_blank" rel="noreferrer">
-							Rewards
-						</CustomButton>
-					</CustomTooltip>
+					<ExtLinkIconBtn url={data.url} tooltip="See on Kickstarter" />
 				</Box>
 			</CardActions>
 		</Card>

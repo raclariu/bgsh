@@ -13,7 +13,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
-import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
+import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -74,7 +74,7 @@ const SavedGamesScreen = () => {
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid item key={k} xs={12} sm={6} md={4}>
-							<CollectionCardSkeleton />
+							<GeneralCardSkeleton />
 						</Grid>
 					))}
 				</Grid>
@@ -85,7 +85,7 @@ const SavedGamesScreen = () => {
 				<Grid container spacing={3}>
 					{data.list.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<CollectionCardSkeleton />}>
+							<LzLoad placeholder={<GeneralCardSkeleton />}>
 								<SavedGameCard data={data} />
 							</LzLoad>
 						</Grid>

@@ -18,6 +18,7 @@ import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkelet
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 import LzLoad from '../components/LzLoad'
+import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 
 // @ Others
 import { useGetMyListedGames } from '../hooks/hooks'
@@ -72,7 +73,11 @@ const MyListedGamesScreen = () => {
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(12).keys() ].map((i, k) => <CollectionCardSkeleton key={k} />)}
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid key={k} item xs={12} sm={6} md={4}>
+							<GeneralCardSkeleton />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -81,7 +86,7 @@ const MyListedGamesScreen = () => {
 				<Grid container spacing={3}>
 					{data.listedGames.map((data) => (
 						<Grid key={data._id} item xs={12} sm={6} md={4}>
-							<LzLoad placeholder={<CollectionCardSkeleton />}>
+							<LzLoad placeholder={<GeneralCardSkeleton />}>
 								<MyListedGameCard data={data} />
 							</LzLoad>
 						</Grid>

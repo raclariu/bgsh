@@ -32,8 +32,6 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 // @ Main
 const CustomAvatar = ({ size, username, src }) => {
 	const history = useHistory()
-	console.log(size, username, src)
-
 	const [ anchorEl, setAnchorEl ] = useState(null)
 
 	const handleProfileClick = () => {
@@ -51,7 +49,9 @@ const CustomAvatar = ({ size, username, src }) => {
 				src={src}
 				onClick={(e) => setAnchorEl(e.currentTarget)}
 			>
-				<Box fontSize={12}>{username ? username.substring(0, 2).toUpperCase() : 'XX'}</Box>
+				<Box fontSize={14} fontWeight="fontWeightMedium">
+					{username ? username.substring(0, 2).toUpperCase() : 'N/A'}
+				</Box>
 			</StyledAvatar>
 
 			<Popover

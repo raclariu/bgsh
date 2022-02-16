@@ -35,7 +35,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			<CardHeader
 				avatar={
 					<CustomAvatar
-						size={5}
+						size={6}
 						username={path === 'received' ? msg.sender.username : msg.recipient.username}
 						src={path === 'received' ? msg.sender.avatar : msg.recipient.avatar}
 					/>

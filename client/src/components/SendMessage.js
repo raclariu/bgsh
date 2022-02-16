@@ -30,7 +30,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 
 	const mutation = useMutation(({ subject, message, recipient }) => apiSendMessage(subject, message, recipient), {
 		onSuccess : () => {
-			queryClient.invalidateQueries([ 'msgSent' ])
+			queryClient.invalidateQueries([ 'inbox', 'sent' ])
 		}
 	})
 

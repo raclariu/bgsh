@@ -1,6 +1,5 @@
 // @ Libraries
 import React, { lazy, Suspense } from 'react'
-import { SnackbarProvider } from 'notistack'
 import { useSelector } from 'react-redux'
 import { Route, Redirect, Switch, useLocation } from 'react-router-dom'
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles'
@@ -22,6 +21,9 @@ import CustomIconBtn from './components/CustomIconBtn'
 import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header/Header'
 import Footer from './components/Footer'
+
+// @ Hooks
+import { SnackbarProvider } from 'notistack'
 
 // @ Theme
 import { light, dark } from './constants/themes'

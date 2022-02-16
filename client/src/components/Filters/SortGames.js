@@ -15,7 +15,7 @@ const SortGames = ({ handleFilters, mode }) => {
 	const location = useLocation()
 
 	return (
-		<FormControl variant="standard" sx={{ margin: (theme) => theme.spacing(2), minWidth: 130 }}>
+		<FormControl variant="standard" sx={{ minWidth: 160 }}>
 			<InputLabel>Sort by</InputLabel>
 			{mode === 'sell' && (
 				<Select
@@ -36,7 +36,8 @@ const SortGames = ({ handleFilters, mode }) => {
 					<MenuItem value="old">Oldest</MenuItem>
 					<MenuItem value="price-low">Lowest price</MenuItem>
 					<MenuItem value="price-high">Highest price</MenuItem>
-					<MenuItem value="rank">Rank</MenuItem>
+					<MenuItem value="num-ratings">Number of ratings</MenuItem>
+					<MenuItem value="avg-rating">Average rating</MenuItem>
 					<MenuItem value="year">Release date</MenuItem>
 				</Select>
 			)}
