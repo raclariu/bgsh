@@ -64,11 +64,18 @@ const GamesIndexScreen = () => {
 				</Grid>
 			</Box>
 
-			<Box display="flex" width="100%" alignItems="flex-end">
-				<Box flexGrow={1}>
+			<Box
+				display="flex"
+				width="100%"
+				justifyContent="space-between"
+				alignItems="flex-end"
+				mb={2}
+				flexWrap="wrap"
+			>
+				<Box>
 					{isSuccess &&
 					search && (
-						<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+						<Box display="flex" alignItems="center" width="100%" gap={1}>
 							<BackButton />
 							<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
 								Found {data.pagination.totalItems || 0} game(s)
@@ -76,18 +83,16 @@ const GamesIndexScreen = () => {
 						</Box>
 					)}
 				</Box>
+
 				<SortGames mode={currLoc} handleFilters={handleFilters} />
 			</Box>
-
 			{/* <Box>
 				<DrawerFilter />
 			</Box> */}
-
 			{isSuccess &&
 			data.gamesData.length === 0 && (
 				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
 			)}
-
 			{isFetching && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
@@ -97,7 +102,6 @@ const GamesIndexScreen = () => {
 					))}
 				</Grid>
 			)}
-
 			{isSuccess &&
 			data.gamesData.length > 0 && (
 				<Grid container spacing={3} direction="row">
@@ -116,7 +120,6 @@ const GamesIndexScreen = () => {
 					))}
 				</Grid>
 			)}
-
 			{isSuccess &&
 			data.pagination && (
 				<Box

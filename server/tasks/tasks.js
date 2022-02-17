@@ -1,7 +1,7 @@
 import cron from 'node-cron'
 import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
-import Sale from '../models/gameModel.js'
+import Game from '../models/gameModel.js'
 import Kickstarter from '../models/ksModel.js'
 
 const options = {
@@ -15,8 +15,7 @@ const setInactiveTask = cron.schedule(
 	async () => {
 		const lookback = subDays(new Date(), 7)
 
-		await Sale.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
-		await Wanted.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
+		await Game.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
 	},
 	options
 )

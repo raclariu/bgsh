@@ -1,15 +1,10 @@
 // @ Libraries
 import React, { Fragment, useState, useRef, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import AvatarEditor from 'react-avatar-editor'
-import { useDebounce } from 'use-debounce'
-import { alpha } from '@mui/material/styles'
-import { useMutation, useQueryClient, useQuery } from 'react-query'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
 import Dialog from '@mui/material/Dialog'
@@ -25,9 +20,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import ZoomOutIcon from '@mui/icons-material/ZoomOut'
 
 // @ Others
-import { apiUserChangeAvatar, apiGetOwnAvatar } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
-import { changeAvatar } from '../actions/userActions'
+import { useNotiSnackbar, useGetOwnAvatarQuery, useChangeOwnAvatarMutation } from '../hooks/hooks'
 
 // @ Styles
 const MyAvatar = styled(Avatar)(({ theme }) => ({
@@ -53,12 +46,7 @@ const FileInput = styled('input')({
 })
 
 const ChangeAvatar = () => {
-	const dispatch = useDispatch()
-	const queryClient = useQueryClient()
-
-	const { isSuccess, data: ownAvatarData } = useQuery([ 'ownAvatar' ], apiGetOwnAvatar, {
-		staleTime : Infinity
-	})
+	const { isSuccess, data: ownAvatarData } = useGetOwnAvatarQuery()
 
 	const ref = useRef()
 	const [ image, setImage ] = useState(null)
@@ -67,16 +55,11 @@ const ChangeAvatar = () => {
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	const mutation = useMutation((imgBlob) => apiUserChangeAvatar(imgBlob), {
-		onSuccess : (avatarObj) => {
+	const mutation = useChangeOwnAvatarMutation({
+		changeState : () => {
+			console.log('here in changeState')
 			setOpenDialog(false)
 			setImage(null)
-			queryClient.setQueryData([ 'ownAvatar' ], avatarObj)
-			showSnackbar.success({ text: 'Avatar changed successfully' })
-		},
-		onError   : (err) => {
-			queryClient.invalidateQueries([ 'ownAvatar' ])
-			showSnackbar.error({ text: `${err.response.data.message}` })
 		}
 	})
 

@@ -2,10 +2,10 @@
 import React, { useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { useQuery } from 'react-query'
 import { useInView } from 'react-intersection-observer'
 
 // @ Mui
+import { alpha } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -29,7 +29,7 @@ import LzLoad from '../components/LzLoad'
 import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
 
 // @ Others
-import { apiFetchHotGames, apiFetchKickstarters, apiFetchRedditPosts } from '../api/api'
+import { useGetHotGamesQuery, useGetKickstartersQuery, useGetRedditPostsQuery } from '../hooks/hooks'
 
 // @ Main
 const HomeScreen = () => {
@@ -50,35 +50,18 @@ const HomeScreen = () => {
 		error      : errorHotGames,
 		data       : hotGamesList,
 		isSuccess  : isSuccessHotGames
-	} = useQuery([ 'hotGames' ], apiFetchHotGames, {
-		staleTime      : 1000 * 60 * 60,
-		refetchOnMount : false
-	})
+	} = useGetHotGamesQuery()
 
-	const { isFetching: isFetchingKs, error: errorKs, data: ksList, isSuccess: isSuccessKs } = useQuery(
-		[ 'kickstarters' ],
-		apiFetchKickstarters,
-		{
-			enabled        : ksInView,
-			staleTime      : 1000 * 60 * 60,
-			refetchOnMount : false
-		}
-	)
+	const { isFetching: isFetchingKs, error: errorKs, data: ksList, isSuccess: isSuccessKs } = useGetKickstartersQuery({
+		inView : ksInView
+	})
 
 	const {
 		isFetching : isFetchingRedditPosts,
 		error      : errorRedditPosts,
 		data       : redditPosts,
 		isSuccess  : isSuccessRedditPosts
-	} = useQuery([ 'redditPosts' ], apiFetchRedditPosts, {
-		enabled        : redditInView,
-		staleTime      : 1000 * 60 * 60,
-		refetchOnMount : false
-	})
-
-	if (errorHotGames) {
-		console.log(errorHotGames.response)
-	}
+	} = useGetRedditPostsQuery({ inView: redditInView })
 
 	return (
 		<Fragment>
@@ -92,7 +75,7 @@ const HomeScreen = () => {
 					fontWeight="fontWeightMedium"
 					p={1}
 					borderRadius={1}
-					my={4}
+					my={2}
 					boxShadow={1}
 				>
 					<Box>BGG Hot games</Box>
@@ -105,8 +88,14 @@ const HomeScreen = () => {
 					)}
 				</Box>
 
-				<ButtonBase sx={{ border: '1px solid rgb(19, 47, 76)', p: 1, borderRadius: '8px' }}>
-					<LocalFireDepartmentIcon fontSize="small" />
+				<ButtonBase
+					sx={{
+						border       : (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+						p            : 1,
+						borderRadius : '10px'
+					}}
+				>
+					<LocalFireDepartmentIcon fontSize="small" color="primary" />
 				</ButtonBase>
 
 				{errorHotGames && <CustomAlert>{errorHotGames.response.data.message}</CustomAlert>}
@@ -144,7 +133,7 @@ const HomeScreen = () => {
 					fontWeight="fontWeightMedium"
 					p={1}
 					borderRadius={1}
-					my={4}
+					my={2}
 					boxShadow={1}
 				>
 					<Box>Popular kickstarters</Box>
@@ -189,12 +178,14 @@ const HomeScreen = () => {
 					fontWeight="fontWeightMedium"
 					p={1}
 					borderRadius={1}
-					my={4}
+					my={2}
 					boxShadow={1}
 				>
 					<Box>Latest r/boardgames posts</Box>
 					<ExtLinkIconBtn url={`https://reddit.com/r/boardgames`} tooltip="See more reddit posts" />
 				</Box>
+
+				{errorRedditPosts && <CustomAlert>'Error while fetching Reddit posts'</CustomAlert>}
 
 				{isFetchingRedditPosts && (
 					<Box display="flex" flexDirection="column" gap={1}>

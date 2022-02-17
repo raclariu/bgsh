@@ -18,6 +18,8 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
 import ListItemButton from '@mui/material/ListItemButton'
+import ButtonBase from '@mui/material/ButtonBase'
+import { alpha } from '@mui/material/styles'
 
 // @ Icons
 import MenuIcon from '@mui/icons-material/Menu'
@@ -40,6 +42,8 @@ import SendTwoToneIcon from '@mui/icons-material/SendTwoTone'
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
+import LogoutIcon from '@mui/icons-material/Logout'
+import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone'
 
 // @ Components
 import CustomIconBtn from '../CustomIconBtn'
@@ -121,14 +125,29 @@ const Header = () => {
 							<Theme />
 						</Box>
 
-						<CustomIconBtn
+						{/* <CustomIconBtn
 							color="primary"
 							onClick={() => setIsOpen(!isOpen)}
 							aria-label="menu"
 							size="large"
 						>
 							<MenuIcon />
-						</CustomIconBtn>
+						</CustomIconBtn> */}
+
+						<ButtonBase
+							disableRipple
+							color="primary"
+							onClick={() => setIsOpen(!isOpen)}
+							aria-label="menu"
+							size="large"
+							sx={{
+								border       : (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+								p            : 1,
+								borderRadius : '10px'
+							}}
+						>
+							<MenuIcon fontSize="small" color="primary" />
+						</ButtonBase>
 
 						<Drawer
 							keepMounted
@@ -140,7 +159,7 @@ const Header = () => {
 						>
 							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
 								<Box display="flex" alignItems="center">
-									<Box fontWeight="fontWeightMedium" mr={1}>
+									<Box fontWeight="fontWeightMedium" mr={1} color="primary.main">
 										{userData.username}
 									</Box>
 									<MyAvatar size={6}>
@@ -381,7 +400,7 @@ const Header = () => {
 												to="/received"
 											>
 												<ListItemIcon>
-													<InboxTwoToneIcon
+													<CommentTwoToneIcon
 														color={selectedIndex === 8 ? 'primary' : 'inherit'}
 													/>
 												</ListItemIcon>

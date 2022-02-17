@@ -14,13 +14,11 @@ import LzLoad from '../components/LzLoad'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 
 // @ Others
-import { apiFetchHotGames } from '../api/api'
+import { useGetHotGamesQuery } from '../hooks/hooks'
 
 // @ Main
 const HotGamesScreen = () => {
-	const { isFetching, error, data, isSuccess } = useQuery([ 'hotGames' ], apiFetchHotGames, {
-		staleTime : 1000 * 60 * 60
-	})
+	const { isFetching, error, data, isSuccess } = useGetHotGamesQuery()
 
 	return (
 		<Fragment>

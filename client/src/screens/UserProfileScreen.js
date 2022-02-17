@@ -17,22 +17,14 @@ import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkelet
 import LzLoad from '../components/LzLoad'
 
 // @ Others
-import { apiGetProfileData } from '../api/api'
+import { useGetUserProfileDataQuery } from '../hooks/hooks'
 
 // @ Main
 const UserProfileScreen = () => {
 	const dispatch = useDispatch()
 	const { username } = useParams()
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery(
-		[ 'profile', { username } ],
-		() => apiGetProfileData(username),
-		{
-			staleTime : 1000 * 60 * 5
-		}
-	)
-
-	console.log(data)
+	const { isLoading, isError, error, data, isSuccess } = useGetUserProfileDataQuery({ username })
 
 	const [ tab, setTab ] = useState('sale')
 

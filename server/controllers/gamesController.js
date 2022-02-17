@@ -285,10 +285,11 @@ const getGames = asyncHandler(async (req, res) => {
 		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id avatar').lean()
 
 		const fuse = new Fuse(gamesData, {
-			keys      : [ 'games.bggId', 'games.title', 'games.designers' ],
+			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
 			threshold : 0.3,
 			distance  : 200
 		})
+
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
 			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt
@@ -298,10 +299,16 @@ const getGames = asyncHandler(async (req, res) => {
 				return a.totalPrice - b.totalPrice
 			} else if (sortBy === 'price-high') {
 				return b.totalPrice - a.totalPrice
+			} else if (sortBy === 'ratings') {
+				return a.games[0].stats.ratings - b.games[0].stats.ratings
+			} else if (sortBy === 'avgrating') {
+				return b.games[0].stats.avgRating - a.games[0].stats.avgRating
 			} else if (sortBy === 'rank') {
 				return a.games[0].stats.rank - b.games[0].stats.rank
-			} else if (sortBy === 'year') {
+			} else if (sortBy === 'release-new') {
 				return b.games[0].year - a.games[0].year
+			} else if (sortBy === 'release-old') {
+				return a.games[0].year - b.games[0].year
 			} else {
 				return b.createdAt - a.createdAt
 			}
@@ -328,12 +335,16 @@ const getGames = asyncHandler(async (req, res) => {
 				return { totalPrice: 1 }
 			} else if (sortBy === 'price-high') {
 				return { totalPrice: -1 }
-			} else if (sortBy === 'num-ratings') {
+			} else if (sortBy === 'ratings') {
 				return { 'games.stats.ratings': -1 }
-			} else if (sortBy === 'year') {
-				return { 'games.year': -1 }
-			} else if (sortBy === 'avg-rating') {
+			} else if (sortBy === 'avgrating') {
 				return { 'games.stats.avgRating': -1 }
+			} else if (sortBy === 'rank') {
+				return { 'games.stats.rank': 1 }
+			} else if (sortBy === 'release-new') {
+				return { 'games.year': -1 }
+			} else if (sortBy === 'release-old') {
+				return { 'games.year': 1 }
 			} else {
 				return { createdAt: -1 }
 			}
@@ -359,7 +370,7 @@ const getGames = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all active games listed for sale or trade for one single user
+// ~ @desc    Get all active user listed games for sale/trade/want
 // ~ @route   GET /api/games/user/:id
 // ~ @access  Private route
 const getUserListedGames = asyncHandler(async (req, res) => {
@@ -372,7 +383,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const fuse = new Fuse(allUserGames, {
-			keys      : [ 'games.title', 'games.designers' ],
+			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype', 'mode' ],
 			threshold : 0.3,
 			distance  : 200
 		})
@@ -537,7 +548,7 @@ const getSavedGames = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const fuse = new Fuse(user.savedGames, {
-			keys      : [ 'games.title', 'games.designers' ],
+			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
 			threshold : 0.3,
 			distance  : 200
 		})

@@ -383,3 +383,55 @@ export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index 
 		}
 	)
 }
+
+export const useGetOwnAvatarQuery = () => {
+	return useQuery([ 'ownAvatar' ], api.apiGetOwnAvatar, {
+		staleTime : Infinity
+	})
+}
+
+export const useChangeOwnAvatarMutation = ({ changeState }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((imgBlob) => api.apiUserChangeAvatar(imgBlob), {
+		onSuccess : (avatarObj) => {
+			changeState()
+			queryClient.setQueryData([ 'ownAvatar' ], avatarObj)
+			showSnackbar.success({ text: 'Avatar changed successfully' })
+		},
+		onError   : (err) => {
+			queryClient.invalidateQueries([ 'ownAvatar' ])
+			showSnackbar.error({ text: `${err.response.data.message}` })
+		}
+	})
+}
+
+export const useGetHotGamesQuery = () => {
+	return useQuery([ 'hotGames' ], api.apiFetchHotGames, {
+		staleTime      : 1000 * 60 * 60,
+		refetchOnMount : false
+	})
+}
+
+export const useGetKickstartersQuery = ({ inView }) => {
+	return useQuery([ 'kickstarters' ], api.apiFetchKickstarters, {
+		enabled        : inView,
+		staleTime      : 1000 * 60 * 60,
+		refetchOnMount : false
+	})
+}
+
+export const useGetRedditPostsQuery = ({ inView }) => {
+	return useQuery([ 'redditPosts' ], api.apiFetchRedditPosts, {
+		enabled        : inView,
+		staleTime      : 1000 * 60 * 60,
+		refetchOnMount : false
+	})
+}
+
+export const useGetUserProfileDataQuery = ({ username }) => {
+	return useQuery([ 'profile', { username } ], () => api.apiGetProfileData(username), {
+		staleTime : 1000 * 60 * 5
+	})
+}

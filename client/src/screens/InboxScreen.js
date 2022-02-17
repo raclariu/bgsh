@@ -77,7 +77,6 @@ const MessageSkeleton = () => {
 const InboxScreen = () => {
 	const history = useHistory()
 	const location = useLocation()
-	const queryClient = useQueryClient()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 	const currLoc = location.pathname === '/received' ? 'received' : 'sent'
@@ -182,7 +181,7 @@ const InboxScreen = () => {
 				</Grid>
 			</Box>
 
-			<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={50} mb={1}>
+			<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={50} mb={2}>
 				<Box display="flex" alignItems="center" gap={2}>
 					{search && <BackButton />}
 

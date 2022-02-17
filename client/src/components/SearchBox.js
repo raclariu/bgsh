@@ -1,6 +1,5 @@
 // @ Libraries
 import React, { useState } from 'react'
-import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Paper from '@mui/material/Paper'
@@ -32,7 +31,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 			sx={{
 				padding : (theme) => theme.spacing(1.2, 1.5, 1.2, 1.5)
 			}}
-			elevation={2}
+			elevation={1}
 			onSubmit={submitSearchHandler}
 			noValidate
 			autoComplete="off"
@@ -44,15 +43,27 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				name="keyword"
 				placeholder={placeholder}
 				type="text"
-				startAdornment={
-					<InputAdornment position="start">
-						{keyword.trim().length > 2 ? <SearchIcon /> : <SearchIcon color="disabled" />}
-					</InputAdornment>
-				}
 				endAdornment={
 					<InputAdornment position="end">
-						{keyword.length > 0 && (
-							<CustomIconBtn onClick={() => setKeyword('')}>
+						{keyword.trim().length > 2 ? (
+							<CustomIconBtn size="small" onClick={submitSearchHandler}>
+								<SearchIcon color="primary" />
+							</CustomIconBtn>
+						) : (
+							<CustomIconBtn size="small" disabled>
+								<SearchIcon color="disabled" />
+							</CustomIconBtn>
+						)}
+					</InputAdornment>
+				}
+				startAdornment={
+					<InputAdornment position="start">
+						{keyword.length > 0 ? (
+							<CustomIconBtn size="small" onClick={() => setKeyword('')}>
+								<ClearIcon />
+							</CustomIconBtn>
+						) : (
+							<CustomIconBtn size="small">
 								<ClearIcon color="disabled" />
 							</CustomIconBtn>
 						)}

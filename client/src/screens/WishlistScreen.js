@@ -1,10 +1,7 @@
 // @ Libraries
 import React, { Fragment } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -33,8 +30,6 @@ import {
 const WishlistScreen = () => {
 	const history = useHistory()
 	const location = useLocation()
-	const queryClient = useQueryClient()
-	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { search, page = 1 } = queryString.parse(location.search)
 

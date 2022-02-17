@@ -24,3 +24,4 @@ da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dr
 - mai tarziu rezolvat cu paginarea spatiere etc
 - de umblat la fusejs la keyuri ca la owned
 - de componentizat chipurile si icoanele care apar la saved games si mylistedgames
+- searchbox sa ia keyword din querystring daca e

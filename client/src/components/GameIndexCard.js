@@ -36,11 +36,10 @@ const StyledTitleBox = styled(Box)({
 	textAlign       : 'center'
 })
 
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	// padding   : theme.spacing(1, 1, 1, 1),
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
 // @ Main
 const GameIndexCard = ({ data }) => {

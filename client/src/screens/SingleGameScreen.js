@@ -85,12 +85,17 @@ const StyledChipsBox = styled(Box)(({ theme }) => ({
 	gap            : theme.spacing(1)
 }))
 
-const StyledCoverImg = styled('img')({
-	objectFit    : 'contain',
-	width        : '100%',
-	overflow     : 'hidden',
-	borderRadius : '8px'
-})
+const StyledCoverImg = styled('img')(({ theme }) => ({
+	objectFit                      : 'contain',
+	width                          : '100%',
+	overflow                       : 'hidden',
+	[theme.breakpoints.down('md')]: {
+		height : '220px'
+	},
+	[theme.breakpoints.up('md')]: {
+		height : '320px'
+	}
+}))
 
 const StyledMasonryImg = styled('img')({
 	imageRendering : '-webkit-optimize-contrast',
@@ -99,7 +104,7 @@ const StyledMasonryImg = styled('img')({
 	width          : '100%',
 	objectFit      : 'contain',
 	cursor         : 'zoom-in',
-	borderRadius   : '8px'
+	borderRadius   : '4px'
 })
 
 const StyledUserImg = styled('img')({
@@ -109,7 +114,7 @@ const StyledUserImg = styled('img')({
 	width          : '100%',
 	objectFit      : 'cover',
 	cursor         : 'zoom-in',
-	borderRadius   : '8px'
+	borderRadius   : '4px'
 })
 
 const StyledDialogImg = styled('img')({
@@ -123,7 +128,7 @@ const StyledRecImg = styled('img')({
 	objectFit     : 'cover',
 	maxWidth      : 60,
 	height        : 60,
-	borderRadius  : '8px'
+	borderRadius  : '4px'
 })
 
 const StyledTitleBox = styled(Box)({
@@ -143,14 +148,14 @@ const StyledParagraph = styled('p')({
 const GallerySkeleton = () => {
 	return (
 		<Box
-			borderRadius={1}
+			borderRadius="4px"
 			boxShadow={1}
 			p={1}
 			bgcolor="background.paper"
 			width="100%"
 			height={Math.floor(Math.random() * (270 - 100 + 1) + 100)}
 		>
-			<Skeleton animation="wave" variant="rectangular" width="100%" height="100%" sx={{ borderRadius: 1 }} />
+			<Skeleton animation="wave" variant="rectangular" width="100%" height="100%" sx={{ borderRadius: '4px' }} />
 		</Box>
 	)
 }
@@ -159,9 +164,15 @@ const GallerySkeleton = () => {
 const RecsSkeleton = () => {
 	return (
 		<Grid item xs={12} sm={6} md={4}>
-			<Box p={1} display="flex" boxShadow={1} borderRadius={1} bgcolor="background.paper" gap={1} width="100%">
+			<Box p={1} display="flex" boxShadow={1} borderRadius="4px" bgcolor="background.paper" gap={1} width="100%">
 				<Box>
-					<Skeleton animation="wave" variant="rectangular" width={60} height={60} sx={{ borderRadius: 1 }} />
+					<Skeleton
+						animation="wave"
+						variant="rectangular"
+						width={60}
+						height={60}
+						sx={{ borderRadius: '4px' }}
+					/>
 				</Box>
 				<Box display="flex" flexDirection="column" width="100%" justifyContent="center">
 					<Skeleton animation="wave" variant="text" width="70%" />
@@ -336,6 +347,7 @@ const SingleGameScreen = () => {
 							justifyContent="center"
 							boxShadow={1}
 							p={2}
+							borderRadius="4px"
 							bgcolor="background.paper"
 						>
 							<Zoom
@@ -346,12 +358,6 @@ const SingleGameScreen = () => {
 								<StyledCoverImg
 									src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
 									alt={data.games[index].title}
-									sx={{
-										height : {
-											xs : '220px',
-											md : '320px'
-										}
-									}}
 								/>
 							</Zoom>
 						</Box>
@@ -445,7 +451,7 @@ const SingleGameScreen = () => {
 								alignItems="center"
 								justifyContent={data.mode === 'sell' ? 'space-between' : 'center'}
 								boxShadow={1}
-								borderRadius={1}
+								borderRadius="4px"
 								bgcolor="background.paper"
 								width="100%"
 							>
@@ -487,7 +493,7 @@ const SingleGameScreen = () => {
 								width="100%"
 								p={2}
 								boxShadow={1}
-								borderRadius={1}
+								borderRadius="4px"
 								bgcolor="background.paper"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
@@ -623,7 +629,7 @@ const SingleGameScreen = () => {
 								width="100%"
 								p={2}
 								boxShadow={1}
-								borderRadius={1}
+								borderRadius="4px"
 								bgcolor="background.paper"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
@@ -745,7 +751,7 @@ const SingleGameScreen = () => {
 									<Masonry gutter="10px">
 										{galleryData.map((obj, i) => (
 											<LzLoad key={obj.imageid}>
-												<Box borderRadius={1} boxShadow={1} p={1} bgcolor="background.paper">
+												<Box borderRadius="4px" boxShadow={1} p={1} bgcolor="background.paper">
 													<StyledMasonryImg
 														onClick={() => handleOpenGalleryImageDialog(i)}
 														src={obj.thumbnail}
@@ -873,7 +879,7 @@ const SingleGameScreen = () => {
 														display="flex"
 														p={1}
 														boxShadow={1}
-														borderRadius={1}
+														borderRadius="4px"
 														bgcolor="background.paper"
 														gap={1}
 													>

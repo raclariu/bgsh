@@ -34,12 +34,9 @@ const TradeGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
-	const queryClient = useQueryClient()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
-
-	const saleList = useSelector((state) => state.saleList)
 
 	const [ shipPost, setShipPost ] = useState(true)
 	const [ shipCourier, setShipCourier ] = useState(false)
