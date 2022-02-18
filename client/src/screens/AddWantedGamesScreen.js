@@ -1,8 +1,5 @@
 // @ Libraries
 import React, { useEffect, useState, useRef, Fragment } from 'react'
-import { styled } from '@mui/material/styles'
-import { useSelector, useDispatch } from 'react-redux'
-import { useQuery, useQueryClient, useMutation } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -19,8 +16,6 @@ import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
-import { removeFromSaleList } from '../actions/saleListActions'
-import { apiFetchGameDetails, apiAddWantedGames } from '../api/api'
 import {
 	useGetBggGamesDetailsQuery,
 	useGetListQuery,
@@ -30,9 +25,6 @@ import {
 
 // @ Main
 const AddWantedGamesScreen = () => {
-	const dispatch = useDispatch()
-	const queryClient = useQueryClient()
-
 	const [ shipPreffered, setShipPreffered ] = useState([])
 	const [ values, setValues ] = useState([])
 

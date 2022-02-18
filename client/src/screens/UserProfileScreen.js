@@ -2,7 +2,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'

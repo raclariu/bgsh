@@ -179,7 +179,7 @@ export const useClearListMutation = () => {
 	})
 }
 
-export const useGetBggGamesDetailsQuery = (onSuccess) => {
+export const useGetBggGamesDetailsQuery = ({ onSuccess }) => {
 	const userList = useGetListQuery()
 
 	return useQuery([ 'bggGamesDetails' ], () => api.apiFetchGameDetails(userList.data.list.map((el) => el.bggId)), {
@@ -352,7 +352,7 @@ export const useDeleteMessagesMutation = (currLoc) => {
 }
 
 export const useGetSingleGameQuery = (altId) => {
-	return useQuery([ 'singleGame', 'data', { altId } ], () => api.apiFetchSingleGame(altId), {
+	return useQuery([ 'singleGameScreen', 'data', { altId } ], () => api.apiFetchSingleGame(altId), {
 		staleTime : 1000 * 60 * 60
 	})
 }
@@ -360,22 +360,26 @@ export const useGetSingleGameQuery = (altId) => {
 export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, index }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
-	return useQuery([ 'singleGame', 'gallery', { altId, index } ], () => api.apiFetchGallery(data.games[index].bggId), {
-		enabled          : isSuccess && galleryInView,
-		staleTime        : 1000 * 60 * 60,
-		keepPreviousData : true,
-		select           : (data) => {
-			console.log(data)
-			return data
+	return useQuery(
+		[ 'singleGameScreen', 'gallery', { altId, index } ],
+		() => api.apiFetchGallery(data.games[index].bggId),
+		{
+			enabled          : isSuccess && galleryInView,
+			staleTime        : 1000 * 60 * 60,
+			keepPreviousData : true,
+			select           : (data) => {
+				console.log(data)
+				return data
+			}
 		}
-	})
+	)
 }
 
 export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery(
-		[ 'singleGame', 'recs', { altId, index } ],
+		[ 'singleGameScreen', 'recs', { altId, index } ],
 		() => api.apiFetchRecommendations(data.games[index].bggId),
 		{
 			enabled   : isSuccess && recsInView,
@@ -433,5 +437,218 @@ export const useGetRedditPostsQuery = ({ inView }) => {
 export const useGetUserProfileDataQuery = ({ username }) => {
 	return useQuery([ 'profile', { username } ], () => api.apiGetProfileData(username), {
 		staleTime : 1000 * 60 * 5
+	})
+}
+
+export const useHistoryAddGameMutation = ({ onSuccess }) => {
+	return useMutation(
+		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) => {
+			if (mode === 'sell') {
+				return api.apiAddSoldGamesToHistory({
+					games,
+					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
+					finalPrice    : finalPrice,
+					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
+					gameId
+				})
+			}
+
+			if (mode === 'trade') {
+				return api.apiAddTradedGamesToHistory({
+					games,
+					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
+					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
+					gameId
+				})
+			}
+		},
+		{
+			onSuccess
+		}
+	)
+}
+
+export const useDeleteListedGameMutation = ({ onSuccess }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((gameId) => api.apiDeleteListedGame(gameId), {
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while trying to delete a listing'
+			showSnackbar.error({ text })
+		},
+		onSuccess
+	})
+}
+
+export const useReactivateListedGameMutation = ({ onSuccess }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((gameId) => api.apiReactivateListedGame(gameId), {
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while trying to reactivate a listing'
+			showSnackbar.error({ text })
+		},
+		onSuccess
+	})
+}
+
+export const useBggSearchGamesMutation = ({ onSuccess }) => {
+	return useMutation((debKeyword) => api.apiBggSearchGames(debKeyword), {
+		onSuccess
+	})
+}
+
+export const useChangePasswordMutation = ({ resetForm }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(
+		({ passwordCurrent, passwordNew, passwordNewConfirmation }) =>
+			api.apiUserChangePassword({ passwordCurrent, passwordNew, passwordNewConfirmation }),
+		{
+			onSuccess : () => {
+				resetForm()
+				showSnackbar.success({ text: 'Password changed successfully' })
+			}
+		}
+	)
+}
+
+export const useBggFetchCollectionMutation = () => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((bggUsername) => api.apiFetchBggCollection(bggUsername), {
+		retry      : 5,
+		retryDelay : 3000,
+		onSuccess  : (data, bggUsername) => {
+			console.log('in useBggFetchColl', bggUsername)
+			queryClient.invalidateQueries([ 'collection' ])
+			queryClient.invalidateQueries([ 'wishlist' ])
+			showSnackbar.success({
+				text : `Collection data from BGG for ${bggUsername} was successfully fetched`
+			})
+		}
+	})
+}
+
+export const useUploadListedGameImageMutation = ({ title, handleGameInfo }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((formData) => api.apiUploadImage(formData), {
+		onSuccess : (userImageObj, vars) => {
+			const bggId = vars.get('bggId')
+			handleGameInfo(userImageObj, bggId, 'userImage')
+			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
+				const copyUserListObj = { ...oldUserListObj }
+				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === bggId)
+				copyUserListObj.list[idx].userImage = userImageObj
+				return copyUserListObj
+			})
+			showSnackbar.success({ text: `Image for ${title} uploaded successfully` })
+		},
+		onError   : (error) => {
+			showSnackbar.error({ text: error.response.data.message || 'Error occured while uploading image' })
+		}
+	})
+}
+
+export const useDeleteUploadedGameImageMutation = ({ handleGameInfo }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+	const queryClient = useQueryClient()
+
+	return useMutation(({ fileName, bggId }) => api.apiDeleteImage(fileName, bggId), {
+		onSuccess : (data, vars) => {
+			handleGameInfo(null, vars.bggId, 'userImage')
+			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
+				const copyUserListObj = { ...oldUserListObj }
+				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === vars.bggId)
+				copyUserListObj.list[idx].userImage = null
+				return copyUserListObj
+			})
+			showSnackbar.info({ text: `Image for ${vars.title} deleted successfully` })
+		},
+		onError   : (error) => {
+			showSnackbar.error({ text: error.response.data.message || 'Error occured while removing uploaded image' })
+		}
+	})
+}
+
+export const useGetNewMessagesCountQuery = () => {
+	return useQuery([ 'inbox', 'count' ], api.apiGetNewMessagesCount, {
+		refetchInterval : 1000 * 60 * 2,
+		refetchOnMount  : false
+	})
+}
+
+export const useGetNotificationsQuery = () => {
+	return useQuery([ 'notifications' ], api.apiGetNotifications, {
+		refetchInterval : 1000 * 60 * 2,
+		refetchOnMount  : false
+	})
+}
+
+export const useSendNewMessageMutation = ({ handleCloseDialog }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(({ subject, message, recipient }) => api.apiSendMessage(subject, message, recipient), {
+		onSuccess : () => {
+			handleCloseDialog()
+			showSnackbar.success({ text: 'Message sent successfully' })
+			queryClient.invalidateQueries([ 'inbox', 'sent' ])
+		}
+	})
+}
+
+export const useUpdateSaveGameStatusMutation = () => {
+	const [ showSnackbar ] = useNotiSnackbar()
+	const queryClient = useQueryClient()
+
+	return useMutation((altId) => api.apiUpdateSavedGameStatus(altId), {
+		onMutate  : async (varAltId) => {
+			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+			await queryClient.cancelQueries([ 'singleGameScreen', 'savedStatus', varAltId ])
+			// Snapshot the previous value
+			const prevStatus = queryClient.getQueryData([ 'singleGameScreen', 'savedStatus', varAltId ])
+			// Optimistically update to the new value
+			queryClient.setQueryData([ 'singleGameScreen', 'savedStatus', varAltId ], (oldStatus) => {
+				const newStatus = { isSaved: !oldStatus.isSaved }
+				newStatus.isSaved
+					? showSnackbar.info({ text: 'Added to my saved list' })
+					: showSnackbar.info({ text: 'Removed from my saved list' })
+
+				return newStatus
+			})
+
+			// Return a context object with the snapshotted value in case of error so we can revert to old status
+			return { prevStatus }
+		},
+		onError   : (err, varAltId, ctx) => {
+			showSnackbar.error({
+				text : err.response.data.message || 'Error occured while trying to add game to my saved list'
+			})
+			// If the mutation fails, use the context returned from onMutate to roll back
+			queryClient.setQueryData([ 'singleGameScreen', 'savedStatus', varAltId ], ctx.prevStatus)
+		},
+		onSuccess : (data, varAltId) => {
+			// Update query with data from mutation so that saved status useQuery won't run
+			queryClient.setQueryData([ 'singleGameScreen', 'savedStatus', varAltId ], data)
+			// Invalidate entire saved games list
+			queryClient.invalidateQueries([ 'savedGames' ])
+		}
+	})
+}
+
+export const useGetSaveGameStatusQuery = ({ altId }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useQuery([ 'singleGameScreen', 'savedStatus', altId ], () => api.apiFetchGameSavedStatus(altId), {
+		staleTime : 1000 * 60 * 3,
+		enabled   : !!altId,
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while fetching saved status'
+			showSnackbar.error({ text })
+		}
 	})
 }

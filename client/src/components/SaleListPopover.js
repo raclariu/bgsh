@@ -2,7 +2,6 @@
 import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
 
 // @ Mui

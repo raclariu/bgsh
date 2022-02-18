@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import queryString from 'query-string'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'

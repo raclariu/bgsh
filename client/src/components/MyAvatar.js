@@ -2,14 +2,13 @@
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 
 // @ Others
-import { apiGetOwnAvatar } from '../api/api'
+import { useGetOwnAvatarQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
@@ -21,9 +20,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 const MyAvatar = ({ size }) => {
 	const username = useSelector((state) => state.userAuth.userData.username)
 
-	const { isSuccess, data: avatarData } = useQuery([ 'ownAvatar' ], apiGetOwnAvatar, {
-		staleTime : Infinity
-	})
+	const { isSuccess, data: avatarData } = useGetOwnAvatarQuery()
 
 	return (
 		<Fragment>

@@ -3,7 +3,6 @@ import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'

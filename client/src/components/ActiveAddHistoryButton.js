@@ -37,7 +37,12 @@ import {
 	apiReactivateListedGame,
 	apiAddTradedGamesToHistory
 } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import {
+	useNotiSnackbar,
+	useHistoryAddGameMutation,
+	useDeleteListedGameMutation,
+	useReactivateListedGameMutation
+} from '../hooks/hooks'
 
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
@@ -51,64 +56,30 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const [ extraInfo, setExtraInfo ] = useState('')
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	const addGame = useMutation(
-		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) => {
-			if (mode === 'sell') {
-				return apiAddSoldGamesToHistory({
-					games,
-					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
-					finalPrice    : finalPrice,
-					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
-					gameId
-				})
-			}
-
-			if (mode === 'trade') {
-				return apiAddTradedGamesToHistory({
-					games,
-					otherUsername : otherUsername.trim() ? otherUsername.trim().toLowerCase() : null,
-					extraInfo     : extraInfo.trim() ? extraInfo.trim() : null,
-					gameId
-				})
-			}
-		},
-		{
-			onSuccess : () => {
-				setOpenDialog(false)
-				addGame.reset()
-				showSnackbar.success({ text: 'Successfully added to history' })
-				invalidate()
-			}
+	const historyAddGame = useHistoryAddGameMutation({
+		onSuccess : () => {
+			showSnackbar.success({ text: 'Successfully added to history' })
+			setOpenDialog(false)
+			invalidate()
 		}
-	)
+	})
 
-	const deleteGame = useMutation((gameId) => apiDeleteListedGame(gameId), {
-		onError   : (err) => {
-			const text = err.response.data.message || 'Error occured while trying to delete a listing'
-			showSnackbar.error({ text })
-		},
+	const deleteListing = useDeleteListedGameMutation({
 		onSuccess : () => {
 			setOpenDialog(false)
-			deleteGame.reset()
 			showSnackbar.success({ text: 'Successfully deleted' })
 			invalidate()
 		}
 	})
 
-	const reactivateGame = useMutation((gameId) => apiReactivateListedGame(gameId), {
-		onError   : (err) => {
-			const text = err.response.data.message || 'Error occured while trying to reactivate a listing'
-			showSnackbar.error({ text })
-		},
+	const reactivateGame = useReactivateListedGameMutation({
 		onSuccess : () => {
 			setOpenDialog(false)
-			reactivateGame.reset()
 			showSnackbar.success({ text: 'Successfully reactivated' })
 			invalidate()
 		}
 	})
 
-	console.log(mode)
 	const invalidate = () => {
 		queryClient.invalidateQueries([ 'myListedGames' ])
 		if (mode === 'sell') {
@@ -132,12 +103,12 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 	const addGameHandler = (e) => {
 		e.preventDefault()
 		console.log({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
-		addGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
+		historyAddGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 	}
 
 	const deleteGameHandler = (e) => {
 		e.preventDefault()
-		deleteGame.mutate(gameId)
+		deleteListing.mutate(gameId)
 	}
 
 	const reactivateGameHandler = (e) => {
@@ -145,9 +116,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 		reactivateGame.mutate(gameId)
 	}
 
-	const otherUsernameError = addGame.isError ? addGame.error.response.data.message.otherUsername : false
-	const finalPriceError = addGame.isError ? addGame.error.response.data.message.finalPrice : false
-	const extraInfoError = addGame.isError ? addGame.error.response.data.message.extraInfo : false
+	const otherUsernameError = historyAddGame.isError ? historyAddGame.error.response.data.message.otherUsername : false
+	const finalPriceError = historyAddGame.isError ? historyAddGame.error.response.data.message.finalPrice : false
+	const extraInfoError = historyAddGame.isError ? historyAddGame.error.response.data.message.extraInfo : false
 
 	return (
 		<Fragment>
@@ -246,7 +217,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								</Box>
 							</DialogContent>
 							<DialogActions>
-								<CustomButton disabled={addGame.isLoading} onClick={handleCloseDialog}>
+								<CustomButton disabled={historyAddGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
 								</CustomButton>
 
@@ -254,7 +225,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 									type="submit"
 									variant="contained"
 									color="primary"
-									loading={addGame.isLoading}
+									loading={historyAddGame.isLoading}
 									disabled={currUsername.trim().toLowerCase() === otherUsername.trim().toLowerCase()}
 								>
 									{mode === 'sell' ? 'Sell' : 'Trade'}
@@ -282,7 +253,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							<CustomDivider />
 
 							<DialogActions>
-								<CustomButton disabled={deleteGame.isLoading} onClick={handleCloseDialog}>
+								<CustomButton disabled={deleteListing.isLoading} onClick={handleCloseDialog}>
 									Cancel
 								</CustomButton>
 
@@ -290,7 +261,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 									type="submit"
 									variant="contained"
 									color="primary"
-									loading={deleteGame.isLoading}
+									loading={deleteListing.isLoading}
 								>
 									Delete
 								</LoadingBtn>

@@ -1,10 +1,8 @@
 // @ Libraries
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router'
 import queryString from 'query-string'
-import { useQuery } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'

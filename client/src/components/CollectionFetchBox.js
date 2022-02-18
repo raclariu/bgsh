@@ -1,42 +1,21 @@
 // @ Libraries
-import React, { useState, useEffect, Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import React, { useState } from 'react'
 
 // @ Mui
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 
 // @ Components
-import Loader from './Loader'
 import Input from './Input'
-import CustomAlert from '../components/CustomAlert'
 import LoadingBtn from './LoadingBtn'
 
 // @ Others
-import { clearSaleList } from '../actions/saleListActions'
-import { apiFetchBggCollection } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
+import { useBggFetchCollectionMutation } from '../hooks/hooks'
 
 // @ Main
 const CollectionFetchBox = () => {
-	const dispatch = useDispatch()
-	const queryClient = useQueryClient()
-
 	const [ bggUsername, setBggUsername ] = useState('')
-	const [ showSnackbar ] = useNotiSnackbar()
 
-	const mutation = useMutation((bggUsername) => apiFetchBggCollection(bggUsername), {
-		retry      : 5,
-		retryDelay : 3000,
-		onSuccess  : () => {
-			queryClient.invalidateQueries([ 'collection' ])
-			queryClient.invalidateQueries([ 'wishlist' ])
-			showSnackbar.success({
-				text : `Collection data from BGG for user ${bggUsername} was successfully fetched`
-			})
-		}
-	})
+	const mutation = useBggFetchCollectionMutation()
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()

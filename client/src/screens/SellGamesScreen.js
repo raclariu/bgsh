@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui
@@ -36,8 +35,6 @@ const SellGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
-	const queryClient = useQueryClient()
-	const [ showSnackbar ] = useNotiSnackbar()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
@@ -56,21 +53,22 @@ const SellGamesScreen = () => {
 		setValues((val) => val.filter(({ bggId }) => listData.list.find((el) => el.bggId === bggId)))
 	)
 
-	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery((data) =>
-		setValues(
-			data.map((game) => {
-				return {
-					...game,
-					isSleeved : false,
-					version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
-					condition : null,
-					extraInfo : '',
-					price     : '',
-					userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
-				}
-			})
-		)
-	)
+	const { isError, error, data, isFetching, isSuccess: isSuccessDetails } = useGetBggGamesDetailsQuery({
+		onSuccess : (data) =>
+			setValues(
+				data.map((game) => {
+					return {
+						...game,
+						isSleeved : false,
+						version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
+						condition : null,
+						extraInfo : '',
+						price     : '',
+						userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
+					}
+				})
+			)
+	})
 
 	const deleteMutation = useDeleteFromListMutation()
 	const listMutation = useListGamesMutation('sell')

@@ -1,7 +1,6 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useMutation } from 'react-query'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
@@ -10,14 +9,12 @@ import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
-import IconButton from '@mui/material/IconButton'
 import Autocomplete from '@mui/material/Autocomplete'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import Button from '@mui/material/Button'
 import ButtonBase from '@mui/material/ButtonBase'
 import FormControl from '@mui/material/FormControl'
 import FormGroup from '@mui/material/FormGroup'
@@ -36,9 +33,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone'
 
 // @ Others
-import { apiUploadImage, apiDeleteImage } from '../api/api'
-import { useNotiSnackbar } from '../hooks/hooks'
-import { useQueryClient } from 'react-query'
+import { useNotiSnackbar, useUploadListedGameImageMutation, useDeleteUploadedGameImageMutation } from '../hooks/hooks'
 
 // @ Styles
 const StyledImg = styled('img')({
@@ -51,7 +46,6 @@ const StyledImg = styled('img')({
 // @ Main
 const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleGameInfo }) => {
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
-	const queryClient = useQueryClient()
 
 	const [ showSnackbar ] = useNotiSnackbar()
 
@@ -63,38 +57,9 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 		}
 	}
 
-	const uploadImageMutation = useMutation((formData) => apiUploadImage(formData), {
-		onSuccess : (userImageObj, vars) => {
-			const bggId = vars.get('bggId')
-			handleGameInfo(userImageObj, bggId, 'userImage')
-			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
-				const copyUserListObj = { ...oldUserListObj }
-				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === bggId)
-				copyUserListObj.list[idx].userImage = userImageObj
-				return copyUserListObj
-			})
-			showSnackbar.success({ text: `Image for "${data.title}" uploaded successfully` })
-		},
-		onError   : (error) => {
-			showSnackbar.error({ text: error.response.data.message || 'Error occured while uploading image' })
-		}
-	})
+	const uploadImageMutation = useUploadListedGameImageMutation({ title: data.title, handleGameInfo })
 
-	const removeImageMutation = useMutation(({ fileName, bggId }) => apiDeleteImage(fileName, bggId), {
-		onSuccess : (data, vars) => {
-			handleGameInfo(null, vars.bggId, 'userImage')
-			queryClient.setQueryData([ 'list' ], (oldUserListObj) => {
-				const copyUserListObj = { ...oldUserListObj }
-				const idx = copyUserListObj.list.findIndex((obj) => obj.bggId === vars.bggId)
-				copyUserListObj.list[idx].userImage = null
-				return copyUserListObj
-			})
-			showSnackbar.info({ text: `Image for "${vars.title}" deleted successfully` })
-		},
-		onError   : (error) => {
-			showSnackbar.error({ text: error.response.data.message || 'Error occured while removing uploaded image' })
-		}
-	})
+	const removeImageMutation = useDeleteUploadedGameImageMutation({ handleGameInfo })
 
 	const handleImages = (e) => {
 		const uploadedImg = e.target.files[0]

@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useHistory } from 'react-router-dom'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui
@@ -21,8 +20,6 @@ import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
-import { removeFromSaleList } from '../actions/saleListActions'
-import { apiFetchGameDetails, apiAddBoughtGamesToHistory } from '../api/api'
 import {
 	useGetListQuery,
 	useGetBggGamesDetailsQuery,
@@ -35,7 +32,6 @@ const BuyGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
-	const queryClient = useQueryClient()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack

@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useQuery, useQueryClient, useMutation } from 'react-query'
 import queryString from 'query-string'
 
 // @ Mui

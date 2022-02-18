@@ -196,8 +196,7 @@ const SingleGameScreen = () => {
 
 	const { ref: recsRef, inView: recsInView } = useInView({
 		threshold   : 0,
-		triggerOnce : true,
-		delay       : 200
+		triggerOnce : true
 	})
 
 	const [ index, setIndex ] = useState(0)
@@ -591,7 +590,7 @@ const SingleGameScreen = () => {
 									<Box display="flex" flexDirection="column">
 										<Box fontWeight="fontWeightMedium">Game description</Box>
 										<Box>
-											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
+											<Collapse in={showMoreDescription} collapsedSize={52} timeout="auto">
 												<Box fontStyle="italic" fontSize={12}>
 													{data.games[index].description
 														.split('&#10;')

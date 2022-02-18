@@ -1,7 +1,5 @@
 // @ Libraries
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Popover from '@mui/material/Popover'
@@ -27,7 +25,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
 
 // @ Others
-import { apiGetNotifications } from '../api/api'
+import { useGetNotificationsQuery } from '../hooks/hooks'
 import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Main
@@ -35,10 +33,7 @@ const NotificationsPopover = () => {
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const open = Boolean(anchorEl)
 
-	const { data, isSuccess } = useQuery([ 'notifications' ], apiGetNotifications, {
-		refetchInterval : 1000 * 60 * 2,
-		refetchOnMount  : false
-	})
+	const { data, isSuccess } = useGetNotificationsQuery()
 
 	return (
 		<Fragment>

@@ -2,7 +2,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMutation, useQueryClient } from 'react-query'
 
 // @ Mui
 import Dialog from '@mui/material/Dialog'
@@ -20,19 +19,11 @@ import Input from './Input'
 import LoadingBtn from './LoadingBtn'
 
 // @ Others
-import { apiSendMessage } from '../api/api'
+import { useSendNewMessageMutation } from '../hooks/hooks'
 
 // @Main
 const SendMessage = ({ recipientUsername = '', ...other }) => {
-	const queryClient = useQueryClient()
-
 	const currUsername = useSelector((state) => state.userAuth.userData.username)
-
-	const mutation = useMutation(({ subject, message, recipient }) => apiSendMessage(subject, message, recipient), {
-		onSuccess : () => {
-			queryClient.invalidateQueries([ 'inbox', 'sent' ])
-		}
-	})
 
 	const [ open, setOpen ] = useState(false)
 	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')
@@ -45,7 +36,11 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 
 	const handleCloseDialog = () => {
 		setOpen(false)
+		setSubject('')
+		setMessage('')
 	}
+
+	const mutation = useSendNewMessageMutation({ handleCloseDialog })
 
 	const submitHandler = (e) => {
 		e.preventDefault()
