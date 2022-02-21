@@ -9,19 +9,21 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
+import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
-
-// @ Components
-import CustomIconBtn from './CustomIconBtn'
-import CustomDivider from './CustomDivider'
-import CustomAvatar from './CustomAvatar'
-import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import BlockIcon from '@mui/icons-material/Block'
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+
+// @ Components
+import HistoryGameDetails from './HistoryGameDetails'
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
+import CustomAvatar from './CustomAvatar'
+import CustomTooltip from './CustomTooltip'
 
 // @ Others
 import { calculateTimeAgo, formatDate } from '../helpers/helpers'
@@ -45,13 +47,13 @@ const StyledTitleBox = styled(Box)({
 const HistoryGameCard = ({ data }) => {
 	const [ index, setIndex ] = useState(0)
 
-	const handleIndex = (type) => {
-		if (type === 'minus') {
+	const cycleIndex = (type) => {
+		if (type === 'back') {
 			if (index > 0) {
 				setIndex(index - 1)
 			}
 		}
-		if (type === 'plus') {
+		if (type === 'forward') {
 			if (data.games.length > index + 1) {
 				setIndex(index + 1)
 			}
@@ -97,7 +99,7 @@ const HistoryGameCard = ({ data }) => {
 							<CustomIconBtn
 								color="primary"
 								disabled={index === 0}
-								onClick={() => handleIndex('minus')}
+								onClick={() => cycleIndex('back')}
 								size="large"
 								edge="start"
 							>
@@ -109,7 +111,7 @@ const HistoryGameCard = ({ data }) => {
 							<CustomIconBtn
 								color="primary"
 								disabled={data.games.length === index + 1}
-								onClick={() => handleIndex('plus')}
+								onClick={() => cycleIndex('forward')}
 								size="large"
 								edge="end"
 							>
@@ -126,42 +128,11 @@ const HistoryGameCard = ({ data }) => {
 
 			<CustomDivider />
 
-			<CardContent>
-				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={1}>
-					{data.mode === 'sell' && (
-						<Box fontWeight="fontWeightMedium">
-							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
-						</Box>
-					)}
-
-					{data.otherUser ? (
-						<Box display="flex" alignItems="center" gap={0.5}>
-							<CustomAvatar size={5} username={data.otherUser.username} src={data.otherUser.avatar} />
-							<Box display="flex" alignItems="center">
-								<Box textAlign="center" ml={0.5}>
-									<CustomTooltip title={formatDate(data.createdAt)}>
-										{calculateTimeAgo(data.createdAt)}
-									</CustomTooltip>
-								</Box>
-							</Box>
-						</Box>
-					) : (
-						<Avatar color="primary" sx={{ height: 40, width: 40, backgroundColor: 'primary.main' }}>
-							<BlockIcon />
-						</Avatar>
-					)}
-
-					<CustomDivider orientation="vertical" flexItem />
+			<CardActions>
+				<Box display="flex" alignItems="center" justifyContent="flex-end" width="100%">
+					<HistoryGameDetails data={data} cycleIndex={cycleIndex} index={index} />
 				</Box>
-
-				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" width="100%">
-					<Box>
-						<Box fontWeight="fontWeightMedium">
-							<Chip color="primary" label={data.finalPrice ? data.finalPrice + ' RON' : 'N/A'} />
-						</Box>
-					</Box>
-				</Box>
-			</CardContent>
+			</CardActions>
 		</Card>
 	)
 }

@@ -47,11 +47,10 @@ const CustomAvatar = ({ size, username, src }) => {
 				imgProps={{ alt: 'avatar' }}
 				src={src}
 				onClick={(e) => setAnchorEl(e.currentTarget)}
-			>
-				<Box fontSize={14} fontWeight="fontWeightMedium">
+			/>
+			{/* <Box fontSize={12} fontWeight="fontWeightMedium">
 					{username ? username.substring(0, 2).toUpperCase() : 'N/A'}
-				</Box>
-			</StyledAvatar>
+				</Box> */}
 
 			<Popover
 				open={Boolean(anchorEl)}
@@ -75,9 +74,9 @@ const CustomAvatar = ({ size, username, src }) => {
 								cursor : 'default'
 							}}
 							src={src}
-						>
-							<Box fontSize={12}>{username.substring(0, 2).toUpperCase()}</Box>
-						</StyledAvatar>
+						/>
+
+						{/* <Box>{username.substring(0, 2).toUpperCase()}</Box> */}
 
 						<CustomDivider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
 

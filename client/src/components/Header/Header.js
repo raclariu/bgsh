@@ -22,6 +22,8 @@ import ButtonBase from '@mui/material/ButtonBase'
 import { alpha } from '@mui/material/styles'
 
 // @ Icons
+import FactCheckTwoToneIcon from '@mui/icons-material/FactCheckTwoTone'
+import CasinoTwoToneIcon from '@mui/icons-material/CasinoTwoTone'
 import MenuIcon from '@mui/icons-material/Menu'
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone'
@@ -195,7 +197,7 @@ const Header = () => {
 
 									<ListItemButton onClick={() => handleExpandClick('games')}>
 										<ListItemIcon>
-											<DashboardTwoToneIcon />
+											<CasinoTwoToneIcon />
 										</ListItemIcon>
 										<ListItemText
 											primary={
@@ -331,7 +333,7 @@ const Header = () => {
 										to="/wishlist"
 									>
 										<ListItemIcon>
-											<FavoriteTwoToneIcon color={selectedIndex === 6 ? 'primary' : 'inherit'} />
+											<FactCheckTwoToneIcon color={selectedIndex === 6 ? 'primary' : 'inherit'} />
 										</ListItemIcon>
 										<ListItemText
 											primary={
@@ -353,7 +355,7 @@ const Header = () => {
 										to="/saved"
 									>
 										<ListItemIcon>
-											<BookmarkTwoToneIcon color={selectedIndex === 7 ? 'primary' : 'inherit'} />
+											<FavoriteTwoToneIcon color={selectedIndex === 7 ? 'primary' : 'inherit'} />
 										</ListItemIcon>
 										<ListItemText
 											primary={

@@ -127,7 +127,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 			<CardContent>
 				{mode === 'want' && (
 					<Fragment>
-						<FormControl required error={prefModeError}>
+						<FormControl required error={prefModeError} sx={{ mb: 2 }}>
 							<FormLabel>Prefer buying or trading for this game?</FormLabel>
 							<FormGroup row>
 								<FormControlLabel
@@ -187,6 +187,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				{mode === 'buy' &&
 				!isPack && (
 					<Input
+						sx={{ mb: 2 }}
 						value={data.otherUsername}
 						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'otherUsername')}
 						inputProps={{
@@ -220,7 +221,8 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					/>
 				)}
 
-				{mode !== 'buy' && (
+				{mode !== 'buy' &&
+				mode !== 'want' && (
 					<Autocomplete
 						sx={{ mt: 2 }}
 						value={data.condition}
@@ -251,7 +253,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 
 				{mode !== 'want' && (
 					<Input
-						sx={{ margin: (theme) => theme.spacing(2, 0, 2, 0) }}
+						sx={{ my: 2 }}
 						value={data.extraInfo}
 						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'extraInfo')}
 						inputProps={{
@@ -270,7 +272,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				)}
 
 				{mode !== 'want' && (
-					<Grid container sx={{ marginBottom: 2 }}>
+					<Grid container>
 						<Grid item xs={6}>
 							<FormControlLabel
 								control={
@@ -305,7 +307,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 
 				{(mode === 'sell' || mode === 'trade') && (
 					<Fragment>
-						<CustomDivider textAlign="left">
+						<CustomDivider textAlign="left" sx={{ mt: 2 }}>
 							<Box fontSize={'0.75rem'}>ADD IMAGE</Box>
 						</CustomDivider>
 

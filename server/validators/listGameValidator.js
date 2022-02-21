@@ -113,7 +113,7 @@ const validateGamePrice = check('games.*.price')
 const validateGameTotalPrice = check('totalPrice')
 	.if((value, { req }) => req.body.isPack)
 	.isInt({ min: 0, max: 10000 })
-	.withMessage('Pack price must be a number between 0 and 10000')
+	.withMessage('Pack price must be a whole number between 0 and 10000')
 	.bail()
 	.toInt()
 

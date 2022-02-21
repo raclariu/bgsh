@@ -1,8 +1,6 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment, useCallback } from 'react'
-import { styled } from '@mui/material/styles'
 import { useParams } from 'react-router-dom'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import Zoom from 'react-medium-image-zoom'
 import { useInView } from 'react-intersection-observer'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
@@ -12,6 +10,8 @@ import { parseEntities } from 'parse-entities'
 import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Mui
+import { styled } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -98,13 +98,12 @@ const StyledCoverImg = styled('img')(({ theme }) => ({
 }))
 
 const StyledMasonryImg = styled('img')({
-	imageRendering : '-webkit-optimize-contrast',
-	verticalAlign  : 'middle',
-	maxHeight      : '100%',
-	width          : '100%',
-	objectFit      : 'contain',
-	cursor         : 'zoom-in',
-	borderRadius   : '4px'
+	verticalAlign : 'middle',
+	maxHeight     : '100%',
+	width         : '100%',
+	objectFit     : 'contain',
+	cursor        : 'zoom-in',
+	borderRadius  : '4px'
 })
 
 const StyledUserImg = styled('img')({
@@ -333,9 +332,10 @@ const SingleGameScreen = () => {
 						sx={{
 							display             : 'grid',
 							gridTemplateColumns : {
-								xs : '100%',
-								md : '2fr 3fr'
+								xs : 'auto',
+								md : 'auto min-content' // auto min-content sau auto-auto sau auto 1fr
 							},
+
 							gap                 : 2
 						}}
 						mb={2}
@@ -479,7 +479,7 @@ const SingleGameScreen = () => {
 								display             : 'grid',
 								gridTemplateColumns : {
 									xs : '100%',
-									md : '3fr auto 2fr'
+									md : 'auto auto max-content'
 								},
 								gap                 : 2
 							}}
@@ -590,7 +590,7 @@ const SingleGameScreen = () => {
 									<Box display="flex" flexDirection="column">
 										<Box fontWeight="fontWeightMedium">Game description</Box>
 										<Box>
-											<Collapse in={showMoreDescription} collapsedSize={52} timeout="auto">
+											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
 												<Box fontStyle="italic" fontSize={12}>
 													{data.games[index].description
 														.split('&#10;')
@@ -620,100 +620,102 @@ const SingleGameScreen = () => {
 							<CustomDivider orientation={matches ? 'vertical' : 'horizontal'} flexItem />
 
 							{/* Shipping */}
-							<Box
-								display="flex"
-								flexDirection="column"
-								gap={2}
-								id="shipping"
-								width="100%"
-								p={2}
-								boxShadow={1}
-								borderRadius="4px"
-								bgcolor="background.paper"
-							>
-								<Box display="flex" alignItems="center" gap={1}>
-									<LocalShippingTwoToneIcon color="primary" />
-									<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
-										Shipping
+							<Box>
+								<Box
+									display="flex"
+									flexDirection="column"
+									gap={2}
+									id="shipping"
+									width="100%"
+									p={2}
+									boxShadow={1}
+									borderRadius="4px"
+									bgcolor="background.paper"
+								>
+									<Box display="flex" alignItems="center" gap={1}>
+										<LocalShippingTwoToneIcon color="primary" />
+										<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
+											Shipping
+										</Box>
 									</Box>
-								</Box>
 
-								<Box
-									display="flex"
-									flexDirection="column"
-									justifyContent="center"
-									alignItems="center"
-									gap={1}
-								>
-									{data.shipping.shipPost ? (
-										<Fragment>
-											<MarkunreadMailboxTwoToneIcon color="primary" />
-											<Box textAlign="center">{`Shipping by post paid by ${data.shipping
-												.shipPostPayer === 'seller'
-												? `${data.addedBy.username}`
-												: 'buyer'}`}</Box>
-										</Fragment>
-									) : (
-										<Fragment>
-											<CancelRoundedIcon color="error" />
-											<Box textAlign="center">Shipping by post is not available</Box>
-										</Fragment>
-									)}
-								</Box>
+									<Box
+										display="flex"
+										flexDirection="column"
+										justifyContent="center"
+										alignItems="center"
+										gap={1}
+									>
+										{data.shipping.shipPost ? (
+											<Fragment>
+												<MarkunreadMailboxTwoToneIcon color="primary" />
+												<Box textAlign="center">{`Shipping by post paid by ${data.shipping
+													.shipPostPayer === 'seller'
+													? `${data.addedBy.username}`
+													: 'buyer'}`}</Box>
+											</Fragment>
+										) : (
+											<Fragment>
+												<CancelRoundedIcon color="error" />
+												<Box textAlign="center">Shipping by post is not available</Box>
+											</Fragment>
+										)}
+									</Box>
 
-								<Box
-									display="flex"
-									flexDirection="column"
-									justifyContent="center"
-									alignItems="center"
-									gap={1}
-								>
-									{data.shipping.shipCourier ? (
-										<Fragment>
-											<LocalShippingTwoToneIcon color="primary" />
-											<Box textAlign="center">{`Shipping by courier paid by ${data.shipping
-												.shipPostPayer === 'seller'
-												? `${data.addedBy.username}`
-												: 'buyer'}`}</Box>
-										</Fragment>
-									) : (
-										<Fragment>
-											<CancelRoundedIcon color="error" />
-											<Box textAlign="center">Shipping by courier is not available</Box>
-										</Fragment>
-									)}
-								</Box>
+									<Box
+										display="flex"
+										flexDirection="column"
+										justifyContent="center"
+										alignItems="center"
+										gap={1}
+									>
+										{data.shipping.shipCourier ? (
+											<Fragment>
+												<LocalShippingTwoToneIcon color="primary" />
+												<Box textAlign="center">{`Shipping by courier paid by ${data.shipping
+													.shipPostPayer === 'seller'
+													? `${data.addedBy.username}`
+													: 'buyer'}`}</Box>
+											</Fragment>
+										) : (
+											<Fragment>
+												<CancelRoundedIcon color="error" />
+												<Box textAlign="center">Shipping by courier is not available</Box>
+											</Fragment>
+										)}
+									</Box>
 
-								<Box
-									display="flex"
-									flexDirection="column"
-									justifyContent="center"
-									alignItems="center"
-									gap={1}
-								>
-									{data.shipping.shipPersonal ? (
-										<Fragment>
-											<LocalLibraryTwoToneIcon color="primary" />
-											<Box textAlign="center">Personal shipping is available in</Box>
-											<StyledChipsBox>
-												{data.shipping.shipCities.map((city) => (
-													<Chip
-														key={city}
-														icon={<RoomTwoToneIcon />}
-														size="small"
-														color="primary"
-														variant="outlined"
-														label={city}
-													/>
-												))}
-											</StyledChipsBox>
-										</Fragment>
-									) : (
-										<Fragment>
-											<CancelRoundedIcon color="error" />
-											<Box textAlign="center">Personal shipping is not available</Box>
-										</Fragment>
-									)}
+									<Box
+										display="flex"
+										flexDirection="column"
+										justifyContent="center"
+										alignItems="center"
+										gap={1}
+									>
+										{data.shipping.shipPersonal ? (
+											<Fragment>
+												<LocalLibraryTwoToneIcon color="primary" />
+												<Box textAlign="center">Personal shipping is available in</Box>
+												<StyledChipsBox>
+													{data.shipping.shipCities.map((city) => (
+														<Chip
+															key={city}
+															icon={<RoomTwoToneIcon />}
+															size="small"
+															color="primary"
+															variant="outlined"
+															label={city}
+														/>
+													))}
+												</StyledChipsBox>
+											</Fragment>
+										) : (
+											<Fragment>
+												<CancelRoundedIcon color="error" />
+												<Box textAlign="center">Personal shipping is not available</Box>
+											</Fragment>
+										)}
+									</Box>
 								</Box>
 							</Box>
 						</Box>
@@ -770,8 +772,13 @@ const SingleGameScreen = () => {
 									TransitionProps={{ direction: 'up' }}
 								>
 									<DialogTitle>
-										<Box display="flex" alignItems="center">
-											<Box display="flex" flexDirection="column" flexGrow={1} gap={0.5}>
+										<Box
+											display="flex"
+											alignItems="flex-start"
+											justifyContent="space-between"
+											gap={3}
+										>
+											<Box display="flex" flexDirection="column" gap={0.5}>
 												<Box fontSize="1rem">{galleryData[imgIndex].caption}</Box>
 												<Box fontSize="0.75rem" color="grey.500">
 													{`Posted on BGG by ${galleryData[imgIndex].postedBy}`}
@@ -781,6 +788,7 @@ const SingleGameScreen = () => {
 												onClick={handleCloseGalleryImageDialog}
 												color="secondary"
 												size="large"
+												edge="end"
 											>
 												<CloseIcon />
 											</CustomIconBtn>
@@ -806,8 +814,13 @@ const SingleGameScreen = () => {
 									</DialogContent>
 
 									<DialogActions>
-										<Box width="100%" display="flex" alignItems="center">
-											<Box flexGrow={1}>
+										<Box
+											width="100%"
+											display="flex"
+											justifyContent="space-between"
+											alignItems="center"
+										>
+											<Box display="flex" gap={2} alignItems="center">
 												<CustomTooltip title="Previous image">
 													<CustomIconBtn
 														disabled={imgIndex === 0}
@@ -830,14 +843,9 @@ const SingleGameScreen = () => {
 												</CustomTooltip>
 											</Box>
 
-											<CustomButton
-												variant="outlined"
-												href={`https://boardgamegeek.com${galleryData[imgIndex].extLink}`}
-												target="_blank"
-												rel="noreferrer"
-											>
-												See on BGG
-											</CustomButton>
+											<ExtLinkIconBtn
+												url={`https://boardgamegeek.com${galleryData[imgIndex].extLink}`}
+											/>
 										</Box>
 									</DialogActions>
 								</Dialog>

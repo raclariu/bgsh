@@ -122,7 +122,6 @@ export const useGetListQuery = (onSettled) => {
 }
 
 export const useListGamesMutation = (mode) => {
-	console.log(mode)
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
 	const clearListMutation = useClearListMutation()
@@ -142,23 +141,23 @@ export const useListGamesMutation = (mode) => {
 		{
 			onSuccess : () => {
 				if (mode === 'sell') {
-					showSnackbar.success({ text: 'Successfully listed game(s) for sale' })
 					clearListMutation.mutate()
+					showSnackbar.success({ text: 'Successfully listed game(s) for sale' })
 					queryClient.invalidateQueries([ 'index', 'sell' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'trade') {
-					showSnackbar.success({ text: 'Successfully listed game(s) for trade' })
 					clearListMutation.mutate()
+					showSnackbar.success({ text: 'Successfully listed game(s) for trade' })
 					queryClient.invalidateQueries([ 'index', 'trade' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'want') {
-					showSnackbar.success({ text: 'Successfully added wanted game(s)' })
 					clearListMutation.mutate()
+					showSnackbar.success({ text: 'Successfully added wanted game(s)' })
 					queryClient.invalidateQueries([ 'index', 'want' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'buy') {
-					showSnackbar.success({ text: 'Successfully added game(s) to your buy history' })
 					clearListMutation.mutate()
+					showSnackbar.success({ text: 'Successfully added game(s) to your buy history' })
 					queryClient.invalidateQueries([ 'history', 'buy' ])
 				}
 			}
@@ -179,7 +178,7 @@ export const useClearListMutation = () => {
 	})
 }
 
-export const useGetBggGamesDetailsQuery = ({ onSuccess }) => {
+export const useGetBggGamesDetailsQuery = (onSuccess) => {
 	const userList = useGetListQuery()
 
 	return useQuery([ 'bggGamesDetails' ], () => api.apiFetchGameDetails(userList.data.list.map((el) => el.bggId)), {
@@ -353,7 +352,8 @@ export const useDeleteMessagesMutation = (currLoc) => {
 
 export const useGetSingleGameQuery = (altId) => {
 	return useQuery([ 'singleGameScreen', 'data', { altId } ], () => api.apiFetchSingleGame(altId), {
-		staleTime : 1000 * 60 * 60
+		staleTime : 1000 * 60 * 60,
+		retry     : 1
 	})
 }
 

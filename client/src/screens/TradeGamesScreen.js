@@ -8,11 +8,20 @@ import queryString from 'query-string'
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import FormControl from '@mui/material/FormControl'
+import FormGroup from '@mui/material/FormGroup'
+import FormLabel from '@mui/material/FormLabel'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import RadioGroup from '@mui/material/RadioGroup'
+import Autocomplete from '@mui/material/Autocomplete'
+import Chip from '@mui/material/Chip'
+import Radio from '@mui/material/Radio'
+import FormHelperText from '@mui/material/FormHelperText'
 
 // @ Components
 import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
-import ShippingSection from '../components/ShippingSection'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
@@ -27,6 +36,7 @@ import {
 	useGetBggGamesDetailsQuery,
 	useListGamesMutation
 } from '../hooks/hooks'
+import citiesArr from '../constants/cities'
 
 // @ Main
 const TradeGamesScreen = () => {
@@ -132,6 +142,12 @@ const TradeGamesScreen = () => {
 
 	return (
 		<form onSubmit={handleSubmit}>
+			<Box display="flex" alignItems="center" gap={2} mb={2}>
+				{isFetching && <Loader size={20} />}
+
+				<Box fontSize="h6.fontSize">List games for trading</Box>
+			</Box>
+
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
 			{listMutation.isError && (
@@ -148,8 +164,6 @@ const TradeGamesScreen = () => {
 					<CustomAlert severity="warning">Your list is empty</CustomAlert>
 				</Box>
 			)}
-
-			{isFetching && <Loader />}
 
 			{userList.isSuccess &&
 			userList.data.list.length > 0 &&
@@ -173,59 +187,121 @@ const TradeGamesScreen = () => {
 						)}
 					</Grid>
 
-					<CustomDivider />
+					<CustomDivider sx={{ my: 2 }} />
 
 					{/* Shipping Area */}
-					<Grid container direction="row" spacing={2}>
-						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-							<ShippingSection
-								handleShippingInfo={handleShippingInfo}
-								mode="trade"
-								shipError={shipError}
-								shipData={{ shipPost, shipCourier, shipPersonal, shipCities }}
-							/>
-						</Grid>
-						<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-							{isPack && (
-								<Fragment>
-									<Grid item>
-										<Input
-											onChange={(inputVal) => setExtraInfoPack(inputVal)}
-											value={extraInfoPack}
-											name="extra-info-pack"
-											label={`Extra info ${extraInfoPack.length}/500`}
-											type="text"
-											size="medium"
-											multiline
-											minRows={3}
-											maxRows={10}
-											inputProps={{
-												maxLength   : 500,
-												placeholder :
-													'Any other info regarding the pack goes in here (500 characters limit)'
-											}}
-											fullWidth
-										/>
-									</Grid>
-								</Fragment>
-							)}
+					<Box
+						display="flex"
+						flexDirection="column"
+						justifyContent="center"
+						alignItems="center"
+						gap={3}
+						sx={{
+							width : {
+								xs : '100%',
+								md : '50%'
+							}
+						}}
+					>
+						<FormControl required error={shipError} fullWidth>
+							{/* Post shipping */}
 
-							<Grid container direction="column">
-								<Grid item xl={6} lg={6} md={6} sm={6} xs={6}>
-									<LoadingBtn
-										type="submit"
-										disabled={shipError}
-										variant="contained"
-										color="primary"
-										loading={listMutation.isLoading}
-										fullWidth
-									>
-										Trade
-									</LoadingBtn>
-								</Grid>
-							</Grid>
-						</Grid>
-					</Grid>
+							<FormLabel>Preffered trading method</FormLabel>
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipPost}
+											onChange={(e) => handleShippingInfo(e.target.checked, 'post')}
+										/>
+									}
+									label="Romanian Post"
+								/>
+								{/* Courier shipping */}
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipCourier}
+											onChange={(e) => handleShippingInfo(e.target.checked, 'courier')}
+										/>
+									}
+									label="Courier"
+								/>
+								{/* Personal delivery */}
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipPersonal}
+											onChange={(e) => {
+												handleShippingInfo(e.target.checked, 'personal')
+											}}
+										/>
+									}
+									label="Personal"
+								/>
+								<Autocomplete
+									disabled={!shipPersonal}
+									multiple
+									filterSelectedOptions
+									value={shipCities}
+									onChange={(e, cities) => handleShippingInfo(cities, 'cities')}
+									limitTags={2}
+									options={citiesArr}
+									renderTags={(value, getTagProps) =>
+										value.map((option, index) => (
+											<Chip size="small" label={option} {...getTagProps({ index })} />
+										))}
+									renderInput={(params) => (
+										<Input
+											{...params}
+											inputProps={{
+												...params.inputProps,
+												required : shipCities.length === 0
+											}}
+											label="Cities"
+											placeholder={shipCities.length > 0 ? 'Cities' : 'Select cities'}
+											name="cities"
+										/>
+									)}
+								/>
+								{shipError && (
+									<FormHelperText error>Choose at least one preffered shipping method</FormHelperText>
+								)}
+							</FormGroup>
+						</FormControl>
+
+						{isPack && (
+							<Input
+								onChange={(inputVal) => setExtraInfoPack(inputVal)}
+								value={extraInfoPack}
+								name="extra-info-pack"
+								label={`Extra info ${extraInfoPack.length}/500`}
+								type="text"
+								size="medium"
+								multiline
+								minRows={3}
+								maxRows={10}
+								inputProps={{
+									maxLength   : 500,
+									placeholder :
+										'Any other info regarding the pack goes in here (500 characters limit)'
+								}}
+								fullWidth
+							/>
+						)}
+
+						<LoadingBtn
+							type="submit"
+							size="large"
+							disabled={shipError || isFetching || listMutation.isSuccess}
+							variant="contained"
+							color="primary"
+							loading={listMutation.isLoading}
+							fullWidth
+						>
+							Trade
+						</LoadingBtn>
+					</Box>
 				</Fragment>
 			)}
 		</form>

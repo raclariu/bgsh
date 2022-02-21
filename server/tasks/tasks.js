@@ -23,7 +23,7 @@ const setInactiveTask = cron.schedule(
 const getKickstarters = cron.schedule(
 	'*/10 * * * * *',
 	async () => {
-		const browser = await puppeteer.launch({ headless: false }) //
+		const browser = await puppeteer.launch() //{ headless: false }
 		const page = await browser.newPage()
 		await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
 

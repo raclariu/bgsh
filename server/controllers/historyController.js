@@ -26,7 +26,15 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 	const { games, gameId, finalPrice, extraInfo } = req.body
 
 	const simplifyGames = games.map((game) => {
-		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+		return {
+			bggId     : game.bggId,
+			title     : game.title,
+			thumbnail : game.thumbnail,
+			image     : game.image,
+			year      : game.year,
+			subtype   : game.subtype,
+			version   : game.version
+		}
 	})
 
 	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
@@ -88,7 +96,15 @@ const addTradedGamesToHistory = asyncHandler(async (req, res) => {
 	const { games, extraInfo, gameId } = req.body
 
 	const simplifyGames = games.map((game) => {
-		return { title: game.title, thumbnail: game.thumbnail, image: game.image, year: game.year }
+		return {
+			bggId     : game.bggId,
+			title     : game.title,
+			thumbnail : game.thumbnail,
+			image     : game.image,
+			year      : game.year,
+			subtype   : game.subtype,
+			version   : game.version
+		}
 	})
 
 	const gameExists = await Game.findOne({ _id: gameId }).select('isActive isPack mode').lean()
@@ -148,6 +164,8 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 
 	const { games, extraInfoPack, finalPrice, isPack, otherUsername } = req.body
 
+	console.log(games)
+
 	if (isPack) {
 		// const otherUserId = otherUsername ? await User.findOne({ username: otherUsername }).select('_id').lean() : null
 		await History.create({
@@ -155,6 +173,8 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 			isPack        : true,
 			games         : games.map((game) => {
 				return {
+					bggId     : game.bggId,
+					subtype   : game.subtype,
 					title     : game.title,
 					thumbnail : game.thumbnail,
 					image     : game.image,
@@ -180,6 +200,8 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 				isPack     : false,
 				games      : [
 					{
+						bggId     : game.bggId,
+						subtype   : game.subtype,
 						title     : game.title,
 						thumbnail : game.thumbnail,
 						image     : game.image,
@@ -220,7 +242,7 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 
 	if (search) {
 		const fuse = new Fuse(completeList, {
-			keys      : [ 'games.title' ],
+			keys      : [ 'games.title', 'games.subtype' ],
 			threshold : 0.3,
 			distance  : 200
 		})
