@@ -19,6 +19,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import EventIcon from '@mui/icons-material/Event'
 
 // @ Components
+import LzLoad from '../components/LzLoad'
+import MessageCardSkeleton from '../components/Skeletons/MessageCardSkeleton'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
@@ -38,39 +40,6 @@ import {
 	useUpdateMessageStatusMutation,
 	useDeleteMessagesMutation
 } from '../hooks/hooks'
-
-// @ Skeleton
-const MessageSkeleton = () => {
-	return (
-		<Grid item container xs={12} sm={9} md={7}>
-			<Box
-				display="flex"
-				alignItems="center"
-				bgcolor="background.paper"
-				width="100%"
-				boxShadow={2}
-				borderRadius="4px"
-				height={68}
-			>
-				<Box ml={1.5}>
-					<Skeleton variant="rectangular" width={20} height={20} />
-				</Box>
-				<Box ml={2}>
-					<Skeleton variant="circular" width={40} height={40} />
-				</Box>
-
-				<Box display="flex" flexDirection="column" width="100%" mx={2}>
-					<Box width="100%">
-						<Skeleton variant="text" width="75%" />
-					</Box>
-					<Box width="100%">
-						<Skeleton variant="text" width="20%" />
-					</Box>
-				</Box>
-			</Box>
-		</Grid>
-	)
-}
 
 // @ Main
 const InboxScreen = () => {
@@ -174,7 +143,7 @@ const InboxScreen = () => {
 		<Fragment>
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item md={4} sm={5} xs={12}>
+					<Grid item xs={12} sm={6} md={4}>
 						<SearchBox placeholder="Search messages" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>
@@ -208,20 +177,30 @@ const InboxScreen = () => {
 
 			{isSuccess && data.messages.length === 0 && <CustomAlert severity="warning">No messages</CustomAlert>}
 
-			{isLoading && [ ...Array(12).keys() ].map((i, k) => <MessageSkeleton key={k} />)}
+			{isLoading && (
+				<Grid container spacing={2}>
+					{[ ...Array(12).keys() ].map((i, k) => (
+						<Grid key={k} item xs={12} md={6}>
+							<MessageCardSkeleton />
+						</Grid>
+					))}
+				</Grid>
+			)}
 
 			{isSuccess && (
 				<Grid container spacing={2}>
 					{data.messages.map((msg) => (
 						<Grid item key={msg._id} xs={12} md={6}>
-							<MessageCard
-								msg={msg}
-								expanded={expanded.some((obj) => obj.id === msg._id)}
-								isChecked={selected.some((el) => el === msg._id)}
-								handleExpandClick={handleExpandClick}
-								handleSelect={handleSelect}
-								path={currLoc}
-							/>
+							<LzLoad placeholder={<MessageCardSkeleton />}>
+								<MessageCard
+									msg={msg}
+									expanded={expanded.some((obj) => obj.id === msg._id)}
+									isChecked={selected.some((el) => el === msg._id)}
+									handleExpandClick={handleExpandClick}
+									handleSelect={handleSelect}
+									path={currLoc}
+								/>
+							</LzLoad>
 						</Grid>
 					))}
 				</Grid>

@@ -4,6 +4,7 @@ import Fuse from 'fuse.js'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import History from '../models/historyModel.js'
+import storage from '../helpers/storage.js'
 
 // * @desc    Add sold games to history
 // * @route   POST  /api/history/sell
@@ -60,6 +61,19 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 		})
 
 		if (history) {
+			for (let game of games) {
+				if (game.userImage) {
+					console.log(game.userImage)
+					await storage
+						.bucket(process.env.IMG_BUCKET)
+						.file(`f/${game.userImage.name}`)
+						.delete({ ignoreNotFound: true })
+					await storage
+						.bucket(process.env.IMG_BUCKET)
+						.file(`t/${game.userImage.name}`)
+						.delete({ ignoreNotFound: true })
+				}
+			}
 			await Game.findOneAndDelete({ _id: gameId })
 			return res.status(204).end()
 		} else {
@@ -129,6 +143,19 @@ const addTradedGamesToHistory = asyncHandler(async (req, res) => {
 		})
 
 		if (history) {
+			for (let game of games) {
+				if (game.userImage) {
+					console.log(game.userImage)
+					await storage
+						.bucket(process.env.IMG_BUCKET)
+						.file(`f/${game.userImage.name}`)
+						.delete({ ignoreNotFound: true })
+					await storage
+						.bucket(process.env.IMG_BUCKET)
+						.file(`t/${game.userImage.name}`)
+						.delete({ ignoreNotFound: true })
+				}
+			}
 			await Game.findOneAndDelete({ _id: gameId })
 			return res.status(204).end()
 		} else {

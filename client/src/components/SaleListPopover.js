@@ -21,7 +21,7 @@ import Collapse from '@mui/material/Collapse'
 
 // @ Icons
 import FeaturedPlayListTwoToneIcon from '@mui/icons-material/FeaturedPlayListTwoTone'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import CloseIcon from '@mui/icons-material/Close'
 
 // @ Components
 import CustomIconBtn from './CustomIconBtn'
@@ -42,7 +42,7 @@ const SaleListPopover = () => {
 	const [ mode, setMode ] = useState('')
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	const { isLoading, isSuccess, data } = useGetListQuery()
+	const { isFetching, isSuccess, data } = useGetListQuery()
 	const deleteMutation = useDeleteFromListMutation()
 
 	const open = Boolean(anchorEl)
@@ -69,7 +69,7 @@ const SaleListPopover = () => {
 		<Fragment>
 			<CustomIconBtn
 				onClick={(e) => setAnchorEl(e.currentTarget)}
-				disabled={isLoading}
+				disabled={isFetching}
 				color="primary"
 				size="large"
 			>
@@ -102,7 +102,7 @@ const SaleListPopover = () => {
 					}}
 				>
 					{/* Content */}
-					<Box my={2} textAlign="center" fontWeight="fontWeightMedium">
+					<Box p={2} textAlign="center" fontWeight="fontWeightMedium" color="primary.main">
 						My list ({data.list.length}/6)
 					</Box>
 					<CustomDivider />
@@ -136,7 +136,7 @@ const SaleListPopover = () => {
 												size="large"
 												color="error"
 											>
-												<HighlightOffIcon />
+												<CloseIcon color="error" />
 											</CustomIconBtn>
 										</ListItemSecondaryAction>
 									</ListItem>

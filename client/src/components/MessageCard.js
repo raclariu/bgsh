@@ -31,7 +31,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
 	return (
-		<Card elevation={2}>
+		<Card elevation={1}>
 			<CardHeader
 				avatar={
 					<CustomAvatar
@@ -51,7 +51,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 					</Box>
 				}
 				subheader={
-					<Box display="flex">
+					<Box display="flex" gap={0.5}>
 						<CustomTooltip title={formatDate(msg.createdAt)}>
 							<Chip
 								size="small"
@@ -62,18 +62,13 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 						</CustomTooltip>
 
 						{!msg.read && (
-							<Chip
-								sx={{ ml: 0.5 }}
-								size="small"
-								color="secondary"
-								label={path === 'received' ? 'New' : 'Unread'}
-							/>
+							<Chip size="small" color="secondary" label={path === 'received' ? 'New' : 'Unread'} />
 						)}
 
 						{msg.readAt && (
 							<CustomTooltip title={formatDate(msg.readAt)}>
 								<Chip
-									sx={{ ml: 0.5 }}
+									sx={{ maxWidth: '100%' }}
 									size="small"
 									color="primary"
 									variant="outlined"
@@ -90,9 +85,11 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<Checkbox checked={isChecked} onChange={(e) => handleSelect(e, msg._id, 'received')} size="small" />
-					<CustomIconBtn onClick={() => handleExpandClick(msg._id, msg.read)}>
-						{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
-					</CustomIconBtn>
+					<CustomTooltip title={expanded ? 'Close message' : 'Open message'}>
+						<CustomIconBtn onClick={() => handleExpandClick(msg._id, msg.read)}>
+							{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
+						</CustomIconBtn>
+					</CustomTooltip>
 				</Box>
 			</CardActions>
 

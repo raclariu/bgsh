@@ -7,7 +7,8 @@ import {
 	bggGetGallery,
 	bggSearchGame,
 	getKickstarters,
-	getBggReccomendations
+	getBggReccomendations,
+	getBggVideos
 } from '../controllers/miscController.js'
 
 // @route /api/misc
@@ -17,5 +18,6 @@ router.route('/bgg/search').get(protect, bggSearchGame)
 router.route('/bgg/hot').get(bggGetHotGamesList)
 router.route('/bgg/gallery').get(protect, bggGetGallery)
 router.route('/bgg/recommendations').get(protect, getBggReccomendations)
+router.route('/bgg/videos').get(protect, getBggVideos)
 
 export default router

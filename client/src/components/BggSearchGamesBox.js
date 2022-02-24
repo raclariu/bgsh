@@ -86,7 +86,7 @@ const BggSearchGamesBox = () => {
 				renderOption={(props, option) => {
 					return (
 						<li {...props} key={option.bggId}>
-							{option.title}
+							{option.title} ({option.year})
 						</li>
 					)
 				}}

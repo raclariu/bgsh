@@ -1,5 +1,6 @@
 // @ Libraries
 import React, { useEffect, useState, Fragment, useCallback } from 'react'
+import { formatDuration, intervalToDuration } from 'date-fns'
 import { useParams } from 'react-router-dom'
 import Zoom from 'react-medium-image-zoom'
 import { useInView } from 'react-intersection-observer'
@@ -24,6 +25,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
 import Collapse from '@mui/material/Collapse'
 import Skeleton from '@mui/material/Skeleton'
+import Grow from '@mui/material/Grow'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -54,6 +56,7 @@ import CribOutlinedIcon from '@mui/icons-material/CribOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 import DonutSmallOutlinedIcon from '@mui/icons-material/DonutSmallOutlined'
+import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone'
 
 // @ Components
 import CustomAvatar from '../components/CustomAvatar'
@@ -75,8 +78,10 @@ import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
 import {
 	useGetSingleGameQuery,
 	useGetSingleGameGalleryQuery,
-	useGetSingleGameRecommendationsQuery
+	useGetSingleGameRecommendationsQuery,
+	useGetSingleGameVideosQuery
 } from '../hooks/hooks'
+import { formatDate } from '../helpers/helpers'
 
 const StyledChipsBox = styled(Box)(({ theme }) => ({
 	display        : 'flex',
@@ -99,6 +104,7 @@ const StyledCoverImg = styled('img')(({ theme }) => ({
 
 const StyledMasonryImg = styled('img')({
 	verticalAlign : 'middle',
+	// minHeight     : '100px',
 	maxHeight     : '100%',
 	width         : '100%',
 	objectFit     : 'contain',
@@ -116,6 +122,16 @@ const StyledUserImg = styled('img')({
 	borderRadius   : '4px'
 })
 
+const StyledYtImg = styled('img')({
+	imageRendering : '-webkit-optimize-contrast',
+	verticalAlign  : 'middle',
+	minWidth       : '120px',
+	maxHeight      : '90px',
+	objectFit      : 'cover',
+	cursor         : 'pointer',
+	borderRadius   : '4px'
+})
+
 const StyledDialogImg = styled('img')({
 	maxHeight : '100%',
 	width     : '100%',
@@ -125,8 +141,8 @@ const StyledDialogImg = styled('img')({
 const StyledRecImg = styled('img')({
 	verticalAlign : 'bottom',
 	objectFit     : 'cover',
-	maxWidth      : 60,
-	height        : 60,
+	maxWidth      : 64,
+	height        : 64,
 	borderRadius  : '4px'
 })
 
@@ -136,7 +152,7 @@ const StyledTitleBox = styled(Box)({
 	WebkitBoxOrient : 'vertical',
 	overflow        : 'hidden',
 	width           : '100%',
-	fontSize        : 14
+	fontSize        : '0.875rem'
 })
 
 const StyledParagraph = styled('p')({
@@ -162,23 +178,48 @@ const GallerySkeleton = () => {
 // @ Recs skeleton
 const RecsSkeleton = () => {
 	return (
-		<Grid item xs={12} sm={6} md={4}>
-			<Box p={1} display="flex" boxShadow={1} borderRadius="4px" bgcolor="background.paper" gap={1} width="100%">
-				<Box>
-					<Skeleton
-						animation="wave"
-						variant="rectangular"
-						width={60}
-						height={60}
-						sx={{ borderRadius: '4px' }}
-					/>
-				</Box>
-				<Box display="flex" flexDirection="column" width="100%" justifyContent="center">
-					<Skeleton animation="wave" variant="text" width="70%" />
-					<Skeleton animation="wave" variant="text" width="45%" />
-				</Box>
+		<Box
+			p={1}
+			display="flex"
+			boxShadow={1}
+			borderRadius="4px"
+			bgcolor="background.paper"
+			gap={1}
+			width="100%"
+			height={80}
+		>
+			<Box>
+				<Skeleton animation="wave" variant="rectangular" width={64} height={64} sx={{ borderRadius: '4px' }} />
 			</Box>
-		</Grid>
+			<Box display="flex" flexDirection="column" width="100%" justifyContent="space-between">
+				<Skeleton animation="wave" variant="text" width="70%" />
+				<Skeleton animation="wave" variant="text" width="45%" />
+			</Box>
+		</Box>
+	)
+}
+
+// @ videos skeleton
+const VidsSkeleton = () => {
+	return (
+		<Box
+			p={1}
+			display="flex"
+			boxShadow={1}
+			borderRadius="4px"
+			bgcolor="background.paper"
+			gap={1}
+			width="100%"
+			height={106}
+		>
+			<Box>
+				<Skeleton animation="wave" variant="rectangular" width={120} height={90} sx={{ borderRadius: '4px' }} />
+			</Box>
+			<Box display="flex" flexDirection="column" width="100%" justifyContent="flex-start">
+				<Skeleton animation="wave" variant="text" width="70%" />
+				<Skeleton animation="wave" variant="text" width="45%" />
+			</Box>
+		</Box>
 	)
 }
 
@@ -198,6 +239,11 @@ const SingleGameScreen = () => {
 		triggerOnce : true
 	})
 
+	const { ref: vidsRef, inView: vidsInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
 	const [ index, setIndex ] = useState(0)
 	const [ imgIndex, setImgIndex ] = useState(0)
 	const [ openGalleryDialog, setOpenGalleryDialog ] = useState(false)
@@ -209,6 +255,7 @@ const SingleGameScreen = () => {
 	const { isLoading, isError, error, data, isSuccess } = useGetSingleGameQuery(altId)
 
 	const {
+		isLoading  : isLoadingGallery,
 		isFetching : isFetchingGallery,
 		isError    : isErrorGallery,
 		error      : errorGallery,
@@ -217,10 +264,18 @@ const SingleGameScreen = () => {
 	} = useGetSingleGameGalleryQuery({ altId, galleryInView, index })
 
 	const {
+		isLoading  : isLoadingRecs,
 		isFetching : isFetchingRecs,
 		data       : recData,
 		isSuccess  : isSuccessRec
 	} = useGetSingleGameRecommendationsQuery({ altId, recsInView, index })
+
+	const {
+		isLoading  : isLoadingVids,
+		isFetching : isFetchingVids,
+		data       : vidsData,
+		isSuccess  : isSuccessVids
+	} = useGetSingleGameVideosQuery({ altId, vidsInView, index })
 
 	const displayImageHandler = (image, thumbnail) => {
 		if (matches) {
@@ -281,6 +336,11 @@ const SingleGameScreen = () => {
 		}
 	}
 
+	const timer = intervalToDuration({
+		start : new Date('2022-02-21T15:54:26.166+00:00'),
+		end   : new Date('2022-02-24T18:23:19.166+00:00')
+	})
+
 	console.log(data && data)
 
 	return (
@@ -296,6 +356,8 @@ const SingleGameScreen = () => {
 					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</Box>
 			)}
+
+			{console.log(formatDuration(timer))}
 
 			{isSuccess && (
 				<Fragment>
@@ -341,6 +403,7 @@ const SingleGameScreen = () => {
 						mb={2}
 					>
 						<Box
+							id="cover"
 							display="flex"
 							alignItems="center"
 							justifyContent="center"
@@ -352,7 +415,7 @@ const SingleGameScreen = () => {
 							<Zoom
 								zoomMargin={16}
 								overlayBgColorStart="rgba(0,0,0,0)"
-								overlayBgColorEnd="rgba(0,0,0,0.7)"
+								overlayBgColorEnd="rgba(0,0,0,0.5)"
 							>
 								<StyledCoverImg
 									src={displayImageHandler(data.games[index].image, data.games[index].thumbnail)}
@@ -361,11 +424,17 @@ const SingleGameScreen = () => {
 							</Zoom>
 						</Box>
 
-						<Box display="flex" flexDirection="column" alignItems="center" justifyContent="flex-end">
+						<Box
+							id="game-info"
+							display="flex"
+							flexDirection="column"
+							alignItems="center"
+							justifyContent="flex-end"
+						>
 							<Box fontSize="1.5rem" fontWeight="fontWeightMedium" textAlign="center">
 								{data.games[index].title}
 							</Box>
-							<Box fontSize={'0.75rem'} fontStyle="italic" color="grey.500">
+							<Box fontSize="0.75rem" fontStyle="italic" color="grey.500">
 								{`${data.games[index].subtype} • ${data.games[index].year}`}
 							</Box>
 							<Box display="flex" gap={1} my={2}>
@@ -556,26 +625,28 @@ const SingleGameScreen = () => {
 										</Box>
 
 										<Dialog
-											fullScreen
+											maxWidth="lg"
+											onClose={handleCloseUserImageDialog}
+											position="relative"
 											open={openUserImageDialog}
-											TransitionComponent={Slide}
 											transitionDuration={350}
-											TransitionProps={{ direction: 'up' }}
 										>
-											<DialogTitle>
-												<Box display="flex" justifyContent="flex-end" width="100%">
-													<CustomIconBtn
-														onClick={handleCloseUserImageDialog}
-														color="secondary"
-														size="large"
-													>
-														<CloseIcon />
-													</CustomIconBtn>
-												</Box>
-											</DialogTitle>
+											<CustomIconBtn
+												sx={{ position: 'absolute', top: '8px', right: '8px' }}
+												onClick={handleCloseUserImageDialog}
+												size="large"
+												color="error"
+											>
+												<CloseIcon color="error" />
+											</CustomIconBtn>
 
 											<DialogContent
-												sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+												sx={{
+													display        : 'flex',
+													justifyContent : 'center',
+													alignItems     : 'center',
+													p              : 0
+												}}
 											>
 												<StyledDialogImg
 													src={data.games[index].userImage.full}
@@ -620,12 +691,11 @@ const SingleGameScreen = () => {
 							<CustomDivider orientation={matches ? 'vertical' : 'horizontal'} flexItem />
 
 							{/* Shipping */}
-							<Box>
+							<Box id="shipping">
 								<Box
 									display="flex"
 									flexDirection="column"
 									gap={2}
-									id="shipping"
 									width="100%"
 									p={2}
 									boxShadow={1}
@@ -737,7 +807,7 @@ const SingleGameScreen = () => {
 							<CustomAlert severity="warning">{errorGallery.response.data.message}</CustomAlert>
 						)}
 
-						{isFetchingGallery && (
+						{isLoadingGallery && (
 							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
 								<Masonry gutter="10px">
 									{[ ...Array(12).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
@@ -747,9 +817,9 @@ const SingleGameScreen = () => {
 
 						{isSuccessGallery &&
 						galleryData.length > 0 && (
-							<Box>
+							<Box id="gallery-list">
 								<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
-									<Masonry gutter="10px">
+									<Masonry gutter="8px">
 										{galleryData.map((obj, i) => (
 											<LzLoad key={obj.imageid}>
 												<Box borderRadius="4px" boxShadow={1} p={1} bgcolor="background.paper">
@@ -786,11 +856,11 @@ const SingleGameScreen = () => {
 											</Box>
 											<CustomIconBtn
 												onClick={handleCloseGalleryImageDialog}
-												color="secondary"
 												size="large"
 												edge="end"
+												color="error"
 											>
-												<CloseIcon />
+												<CloseIcon color="error" />
 											</CustomIconBtn>
 										</Box>
 									</DialogTitle>
@@ -868,29 +938,33 @@ const SingleGameScreen = () => {
 							</Box>
 						</Box>
 
-						{isFetchingRecs && (
+						{isLoadingRecs && (
 							<Grid container spacing={1}>
-								{[ ...Array(matches ? 12 : 4).keys() ].map((i, k) => <RecsSkeleton key={k} />)}
+								{[ ...Array(matches ? 12 : 4).keys() ].map((i, k) => (
+									<Grid key={k} item xs={12} sm={6} md={4}>
+										<RecsSkeleton key={k} />
+									</Grid>
+								))}
 							</Grid>
 						)}
 
 						{isSuccessRec &&
 						recData.length > 0 && (
-							<Box>
-								<Collapse in={expanded} timeout="auto" collapsedSize="328px">
+							<Box id="recommendations-list">
+								<Collapse in={expanded} timeout="auto" collapsedSize="344px">
 									<Grid container spacing={1}>
 										{isSuccessRec &&
 											recData.map((rec) => (
 												<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
-													<Box
-														display="flex"
-														p={1}
-														boxShadow={1}
-														borderRadius="4px"
-														bgcolor="background.paper"
-														gap={1}
-													>
-														<LzLoad>
+													<LzLoad placeholder={<RecsSkeleton />}>
+														<Box
+															display="flex"
+															p={1}
+															boxShadow={1}
+															borderRadius="4px"
+															bgcolor="background.paper"
+															gap={1}
+														>
 															<a
 																href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
 																target="_blank"
@@ -898,51 +972,49 @@ const SingleGameScreen = () => {
 															>
 																<StyledRecImg src={rec.thumbnail} alt={rec.title} />
 															</a>
-														</LzLoad>
 
-														<Box
-															display="flex"
-															flexDirection="column"
-															justifyContent="center"
-															width="100%"
-															gap={0.5}
-														>
-															<StyledTitleBox fontWeight="fontWeightMedium">
-																{rec.title}
-															</StyledTitleBox>
-															<Box display="flex" gap={1}>
-																<Box
-																	display="flex"
-																	alignItems="center"
-																	gap={0.25}
-																	fontWeight="fontWeightMedium"
-																	fontSize={14}
-																	color="grey.500"
-																>
-																	<StarPurple500Icon
-																		color="primary"
-																		fontSize="small"
-																	/>
-																	{approx(rec.stats.avgRating)}
-																</Box>
+															<Box
+																display="flex"
+																flexDirection="column"
+																justifyContent="space-between"
+																width="100%"
+															>
+																<StyledTitleBox fontWeight="fontWeightMedium">
+																	{rec.title}
+																</StyledTitleBox>
+																<Box display="flex" gap={1}>
+																	<Box
+																		display="flex"
+																		gap={0.25}
+																		fontWeight="fontWeightMedium"
+																		fontSize={14}
+																		color="grey.500"
+																	>
+																		<StarPurple500Icon
+																			color="primary"
+																			fontSize="small"
+																		/>
+																		{approx(rec.stats.avgRating)}
+																	</Box>
 
-																<Box
-																	display="flex"
-																	alignItems="center"
-																	gap={0.25}
-																	fontWeight="fontWeightMedium"
-																	fontSize={14}
-																	color="grey.500"
-																>
-																	<MilitaryTechIcon
-																		color="primary"
-																		fontSize="small"
-																	/>
-																	{rec.stats.rank}
+																	<Box
+																		display="flex"
+																		alignItems="center"
+																		gap={0.25}
+																		fontWeight="fontWeightMedium"
+																		fontSize={14}
+																		color="grey.500"
+																	>
+																		<MilitaryTechIcon
+																			color="primary"
+																			fontSize="small"
+																		/>
+																		{rec.stats.rank}
+																	</Box>
 																</Box>
 															</Box>
 														</Box>
-													</Box>
+													</LzLoad>
 												</Grid>
 											))}
 									</Grid>
@@ -957,6 +1029,101 @@ const SingleGameScreen = () => {
 						)}
 						{isSuccessRec &&
 						recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
+					</Box>
+
+					<CustomDivider light />
+
+					{/* Videos */}
+					<Box id="videos" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box ref={vidsRef} display="flex" alignItems="center" gap={1}>
+							{isFetchingVids ? <Loader size={20} /> : <OndemandVideoTwoToneIcon color="primary" />}
+
+							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
+								Videos
+							</Box>
+						</Box>
+
+						{isLoadingVids && (
+							<Box
+								sx={{
+									display             : 'grid',
+									gridTemplateColumns : {
+										xs : '100%',
+										sm : 'repeat(2, 1fr)' // auto min-content sau auto-auto sau auto 1fr
+									},
+									gap                 : 1
+								}}
+							>
+								{[ ...Array(4).keys() ].map((i, k) => <VidsSkeleton key={k} />)}
+							</Box>
+						)}
+
+						{isSuccessVids &&
+						vidsData.length > 0 && (
+							<Box
+								id="video-list"
+								sx={{
+									display             : 'grid',
+									gridTemplateColumns : {
+										xs : '100%',
+										sm : 'repeat(2, 1fr)' // auto min-content sau auto-auto sau auto 1fr
+									},
+									gap                 : 1
+								}}
+							>
+								{vidsData.map((video) => (
+									<LzLoad placeholder={<VidsSkeleton />}>
+										<Box
+											display="flex"
+											gap={1}
+											alignItems="flex-start"
+											boxShadow={1}
+											borderRadius="4px"
+											width="100%"
+											bgcolor="background.paper"
+											p={1}
+										>
+											<Box boxShadow={1} borderRadius="4px">
+												<LzLoad>
+													<a
+														href={`https://boardgamegeek.com${video.extLink}`}
+														target="_blank"
+														rel="noreferrer"
+													>
+														<StyledYtImg
+															src={video.thumbnail}
+															alt={video.title}
+															title={video.title}
+														/>
+													</a>
+												</LzLoad>
+											</Box>
+											<Box
+												display="flex"
+												flexDirection="column"
+												alignItems="flex-start"
+												justifyContent="flex-start"
+												gap={0.5}
+											>
+												<Box
+													fontSize="0.875rem"
+													fontWeight="fontWeightMedium"
+													sx={{ wordBreak: 'break-word' }}
+												>
+													{video.title}
+												</Box>
+												<Box fontSize="0.75rem" color="grey.500" fontStyle="italic">
+													{video.user} • {video.type}
+												</Box>
+											</Box>
+										</Box>
+									</LzLoad>
+								))}
+							</Box>
+						)}
+
+						{isSuccessVids &&
+						vidsData.length === 0 && <CustomAlert severity="warning">No videos found</CustomAlert>}
 					</Box>
 
 					<CustomDivider light />

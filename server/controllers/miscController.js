@@ -285,7 +285,62 @@ const getBggReccomendations = asyncHandler(async (req, res) => {
 			})
 		}
 
-		res.status(200).json(recArr)
+		return res.status(200).json(recArr)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
+})
+
+// ~ @desc    Get BGG videos
+// ~ @route   GET  /api/misc/bgg/videos
+// ~ @access  Public route
+const getBggVideos = asyncHandler(async (req, res) => {
+	try {
+		const { bggId } = req.query
+
+		const { data } = await axios.get('https://api.geekdo.com/api/videos', {
+			params : {
+				ajax       : 1,
+				gallery    : 'all',
+				languageid : 2184,
+				nosession  : 1,
+				objectid   : bggId,
+				objecttype : 'thing',
+				pageid     : 1,
+				showcount  : 4,
+				sort       : 'hot'
+			}
+		})
+
+		console.log(data)
+
+		const vidsArr = []
+		if (data.videos.length > 0) {
+			for (let vid of data.videos) {
+				const {
+					href    : extLink,
+					title,
+					images  : { square: thumbnail },
+					user    : { username: user },
+					gallery : type
+				} = vid
+				vidsArr.push({
+					extLink,
+					title,
+					thumbnail,
+					user,
+					type
+				})
+			}
+		}
+
+		return res.status(200).json(vidsArr)
+
+		// return res.status(200).json(recArr)
 	} catch (error) {
 		res.status(503)
 		throw {
@@ -308,7 +363,15 @@ const getKickstarters = asyncHandler(async (req, res) => {
 		}
 	}
 
-	res.status(200).json(kickstarters)
+	return res.status(200).json(kickstarters)
 })
 
-export { bggGetGamesDetails, bggGetHotGamesList, bggGetGallery, bggSearchGame, getKickstarters, getBggReccomendations }
+export {
+	bggGetGamesDetails,
+	bggGetHotGamesList,
+	bggGetGallery,
+	bggSearchGame,
+	getKickstarters,
+	getBggReccomendations,
+	getBggVideos
+}

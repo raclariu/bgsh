@@ -88,16 +88,6 @@ const HomeScreen = () => {
 					)}
 				</Box>
 
-				<ButtonBase
-					sx={{
-						border       : (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-						p            : 1,
-						borderRadius : '10px'
-					}}
-				>
-					<LocalFireDepartmentIcon fontSize="small" color="primary" />
-				</ButtonBase>
-
 				{errorHotGames && <CustomAlert>{errorHotGames.response.data.message}</CustomAlert>}
 
 				{isFetchingHotGames && (

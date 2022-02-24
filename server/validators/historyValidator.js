@@ -32,7 +32,7 @@ const validateSingleUsername = check('otherUsername')
 		}
 	})
 
-// ## Validation for single username @ buy - done
+// ## Validation for pack single username @ buy - done
 const validateBuySingleUsername = check('otherUsername')
 	.optional({ nullable: true })
 	.if((value, { req }) => req.body.isPack)
@@ -89,7 +89,7 @@ const validateBuyMultipleUsernames = check('games.*.otherUsername')
 
 			const idx = path.split('[')[1].split(']')[0]
 
-			if (otherUsername === req.user.username) {
+			if (otherUsername.toLowerCase() === req.user.username.toLowerCase()) {
 				throw {
 					message : `You cannot use your own username for ${req.body.games[idx].title}`
 				}

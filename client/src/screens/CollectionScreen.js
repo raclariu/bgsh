@@ -70,7 +70,7 @@ const CollectionScreen = () => {
 		<Fragment>
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
-					<Grid item xs={12} sm={5} md={4}>
+					<Grid item xs={12} sm={6} md={4}>
 						<SearchBox placeholder="Search collection" handleFilters={handleFilters} />
 					</Grid>
 				</Grid>

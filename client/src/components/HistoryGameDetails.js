@@ -140,9 +140,17 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 								<Chip sx={{ alignSelf: 'center' }} color="success" label={`${data.finalPrice} RON`} />
 							)}
 
-							{data.extraInfo && (
+							{data.isPack &&
+							data.extraInfo && (
 								<Box component={'p'} fontSize="0.875rem">
 									{data.extraInfo}
+								</Box>
+							)}
+
+							{!data.isPack &&
+							data.games[index].extraInfo && (
+								<Box component={'p'} fontSize="0.875rem">
+									{data.games[index].extraInfo}
 								</Box>
 							)}
 						</Box>

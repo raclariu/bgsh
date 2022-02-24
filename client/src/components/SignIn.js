@@ -42,7 +42,7 @@ const SignIn = () => {
 			if (userData) {
 				location.state && location.state.from && location.state.from.pathname
 					? history.push(`${location.state.from.pathname}`)
-					: history.push('/profile')
+					: history.push('/')
 			}
 		},
 		[ history, userData, location ]

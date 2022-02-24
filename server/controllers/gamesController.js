@@ -83,6 +83,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		const insertedGames = await Game.insertMany(sellList)
 		res.status(204).end()
 
+		console.log(insertedGames)
 		let notifArr = []
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
@@ -91,12 +92,12 @@ const listSaleGames = asyncHandler(async (req, res) => {
 				if (!foundUserWishlist.some((obj) => obj.user.toString() === req.user._id.toString())) {
 					for (let obj of foundUserWishlist) {
 						notifArr.push({
-							sender    : req.user._id,
 							recipient : obj.user,
 							type      : 'wishlist',
-							text      : `${data.games[0].title}`,
+							text      : `${data.games[0].title} has been added for sale`,
 							meta      : {
-								altId : data.altId
+								altId     : data.altId,
+								thumbnail : data.games[0].thumbnail
 							}
 						})
 					}

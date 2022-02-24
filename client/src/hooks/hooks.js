@@ -366,11 +366,7 @@ export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, index }) =>
 		{
 			enabled          : isSuccess && galleryInView,
 			staleTime        : 1000 * 60 * 60,
-			keepPreviousData : true,
-			select           : (data) => {
-				console.log(data)
-				return data
-			}
+			keepPreviousData : true
 		}
 	)
 }
@@ -382,8 +378,23 @@ export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index 
 		[ 'singleGameScreen', 'recs', { altId, index } ],
 		() => api.apiFetchRecommendations(data.games[index].bggId),
 		{
-			enabled   : isSuccess && recsInView,
-			staleTime : 1000 * 60 * 60
+			enabled          : isSuccess && recsInView,
+			staleTime        : 1000 * 60 * 60,
+			keepPreviousData : true
+		}
+	)
+}
+
+export const useGetSingleGameVideosQuery = ({ altId, vidsInView, index }) => {
+	const { isSuccess, data } = useGetSingleGameQuery(altId)
+
+	return useQuery(
+		[ 'singleGameScreen', 'videos', { altId, index } ],
+		() => api.apiFetchVideos(data.games[index].bggId),
+		{
+			enabled          : isSuccess && vidsInView,
+			staleTime        : 1000 * 60 * 60,
+			keepPreviousData : true
 		}
 	)
 }

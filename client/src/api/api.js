@@ -164,6 +164,17 @@ export const apiFetchRecommendations = async (bggId) => {
 	return data
 }
 
+export const apiFetchVideos = async (bggId) => {
+	const config = {
+		params : {
+			bggId
+		}
+	}
+
+	const { data } = await axsAUTH.get('/api/misc/bgg/videos', config)
+	return data
+}
+
 export const apiFetchGamesHistory = async ({ search, page, mode }) => {
 	const config = {
 		params : {
