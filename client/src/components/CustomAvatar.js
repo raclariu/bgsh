@@ -29,7 +29,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 }))
 
 // @ Main
-const CustomAvatar = ({ size, username, src }) => {
+const CustomAvatar = ({ size, username, src, noClick = false }) => {
 	const history = useHistory()
 	const [ anchorEl, setAnchorEl ] = useState(null)
 
@@ -37,20 +37,37 @@ const CustomAvatar = ({ size, username, src }) => {
 		history.push(`/profile/${username}`)
 	}
 
+	console.log(noClick)
+
 	return (
 		<Fragment>
-			<StyledAvatar
-				sx={{
-					width  : (theme) => theme.spacing(size),
-					height : (theme) => theme.spacing(size)
-				}}
-				imgProps={{ alt: 'avatar' }}
-				src={src}
-				onClick={(e) => setAnchorEl(e.currentTarget)}
-			/>
 			{/* <Box fontSize={12} fontWeight="fontWeightMedium">
 					{username ? username.substring(0, 2).toUpperCase() : 'N/A'}
 				</Box> */}
+
+			{noClick && (
+				<StyledAvatar
+					sx={{
+						width  : (theme) => theme.spacing(size),
+						height : (theme) => theme.spacing(size),
+						cursor : 'default'
+					}}
+					imgProps={{ alt: 'avatar' }}
+					src={src}
+				/>
+			)}
+
+			{!noClick && (
+				<StyledAvatar
+					sx={{
+						width  : (theme) => theme.spacing(size),
+						height : (theme) => theme.spacing(size)
+					}}
+					imgProps={{ alt: 'avatar' }}
+					src={src}
+					onClick={(e) => setAnchorEl(e.currentTarget)}
+				/>
+			)}
 
 			<Popover
 				open={Boolean(anchorEl)}
@@ -86,7 +103,7 @@ const CustomAvatar = ({ size, username, src }) => {
 							<Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={0.5}>
 								<CustomTooltip title="View profile">
 									<CustomIconBtn color="primary" onClick={handleProfileClick} size="large">
-										<AccountCircleTwoToneIcon />
+										<AccountCircleTwoToneIcon fontSize="small" />
 									</CustomIconBtn>
 								</CustomTooltip>
 

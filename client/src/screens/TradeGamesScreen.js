@@ -28,7 +28,6 @@ import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
 
 // @ Others
-import { removeFromSaleList } from '../actions/saleListActions'
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 import {
 	useGetListQuery,

@@ -12,10 +12,10 @@ import CustomDivider from '../CustomDivider'
 // @ Main
 const CollectionCardSkeleton = ({ page }) => {
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<Box height={page === 'collection' ? 478 : 433} display="flex" flexDirection="column" alignItems="center">
 				<Box display="flex" flexDirection="column" height={page === 'collection' ? 241 : 196} gap={1} p={1}>
-					<CustomSkeleton animation="wave" variant="rectangle" width={175} height="100%" />
+					<CustomSkeleton variant="rectangle" width={175} height="100%" />
 					{page === 'collection' && (
 						<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
 							<CustomSkeleton
@@ -46,8 +46,8 @@ const CollectionCardSkeleton = ({ page }) => {
 					flexDirection="column"
 					width="100%"
 				>
-					<CustomSkeleton animation="wave" variant="text" width={180} />
-					<CustomSkeleton animation="wave" variant="text" width={100} />
+					<CustomSkeleton variant="text" width={180} />
+					<CustomSkeleton variant="text" width={100} />
 				</Box>
 
 				<CustomDivider flexItem />
@@ -61,14 +61,8 @@ const CollectionCardSkeleton = ({ page }) => {
 					width="100%"
 					gap={0.5}
 				>
+					<CustomSkeleton variant="rectangle" width={100} sx={{ borderRadius: 4, height: 24 }} />
 					<CustomSkeleton
-						animation="wave"
-						variant="rectangle"
-						width={100}
-						sx={{ borderRadius: 4, height: 24 }}
-					/>
-					<CustomSkeleton
-						animation="wave"
 						variant="rectangle"
 						width={page === 'collection' ? 190 : 75}
 						sx={{ borderRadius: 4, height: 24 }}
@@ -86,14 +80,12 @@ const CollectionCardSkeleton = ({ page }) => {
 					p={2}
 					width="100%"
 				>
-					<CustomSkeleton animation="wave" variant="retangle" width={40} sx={{ borderRadius: 1 }} />
-					{page === 'collection' && (
-						<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
-					)}
+					<CustomSkeleton variant="retangle" width={40} sx={{ borderRadius: 1 }} />
+					{page === 'collection' && <CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />}
 					{page === 'wishlist' && (
 						<Box display="flex" justifyContent="center" alignItems="center" gap={3}>
-							<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
-							<CustomSkeleton animation="wave" variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+							<CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />
+							<CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />
 						</Box>
 					)}
 				</Box>

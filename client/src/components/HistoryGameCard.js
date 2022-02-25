@@ -61,7 +61,7 @@ const HistoryGameCard = ({ data }) => {
 	}
 
 	return (
-		<Card sx={{ position: 'relative' }} elevation={1}>
+		<Card sx={{ position: 'relative' }} elevation={2}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
 					component="img"

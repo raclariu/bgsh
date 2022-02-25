@@ -2,17 +2,23 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 
 // @ Mui
+import Chip from '@mui/material/Chip'
+import Avatar from '@mui/material/Avatar'
+import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 
 // @ Components
-import UserProfileGameCard from '../components/UserProfileScreen/UserProfileGameCard'
+import CustomSkeleton from '../components/Skeletons/CustomSkeleton'
+import CustomAvatar from '../components/CustomAvatar'
+import UserProfileGameCard from '../components/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
-import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
+import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 
 // @ Others
@@ -23,7 +29,7 @@ const UserProfileScreen = () => {
 	const dispatch = useDispatch()
 	const { username } = useParams()
 
-	const { isLoading, isError, error, data, isSuccess } = useGetUserProfileDataQuery({ username })
+	const { isFetching, isError, error, data, isSuccess } = useGetUserProfileDataQuery({ username })
 
 	const [ tab, setTab ] = useState('sale')
 
@@ -33,19 +39,62 @@ const UserProfileScreen = () => {
 
 	return (
 		<Fragment>
-			{isError && <Box>{error.response.data.message}</Box>}
+			{isFetching && (
+				<Box display="flex" width="100%" mb={2} justifyContent="flex-start" alignItems="center">
+					<CustomSkeleton width={96} height={96} variant="circular" />
+				</Box>
+			)}
 
-			<Box borderRadius="8px" boxShadow={2} bgcolor="background.paper">
+			{isSuccess && (
+				<Box
+					display="flex"
+					width="100%"
+					mb={4}
+					// justifyContent="space-between"
+					flexDirection="column"
+					alignItems="center"
+					gap={1}
+				>
+					<CustomAvatar noClick size={12} username={data.user.username} src={data.user.avatar} />
+					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
+						{`${data.user.username}'s profile`}
+					</Box>
+					<Chip
+						color="primary"
+						size="small"
+						variant="outlined"
+						label={`Last seen ${calculateTimeAgo(data.user.lastSeen)}`}
+					/>
+					<Chip
+						color="primary"
+						size="small"
+						variant="outlined"
+						label={`Account created on ${formatDate(data.user.createdAt)}`}
+					/>
+				</Box>
+			)}
+
+			<Paper
+				elevation={2}
+				sx={{
+					borderRadius : '4px',
+					mb           : 3
+				}}
+			>
 				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleChange}>
 					<Tab value="sale" label="For sale" />
 					<Tab value="trade" label="For trade" />
 					<Tab value="wanted" label="Wanted" />
 				</Tabs>
-			</Box>
+			</Paper>
 
-			{isLoading && (
+			{isFetching && (
 				<Grid container spacing={3} direction="row">
-					{[ ...Array(6).keys() ].map((i, k) => <CollectionCardSkeleton key={k} />)}
+					{[ ...Array(6).keys() ].map((i, k) => (
+						<Grid item key={k} md={4} sm={6} xs={12}>
+							<GeneralCardSkeleton key={k} />
+						</Grid>
+					))}
 				</Grid>
 			)}
 
@@ -57,7 +106,7 @@ const UserProfileScreen = () => {
 						{isSuccess &&
 							data.saleGames.map((data) => (
 								<Grid item key={data._id} md={4} sm={6} xs={12}>
-									<LzLoad placeholder={<CollectionCardSkeleton />}>
+									<LzLoad placeholder={<GeneralCardSkeleton />}>
 										<UserProfileGameCard data={data} />
 									</LzLoad>
 								</Grid>

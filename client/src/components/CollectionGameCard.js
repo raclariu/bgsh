@@ -26,10 +26,10 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'
 import SearchIcon from '@mui/icons-material/Search'
 
 // @ Styles
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',

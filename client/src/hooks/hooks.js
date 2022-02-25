@@ -446,8 +446,14 @@ export const useGetRedditPostsQuery = ({ inView }) => {
 }
 
 export const useGetUserProfileDataQuery = ({ username }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
 	return useQuery([ 'profile', { username } ], () => api.apiGetProfileData(username), {
-		staleTime : 1000 * 60 * 5
+		staleTime : 1000 * 60 * 5,
+		onError   : (err) => {
+			const text = err.response.data.message || 'Error occured while trying to fetch user profile data'
+			showSnackbar.error({ text })
+		}
 	})
 }
 

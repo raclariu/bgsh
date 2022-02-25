@@ -14,7 +14,7 @@ import CustomDivider from '../CustomDivider'
 // @ Main
 const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<Box
 				height={mode === 'sell' ? 504 : mode === 'trade' ? 468 : 492}
 				display="flex"
@@ -22,29 +22,11 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 				alignItems="center"
 			>
 				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
-					<CustomSkeleton animation="wave" variant="rectangle" width={175} height="100%" />
+					<CustomSkeleton variant="rectangle" width={175} height="100%" />
 					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={45}
-							height={37}
-							sx={{ borderRadius: 2 }}
-						/>
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={45}
-							height={37}
-							sx={{ borderRadius: 2 }}
-						/>
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={45}
-							height={37}
-							sx={{ borderRadius: 2 }}
-						/>
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
 					</Box>
 				</Box>
 
@@ -58,8 +40,8 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 					flexDirection="column"
 					width="100%"
 				>
-					<CustomSkeleton animation="wave" variant="text" width={180} />
-					<CustomSkeleton animation="wave" variant="text" width={100} />
+					<CustomSkeleton variant="text" width={180} />
+					<CustomSkeleton variant="text" width={100} />
 				</Box>
 
 				<CustomDivider flexItem />
@@ -73,46 +55,22 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 					width="100%"
 					gap={0.5}
 				>
-					<CustomSkeleton
-						animation="wave"
-						variant="rectangle"
-						width={150}
-						height={24}
-						sx={{ borderRadius: 4 }}
-					/>
-					<CustomSkeleton
-						animation="wave"
-						variant="rectangle"
-						width={210}
-						height={24}
-						sx={{ borderRadius: 4 }}
-					/>
+					<CustomSkeleton variant="rectangle" width={150} height={24} sx={{ borderRadius: 4 }} />
+					<CustomSkeleton variant="rectangle" width={210} height={24} sx={{ borderRadius: 4 }} />
 					{mode === 'sell' && (
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={70}
-							height={32}
-							sx={{ borderRadius: 4 }}
-						/>
+						<CustomSkeleton variant="rectangle" width={70} height={32} sx={{ borderRadius: 4 }} />
 					)}
 
 					{mode === 'want' && (
-						<CustomSkeleton
-							animation="wave"
-							variant="rectangle"
-							width={160}
-							height={24}
-							sx={{ borderRadius: 4 }}
-						/>
+						<CustomSkeleton variant="rectangle" width={160} height={24} sx={{ borderRadius: 4 }} />
 					)}
 				</Box>
 
 				<CustomDivider flexItem />
 
 				<Box display="flex" width="100%" alignItems="center" height={60} gap={1}>
-					<CustomSkeleton animation="wave" variant="circular" height={40} width={40} sx={{ ml: 1 }} />
-					<CustomSkeleton animation="wave" variant="text" width={110} />
+					<CustomSkeleton variant="circular" height={40} width={40} sx={{ ml: 1 }} />
+					<CustomSkeleton variant="text" width={110} />
 				</Box>
 			</Box>
 		</Card>

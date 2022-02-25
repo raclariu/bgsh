@@ -16,20 +16,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 // @ Components
-import CustomIconBtn from '../CustomIconBtn'
-import CustomDivider from '../CustomDivider'
-import CustomButton from '../CustomButton'
-import CustomTooltip from '../CustomTooltip'
-import GameDetailsButton from '../GameDetailsButton'
+import ExtLinkIconBtn from './ExtLinkIconBtn'
+import CustomIconBtn from './CustomIconBtn'
+import CustomDivider from './CustomDivider'
+import CustomButton from './CustomButton'
+import CustomTooltip from './CustomTooltip'
+import GameDetailsButton from './GameDetailsButton'
 
 // @ Styles
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-	padding   : theme.spacing(1, 1, 1, 1),
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
-const StyledTitleBox = styled(CardMedia)({
+const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
 	WebkitLineClamp : '2',
 	WebkitBoxOrient : 'vertical',
@@ -57,27 +57,29 @@ const UserProfileGameCard = ({ data }) => {
 
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
-			<StyledCardMedia
-				component="img"
-				alt={data.games[index].title}
-				image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-				title={data.games[index].title}
-			/>
+			<Box display="flex" flexDirection="column" p={1} gap={1}>
+				<StyledCardMedia
+					component="img"
+					alt={data.games[index].title}
+					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
+					title={data.games[index].title}
+				/>
 
-			{data.isPack && (
-				<Fragment>
-					<Chip
-						size="small"
-						color="secondary"
-						sx={{
-							position : 'absolute',
-							top      : '8px',
-							left     : '8px'
-						}}
-						label={`${data.games.length} pack`}
-					/>
-				</Fragment>
-			)}
+				{data.isPack && (
+					<Fragment>
+						<Chip
+							size="small"
+							color="secondary"
+							sx={{
+								position : 'absolute',
+								top      : '8px',
+								left     : '8px'
+							}}
+							label={`${data.games.length} pack`}
+						/>
+					</Fragment>
+				)}
+			</Box>
 
 			<CustomDivider />
 
@@ -125,15 +127,7 @@ const UserProfileGameCard = ({ data }) => {
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<CustomTooltip title="See on BGG">
-						<CustomButton
-							href={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`}
-							target="_blank"
-							rel="noreferrer"
-						>
-							BGG
-						</CustomButton>
-					</CustomTooltip>
+					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 
 					<GameDetailsButton altId={data.altId} />
 				</Box>

@@ -6,7 +6,7 @@ import Skeleton from '@mui/material/Skeleton'
 
 // @ Main
 const CustomSkeleton = (props) => {
-	return <Skeleton {...props} />
+	return <Skeleton animation="wave" {...props} />
 }
 
 export default CustomSkeleton

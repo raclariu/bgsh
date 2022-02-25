@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
+import { differenceInMinutes } from 'date-fns'
 
 const protect = asyncHandler(async (req, res, next) => {
 	let token
@@ -11,7 +12,18 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar').lean()
+			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar lastSeen').lean()
+
+			if (differenceInMinutes(new Date(), req.user.lastSeen) >= 30) {
+				const updated = await User.findOneAndUpdate(
+					{ _id: req.user._id },
+					{ lastSeen: Date.now() },
+					{ new: true }
+				)
+					.select('lastSeen -_id')
+					.lean()
+				req.user.lastSeen = updated.lastSeen
+			}
 
 			if (!req.user) {
 				res.status(401)

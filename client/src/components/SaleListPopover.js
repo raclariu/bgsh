@@ -30,17 +30,14 @@ import CustomButton from './CustomButton'
 import SaleListPopoverDialog from './SaleListPopoverDialog'
 
 // @ Others
-import { addToSaleList } from '../actions/saleListActions'
 import { useNotiSnackbar } from '../hooks/hooks'
 import { useDeleteFromListMutation, useGetListQuery } from '../hooks/hooks'
-import { apiGetList, apiDeleteOneFromList } from '../api/api'
 
 // @ Main
 const SaleListPopover = () => {
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ mode, setMode ] = useState('')
-	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { isFetching, isSuccess, data } = useGetListQuery()
 	const deleteMutation = useDeleteFromListMutation()

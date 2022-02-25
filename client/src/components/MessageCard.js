@@ -31,7 +31,7 @@ import { calculateTimeAgo, formatDate } from '../helpers/helpers'
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
 	return (
-		<Card elevation={1}>
+		<Card elevation={2}>
 			<CardHeader
 				avatar={
 					<CustomAvatar

@@ -548,7 +548,7 @@ const SingleGameScreen = () => {
 								display             : 'grid',
 								gridTemplateColumns : {
 									xs : '100%',
-									md : 'auto auto max-content'
+									md : '3fr auto 2fr'
 								},
 								gap                 : 2
 							}}
@@ -794,8 +794,8 @@ const SingleGameScreen = () => {
 					<CustomDivider light />
 
 					{/* Gallery */}
-					<Box id="gallery" my={2} display="flex" flexDirection="column" gap={2}>
-						<Box ref={galleryRef} display="flex" alignItems="center" gap={1}>
+					<Box ref={galleryRef} id="gallery" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box display="flex" alignItems="center" gap={1}>
 							{isFetchingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" />}
 
 							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
@@ -809,7 +809,7 @@ const SingleGameScreen = () => {
 
 						{isLoadingGallery && (
 							<ResponsiveMasonry columnsCountBreakPoints={{ 0: 2, 600: 3, 900: 4 }}>
-								<Masonry gutter="10px">
+								<Masonry gutter="8px">
 									{[ ...Array(12).keys() ].map((i, k) => <GallerySkeleton key={k} />)}
 								</Masonry>
 							</ResponsiveMasonry>
@@ -929,8 +929,8 @@ const SingleGameScreen = () => {
 					<CustomDivider light />
 
 					{/* Recommendations */}
-					<Box id="recommendations" my={2} display="flex" flexDirection="column" gap={2}>
-						<Box ref={recsRef} display="flex" alignItems="center" gap={1}>
+					<Box ref={recsRef} id="recommendations" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box display="flex" alignItems="center" gap={1}>
 							{isFetchingRecs ? <Loader size={20} /> : <RecommendTwoToneIcon color="primary" />}
 
 							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
@@ -1034,8 +1034,8 @@ const SingleGameScreen = () => {
 					<CustomDivider light />
 
 					{/* Videos */}
-					<Box id="videos" my={2} display="flex" flexDirection="column" gap={2}>
-						<Box ref={vidsRef} display="flex" alignItems="center" gap={1}>
+					<Box ref={vidsRef} id="videos" my={2} display="flex" flexDirection="column" gap={2}>
+						<Box display="flex" alignItems="center" gap={1}>
 							{isFetchingVids ? <Loader size={20} /> : <OndemandVideoTwoToneIcon color="primary" />}
 
 							<Box fontSize="1.3rem" fontWeight="fontWeightMedium">

@@ -316,8 +316,6 @@ const getBggVideos = asyncHandler(async (req, res) => {
 			}
 		})
 
-		console.log(data)
-
 		const vidsArr = []
 		if (data.videos.length > 0) {
 			for (let vid of data.videos) {
@@ -328,6 +326,7 @@ const getBggVideos = asyncHandler(async (req, res) => {
 					user    : { username: user },
 					gallery : type
 				} = vid
+
 				vidsArr.push({
 					extLink,
 					title,
@@ -339,8 +338,6 @@ const getBggVideos = asyncHandler(async (req, res) => {
 		}
 
 		return res.status(200).json(vidsArr)
-
-		// return res.status(200).json(recArr)
 	} catch (error) {
 		res.status(503)
 		throw {

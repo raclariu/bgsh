@@ -21,11 +21,11 @@ const RedditSkeleton = () => {
 				gap          : 1
 			}}
 		>
-			<CustomSkeleton animation="wave" variant="rectangle" width={180} height={100} sx={{ borderRadius: 1 }} />
+			<CustomSkeleton variant="rectangle" width={180} height={100} sx={{ borderRadius: 1 }} />
 			<Box display="flex" flexDirection="column" width="100%" ml={1}>
-				<CustomSkeleton animation="wave" variant="text" width="90%" />
-				<CustomSkeleton animation="wave" variant="text" width="75%" />
-				<CustomSkeleton animation="wave" variant="text" width="60%" />
+				<CustomSkeleton variant="text" width="90%" />
+				<CustomSkeleton variant="text" width="75%" />
+				<CustomSkeleton variant="text" width="60%" />
 			</Box>
 		</Paper>
 	)

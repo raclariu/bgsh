@@ -167,7 +167,13 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	return res.status(200).json({ saleGames, tradeGames, wantedGames })
+	const user = await User.findById({ _id: userId }).select('_id username avatar lastSeen createdAt').lean()
+
+	const { _id, username, avatar, lastSeen, createdAt } = user
+
+	return res
+		.status(200)
+		.json({ saleGames, tradeGames, wantedGames, user: { _id, username, avatar, lastSeen, createdAt } })
 })
 
 // ~ @desc    Get notifications
