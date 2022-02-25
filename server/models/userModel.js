@@ -33,6 +33,11 @@ const userSchema = mongoose.Schema(
 			type    : String,
 			default : null
 		},
+		status     : {
+			type    : String,
+			default : 'inactive'
+		},
+		mailToken  : String,
 		savedGames : [
 			{
 				type     : mongoose.Schema.Types.ObjectId,

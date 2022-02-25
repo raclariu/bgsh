@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
 import Message from '../models/messageModel.js'
+import { sendAccountActivationMail } from '../helpers/mailer.js'
 
 // * @desc    Send message
 // * @route   POST  /api/messages
