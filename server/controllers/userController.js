@@ -2,15 +2,17 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
+import Token from '../models/tokenModel.js'
 import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
+import { sendAccountActivationMail } from '../helpers/mailer.js'
 
-// * @desc    Sign in user & get token
-// * @route   POST  /api/users/signin
+// * @desc    Log in user & get jwt token
+// * @route   POST  /api/users/login
 // * @access  Public route
-const userAuth = asyncHandler(async (req, res) => {
+const userLogin = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
@@ -24,20 +26,26 @@ const userAuth = asyncHandler(async (req, res) => {
 		}
 	} else {
 		const { email } = req.body
-		const user = await User.findOne({ email }).select('_id username isAdmin token').lean()
+		const user = await User.findOne({ email }).select('_id email username isAdmin status').lean()
+
+		if (user.status === 'pending') {
+			res.status(403)
+			throw {
+				message : 'Account is not active. Check your email address to activate account'
+			}
+		}
+
 		await User.updateOne({ _id: user._id }, { lastSeen: Date.now() })
 		return res.status(200).json({
 			_id      : user._id,
-			// email    : user.email,
 			username : user.username,
 			isAdmin  : user.isAdmin,
-			// avatar   : user.avatar,
 			token    : generateToken(user._id)
 		})
 	}
 })
 
-// * @desc    Register user & get token
+// * @desc    Register user & send activation email
 // * @route   POST  /api/users/signup
 // * @access  Public route
 const userRegister = asyncHandler(async (req, res) => {
@@ -63,15 +71,43 @@ const userRegister = asyncHandler(async (req, res) => {
 			password : await hashPassword(password)
 		})
 
-		if (user) {
-			res.status(201).json({
-				_id      : user._id,
-				username : user.username,
-				isAdmin  : user.isAdmin,
-				token    : generateToken(user._id)
-			})
+		const createdTokenDoc = await Token.create({
+			addedBy : user._id
+		})
+
+		const baseDomain = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
+		const activationUrl = baseDomain + `/activate/${createdTokenDoc.tokenUid}`
+		await sendAccountActivationMail({ address: user.email, url: activationUrl })
+
+		return res.status(204).end()
+	}
+})
+
+// ~ @desc    Activate user account
+// ~ @route   GET  /api/users/activate/:tokenUid
+// ~ @access  Private route
+const activateAccount = asyncHandler(async (req, res) => {
+	const { tokenUid } = req.params
+
+	const tokenDoc = await Token.findOne({ tokenUid }).lean()
+
+	if (!tokenDoc) {
+		res.status(404)
+		throw {
+			message : 'Link expired, altered or already used'
 		}
 	}
+
+	const user = await User.findById({ _id: tokenDoc.addedBy }).select('_id username isAdmin').lean()
+
+	await User.updateOne({ _id: tokenDoc.addedBy }, { status: 'active' })
+	await Token.deleteOne({ tokenUid })
+	return res.status(200).json({
+		_id      : user._id,
+		username : user.username,
+		isAdmin  : user.isAdmin,
+		token    : generateToken(user._id)
+	})
 })
 
 // * @desc    Change password
@@ -193,4 +229,13 @@ const getOwnAvatar = asyncHandler(async (req, res) => {
 	return res.status(200).json({ avatar: user.avatar })
 })
 
-export { userAuth, userRegister, changePassword, getUserProfileData, getNotifications, changeAvatar, getOwnAvatar }
+export {
+	userLogin,
+	userRegister,
+	activateAccount,
+	changePassword,
+	getUserProfileData,
+	getNotifications,
+	changeAvatar,
+	getOwnAvatar
+}

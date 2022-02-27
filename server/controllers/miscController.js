@@ -320,14 +320,16 @@ const getBggVideos = asyncHandler(async (req, res) => {
 		if (data.videos.length > 0) {
 			for (let vid of data.videos) {
 				const {
-					href    : extLink,
+					extvideoid : ytId,
+					href       : extLink,
 					title,
-					images  : { square: thumbnail },
-					user    : { username: user },
-					gallery : type
+					images     : { square: thumbnail },
+					user       : { username: user },
+					gallery    : type
 				} = vid
 
 				vidsArr.push({
+					ytId,
 					extLink,
 					title,
 					thumbnail,

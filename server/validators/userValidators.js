@@ -38,7 +38,7 @@ const validateEmailDuplicate = check('email')
 		}
 	})
 
-const validatePasswordSignIn = check('password')
+const validatePasswordLogIn = check('password')
 	.trim()
 	.notEmpty()
 	.withMessage('Password is required')
@@ -171,7 +171,7 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 	})
 	.withMessage('New password confirmation does not match new password')
 
-const validateSignIn = [ validateEmail, validatePasswordSignIn ]
+const validateLogin = [ validateEmail, validatePasswordLogIn ]
 const validateSignUp = [
 	validateEmailDuplicate,
 	validateUsername,
@@ -180,4 +180,4 @@ const validateSignUp = [
 ]
 const validatePasswordChange = [ validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ]
 
-export { validateSignIn, validateSignUp, validatePasswordChange, validateUsernameExist }
+export { validateLogin, validateSignUp, validatePasswordChange, validateUsernameExist }

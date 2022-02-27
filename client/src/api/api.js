@@ -2,6 +2,14 @@ import store from '../store'
 import queryString from 'query-string'
 import { axsPUBLIC, axsAUTH, multipartAxsAUTH } from './axs'
 
+export const apiActivateAccount = async (tokenUid) => {
+	await axsPUBLIC.get(`/api/users/activate/${tokenUid}`)
+}
+
+export const apiCreateAccount = async ({ email, username, password, passwordConfirmation }) => {
+	await axsPUBLIC.post('/api/users/signup', { email, username, password, passwordConfirmation })
+}
+
 export const apiFetchKickstarters = async () => {
 	const { data } = await axsPUBLIC.get('/api/misc/kickstarters')
 	return data

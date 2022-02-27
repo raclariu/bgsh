@@ -30,7 +30,8 @@ import { light, dark } from './constants/themes'
 
 // @ Screens
 const Home = lazy(() => import('./screens/HomeScreen'))
-const Auth = lazy(() => import('./screens/AuthScreen'))
+const LogIn = lazy(() => import('./screens/LogInScreen'))
+const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
 const SellGames = lazy(() => import('./screens/SellGamesScreen'))
@@ -73,7 +74,7 @@ const App = () => {
 					)}
 				>
 					<CssBaseline />
-					{location.pathname !== '/signin' && location.pathname !== '/signup' && <Header />}
+					{location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
 
 					<Suspense fallback={<LinearProgress />}>
 						<Container
@@ -93,8 +94,16 @@ const App = () => {
 									<Home />
 								</Route>
 
-								<Route path={[ '/signin', '/signup' ]} exact>
-									<Auth />
+								<Route path="/login" exact>
+									<LogIn />
+								</Route>
+
+								<Route path="/activate/:tokenUid" exact>
+									<LogIn />
+								</Route>
+
+								<Route path="/create-account" exact>
+									<CreateAccount />
 								</Route>
 
 								<ProtectedRoute path="/user/settings" exact>
@@ -192,7 +201,7 @@ const App = () => {
 						</Container>
 					</Suspense>
 
-					{location.pathname !== '/signin' && location.pathname !== '/signup' && <Footer />}
+					{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
 				</SnackbarProvider>
 			</ThemeProvider>
 		</StyledEngineProvider>

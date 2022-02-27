@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children: component, ...rest }) => {
 				if (userData) {
 					return component
 				} else {
-					return <Redirect to={{ pathname: '/signin', state: { from: props.location } }} />
+					return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
 				}
 			}}
 		/>

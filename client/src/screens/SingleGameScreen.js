@@ -1072,7 +1072,7 @@ const SingleGameScreen = () => {
 								}}
 							>
 								{vidsData.map((video) => (
-									<LzLoad placeholder={<VidsSkeleton />}>
+									<LzLoad key={video.ytId} placeholder={<VidsSkeleton />}>
 										<Box
 											display="flex"
 											gap={1}

@@ -6,15 +6,11 @@ import storage from '../helpers/storage.js'
 // ~ @route   GET  /api/list
 // ~ @access  Private route
 const getList = asyncHandler(async (req, res) => {
-	let userList = await List.findOne({ addedBy: req.user._id }).lean()
-
-	if (!userList) {
-		await List.create({
-			addedBy : req.user._id,
-			list    : []
-		})
-		userList = await List.find({ addedBy: req.user._id })
-	}
+	let userList = await List.findOneAndUpdate(
+		{ addedBy: req.user._id },
+		{},
+		{ upsert: true, new: true, setDefaultsOnInsert: true }
+	).lean()
 
 	if (userList.list.length > 6) {
 		userList.list = userList.list.slice(0, 6)

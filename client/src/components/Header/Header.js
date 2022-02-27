@@ -646,8 +646,8 @@ const Header = () => {
 					</Fragment>
 				) : (
 					<Fragment>
-						<CustomButton variant="outlined" component={RouterLink} to="/signin">
-							Sign In
+						<CustomButton variant="outlined" component={RouterLink} to="/login">
+							Login
 						</CustomButton>
 					</Fragment>
 				)}
