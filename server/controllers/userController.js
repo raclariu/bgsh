@@ -8,6 +8,7 @@ import { hashPassword, generateToken } from '../helpers/helpers.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
 import { sendAccountActivationMail } from '../helpers/mailer.js'
+import { differenceInMinutes } from 'date-fns'
 
 // * @desc    Log in user & get jwt token
 // * @route   POST  /api/users/login
@@ -19,6 +20,7 @@ const userLogin = asyncHandler(async (req, res) => {
 
 		res.status(401)
 		throw {
+			code    : 10,
 			message : {
 				emailError    : err.email ? err.email.msg : null,
 				passwordError : err.password ? err.password.msg : null
@@ -29,9 +31,43 @@ const userLogin = asyncHandler(async (req, res) => {
 		const user = await User.findOne({ email }).select('_id email username isAdmin status').lean()
 
 		if (user.status === 'pending') {
-			res.status(403)
-			throw {
-				message : 'Account is not active. Check your email address to activate account'
+			const tokenDoc = await Token.findOne({ addedBy: user._id }).lean()
+			const baseDomain =
+				process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
+
+			if (!tokenDoc) {
+				const createNewTokenDoc = await Token.create({
+					addedBy : user._id
+				})
+
+				const activationUrl = baseDomain + `/activate/${createNewTokenDoc.tokenUid}`
+				await sendAccountActivationMail({ address: user.email, url: activationUrl })
+
+				res.status(403)
+				throw {
+					code    : 11,
+					message : `Account is not active. An activation email has been sent to ${user.email}`
+				}
+			} else {
+				const lookback = differenceInMinutes(new Date(), tokenDoc.sent)
+				if (lookback >= 15) {
+					const activationUrl = baseDomain + `/activate/${tokenDoc.tokenUid}`
+					await sendAccountActivationMail({ address: user.email, url: activationUrl })
+					await Token.updateOne({ _id: tokenDoc._id }, { sent: new Date() })
+
+					res.status(403)
+					throw {
+						code    : 11,
+						message : `Account is not active. An activation email has been sent to ${user.email}`
+					}
+				} else {
+					console.log(lookback)
+					res.status(403)
+					throw {
+						code    : 11,
+						message : `Activation email already send. You can retry in ${15 - lookback} minutes`
+					}
+				}
 			}
 		}
 
@@ -92,13 +128,20 @@ const activateAccount = asyncHandler(async (req, res) => {
 	const tokenDoc = await Token.findOne({ tokenUid }).lean()
 
 	if (!tokenDoc) {
-		res.status(404)
+		res.status(400)
 		throw {
-			message : 'Link expired, altered or already used'
+			message : 'Link expired, altered or already used. Try to log in and a new activation email will be sent'
 		}
 	}
 
-	const user = await User.findById({ _id: tokenDoc.addedBy }).select('_id username isAdmin').lean()
+	const user = await User.findById({ _id: tokenDoc.addedBy }).select('_id username status isAdmin').lean()
+
+	if (user.status === 'active') {
+		res.status(400)
+		throw {
+			message : 'Your account is already active, you can log in'
+		}
+	}
 
 	await User.updateOne({ _id: tokenDoc.addedBy }, { status: 'active' })
 	await Token.deleteOne({ tokenUid })

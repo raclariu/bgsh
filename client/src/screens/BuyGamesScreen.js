@@ -9,6 +9,7 @@ import queryString from 'query-string'
 import Grid from '@mui/material/Grid'
 import InputAdornment from '@mui/material/InputAdornment'
 import Box from '@mui/material/Box'
+import Backdrop from '@mui/material/Backdrop'
 
 // @ Components
 import CustomDivider from '../components/CustomDivider'
@@ -234,6 +235,9 @@ const BuyGamesScreen = () => {
 					</Box>
 				</Fragment>
 			)}
+			<Backdrop sx={{ zIndex: 1000 }} open={addMutation.isLoading}>
+				<Loader />
+			</Backdrop>
 		</form>
 	)
 }

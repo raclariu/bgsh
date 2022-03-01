@@ -38,9 +38,14 @@ const CreateAccountScreen = () => {
 	const [ passConfirmationVisibility, setPassConfirmationVisibility ] = useState(false)
 
 	const { mutate, isError, error, isSuccess, isLoading } = useMutation((data) => apiCreateAccount(data), {
-		onSuccess : () => {
+		onSuccess : (data, vars) => {
+			console.log(vars)
 			showSnackbar.info({
-				text             : 'Account created successfully. An activation email was sent to your email address',
+				text             : `Account created successfully. An activation email was sent to ${vars.email}`,
+				preventDuplicate : true
+			})
+			showSnackbar.info({
+				text             : "It may take a few minutes. Don't forget to check your spam folder",
 				preventDuplicate : true
 			})
 			history.push('/login')

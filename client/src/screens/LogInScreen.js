@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 import { useHistory, useLocation, useParams, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
@@ -26,7 +26,7 @@ import LoadingBtn from '../components/LoadingBtn'
 // @ Others
 import { logIn } from '../actions/userActions'
 import { useNotiSnackbar } from '../hooks/hooks'
-import { apiActivateAccount } from '../api/api'
+import { apiActivateAccount, apiUserLogin } from '../api/api'
 
 // @ Main
 const LogIn = () => {
@@ -36,20 +36,17 @@ const LogIn = () => {
 	const params = useParams()
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	console.log(location)
-
 	const { tokenUid } = params
 	const isActivationPage = location.pathname !== '/login' && location.pathname.startsWith('/activate') && !!tokenUid
-	console.log(isActivationPage)
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
 
 	const userAuth = useSelector((state) => state.userAuth)
-	const { loading, error, success, userData } = userAuth
+	const { userData } = userAuth
 
-	const { isLoading, isError } = useQuery([ 'activate' ], () => apiActivateAccount(tokenUid), {
+	const { isLoading } = useQuery([ 'activate' ], () => apiActivateAccount(tokenUid), {
 		staleTime : Infinity,
 		retry     : 0,
 		enabled   : isActivationPage,
@@ -68,30 +65,34 @@ const LogIn = () => {
 		}
 	})
 
-	useEffect(
-		() => {
-			if (userData && !isActivationPage) {
+	const { isLoading: isLoadingLogin, isError, mutate, error } = useMutation(
+		(credentials) => apiUserLogin(credentials),
+		{
+			retry     : 0,
+			onError   : (err) => {
+				if (err.response.data.code === 11) {
+					showSnackbar.error({ text: err.response.data.message })
+				}
+				return
+			},
+			onSuccess : (data) => {
+				dispatch(logIn(data))
+				showSnackbar.success({ text: 'You are now logged in' })
+				console.log(location.state)
 				location.state && location.state.from && location.state.from.pathname
 					? history.replace(`${location.state.from.pathname}`)
 					: history.replace('/')
 			}
-		},
-		[ history, userData, location, isActivationPage ]
-	)
-
-	useEffect(
-		() => {
-			if (success && userData) {
-				showSnackbar.success({ text: `You are now logged in as ${userData.username}` })
-			}
-		},
-		[ success, showSnackbar, userData ]
+		}
 	)
 
 	const submitHandler = (e) => {
 		e.preventDefault()
-		dispatch(logIn(email, password))
+		mutate({ email, password })
 	}
+
+	let usernameErrorMsg = isError && error.response.data.code === 10 ? error.response.data.message.emailError : false
+	let pwErrorMsg = isError && error.response.data.code === 10 ? error.response.data.message.passwordError : false
 
 	return (
 		<form onSubmit={submitHandler} autoComplete="off">
@@ -107,8 +108,8 @@ const LogIn = () => {
 			<Box display="flex" alignItems="center" flexDirection="column" justifyContent="center">
 				<Input
 					sx={{ minHeight: '90px' }}
-					error={error && error.emailError ? true : false}
-					helperText={error ? error.emailError : false}
+					error={!!usernameErrorMsg}
+					helperText={usernameErrorMsg}
 					onChange={(inputVal) => setEmail(inputVal)}
 					value={email}
 					size="medium"
@@ -123,8 +124,8 @@ const LogIn = () => {
 
 				<Input
 					sx={{ minHeight: '90px' }}
-					error={error && error.passwordError ? true : false}
-					helperText={error ? error.passwordError : false}
+					error={!!pwErrorMsg}
+					helperText={pwErrorMsg}
 					onChange={(inputVal) => setPassword(inputVal)}
 					value={password}
 					size="medium"
@@ -145,7 +146,14 @@ const LogIn = () => {
 					required
 				/>
 
-				<LoadingBtn type="submit" variant="contained" color="primary" size="large" loading={loading} fullWidth>
+				<LoadingBtn
+					type="submit"
+					variant="contained"
+					color="primary"
+					size="large"
+					loading={isLoadingLogin}
+					fullWidth
+				>
 					Log In
 				</LoadingBtn>
 

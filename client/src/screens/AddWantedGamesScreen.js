@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 import Button from '@mui/material/Button'
+import Backdrop from '@mui/material/Backdrop'
 
 // @ Components
 import CustomDivider from '../components/CustomDivider'
@@ -183,6 +184,10 @@ const AddWantedGamesScreen = () => {
 					</Box>
 				</Fragment>
 			)}
+
+			<Backdrop sx={{ zIndex: 1000 }} open={listMutation.isLoading}>
+				<Loader />
+			</Backdrop>
 		</form>
 	)
 }

@@ -19,6 +19,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
+import Backdrop from '@mui/material/Backdrop'
 
 // @ Components
 import CustomDivider from '../components/CustomDivider'
@@ -400,6 +401,10 @@ const SellGamesScreen = () => {
 						</Box>
 					</Fragment>
 				))}
+
+			<Backdrop sx={{ zIndex: 1000 }} open={listMutation.isLoading}>
+				<Loader />
+			</Backdrop>
 		</form>
 	)
 }

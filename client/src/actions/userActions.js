@@ -7,24 +7,13 @@ import {
 	USER_PREFERENCES_SET_THEME
 } from '../constants/userConstants'
 
-export const logIn = (email, password) => async (dispatch) => {
-	try {
-		dispatch({ type: USER_AUTH_REQUEST })
+export const logIn = (data) => async (dispatch) => {
+	dispatch({
+		type    : USER_AUTH_SUCCESS,
+		payload : data
+	})
 
-		const { data } = await axsPUBLIC.post('/api/users/login', { email, password })
-
-		dispatch({
-			type    : USER_AUTH_SUCCESS,
-			payload : data
-		})
-
-		localStorage.setItem('userData', JSON.stringify(data))
-	} catch (error) {
-		dispatch({
-			type    : USER_AUTH_FAIL,
-			payload : error.response && error.response.data ? error.response.data.message : error.message
-		})
-	}
+	localStorage.setItem('userData', JSON.stringify(data))
 }
 
 export const logOut = () => async (dispatch) => {

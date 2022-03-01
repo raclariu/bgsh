@@ -10,6 +10,11 @@ export const apiCreateAccount = async ({ email, username, password, passwordConf
 	await axsPUBLIC.post('/api/users/signup', { email, username, password, passwordConfirmation })
 }
 
+export const apiUserLogin = async ({ email, password }) => {
+	const { data } = await axsPUBLIC.post('/api/users/login', { email, password })
+	return data
+}
+
 export const apiFetchKickstarters = async () => {
 	const { data } = await axsPUBLIC.get('/api/misc/kickstarters')
 	return data

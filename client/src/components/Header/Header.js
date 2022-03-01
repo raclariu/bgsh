@@ -72,12 +72,6 @@ const Header = () => {
 
 	const { userData } = useSelector((state) => state.userAuth)
 
-	const logOutHandler = () => {
-		dispatch(logOut())
-		setOpenDialog(false)
-		setIsOpen(false)
-	}
-
 	const handleExpandClick = (type) => {
 		if (type === openCollapseType) {
 			setOpenCollapseType(null)
@@ -97,6 +91,12 @@ const Header = () => {
 
 	const handleCloseDialog = () => {
 		setOpenDialog(false)
+	}
+
+	const logOutHandler = () => {
+		dispatch(logOut())
+		setOpenDialog(false)
+		setIsOpen(false)
 	}
 
 	const ClgTheme = styled('span')(({ theme }) => console.log(theme))

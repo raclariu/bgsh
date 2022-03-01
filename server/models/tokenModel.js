@@ -11,6 +11,10 @@ const tokenSchema = mongoose.Schema(
 		tokenUid : {
 			type    : String,
 			default : () => genNanoId(64)
+		},
+		sent     : {
+			type    : Date,
+			default : new Date()
 		}
 	},
 	{
