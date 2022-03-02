@@ -14,6 +14,7 @@ import historyRoutes from './routes/historyRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import miscRoutes from './routes/miscRoutes.js'
 import listRoutes from './routes/listRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 
 dotenv.config()
 
@@ -35,6 +36,7 @@ app.use('/api/history', historyRoutes)
 app.use('/api/messages', messageRoutes)
 app.use('/api/list', listRoutes)
 app.use('/api/misc', miscRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 app.get('/', (req, res) => {
 	return res.status(200).send('Api is running...')

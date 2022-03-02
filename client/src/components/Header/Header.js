@@ -195,6 +195,28 @@ const Header = () => {
 										/>
 									</ListItemButton>
 
+									<ListItemButton
+										onClick={(e) => handleClick(e, 33)}
+										selected={selectedIndex === 33}
+										component={RouterLink}
+										to="/start"
+									>
+										<ListItemIcon>
+											<HomeTwoToneIcon color={selectedIndex === 33 ? 'primary' : 'inherit'} />
+										</ListItemIcon>
+										<ListItemText
+											primary={
+												<Box
+													fontWeight="fontWeightMedium"
+													fontSize="subtitle2.fontSize"
+													color={selectedIndex === 33 ? 'primary.main' : 'text.secondary'}
+												>
+													Start
+												</Box>
+											}
+										/>
+									</ListItemButton>
+
 									<ListItemButton onClick={() => handleExpandClick('games')}>
 										<ListItemIcon>
 											<CasinoTwoToneIcon />

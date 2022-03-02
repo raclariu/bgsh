@@ -27,7 +27,12 @@ export const apiFetchRedditPosts = async () => {
 }
 
 export const apiGetNotifications = async () => {
-	const { data } = await axsAUTH.get('/api/users/notifications')
+	const { data } = await axsAUTH.get('/api/notifications')
+	return data
+}
+
+export const apiDeleteOneNotification = async (ntfId) => {
+	const { data } = await axsAUTH.delete('/api/notifications', { data: { ntfId } })
 	return data
 }
 

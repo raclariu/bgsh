@@ -71,10 +71,6 @@ const BggSearchGamesBox = () => {
 
 	return (
 		<Fragment>
-			<Box mb={2} fontWeight="fontWeightMedium">
-				Search BoardGameGeek by game title
-			</Box>
-
 			<Autocomplete
 				fullWidth
 				value={selectedOption}
@@ -94,7 +90,7 @@ const BggSearchGamesBox = () => {
 					<Input
 						{...params}
 						onChange={handleInput}
-						label="Enter board game title"
+						label="Search games on BoardGameGeek"
 						size="medium"
 						error={isError || (data && data.length === 0) ? true : false}
 						helperText={
@@ -106,7 +102,7 @@ const BggSearchGamesBox = () => {
 								false
 							)
 						}
-						placeholder="Title"
+						placeholder="Enter boardgame title"
 						variant="outlined"
 						InputProps={{
 							...params.InputProps,

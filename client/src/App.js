@@ -30,6 +30,7 @@ import { light, dark } from './constants/themes'
 
 // @ Screens
 const Home = lazy(() => import('./screens/HomeScreen'))
+const Start = lazy(() => import('./screens/StartScreen'))
 const LogIn = lazy(() => import('./screens/LogInScreen'))
 const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
@@ -92,6 +93,10 @@ const App = () => {
 							<Switch>
 								<Route path="/" exact>
 									<Home />
+								</Route>
+
+								<Route path="/start" exact>
+									<Start />
 								</Route>
 
 								<Route path="/login" exact>

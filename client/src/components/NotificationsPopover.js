@@ -31,7 +31,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
 
 // @ Others
-import { useGetNotificationsQuery } from '../hooks/hooks'
+import { useGetNotificationsQuery, useDeleteNotificationMutation } from '../hooks/hooks'
 import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Main
@@ -42,10 +42,15 @@ const NotificationsPopover = () => {
 	const open = Boolean(anchorEl)
 
 	const { data, isSuccess, isFetching } = useGetNotificationsQuery()
+	const deleteMutation = useDeleteNotificationMutation()
 
 	const handleThumbClick = (altId) => {
 		setAnchorEl(null)
 		history.push(`/games/${altId}`)
+	}
+
+	const deleteNotificationHandler = (ntfId) => {
+		deleteMutation.mutate(ntfId)
 	}
 
 	return (
@@ -124,8 +129,8 @@ const NotificationsPopover = () => {
 										/>
 										<ListItemSecondaryAction>
 											<CustomIconBtn
-												// disabled={deleteMutation.isLoading}
-												// onClick={() => deleteFromListHandler(game.bggId, game.title)}
+												disabled={deleteMutation.isLoading}
+												onClick={() => deleteNotificationHandler(ntf._id)}
 												edge="end"
 												size="large"
 												color="error"

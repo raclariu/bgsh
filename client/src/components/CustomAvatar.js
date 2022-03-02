@@ -37,8 +37,6 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 		history.push(`/profile/${username}`)
 	}
 
-	console.log(noClick)
-
 	return (
 		<Fragment>
 			{/* <Box fontSize={12} fontWeight="fontWeightMedium">

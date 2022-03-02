@@ -37,8 +37,6 @@ const StyledCoverImg = styled('img')({
 const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 	const [ openDialog, setOpenDialog ] = useState(false)
 
-	console.log(data)
-
 	const handleOpenDialog = () => {
 		setOpenDialog(true)
 	}
@@ -158,30 +156,37 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 				</DialogContent>
 
 				<DialogActions>
-					<Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-						<Box display="flex" gap={2} alignItems="center">
-							<CustomTooltip title="Previous">
-								<CustomIconBtn
-									color="primary"
-									disabled={index === 0}
-									onClick={() => cycleIndex('back')}
-									size="large"
-								>
-									<ArrowBackIcon />
-								</CustomIconBtn>
-							</CustomTooltip>
+					<Box
+						display="flex"
+						alignItems="center"
+						justifyContent={data.isPack ? 'space-between' : 'flex-end'}
+						width="100%"
+					>
+						{data.isPack && (
+							<Box display="flex" gap={2} alignItems="center">
+								<CustomTooltip title="Previous">
+									<CustomIconBtn
+										color="primary"
+										disabled={index === 0}
+										onClick={() => cycleIndex('back')}
+										size="large"
+									>
+										<ArrowBackIcon fontSize="small" />
+									</CustomIconBtn>
+								</CustomTooltip>
 
-							<CustomTooltip title="Next">
-								<CustomIconBtn
-									color="primary"
-									disabled={data.games.length === index + 1}
-									onClick={() => cycleIndex('forward')}
-									size="large"
-								>
-									<ArrowForwardIcon />
-								</CustomIconBtn>
-							</CustomTooltip>
-						</Box>
+								<CustomTooltip title="Next">
+									<CustomIconBtn
+										color="primary"
+										disabled={data.games.length === index + 1}
+										onClick={() => cycleIndex('forward')}
+										size="large"
+									>
+										<ArrowForwardIcon fontSize="small" />
+									</CustomIconBtn>
+								</CustomTooltip>
+							</Box>
+						)}
 
 						<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 					</Box>

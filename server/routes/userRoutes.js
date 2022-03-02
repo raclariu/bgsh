@@ -8,7 +8,6 @@ import {
 	activateAccount,
 	changePassword,
 	getUserProfileData,
-	getNotifications,
 	changeAvatar,
 	getOwnAvatar
 } from '../controllers/userController.js'
@@ -25,7 +24,6 @@ router.route('/signup').post(validateSignUp, userRegister)
 router.route('/activate/:tokenUid').get(activateAccount)
 router.route('/password').post([ protect, ...validatePasswordChange ], changePassword)
 router.route('/avatar').post([ protect, uploadAvatar, resizeAvatar ], changeAvatar).get([ protect ], getOwnAvatar)
-router.route('/notifications').get([ protect ], getNotifications)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
 
 export default router

@@ -397,7 +397,6 @@ const SingleGameScreen = () => {
 								xs : 'auto',
 								md : 'auto min-content' // auto min-content sau auto-auto sau auto 1fr
 							},
-
 							gap                 : 2
 						}}
 						mb={2}
@@ -473,8 +472,8 @@ const SingleGameScreen = () => {
 
 							<Box
 								mt={2}
-								display="grid"
 								sx={{
+									display             : 'grid',
 									gridTemplateColumns : {
 										xs : 'repeat(2, 1fr)',
 										md : 'repeat(4, 1fr)'
@@ -951,7 +950,7 @@ const SingleGameScreen = () => {
 						{isSuccessRec &&
 						recData.length > 0 && (
 							<Box id="recommendations-list">
-								<Collapse in={expanded} timeout="auto" collapsedSize="344px">
+								<Collapse in={expanded} timeout="auto" collapsedSize="345px">
 									<Grid container spacing={1}>
 										{isSuccessRec &&
 											recData.map((rec) => (

@@ -255,15 +255,6 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		.json({ saleGames, tradeGames, wantedGames, user: { _id, username, avatar, lastSeen, createdAt } })
 })
 
-// ~ @desc    Get notifications
-// ~ @route   GET /api/notifications
-// ~ @access  Private route
-const getNotifications = asyncHandler(async (req, res) => {
-	const notifications = await Notification.find({ recipient: req.user._id }).sort({ createdAt: -1 }).lean()
-
-	res.status(200).json({ notifications })
-})
-
 // ~ @desc    Get own avatar
 // ~ @route   GET /api/users/avatar
 // ~ @access  Private route
@@ -272,13 +263,4 @@ const getOwnAvatar = asyncHandler(async (req, res) => {
 	return res.status(200).json({ avatar: user.avatar })
 })
 
-export {
-	userLogin,
-	userRegister,
-	activateAccount,
-	changePassword,
-	getUserProfileData,
-	getNotifications,
-	changeAvatar,
-	getOwnAvatar
-}
+export { userLogin, userRegister, activateAccount, changePassword, getUserProfileData, changeAvatar, getOwnAvatar }

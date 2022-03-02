@@ -605,6 +605,43 @@ export const useGetNotificationsQuery = () => {
 	})
 }
 
+export const useDeleteNotificationMutation = () => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((ntfId) => api.apiDeleteOneNotification(ntfId), {
+		onMutate  : async (ntfId) => {
+			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+			await queryClient.cancelQueries([ 'notifications' ])
+			// Snapshot the previous value
+			const prevNtfList = queryClient.getQueryData([ 'notifications' ])
+			console.log(prevNtfList)
+			// Optimistically update to the new value
+			queryClient.setQueryData([ 'notifications' ], (old) => {
+				return { ...old, notifications: old.notifications.filter((ntf) => ntf._id !== ntfId) }
+			})
+			console.log('here1')
+			// Return a context object with the snapshotted value
+			return { prevNtfList }
+		},
+		onError   : async (err, vars, ctx) => {
+			// Show error snackbar
+			showSnackbar.error({
+				text : err.response.data.message || 'Error occured while removing notifications'
+			})
+			console.log(ctx)
+			console.log('here2')
+			queryClient.setQueryData([ 'notifications' ], ctx.prevNtfList)
+			console.log('here3')
+		},
+		onSuccess : (data) => {
+			console.log('here4')
+			queryClient.setQueryData([ 'notifications' ], data)
+			console.log('here5')
+		}
+	})
+}
+
 export const useSendNewMessageMutation = ({ handleCloseDialog }) => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()

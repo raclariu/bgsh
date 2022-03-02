@@ -20,6 +20,7 @@ import UserProfileGameCard from '../components/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
+import SendMessage from '../components/SendMessage'
 
 // @ Others
 import { useGetUserProfileDataQuery } from '../hooks/hooks'
@@ -40,8 +41,19 @@ const UserProfileScreen = () => {
 	return (
 		<Fragment>
 			{isFetching && (
-				<Box display="flex" width="100%" mb={2} justifyContent="flex-start" alignItems="center">
+				<Box
+					display="flex"
+					width="100%"
+					mb={4}
+					// justifyContent="space-between"
+					flexDirection="column"
+					alignItems="center"
+					gap={1}
+				>
 					<CustomSkeleton width={96} height={96} variant="circular" />
+					<CustomSkeleton width={220} height={51} variant="text" />
+					<CustomSkeleton width={180} variant="text" />
+					<CustomSkeleton width={320} variant="text" />
 				</Box>
 			)}
 
@@ -59,6 +71,8 @@ const UserProfileScreen = () => {
 					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
 						{`${data.user.username}'s profile`}
 					</Box>
+					<SendMessage recipientUsername={username} />
+
 					<Chip
 						color="primary"
 						size="small"

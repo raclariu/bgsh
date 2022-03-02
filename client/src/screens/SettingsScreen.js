@@ -23,66 +23,23 @@ const SettingsScreen = () => {
 
 	return (
 		<Fragment>
-			<Box
-				display="flex"
-				alignItems="center"
-				justifyContent="center"
-				bgcolor="background.paper"
-				boxShadow={2}
-				borderRadius={1}
-			>
-				<Tabs value={tab} centered indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
-					<Tab value="profile" label="Profile" />
-					<Tab value="change-password" label="Change password" />
-				</Tabs>
+			<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3}>
+				<Box mt={3}>
+					<ChangeAvatar />
+				</Box>
+				<CustomDivider flexItem />
+				<Box
+					sx={{
+						width : {
+							xs : '100%',
+							sm : '85%',
+							md : '50%'
+						}
+					}}
+				>
+					<ChangePasswordForm />
+				</Box>
 			</Box>
-
-			{tab === 'change-password' && (
-				<Box display="flex" justifyContent="center" width="100%" mt={3}>
-					<Box
-						sx={{
-							width : {
-								xs : '100%',
-								sm : '85%',
-								md : '50%'
-							}
-						}}
-					>
-						<ChangePasswordForm />
-					</Box>
-				</Box>
-			)}
-
-			{tab === 'profile' && (
-				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3}>
-					<Box mt={3}>
-						<ChangeAvatar />
-					</Box>
-					<CustomDivider flexItem />
-					<Box
-						sx={{
-							width : {
-								xs : '100%',
-								sm : '85%',
-								md : '50%'
-							}
-						}}
-					>
-						<CollectionFetchBox />
-					</Box>
-					<Box
-						sx={{
-							width : {
-								xs : '100%',
-								sm : '85%',
-								md : '50%'
-							}
-						}}
-					>
-						<BggSearchGamesBox />
-					</Box>
-				</Box>
-			)}
 		</Fragment>
 	)
 }

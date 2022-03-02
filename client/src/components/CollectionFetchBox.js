@@ -26,10 +26,6 @@ const CollectionFetchBox = () => {
 
 	return (
 		<form onSubmit={submitToBGGHandler} autoComplete="off">
-			<Box fontWeight="fontWeightMedium" mb={2}>
-				Import your BoardGameGeek collection
-			</Box>
-
 			<Input
 				onChange={(inputVal) => setBggUsername(inputVal)}
 				value={bggUsername}
@@ -38,14 +34,9 @@ const CollectionFetchBox = () => {
 				size="medium"
 				id="bggUsername"
 				name="bggUsername"
-				label="Import collection"
-				placeholder="Enter your boardgamegeek username"
+				label="Import your BoardGameGeek collection"
+				placeholder="Enter your BoardGameGeek username"
 				type="text"
-				// InputProps={{
-				// 	endAdornment : (
-				// 		<Fragment>{mutation.isLoading ? <Loader color="secondary" size={20} /> : null}</Fragment>
-				// 	)
-				// }}
 				fullWidth
 			/>
 
