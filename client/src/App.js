@@ -82,13 +82,9 @@ const App = () => {
 							maxWidth="md"
 							component="main"
 							sx={{
-								py : 4
+								py        : 4,
+								minHeight : 'calc(100% - 244px)'
 							}}
-							// sx={{
-							// 	minHeight     : 'calc(100% - 244px)',
-							// 	paddingTop    : '32px',
-							// 	paddingBottom : '32px'
-							// }}
 						>
 							<Switch>
 								<Route path="/" exact>

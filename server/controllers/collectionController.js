@@ -209,7 +209,6 @@ const getCollectionFromDB = asyncHandler(async (req, res) => {
 	const search = req.query.search
 
 	const getCollectionCount = await Collection.findOne({ user: req.user._id }).select('ownedCount').lean()
-	console.log(getCollectionCount)
 
 	if (!getCollectionCount) {
 		return res.status(200).json({ owned: [], pagination: {} })

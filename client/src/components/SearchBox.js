@@ -63,8 +63,8 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 								<ClearIcon />
 							</CustomIconBtn>
 						) : (
-							<CustomIconBtn size="small">
-								<ClearIcon color="disabled" />
+							<CustomIconBtn disabled size="small">
+								<ClearIcon />
 							</CustomIconBtn>
 						)}
 					</InputAdornment>

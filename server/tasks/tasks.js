@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer'
 import { subDays } from 'date-fns'
 import Game from '../models/gameModel.js'
 import Kickstarter from '../models/ksModel.js'
+import Notification from '../models/notificationModel.js'
 
 const options = {
 	scheduled : false,
@@ -10,12 +11,37 @@ const options = {
 }
 
 const setInactiveTask = cron.schedule(
-	// */10 * * * * *
-	'0 3,15 * * *',
+	//'0 3,15 * * *',
+	'0 8,18 * * *',
+	// '*/10 * * * * *',
 	async () => {
 		const lookback = subDays(new Date(), 7)
+		const gamesToExpire = await Game.find({ isActive: true, updatedAt: { $lte: lookback } }).lean()
 
-		await Game.updateMany({ updatedAt: { $lte: lookback }, isActive: true }, { isActive: false })
+		let notifArr = []
+		for (let obj of gamesToExpire) {
+			const text = obj.isPack
+				? `Your pack containing ${obj.games
+						.map((game) => game.title)
+						.join(', ')} has expired. Head to your listed games to reactivate it`
+				: `Your ${obj.games[0].title} listing has expired. Head to your listed games to reactivate it`
+			notifArr.push({
+				recipient : obj.addedBy,
+				type      : 'expired',
+				text,
+				meta      : {
+					altId     : obj.altId,
+					thumbnail : obj.games[0].thumbnail
+				}
+			})
+		}
+
+		await Notification.insertMany(notifArr)
+		notifArr = []
+
+		const modify = await Game.updateMany({ isActive: true, updatedAt: { $lte: lookback } }, { isActive: false })
+		console.log(`ran inactive task at ${new Date()} - modified ${modify.modifiedCount}/${modify.matchedCount}`)
+		// await Game.updateMany({ updatedAt: { $lte: lookback }, isActive: false }, { isActive: true })
 	},
 	options
 )

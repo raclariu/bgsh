@@ -24,20 +24,15 @@ import { useNotiSnackbar, useGetOwnAvatarQuery, useChangeOwnAvatarMutation } fro
 
 // @ Styles
 const MyAvatar = styled(Avatar)(({ theme }) => ({
+	backgroundColor : theme.palette.primary.secondary,
 	width           : theme.spacing(14),
 	height          : theme.spacing(14),
-	backgroundColor : theme.palette.primary.main,
 	imageRendering  : '-webkit-optimize-contrast',
-	transition      : 'background 0.5s',
+	transition      : 'background 0.35s',
 	cursor          : 'pointer',
 	'&:hover'       : {
-		backgroundColor : 'rgba(0, 0, 0, 0.7)',
-		color           : 'rgba(0, 0, 0, 0.7)'
-	},
-	'&>img'         : {
-		backgroundColor : 'rgba(0, 0, 0, 0.7)',
-		color           : 'rgba(0, 0, 0, 0.7)',
-		height          : theme.spacing(14)
+		backgroundColor : theme.palette.grey[500],
+		color           : theme.palette.grey[500]
 	}
 }))
 
@@ -151,7 +146,7 @@ const ChangeAvatar = () => {
 						onClick={(e) => (e.target.value = null)}
 					/>
 					<MyAvatar src={ownAvatarData.avatar}>
-						<PhotoCameraIcon fontSize="large" />
+						<PhotoCameraIcon color="primary" fontSize="large" />
 					</MyAvatar>
 				</label>
 			)}

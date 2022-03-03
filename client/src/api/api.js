@@ -36,6 +36,10 @@ export const apiDeleteOneNotification = async (ntfId) => {
 	return data
 }
 
+export const apiClearAllNotifications = async () => {
+	await axsAUTH.delete('/api/notifications/clear')
+}
+
 export const apiUserChangePassword = async ({ passwordCurrent, passwordNew, passwordNewConfirmation }) => {
 	await axsAUTH.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation })
 }

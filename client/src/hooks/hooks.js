@@ -357,12 +357,12 @@ export const useGetSingleGameQuery = (altId) => {
 	})
 }
 
-export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, index }) => {
+export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery(
-		[ 'singleGameScreen', 'gallery', { altId, index } ],
-		() => api.apiFetchGallery(data.games[index].bggId),
+		[ 'singleGameScreen', 'gallery', { altId, idx } ],
+		() => api.apiFetchGallery(data.games[idx].bggId),
 		{
 			enabled          : isSuccess && galleryInView,
 			staleTime        : 1000 * 60 * 60,
@@ -371,12 +371,12 @@ export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, index }) =>
 	)
 }
 
-export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index }) => {
+export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery(
-		[ 'singleGameScreen', 'recs', { altId, index } ],
-		() => api.apiFetchRecommendations(data.games[index].bggId),
+		[ 'singleGameScreen', 'recs', { altId, idx } ],
+		() => api.apiFetchRecommendations(data.games[idx].bggId),
 		{
 			enabled          : isSuccess && recsInView,
 			staleTime        : 1000 * 60 * 60,
@@ -385,18 +385,14 @@ export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, index 
 	)
 }
 
-export const useGetSingleGameVideosQuery = ({ altId, vidsInView, index }) => {
+export const useGetSingleGameVideosQuery = ({ altId, vidsInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
-	return useQuery(
-		[ 'singleGameScreen', 'videos', { altId, index } ],
-		() => api.apiFetchVideos(data.games[index].bggId),
-		{
-			enabled          : isSuccess && vidsInView,
-			staleTime        : 1000 * 60 * 60,
-			keepPreviousData : true
-		}
-	)
+	return useQuery([ 'singleGameScreen', 'videos', { altId, idx } ], () => api.apiFetchVideos(data.games[idx].bggId), {
+		enabled          : isSuccess && vidsInView,
+		staleTime        : 1000 * 60 * 60,
+		keepPreviousData : true
+	})
 }
 
 export const useGetOwnAvatarQuery = () => {
@@ -538,7 +534,6 @@ export const useBggFetchCollectionMutation = () => {
 		retry      : 5,
 		retryDelay : 3000,
 		onSuccess  : (data, bggUsername) => {
-			console.log('in useBggFetchColl', bggUsername)
 			queryClient.invalidateQueries([ 'collection' ])
 			queryClient.invalidateQueries([ 'wishlist' ])
 			showSnackbar.success({
@@ -615,29 +610,58 @@ export const useDeleteNotificationMutation = () => {
 			await queryClient.cancelQueries([ 'notifications' ])
 			// Snapshot the previous value
 			const prevNtfList = queryClient.getQueryData([ 'notifications' ])
-			console.log(prevNtfList)
+
 			// Optimistically update to the new value
 			queryClient.setQueryData([ 'notifications' ], (old) => {
 				return { ...old, notifications: old.notifications.filter((ntf) => ntf._id !== ntfId) }
 			})
-			console.log('here1')
+
 			// Return a context object with the snapshotted value
 			return { prevNtfList }
 		},
 		onError   : async (err, vars, ctx) => {
 			// Show error snackbar
 			showSnackbar.error({
-				text : err.response.data.message || 'Error occured while removing notifications'
+				text : err.response.data.message || 'Error occured while deleting notification'
 			})
-			console.log(ctx)
-			console.log('here2')
+
 			queryClient.setQueryData([ 'notifications' ], ctx.prevNtfList)
-			console.log('here3')
 		},
 		onSuccess : (data) => {
-			console.log('here4')
 			queryClient.setQueryData([ 'notifications' ], data)
-			console.log('here5')
+		}
+	})
+}
+
+export const useClearAllNotificationsMutation = () => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(api.apiClearAllNotifications, {
+		onMutate  : async () => {
+			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+			await queryClient.cancelQueries([ 'notifications' ])
+			// Snapshot the previous value
+			const prevNtfList = queryClient.getQueryData([ 'notifications' ])
+
+			// Optimistically update to the new value
+			queryClient.setQueryData([ 'notifications' ], { notifications: [] })
+
+			// Return a context object with the snapshotted value
+			return { prevNtfList }
+		},
+		onError   : async (err, vars, ctx) => {
+			// Show error snackbar
+			showSnackbar.error({
+				text : err.response.data.message || 'Error occured while clearing notifications'
+			})
+
+			queryClient.setQueryData([ 'notifications' ], ctx.prevNtfList)
+		},
+		onSuccess : () => {
+			showSnackbar.success({
+				text : 'Notifications cleared'
+			})
 		}
 	})
 }

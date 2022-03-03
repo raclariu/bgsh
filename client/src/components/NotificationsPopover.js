@@ -22,6 +22,7 @@ import Collapse from '@mui/material/Collapse'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
+import LoadingBtn from './LoadingBtn'
 
 // @ Icons
 import NotificationsOffTwoToneIcon from '@mui/icons-material/NotificationsOffTwoTone'
@@ -31,7 +32,11 @@ import CloseIcon from '@mui/icons-material/Close'
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
 
 // @ Others
-import { useGetNotificationsQuery, useDeleteNotificationMutation } from '../hooks/hooks'
+import {
+	useGetNotificationsQuery,
+	useDeleteNotificationMutation,
+	useClearAllNotificationsMutation
+} from '../hooks/hooks'
 import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Main
@@ -43,6 +48,7 @@ const NotificationsPopover = () => {
 
 	const { data, isSuccess, isFetching } = useGetNotificationsQuery()
 	const deleteMutation = useDeleteNotificationMutation()
+	const clearAllMutation = useClearAllNotificationsMutation()
 
 	const handleThumbClick = (altId) => {
 		setAnchorEl(null)
@@ -51,6 +57,10 @@ const NotificationsPopover = () => {
 
 	const deleteNotificationHandler = (ntfId) => {
 		deleteMutation.mutate(ntfId)
+	}
+
+	const clearAllNotifications = () => {
+		clearAllMutation.mutate()
 	}
 
 	return (
@@ -99,50 +109,66 @@ const NotificationsPopover = () => {
 				<CustomDivider />
 
 				{isSuccess && (
-					<List dense disablePadding>
-						<TransitionGroup>
-							{data.notifications.map((ntf, i) => (
-								<Collapse key={ntf._id}>
-									<ListItem alignItems="flex-start" divider>
-										<ListItemAvatar>
-											<Avatar
-												sx={{ cursor: 'pointer' }}
-												onClick={() => handleThumbClick(ntf.meta.altId)}
-												variant="rounded"
-												src={ntf.meta.thumbnail}
-												alt={ntf.text}
-											>
-												{ntf.text.substring(0, 2).toUpperCase()}
-											</Avatar>
-										</ListItemAvatar>
+					<Fragment>
+						<List dense disablePadding>
+							<TransitionGroup>
+								{data.notifications.map((ntf, i) => (
+									<Collapse key={ntf._id}>
+										<ListItem alignItems="flex-start" divider>
+											<ListItemAvatar>
+												<Avatar
+													sx={{ cursor: 'pointer' }}
+													onClick={() => handleThumbClick(ntf.meta.altId)}
+													variant="rounded"
+													src={ntf.meta.thumbnail}
+													alt={ntf.text}
+												>
+													{ntf.text.substring(0, 2).toUpperCase()}
+												</Avatar>
+											</ListItemAvatar>
 
-										<ListItemText
-											primary={ntf.text}
-											secondary={calculateTimeAgo(ntf.createdAt)}
-											primaryTypographyProps={{
-												variant : 'body2'
-											}}
-											secondaryTypographyProps={{
-												color   : 'grey.500',
-												variant : 'caption'
-											}}
-										/>
-										<ListItemSecondaryAction>
-											<CustomIconBtn
-												disabled={deleteMutation.isLoading}
-												onClick={() => deleteNotificationHandler(ntf._id)}
-												edge="end"
-												size="large"
-												color="error"
-											>
-												<CloseIcon color="error" />
-											</CustomIconBtn>
-										</ListItemSecondaryAction>
-									</ListItem>
-								</Collapse>
-							))}
-						</TransitionGroup>
-					</List>
+											<ListItemText
+												sx={{ mr: 1 }}
+												primary={ntf.text}
+												secondary={calculateTimeAgo(ntf.createdAt)}
+												primaryTypographyProps={{
+													variant : 'body2'
+												}}
+												secondaryTypographyProps={{
+													color   : 'grey.500',
+													variant : 'caption'
+												}}
+											/>
+
+											<ListItemSecondaryAction>
+												<CustomIconBtn
+													disabled={deleteMutation.isLoading}
+													onClick={() => deleteNotificationHandler(ntf._id)}
+													edge="end"
+													size="large"
+													color="error"
+												>
+													<CloseIcon color="error" />
+												</CustomIconBtn>
+											</ListItemSecondaryAction>
+										</ListItem>
+									</Collapse>
+								))}
+							</TransitionGroup>
+						</List>
+						{data.notifications.length > 0 && (
+							<Box p={1} display="flex" justifyContent="flex-end">
+								<LoadingBtn
+									loading={clearAllNotifications.isLoading}
+									onClick={clearAllNotifications}
+									startIcon={<CloseIcon />}
+									color="error"
+								>
+									Clear all
+								</LoadingBtn>
+							</Box>
+						)}
+					</Fragment>
 				)}
 			</Popover>
 		</Fragment>
