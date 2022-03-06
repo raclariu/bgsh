@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import { createTheme } from '@mui/material/styles'
 
 // @ Light

@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -33,6 +33,7 @@ import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
 import ChangeAvatar from '../components/ChangeAvatar'
 import SendMessage from '../components/SendMessage'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useGetHotGamesQuery, useGetKickstartersQuery, useGetRedditPostsQuery } from '../hooks/hooks'
@@ -73,6 +74,8 @@ const StartScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title="My dashboard" />
+
 			<Box
 				display="flex"
 				mb={2}

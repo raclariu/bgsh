@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useEffect, useState, Fragment, useCallback } from 'react'
 import { formatDuration, intervalToDuration } from 'date-fns'
 import { useParams } from 'react-router-dom'
@@ -67,7 +67,7 @@ import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
 import SendMessage from '../components/SendMessage'
-import HelmetComponent from '../components/HelmetComponent'
+import Helmet from '../components/Helmet'
 import CustomAlert from '../components/CustomAlert'
 import CustomTooltip from '../components/CustomTooltip'
 import LzLoad from '../components/LzLoad'
@@ -361,7 +361,7 @@ const SingleGameScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<HelmetComponent title={isSuccess ? data.games[index].title : 'Boardgame'} />
+					<Helmet title={data.games[index].title} />
 
 					{data.isPack && (
 						<Box

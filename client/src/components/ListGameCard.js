@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useEffect, useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 
@@ -273,7 +273,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 
 				{mode !== 'want' && (
 					<Grid container>
-						<Grid item xs={6}>
+						<Grid item xs={5}>
 							<FormControlLabel
 								control={
 									<Switch
@@ -287,7 +287,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 
 						{(mode === 'sell' || mode === 'buy') &&
 						!isPack && (
-							<Grid item xs={6}>
+							<Grid item xs={7}>
 								<Input
 									onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'price')}
 									value={data.price}

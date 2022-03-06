@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,16 +30,10 @@ import SearchBox from '../components/SearchBox'
 import CustomTooltip from '../components/CustomTooltip'
 import MessageCard from '../components/MessageCard'
 import BackButton from '../components/BackButton'
+import Helmet from '../components/Helmet'
 
 // @ Others
-import { calculateTimeAgo, formatDate } from '../helpers/helpers'
-import { apiDeleteMessages, apiGetSentMessages, apiGetReceivedMessages, apiUpdateMessageStatus } from '../api/api'
-import {
-	useNotiSnackbar,
-	useGetMessagesQuery,
-	useUpdateMessageStatusMutation,
-	useDeleteMessagesMutation
-} from '../hooks/hooks'
+import { useGetMessagesQuery, useUpdateMessageStatusMutation, useDeleteMessagesMutation } from '../hooks/hooks'
 
 // @ Main
 const InboxScreen = () => {
@@ -141,6 +135,8 @@ const InboxScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title={currLoc === 'received' ? 'Received messages' : 'Sent messages'} />
+
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item xs={12} sm={6} md={4}>

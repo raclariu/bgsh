@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useEffect, useState, useRef, Fragment } from 'react'
 
 // @ Mui
@@ -16,6 +16,7 @@ import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import {
@@ -83,6 +84,8 @@ const AddWantedGamesScreen = () => {
 
 	return (
 		<form onSubmit={handleSubmit} autoComplete="off">
+			<Helmet title="Add wanted boardgames" />
+
 			<Box display="flex" alignItems="center" gap={2} mb={2}>
 				{isFetching && <Loader size={20} />}
 

@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -22,6 +22,7 @@ import Loader from '../components/Loader'
 import CustomIconBtn from '../components/CustomIconBtn'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { logIn } from '../actions/userActions'
@@ -96,6 +97,8 @@ const LogIn = () => {
 
 	return (
 		<form onSubmit={submitHandler} autoComplete="off">
+			<Helmet title="Log in" />
+
 			<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
 				<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
 					<HomeTwoToneIcon />

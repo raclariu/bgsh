@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useEffect } from 'react'
 
 // @ Mui
@@ -9,6 +9,7 @@ import HotGameCard from '../components/HotGameCard'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useGetHotGamesQuery } from '../hooks/hooks'
@@ -19,6 +20,8 @@ const HotGamesScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title="BGG hot games" />
+
 			{isFetching && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (

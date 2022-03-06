@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,6 +27,7 @@ import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
@@ -142,6 +143,8 @@ const TradeGamesScreen = () => {
 
 	return (
 		<form onSubmit={handleSubmit}>
+			<Helmet title="Trade your boardgames" />
+
 			<Box display="flex" alignItems="center" gap={2} mb={2}>
 				{isFetching && <Loader size={20} />}
 

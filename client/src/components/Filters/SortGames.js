@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import { useLocation } from 'react-router-dom'
@@ -19,16 +19,6 @@ const SortGames = ({ handleFilters, mode }) => {
 			<InputLabel>Sort by</InputLabel>
 			{mode === 'sell' && (
 				<Select
-					MenuProps={{
-						anchorOrigin    : {
-							vertical   : 'bottom',
-							horizontal : 'left'
-						},
-						transformOrigin : {
-							vertical   : 'top',
-							horizontal : 'left'
-						}
-					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
 				>
@@ -46,16 +36,6 @@ const SortGames = ({ handleFilters, mode }) => {
 
 			{mode === 'trade' && (
 				<Select
-					MenuProps={{
-						anchorOrigin    : {
-							vertical   : 'bottom',
-							horizontal : 'left'
-						},
-						transformOrigin : {
-							vertical   : 'top',
-							horizontal : 'left'
-						}
-					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
 				>
@@ -69,18 +49,24 @@ const SortGames = ({ handleFilters, mode }) => {
 				</Select>
 			)}
 
+			{mode === 'auction' && (
+				<Select
+					value={queryString.parse(location.search).sort || 'new'}
+					onChange={(e) => handleFilters(e.target.value, 'sort')}
+				>
+					<MenuItem value="new">Newest added</MenuItem>
+					<MenuItem value="old">Oldest added</MenuItem>
+					<MenuItem value="starting-price-low">Lowest starting price</MenuItem>
+					<MenuItem value="starting-price-high">Highest starting price</MenuItem>
+					<MenuItem value="buy-now-price-low">Lowest buy now</MenuItem>
+					<MenuItem value="buy-now-price-high">Highest buy now</MenuItem>
+					<MenuItem value="release-new">Newest releases</MenuItem>
+					<MenuItem value="release-old">Oldest releases</MenuItem>
+				</Select>
+			)}
+
 			{mode === 'want' && (
 				<Select
-					MenuProps={{
-						anchorOrigin    : {
-							vertical   : 'bottom',
-							horizontal : 'left'
-						},
-						transformOrigin : {
-							vertical   : 'top',
-							horizontal : 'left'
-						}
-					}}
 					value={queryString.parse(location.search).sort || 'new'}
 					onChange={(e) => handleFilters(e.target.value, 'sort')}
 				>

@@ -181,7 +181,7 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 				size       : 'thumb',
 				sort       : 'hot',
 				// licensefilter : 'reuse'
-				tag        : 'Components,Play'
+				tag        : 'Components' // Play
 			}
 		})
 

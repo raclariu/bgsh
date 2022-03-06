@@ -14,7 +14,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			req.user = await User.findById(decoded.id).select('_id isAdmin email username avatar lastSeen').lean()
 
-			if (differenceInMinutes(new Date(), req.user.lastSeen) >= 30) {
+			if (differenceInMinutes(new Date(), new Date(req.user.lastSeen)) >= 20) {
 				const updated = await User.findOneAndUpdate(
 					{ _id: req.user._id },
 					{ lastSeen: Date.now() },

@@ -6,6 +6,8 @@ import {
 	listSaleGames,
 	listTradeGames,
 	listWantedGames,
+	listAuction,
+	getAuctions,
 	getGames,
 	getUserListedGames,
 	getSingleGame,
@@ -17,16 +19,17 @@ import {
 	uploadImage,
 	deleteImage
 } from '../controllers/gamesController.js'
-import { sellValidators, tradeValidators, wantValidators } from '../validators/listGameValidator.js'
+import { sellValidators, auctionValidators, tradeValidators, wantValidators } from '../validators/listGameValidator.js'
 
 // @route /api/games
 router.route('/').get(protect, getGames)
 router.route('/:id/delete').delete(protect, deleteOneGame)
-router.route('/user/:id').get(protect, getUserListedGames)
+router.route('/user/listed').get(protect, getUserListedGames)
 router.route('/saved').get(protect, getSavedGames)
+router.route('/auctions').get(protect, getAuctions).post([ protect, ...auctionValidators ], listAuction)
+router.route('/:altId').get(protect, getSingleGame)
 router.route('/:altId/save').get(protect, getSingleGameSavedStatus).patch(protect, switchSaveGame)
 router.route('/:id/reactivate').patch(protect, reactivateGame)
-router.route('/:altId').get(protect, getSingleGame)
 router.route('/wanted').post([ protect, ...wantValidators ], listWantedGames)
 router.route('/trade').post([ protect, ...tradeValidators ], listTradeGames)
 router.route('/sell').post([ protect, ...sellValidators ], listSaleGames)

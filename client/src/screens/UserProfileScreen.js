@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -21,6 +21,7 @@ import CustomAlert from '../components/CustomAlert'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 import SendMessage from '../components/SendMessage'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useGetUserProfileDataQuery } from '../hooks/hooks'
@@ -56,6 +57,8 @@ const UserProfileScreen = () => {
 					<CustomSkeleton width={320} variant="text" />
 				</Box>
 			)}
+
+			{isSuccess && <Helmet title={`${data.user.username}'s profile`} />}
 
 			{isSuccess && (
 				<Box

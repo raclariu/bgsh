@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
@@ -15,6 +15,7 @@ import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkeleton'
 import LzLoad from '../components/LzLoad'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { apiAddOneToList, apiDeleteOneFromList } from '../api/api'
@@ -66,6 +67,8 @@ const WishlistScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title={'My BGG wishlist'} />
+
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item md={4} sm={6} xs={12}>

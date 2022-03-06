@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
@@ -15,6 +15,7 @@ import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useGetSavedGamesListQuery } from '../hooks/hooks'
@@ -45,6 +46,8 @@ const SavedGamesScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title="My saved games" />
+
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item md={4} sm={6} xs={12}>

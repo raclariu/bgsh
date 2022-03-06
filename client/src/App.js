@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import { Route, Redirect, Switch, useLocation } from 'react-router-dom'
@@ -36,12 +36,13 @@ const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
 const SellGames = lazy(() => import('./screens/SellGamesScreen'))
-const AuctionGames = lazy(() => import('./screens/AuctionGamesScreen'))
+const ListAuctions = lazy(() => import('./screens/AuctionsListScreen'))
 const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
 const AddWantedGames = lazy(() => import('./screens/AddWantedGamesScreen'))
 const BuyGames = lazy(() => import('./screens/BuyGamesScreen'))
 const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
+const AuctionsIndex = lazy(() => import('./screens/AuctionsIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
 const Inbox = lazy(() => import('./screens/InboxScreen'))
@@ -75,9 +76,9 @@ const App = () => {
 					)}
 				>
 					<CssBaseline />
-					{location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
 
 					<Suspense fallback={<LinearProgress />}>
+						{location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
 						<Container
 							maxWidth="md"
 							component="main"
@@ -123,6 +124,10 @@ const App = () => {
 									<GamesIndex />
 								</ProtectedRoute>
 
+								<ProtectedRoute path="/auctions" exact>
+									<AuctionsIndex />
+								</ProtectedRoute>
+
 								<ProtectedRoute path="/games/:altId" exact>
 									<SingleGame />
 								</ProtectedRoute>
@@ -140,7 +145,7 @@ const App = () => {
 								</ProtectedRoute>
 
 								<ProtectedRoute path="/auction" exact>
-									<AuctionGames />
+									<ListAuctions />
 								</ProtectedRoute>
 
 								<ProtectedRoute path="/trade" exact>
@@ -200,9 +205,8 @@ const App = () => {
 								</Route>
 							</Switch>
 						</Container>
+						{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
 					</Suspense>
-
-					{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
 				</SnackbarProvider>
 			</ThemeProvider>
 		</StyledEngineProvider>

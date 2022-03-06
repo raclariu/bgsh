@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React from 'react'
 import LazyLoad from 'react-lazyload'
 

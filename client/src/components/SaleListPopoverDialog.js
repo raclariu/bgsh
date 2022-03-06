@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -21,7 +21,11 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle>
 					<Box textAlign="center">
-						{mode === 'sell' ? 'Sell' : mode === 'trade' ? 'Trade' : 'Buy'} games individually or as a pack?
+						{`${mode === 'sell'
+							? 'Sell'
+							: mode === 'trade'
+								? 'Trade'
+								: mode === 'buy' ? 'Buy' : 'Auction'} games individually or as a pack?`}
 					</Box>
 				</DialogTitle>
 
@@ -30,7 +34,17 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 						<CustomButton
 							onClick={handleCloseDialog}
 							component={Link}
-							to={mode === 'sell' ? '/sell' : mode === 'trade' ? '/trade' : '/buy'}
+							to={
+								mode === 'sell' ? (
+									'/sell'
+								) : mode === 'trade' ? (
+									'/trade'
+								) : mode === 'buy' ? (
+									'/buy'
+								) : (
+									'/auction'
+								)
+							}
 						>
 							Individually
 						</CustomButton>
@@ -42,8 +56,10 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 									'/sell?pack=true'
 								) : mode === 'trade' ? (
 									'/trade?pack=true'
-								) : (
+								) : mode === 'buy' ? (
 									'/buy?pack=true'
+								) : (
+									'/auction?pack=true'
 								)
 							}
 						>

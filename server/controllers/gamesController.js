@@ -2,12 +2,14 @@ import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
+import Auction from '../models/auctionModel.js'
 import User from '../models/userModel.js'
 import Notification from '../models/notificationModel.js'
 import Wishlist from '../models/wishlistModel.js'
 import List from '../models/listModel.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
+import { addHours, addDays } from 'date-fns'
 
 // * @desc    Add games for sale
 // * @route   POST  /api/games/sell
@@ -109,6 +111,204 @@ const listSaleGames = asyncHandler(async (req, res) => {
 	}
 })
 
+// * @desc    Add games for trade
+// * @route   POST  /api/games/trade
+// * @access  Private route
+const listTradeGames = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const { games, isPack, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
+
+	if (isPack) {
+		await Game.create({
+			mode          : 'trade',
+			addedBy       : req.user._id,
+			games,
+			shipping      : {
+				shipPost,
+				shipCourier,
+				shipPersonal,
+				shipCities
+			},
+			extraInfoPack,
+			isPack
+		})
+	} else {
+		let tradeList = []
+		for (let game of games) {
+			let data = {
+				mode          : 'trade',
+				addedBy       : req.user._id,
+				games         : [ game ],
+				shipping      : {
+					shipPost,
+					shipCourier,
+					shipPersonal,
+					shipCities
+				},
+				extraInfoPack,
+				isPack
+			}
+			tradeList.push(data)
+		}
+
+		await Game.insertMany(tradeList)
+	}
+
+	return res.status(204).end()
+})
+
+// * @desc    Add games for auction
+// * @route   POST  /api/games/auctions
+// * @access  Private route
+const listAuction = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const calculateEndDate = (endDate) => {
+		if (endDate === '12h') {
+			return addHours(Date.now(), 12)
+		} else if (endDate === '1d') {
+			return addDays(Date.now(), 1)
+		} else if (endDate === '2d') {
+			return addDays(Date.now(), 2)
+		} else if (endDate === '3d') {
+			return addDays(Date.now(), 3)
+		} else if (endDate === '4d') {
+			return addDays(Date.now(), 4)
+		} else if (endDate === '5d') {
+			return addDays(Date.now(), 5)
+		} else if (endDate === '6d') {
+			return addDays(Date.now(), 6)
+		} else if (endDate === '7d') {
+			return addDays(Date.now(), 7)
+		}
+	}
+
+	const {
+		games,
+		isPack,
+		shipPost,
+		shipPostPayer,
+		shipCourier,
+		shipCourierPayer,
+		shipPersonal,
+		shipCities,
+		extraInfoPack,
+		startingPrice,
+		buyNowPrice,
+		endDate,
+		snipeRule
+	} = req.body
+
+	if (isPack) {
+		await Auction.create({
+			addedBy       : req.user._id,
+			games,
+			shipping      : {
+				shipPost,
+				shipPostPayer,
+				shipCourier,
+				shipCourierPayer,
+				shipPersonal,
+				shipCities
+			},
+			extraInfoPack,
+			isPack,
+			startingPrice,
+			buyNowPrice,
+			endDate       : calculateEndDate(endDate),
+			snipeRule
+		})
+
+		return res.status(204).end()
+	} else {
+		let auctionList = []
+		games.forEach((game, index) => {
+			let data = {
+				addedBy       : req.user._id,
+				games         : [ game ],
+				shipping      : {
+					shipPost,
+					shipPostPayer,
+					shipCourier,
+					shipCourierPayer,
+					shipPersonal,
+					shipCities
+				},
+				startingPrice : games[index].startingPrice,
+				buyNowPrice   : games[index].buyNowPrice,
+				endDate       : calculateEndDate(games[index].endDate),
+				snipeRule     : games[index].snipeRule,
+				extraInfoPack,
+				isPack
+			}
+			auctionList.push(data)
+		})
+		await Auction.insertMany(auctionList)
+	}
+
+	return res.status(204).end()
+})
+
+// * @desc    Add wanted games
+// * @route   POST  /api/games/wanted
+// * @access  Private route
+const listWantedGames = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const { games, shipPreffered } = req.body
+
+	let wantedList = []
+	for (let game of games) {
+		let data = {
+			mode     : 'want',
+			addedBy  : req.user._id,
+			games    : [ game ],
+			shipping : {
+				shipPreffered
+			},
+			isPack   : false
+		}
+		wantedList.push(data)
+	}
+	await Game.insertMany(wantedList)
+
+	return res.status(204).end()
+})
+
 // * @desc    Upload game image
 // * @route   POST  /api/games/images
 // * @access  Private route
@@ -175,101 +375,6 @@ const deleteImage = asyncHandler(async (req, res) => {
 		res.status(503)
 		throw { message: 'Error while removing image. Try again' }
 	}
-})
-
-// * @desc    Add games for trade
-// * @route   POST  /api/games/trade
-// * @access  Private route
-const listTradeGames = asyncHandler(async (req, res) => {
-	let message = {}
-	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
-		message[param] = msg
-	})
-	if (!validationErrors.isEmpty()) {
-		validationErrors.mapped()
-
-		res.status(400)
-		throw {
-			message
-		}
-	}
-
-	const { games, isPack, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
-
-	if (isPack) {
-		await Game.create({
-			mode          : 'trade',
-			addedBy       : req.user._id,
-			games,
-			shipping      : {
-				shipPost,
-				shipCourier,
-				shipPersonal,
-				shipCities
-			},
-			extraInfoPack,
-			isPack
-		})
-	} else {
-		let tradeList = []
-		for (let game of games) {
-			let data = {
-				mode          : 'trade',
-				addedBy       : req.user._id,
-				games         : [ game ],
-				shipping      : {
-					shipPost,
-					shipCourier,
-					shipPersonal,
-					shipCities
-				},
-				extraInfoPack,
-				isPack
-			}
-			tradeList.push(data)
-		}
-
-		await Game.insertMany(tradeList)
-	}
-
-	return res.status(204).end()
-})
-
-// * @desc    Add wanted games
-// * @route   POST  /api/games/wanted
-// * @access  Private route
-const listWantedGames = asyncHandler(async (req, res) => {
-	let message = {}
-	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
-		message[param] = msg
-	})
-	if (!validationErrors.isEmpty()) {
-		validationErrors.mapped()
-
-		res.status(400)
-		throw {
-			message
-		}
-	}
-
-	const { games, shipPreffered } = req.body
-
-	let wantedList = []
-	for (let game of games) {
-		let data = {
-			mode     : 'want',
-			addedBy  : req.user._id,
-			games    : [ game ],
-			shipping : {
-				shipPreffered
-			},
-			isPack   : false
-		}
-		wantedList.push(data)
-	}
-	await Game.insertMany(wantedList)
-
-	return res.status(204).end()
 })
 
 // ~ @desc    Get sale / trade / wanted games that are active
@@ -371,16 +476,113 @@ const getGames = asyncHandler(async (req, res) => {
 	}
 })
 
+// ~ @desc    Get all running auction
+// ~ @route   GET /api/games/auctions
+// ~ @access  Private route
+const getAuctions = asyncHandler(async (req, res) => {
+	const page = +req.query.page
+	const search = req.query.search
+	const sortBy = req.query.sort
+	const resultsPerPage = 18
+
+	if (search) {
+		const gamesData = await Auction.find({ endDate: { $gte: new Date() } })
+			.populate('addedBy', 'username _id avatar')
+			.populate('bids.bidBy', 'username _id avatar')
+			.lean()
+
+		const fuse = new Fuse(gamesData, {
+			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
+			threshold : 0.3,
+			distance  : 200
+		})
+
+		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
+			if (sortBy === 'new') {
+				return b.createdAt - a.createdAt
+			} else if (sortBy === 'old') {
+				return a.createdAt - b.createdAt
+			} else if (sortBy === 'starting-price-low') {
+				return a.startingPrice - b.startingPrice
+			} else if (sortBy === 'starting-price-high') {
+				return b.startingPrice - a.startingPrice
+			} else if (sortBy === 'buy-now-price-low') {
+				return a.startingPrice - b.startingPrice
+			} else if (sortBy === 'buy-now-price-low') {
+				return b.buyNowPrice - a.buyNowPrice
+			} else if (sortBy === 'release-new') {
+				return b.games[0].year - a.games[0].year
+			} else if (sortBy === 'release-old') {
+				return a.games[0].year - b.games[0].year
+			} else {
+				return b.createdAt - a.createdAt
+			}
+		})
+
+		const pagination = {
+			page,
+			totalPages : Math.ceil(results.length / resultsPerPage),
+			totalItems : results.length,
+			perPage    : resultsPerPage
+		}
+
+		return res.status(200).json({
+			gamesData  : results.slice((page - 1) * resultsPerPage, page * resultsPerPage),
+			pagination
+		})
+	} else {
+		const checkSort = () => {
+			if (sortBy === 'new') {
+				return { createdAt: -1 }
+			} else if (sortBy === 'old') {
+				return { createdAt: 1 }
+			} else if (sortBy === 'starting-price-low') {
+				return { startingPrice: 1 }
+			} else if (sortBy === 'starting-price-high') {
+				return { startingPrice: -1 }
+			} else if (sortBy === 'buy-now-price-low') {
+				return { buyNowPrice: 1 }
+			} else if (sortBy === 'buy-now-price-high') {
+				return { buyNowPrice: -1 }
+			} else if (sortBy === 'release-new') {
+				return { 'games.year': -1 }
+			} else if (sortBy === 'release-old') {
+				return { 'games.year': 1 }
+			} else {
+				return { createdAt: -1 }
+			}
+		}
+
+		const count = await Auction.countDocuments({ endDate: { $gte: new Date() } })
+
+		const gamesData = await Auction.find({ endDate: { $gte: new Date() } })
+			.skip(resultsPerPage * (page - 1))
+			.limit(resultsPerPage)
+			.populate('addedBy', 'username _id avatar')
+			.populate('bids.bidBy', 'username _id avatar')
+			.sort(checkSort())
+			.lean()
+
+		const pagination = {
+			page,
+			totalPages   : Math.ceil(count / resultsPerPage),
+			totalItems   : count,
+			itemsPerPage : resultsPerPage
+		}
+
+		return res.status(200).json({ gamesData, pagination })
+	}
+})
+
 // ~ @desc    Get all active user listed games for sale/trade/want
-// ~ @route   GET /api/games/user/:id
+// ~ @route   GET /api/games/user/listed
 // ~ @access  Private route
 const getUserListedGames = asyncHandler(async (req, res) => {
-	const { id } = req.params
 	const page = +req.query.page
 	const search = req.query.search
 	const resultsPerPage = 18
 
-	const allUserGames = await Game.find({ addedBy: id }).lean()
+	const allUserGames = await Game.find({ addedBy: req.user._id }).lean()
 
 	if (search) {
 		const fuse = new Fuse(allUserGames, {
@@ -403,7 +605,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			pagination
 		})
 	} else {
-		const games = await Game.find({ addedBy: id })
+		const games = await Game.find({ addedBy: req.user._id })
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })
@@ -625,6 +827,8 @@ export {
 	listSaleGames,
 	listTradeGames,
 	listWantedGames,
+	listAuction,
+	getAuctions,
 	getGames,
 	getSingleGame,
 	switchSaveGame,

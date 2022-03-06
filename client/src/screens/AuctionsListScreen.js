@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,14 +19,19 @@ import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
+import Backdrop from '@mui/material/Backdrop'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
 
 // @ Components
 import CustomDivider from '../components/CustomDivider'
-import ListGameCard from '../components/ListGameCard'
+import AuctionGameCard from '../components/AuctionGameCard'
 import Input from '../components/Input'
 import CustomAlert from '../components/CustomAlert'
 import Loader from '../components/Loader'
 import LoadingBtn from '../components/LoadingBtn'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { apiFetchGameDetails, apiListGamesForSale } from '../api/api'
@@ -41,7 +46,7 @@ import {
 import citiesArr from '../constants/cities'
 
 // @ Main
-const SellGamesScreen = () => {
+const AuctionsListScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const history = useHistory()
@@ -50,13 +55,16 @@ const SellGamesScreen = () => {
 	isPack = !!isPack
 
 	const [ shipPost, setShipPost ] = useState(true)
-	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipPostPayer, setShipPostPayer ] = useState('seller')
+	const [ shipCourier, setShipCourier ] = useState(false)
 	const [ shipCourierPayer, setShipCourierPayer ] = useState(null)
 	const [ shipPersonal, setShipPersonal ] = useState(false)
 	const [ shipCities, setShipCities ] = useState([])
 	const [ extraInfoPack, setExtraInfoPack ] = useState('')
-	const [ totalPrice, setTotalPrice ] = useState('')
+	const [ startingPrice, setStartingPrice ] = useState('')
+	const [ buyNowPrice, setBuyNowPrice ] = useState('')
+	const [ endDate, setEndDate ] = useState('3d')
+	const [ snipeRule, setSnipeRule ] = useState('15m')
 	const [ values, setValues ] = useState([])
 
 	const userList = useGetListQuery((listData) =>
@@ -68,28 +76,31 @@ const SellGamesScreen = () => {
 			data.map((game) => {
 				return {
 					...game,
-					isSleeved : false,
-					version   : userList.data.list.find((el) => el.bggId === game.bggId).version,
-					condition : null,
-					extraInfo : '',
-					price     : '',
-					userImage : userList.data.list.find((el) => el.bggId === game.bggId).userImage
+					isSleeved     : false,
+					version       : userList.data.list.find((el) => el.bggId === game.bggId).version,
+					condition     : null,
+					extraInfo     : '',
+					userImage     : userList.data.list.find((el) => el.bggId === game.bggId).userImage,
+					startingPrice : '',
+					buyNowPrice   : '',
+					endDate       : '3d',
+					snipeRule     : '15m'
 				}
 			})
 		)
 	)
 
 	const deleteMutation = useDeleteFromListMutation()
-	const listMutation = useListGamesMutation('sell')
+	const auctionMutation = useListGamesMutation('auction')
 
 	if (isPack !== false && isPack !== true) {
-		listMutation.reset()
-		history.push('/sell')
+		auctionMutation.reset()
+		history.push('/auction')
 	}
 
 	if (userList.isSuccess && userList.data.list.length === 1 && isPack) {
-		listMutation.reset()
-		history.push('/sell')
+		auctionMutation.reset()
+		history.push('/auction')
 	}
 
 	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
@@ -99,16 +110,6 @@ const SellGamesScreen = () => {
 	}
 
 	const handleGameInfo = (value, bggId, key) =>
-		// let items = [ ...values ]
-		// // 2. Make a shallow copy of the item you want to mutate
-		// const idx = items.findIndex((obj) => obj.bggId === bggId)
-		// let item = { ...items[idx] }
-		// // 3. Replace the property you're intested in
-		// item[key] = value
-		// // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-		// items[idx] = item
-		// // 5. Set the state to our new copy
-		// setValues(items)
 		setValues((vals) => vals.map((val) => (val.bggId === bggId ? { ...val, [key]: value } : val)))
 
 	const handleShippingInfo = (data, type) => {
@@ -157,8 +158,11 @@ const SellGamesScreen = () => {
 			if (isPack) {
 				return {
 					...val,
-					price     : null,
-					extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
+					startingPrice : null,
+					buyNowPrice   : null,
+					endDate       : null,
+					snipeRule     : null,
+					extraInfo     : val.extraInfo.trim() ? val.extraInfo.trim() : null
 				}
 			} else {
 				return {
@@ -178,25 +182,30 @@ const SellGamesScreen = () => {
 			shipPersonal,
 			shipCities,
 			extraInfoPack    : isPack && extraInfoPack.trim() ? extraInfoPack.trim() : null,
-			totalPrice       : isPack ? totalPrice : null
+			startingPrice    : isPack ? startingPrice : null,
+			buyNowPrice      : isPack ? buyNowPrice : null,
+			endDate          : isPack ? endDate : null,
+			snipeRule        : isPack ? snipeRule : null
 		}
-
-		listMutation.mutate(gamesData)
+		console.log(gamesData)
+		auctionMutation.mutate(gamesData)
 	}
 
 	return (
 		<form onSubmit={handleSubmit} autoComplete="off">
+			<Helmet title="Create auction" />
+
 			<Box display="flex" alignItems="center" gap={2} mb={2}>
 				{isFetching && <Loader size={20} />}
 
-				<Box fontSize="h6.fontSize">List games for sale</Box>
+				<Box fontSize="h6.fontSize">Put games up for auction</Box>
 			</Box>
 
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
-			{listMutation.isError && (
+			{auctionMutation.isError && (
 				<Box display="flex" flexDirection="column" gap={1} my={2}>
-					{Object.values(listMutation.error.response.data.message).map((err, i) => (
+					{Object.values(auctionMutation.error.response.data.message).map((err, i) => (
 						<CustomAlert key={i}>{err}</CustomAlert>
 					))}
 				</Box>
@@ -220,10 +229,9 @@ const SellGamesScreen = () => {
 									// user deleted 3, we need to only render a list of the ones that are in values
 									values.find((val) => val.bggId === game.bggId) && (
 										<Grid item key={game.bggId} md={6} xs={12}>
-											<ListGameCard
+											<AuctionGameCard
 												game={game}
 												isPack={isPack}
-												mode="sell"
 												data={values.find((val) => val.bggId === game.bggId)}
 												removeFromListHandler={removeFromListHandler}
 												handleGameInfo={handleGameInfo}
@@ -347,24 +355,96 @@ const SellGamesScreen = () => {
 
 							{isPack && (
 								<Fragment>
-									<Input
-										onChange={(inputVal) => setTotalPrice(inputVal)}
-										value={totalPrice}
-										error={
-											listMutation.isError && listMutation.error.response.data.message.totalPrice
-										}
-										helperText={
-											listMutation.isError && listMutation.error.response.data.message.totalPrice
-										}
-										name="total-price"
-										label="Pack price"
-										type="number"
-										InputProps={{
-											startAdornment : <InputAdornment position="start">RON</InputAdornment>
+									<Box
+										sx={{
+											display             : 'grid',
+											gridTemplateColumns : 'repeat(2, 1fr)',
+											gap                 : 2
 										}}
-										fullWidth
-										required
-									/>
+									>
+										<FormControl fullWidth>
+											<InputLabel id="end-date-pack-label">End date?</InputLabel>
+
+											<Select
+												size="small"
+												labelId="end-date-pack-label"
+												label="End date?"
+												value={endDate}
+												onChange={(e) => setEndDate(e.target.value)}
+											>
+												<MenuItem value="12h">12 hours</MenuItem>
+												<MenuItem value="1d">1 day</MenuItem>
+												<MenuItem value="2d">2 days</MenuItem>
+												<MenuItem value="3d">3 days</MenuItem>
+												<MenuItem value="4d">4 days</MenuItem>
+												<MenuItem value="5d">5 days</MenuItem>
+												<MenuItem value="6d">6 days</MenuItem>
+												<MenuItem value="7d">7 days</MenuItem>
+											</Select>
+										</FormControl>
+
+										<FormControl fullWidth>
+											<InputLabel id="snipe-rule-pack-label">Sniping rule?</InputLabel>
+
+											<Select
+												size="small"
+												labelId="snipe-rule-pack-label"
+												label="Sniping rule?"
+												value={snipeRule}
+												onChange={(e) => setSnipeRule(e.target.value)}
+											>
+												<MenuItem value="none">None</MenuItem>
+												<MenuItem value="5m">5 minutes</MenuItem>
+												<MenuItem value="10m">10 minutes</MenuItem>
+												<MenuItem value="15m">15 minutes</MenuItem>
+												<MenuItem value="20m">20 minutes</MenuItem>
+												<MenuItem value="25m">25 minutes</MenuItem>
+												<MenuItem value="30m">30 minutes</MenuItem>
+												<MenuItem value="35m">35 minutes</MenuItem>
+												<MenuItem value="40m">40 minutes</MenuItem>
+												<MenuItem value="45m">45 minutes</MenuItem>
+												<MenuItem value="50m">50 minutes</MenuItem>
+												<MenuItem value="55m">55 minutes</MenuItem>
+												<MenuItem value="60m">60 minutes</MenuItem>
+											</Select>
+										</FormControl>
+
+										<Input
+											onChange={(inputVal) => setStartingPrice(inputVal)}
+											value={startingPrice}
+											error={
+												+startingPrice > 0 && +buyNowPrice > 0 && +startingPrice >= +buyNowPrice
+											}
+											helperText={
+												+startingPrice > 0 &&
+												+buyNowPrice > 0 &&
+												+startingPrice >= +buyNowPrice ? (
+													'Buy now price for the pack must be higher than starting price'
+												) : (
+													false
+												)
+											}
+											name="starting-pack-price"
+											label="Starting price"
+											type="number"
+											fullWidth
+											required
+											InputProps={{
+												startAdornment : <InputAdornment position="start">RON</InputAdornment>
+											}}
+										/>
+										<Input
+											onChange={(inputVal) => setBuyNowPrice(inputVal)}
+											value={buyNowPrice}
+											name="buy-now-pack-price"
+											label="Buy now price"
+											type="number"
+											fullWidth
+											InputProps={{
+												startAdornment : <InputAdornment position="start">RON</InputAdornment>
+											}}
+										/>
+									</Box>
 
 									<Input
 										onChange={(inputVal) => setExtraInfoPack(inputVal)}
@@ -388,20 +468,24 @@ const SellGamesScreen = () => {
 
 							<LoadingBtn
 								type="submit"
-								disabled={shipError || isFetching || listMutation.isSuccess}
+								disabled={shipError || isFetching || auctionMutation.isSuccess}
 								variant="contained"
 								size="large"
 								color="primary"
-								loading={listMutation.isLoading}
+								loading={auctionMutation.isLoading}
 								fullWidth
 							>
-								Sell
+								Auction
 							</LoadingBtn>
 						</Box>
 					</Fragment>
 				))}
+
+			<Backdrop sx={{ zIndex: 1000 }} open={auctionMutation.isLoading}>
+				<Loader />
+			</Backdrop>
 		</form>
 	)
 }
 
-export default SellGamesScreen
+export default AuctionsListScreen

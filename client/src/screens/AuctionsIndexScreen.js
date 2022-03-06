@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 
 // @ Components
-import GamesIndexCard from '../components/GameIndexCard'
+import AuctionIndexCard from '../components/AuctionIndexCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
 import SortGames from '../components/Filters/SortGames'
@@ -22,19 +22,17 @@ import CustomAlert from '../components/CustomAlert'
 import Helmet from '../components/Helmet'
 
 // @ Others
-import { useGetGamesIndexQuery } from '../hooks/hooks'
+import { useGetAuctionsIndexQuery } from '../hooks/hooks'
 
 // @ Main
-const GamesIndexScreen = () => {
+const AuctionsIndexScreen = () => {
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
-	const currLoc = location.pathname === '/games' ? 'sell' : location.pathname === '/trades' ? 'trade' : 'want'
-	const qryKey = currLoc === 'sell' ? 'saleGames' : currLoc === 'trade' ? 'tradeGames' : 'wantedGames'
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const { isFetching, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
+	const { isFetching, data, isSuccess } = useGetAuctionsIndexQuery({ sort, search, page })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -57,17 +55,7 @@ const GamesIndexScreen = () => {
 
 	return (
 		<Fragment>
-			<Helmet
-				title={
-					currLoc === 'sell' ? (
-						'Boardgames for sale'
-					) : currLoc === 'trade' ? (
-						'Boardgames for trade'
-					) : (
-						'Wanted boardgames'
-					)
-				}
-			/>
+			<Helmet title="Live auctions" />
 
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
@@ -97,7 +85,7 @@ const GamesIndexScreen = () => {
 					)}
 				</Box>
 
-				<SortGames mode={currLoc} handleFilters={handleFilters} />
+				<SortGames mode="auction" handleFilters={handleFilters} />
 			</Box>
 			{/* <Box>
 				<DrawerFilter />
@@ -106,22 +94,24 @@ const GamesIndexScreen = () => {
 			data.gamesData.length === 0 && (
 				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
 			)}
+
 			{isFetching && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>
-							<GameIndexCardSkeleton mode={currLoc} />
+							<GameIndexCardSkeleton mode="auction" />
 						</Grid>
 					))}
 				</Grid>
 			)}
+
 			{isSuccess &&
 			data.gamesData.length > 0 && (
 				<Grid container spacing={3} direction="row">
 					{data.gamesData.map((data) => (
 						<Grid item key={data._id} xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<GameIndexCardSkeleton />}>
-								<GamesIndexCard data={data} sort={sort} />
+								<AuctionIndexCard data={data} sort={sort} />
 							</LzLoad>
 						</Grid>
 					))}
@@ -145,4 +135,4 @@ const GamesIndexScreen = () => {
 	)
 }
 
-export default GamesIndexScreen
+export default AuctionsIndexScreen

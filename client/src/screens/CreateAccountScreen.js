@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,6 +19,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import CustomIconBtn from '../components/CustomIconBtn'
 import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useNotiSnackbar } from '../hooks/hooks'
@@ -59,6 +60,7 @@ const CreateAccountScreen = () => {
 
 	return (
 		<form onSubmit={submitHandler} autoComplete="off">
+			<Helmet title="Create an account" />
 			<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
 				<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
 					<HomeTwoToneIcon />

@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,6 +17,7 @@ import CollectionCardSkeleton from '../components/Skeletons/CollectionCardSkelet
 import CustomAlert from '../components/CustomAlert'
 import Paginate from '../components/Paginate'
 import LzLoad from '../components/LzLoad'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import {
@@ -68,6 +69,8 @@ const CollectionScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet title="My BGG collection" />
+
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item xs={12} sm={6} md={4}>

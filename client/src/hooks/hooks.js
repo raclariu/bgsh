@@ -136,29 +136,32 @@ export const useListGamesMutation = (mode) => {
 				return api.apiAddWantedGames(gamesData)
 			} else if (mode === 'buy') {
 				return api.apiAddBoughtGamesToHistory(gamesData)
+			} else if (mode === 'auction') {
+				return api.apiListAuctions(gamesData)
 			}
 		},
 		{
 			onSuccess : () => {
+				// clearListMutation.mutate()
 				if (mode === 'sell') {
-					clearListMutation.mutate()
 					showSnackbar.success({ text: 'Successfully listed game(s) for sale' })
 					queryClient.invalidateQueries([ 'index', 'sell' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'trade') {
-					clearListMutation.mutate()
 					showSnackbar.success({ text: 'Successfully listed game(s) for trade' })
 					queryClient.invalidateQueries([ 'index', 'trade' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'want') {
-					clearListMutation.mutate()
 					showSnackbar.success({ text: 'Successfully added wanted game(s)' })
 					queryClient.invalidateQueries([ 'index', 'want' ])
 					queryClient.invalidateQueries([ 'myListedGames' ])
 				} else if (mode === 'buy') {
-					clearListMutation.mutate()
 					showSnackbar.success({ text: 'Successfully added game(s) to your buy history' })
 					queryClient.invalidateQueries([ 'history', 'buy' ])
+				} else if (mode === 'auction') {
+					showSnackbar.success({ text: 'Auction created successfully' })
+					queryClient.invalidateQueries([ 'index', 'auction' ])
+					queryClient.invalidateQueries([ 'myAuctions' ])
 				}
 			}
 		}
@@ -255,13 +258,34 @@ export const useGetGamesHistoryListQuery = ({ search, page, mode }) => {
 export const useGetGamesIndexQuery = ({ sort, search, page, mode }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	return useQuery([ 'index', mode, { sort, search, page } ], () => api.fetchGames({ sort, search, page, mode }), {
-		staleTime : 1000 * 60 * 5,
-		onError   : (err) => {
-			const text = err.response.data.message || 'Error occured while fetching games'
-			showSnackbar.error({ text })
+	return useQuery(
+		[ 'index', mode, { sort, search, page } ],
+		() => api.apiGetGamesIndex({ sort, search, page, mode }),
+		{
+			staleTime      : 1000 * 60 * 5,
+			refetchOnMount : true,
+			onError        : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching games'
+				showSnackbar.error({ text })
+			}
 		}
-	})
+	)
+}
+
+export const useGetAuctionsIndexQuery = ({ sort, search, page }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useQuery(
+		[ 'index', 'auction', { sort, search, page } ],
+		() => api.apiGetAuctionsIndex({ sort, search, page }),
+		{
+			staleTime : 1000 * 60 * 1,
+			onError   : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching games'
+				showSnackbar.error({ text })
+			}
+		}
+	)
 }
 
 export const useGetMessagesQuery = ({ search, page, type }) => {

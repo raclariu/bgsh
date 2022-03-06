@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useState, useRef, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import AvatarEditor from 'react-avatar-editor'

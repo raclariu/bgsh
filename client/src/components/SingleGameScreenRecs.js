@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import approx from 'approximate-number'

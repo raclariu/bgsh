@@ -49,7 +49,7 @@ export const apiUserChangeAvatar = async (img) => {
 	return data
 }
 
-export const fetchGames = async ({ search, page, sort, mode }) => {
+export const apiGetGamesIndex = async ({ search, page, sort, mode }) => {
 	const config = {
 		params : {
 			search : search ? search.trim() : null,
@@ -230,7 +230,6 @@ export const apiBggSearchGames = async (search) => {
 }
 
 export const apiFetchMyListedGames = async (search, page) => {
-	const { userAuth: { userData } } = store.getState()
 	const config = {
 		params : {
 			search : search ? search.trim() : null,
@@ -238,7 +237,7 @@ export const apiFetchMyListedGames = async (search, page) => {
 		}
 	}
 
-	const { data } = await axsAUTH.get(`/api/games/user/${userData._id}`, config)
+	const { data } = await axsAUTH.get(`/api/games/user/listed`, config)
 	return data
 }
 
@@ -295,6 +294,22 @@ export const apiListGamesForTrade = async (gamesData) => {
 
 export const apiListGamesForSale = async (gamesData) => {
 	return await axsAUTH.post('/api/games/sell', gamesData)
+}
+
+export const apiListAuctions = async (gamesData) => {
+	return await axsAUTH.post('/api/games/auctions', gamesData)
+}
+
+export const apiGetAuctionsIndex = async ({ search, page, sort }) => {
+	const config = {
+		params : {
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1,
+			sort   : sort ? sort : 'new'
+		}
+	}
+	const { data } = await axsAUTH.get('/api/games/auctions', config)
+	return data
 }
 
 export const apiAddWantedGames = async (gamesData) => {

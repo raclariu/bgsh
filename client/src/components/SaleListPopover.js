@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
@@ -182,6 +182,9 @@ const SaleListPopover = () => {
 									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
 									</CustomButton>
+									<CustomButton component={RouterLink} to="/auction" onClick={handleClose}>
+										Auction
+									</CustomButton>
 								</ButtonGroup>
 							)}
 
@@ -193,6 +196,7 @@ const SaleListPopover = () => {
 									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
 									</CustomButton>
+									<CustomButton onClick={() => handleModeClick('auction')}>Auction</CustomButton>
 								</ButtonGroup>
 							)}
 						</Box>

@@ -1,9 +1,9 @@
-// @ Libraries
+// @ Modules
 import React from 'react'
 import { Helmet } from 'react-helmet'
 
 // @ Main
-const HelmetComponent = ({ title }) => {
+const CustomHelmet = ({ title }) => {
 	return (
 		<Helmet>
 			<title>{title}</title>
@@ -11,4 +11,4 @@ const HelmetComponent = ({ title }) => {
 	)
 }
 
-export default HelmetComponent
+export default CustomHelmet

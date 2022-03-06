@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment, useState, useCallback } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -46,6 +46,7 @@ import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 import LogoutIcon from '@mui/icons-material/Logout'
 import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone'
+import GavelTwoToneIcon from '@mui/icons-material/GavelTwoTone'
 
 // @ Components
 import CustomIconBtn from '../CustomIconBtn'
@@ -102,7 +103,7 @@ const Header = () => {
 	const ClgTheme = styled('span')(({ theme }) => console.log(theme))
 
 	return (
-		<AppBar elevation={2} position="static" color="transparent">
+		<AppBar elevation={0} position="static" color="transparent">
 			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
 				{!userData && (
 					<Box mr={1}>
@@ -317,6 +318,33 @@ const Header = () => {
 															}
 														>
 															Wanted
+														</Box>
+													}
+												/>
+											</ListItemButton>
+
+											<ListItemButton
+												sx={{ pl: 4 }}
+												onClick={(e) => handleClick(e, 33)}
+												selected={selectedIndex === 33}
+												component={RouterLink}
+												to="/auctions"
+											>
+												<ListItemIcon>
+													<GavelTwoToneIcon
+														color={selectedIndex === 33 ? 'primary' : 'inherit'}
+													/>
+												</ListItemIcon>
+												<ListItemText
+													primary={
+														<Box
+															fontWeight="fontWeightMedium"
+															fontSize="subtitle2.fontSize"
+															color={
+																selectedIndex === 33 ? 'primary.main' : 'text.secondary'
+															}
+														>
+															Auctions
 														</Box>
 													}
 												/>

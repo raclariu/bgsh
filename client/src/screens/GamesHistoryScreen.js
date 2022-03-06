@@ -1,4 +1,4 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useHistory, useLocation } from 'react-router'
@@ -16,6 +16,7 @@ import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import Paginate from '../components/Paginate'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
+import Helmet from '../components/Helmet'
 
 // @ Others
 import { useGetGamesHistoryListQuery } from '../hooks/hooks'
@@ -50,6 +51,18 @@ const GamesHistoryScreen = () => {
 
 	return (
 		<Fragment>
+			<Helmet
+				title={
+					currLoc === 'sell' ? (
+						'Sold games history'
+					) : currLoc === 'trade' ? (
+						'Traded games history'
+					) : (
+						'Bought games history'
+					)
+				}
+			/>
+
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
 					<Grid item md={4} sm={6} xs={12}>

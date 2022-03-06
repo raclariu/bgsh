@@ -1,18 +1,20 @@
-// @ Libraries
+// @ Modules
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 
 // @ Components
 import CustomButton from '../components/CustomButton'
+import Helmet from '../components/Helmet'
 
 // @ Main
 const NotFoundScreen = () => {
 	return (
 		<Fragment>
+			<Helmet title="Page not found" />
+
 			<Box
 				display="flex"
 				flexDirection="column"
