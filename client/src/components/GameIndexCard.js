@@ -192,7 +192,7 @@ const GameIndexCard = ({ data }) => {
 						<Box fontSize={12}>{calculateTimeAgo(data.createdAt)}</Box>
 					</Box>
 
-					{data.mode !== 'want' && <GameDetailsButton altId={data.altId} />}
+					<GameDetailsButton altId={data.altId} mode={data.mode} />
 				</Box>
 			</CardActions>
 		</Card>

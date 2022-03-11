@@ -129,7 +129,7 @@ const UserProfileGameCard = ({ data }) => {
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 
-					<GameDetailsButton altId={data.altId} />
+					<GameDetailsButton altId={data.altId} mode={data.mode} />
 				</Box>
 			</CardActions>
 		</Card>

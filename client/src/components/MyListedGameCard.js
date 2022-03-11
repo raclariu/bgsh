@@ -221,7 +221,7 @@ const ListedGameCard = ({ data }) => {
 								display="add"
 							/>
 
-							<GameDetailsButton altId={data.altId} />
+							<GameDetailsButton altId={data.altId} mode={data.mode} />
 						</Fragment>
 					)}
 

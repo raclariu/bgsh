@@ -17,7 +17,7 @@ import CustomAlert from './CustomAlert'
 import OndemandVideoTwoToneIcon from '@mui/icons-material/OndemandVideoTwoTone'
 
 // @ Others
-import { useGetSingleGameVideosQuery } from '../hooks/hooks'
+import { useGetGameVideosQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledYtImg = styled('img')({
@@ -55,7 +55,7 @@ const VidsSkeleton = () => {
 }
 
 // @ Main
-const SingleGameScreenVids = ({ idx }) => {
+const GameVids = ({ idx }) => {
 	const { altId } = useParams()
 
 	const { ref: vidsRef, inView: vidsInView } = useInView({
@@ -68,7 +68,7 @@ const SingleGameScreenVids = ({ idx }) => {
 		isFetching : isFetchingVids,
 		data       : vidsData,
 		isSuccess  : isSuccessVids
-	} = useGetSingleGameVideosQuery({ altId, vidsInView, idx })
+	} = useGetGameVideosQuery({ altId, vidsInView, idx })
 
 	return (
 		<Box ref={vidsRef} id="videos" my={2} display="flex" flexDirection="column" gap={2}>
@@ -160,4 +160,4 @@ const SingleGameScreenVids = ({ idx }) => {
 	)
 }
 
-export default SingleGameScreenVids
+export default GameVids

@@ -136,13 +136,11 @@ export const useListGamesMutation = (mode) => {
 				return api.apiAddWantedGames(gamesData)
 			} else if (mode === 'buy') {
 				return api.apiAddBoughtGamesToHistory(gamesData)
-			} else if (mode === 'auction') {
-				return api.apiListAuctions(gamesData)
 			}
 		},
 		{
 			onSuccess : () => {
-				// clearListMutation.mutate()
+				clearListMutation.mutate()
 				if (mode === 'sell') {
 					showSnackbar.success({ text: 'Successfully listed game(s) for sale' })
 					queryClient.invalidateQueries([ 'index', 'sell' ])
@@ -158,10 +156,6 @@ export const useListGamesMutation = (mode) => {
 				} else if (mode === 'buy') {
 					showSnackbar.success({ text: 'Successfully added game(s) to your buy history' })
 					queryClient.invalidateQueries([ 'history', 'buy' ])
-				} else if (mode === 'auction') {
-					showSnackbar.success({ text: 'Auction created successfully' })
-					queryClient.invalidateQueries([ 'index', 'auction' ])
-					queryClient.invalidateQueries([ 'myAuctions' ])
 				}
 			}
 		}
@@ -272,22 +266,6 @@ export const useGetGamesIndexQuery = ({ sort, search, page, mode }) => {
 	)
 }
 
-export const useGetAuctionsIndexQuery = ({ sort, search, page }) => {
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	return useQuery(
-		[ 'index', 'auction', { sort, search, page } ],
-		() => api.apiGetAuctionsIndex({ sort, search, page }),
-		{
-			staleTime : 1000 * 60 * 1,
-			onError   : (err) => {
-				const text = err.response.data.message || 'Error occured while fetching games'
-				showSnackbar.error({ text })
-			}
-		}
-	)
-}
-
 export const useGetMessagesQuery = ({ search, page, type }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
@@ -381,7 +359,7 @@ export const useGetSingleGameQuery = (altId) => {
 	})
 }
 
-export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, idx }) => {
+export const useGetGameGalleryQuery = ({ altId, galleryInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery(
@@ -395,7 +373,7 @@ export const useGetSingleGameGalleryQuery = ({ altId, galleryInView, idx }) => {
 	)
 }
 
-export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, idx }) => {
+export const useGetGameRecommendationsQuery = ({ altId, recsInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery(
@@ -409,7 +387,7 @@ export const useGetSingleGameRecommendationsQuery = ({ altId, recsInView, idx })
 	)
 }
 
-export const useGetSingleGameVideosQuery = ({ altId, vidsInView, idx }) => {
+export const useGetGameVideosQuery = ({ altId, vidsInView, idx }) => {
 	const { isSuccess, data } = useGetSingleGameQuery(altId)
 
 	return useQuery([ 'singleGameScreen', 'videos', { altId, idx } ], () => api.apiFetchVideos(data.games[idx].bggId), {

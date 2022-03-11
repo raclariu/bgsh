@@ -23,9 +23,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 					<Box textAlign="center">
 						{`${mode === 'sell'
 							? 'Sell'
-							: mode === 'trade'
-								? 'Trade'
-								: mode === 'buy' ? 'Buy' : 'Auction'} games individually or as a pack?`}
+							: mode === 'trade' ? 'Trade' : 'Buy'} games individually or as a pack?`}
 					</Box>
 				</DialogTitle>
 
@@ -34,17 +32,7 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 						<CustomButton
 							onClick={handleCloseDialog}
 							component={Link}
-							to={
-								mode === 'sell' ? (
-									'/sell'
-								) : mode === 'trade' ? (
-									'/trade'
-								) : mode === 'buy' ? (
-									'/buy'
-								) : (
-									'/auction'
-								)
-							}
+							to={mode === 'sell' ? '/sell' : mode === 'trade' ? '/trade' : '/buy'}
 						>
 							Individually
 						</CustomButton>
@@ -56,10 +44,8 @@ const SaleListPopoverDialog = ({ openDialog, handleCloseDialog, mode }) => {
 									'/sell?pack=true'
 								) : mode === 'trade' ? (
 									'/trade?pack=true'
-								) : mode === 'buy' ? (
-									'/buy?pack=true'
 								) : (
-									'/auction?pack=true'
+									'/buy?pack=true'
 								)
 							}
 						>

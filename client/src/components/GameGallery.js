@@ -25,7 +25,7 @@ import CustomAlert from './CustomAlert'
 import CustomSkeleton from './Skeletons/CustomSkeleton'
 
 // @ Others
-import { useGetSingleGameGalleryQuery } from '../hooks/hooks'
+import { useGetGameGalleryQuery } from '../hooks/hooks'
 
 const StyledMasonryImg = styled('img')({
 	verticalAlign : 'middle',
@@ -59,7 +59,7 @@ const GallerySkeleton = () => {
 	)
 }
 
-const SingleGameScreenGallery = ({ idx }) => {
+const GameGallery = ({ idx }) => {
 	const { altId } = useParams()
 
 	const { ref: galleryRef, inView: galleryInView } = useInView({
@@ -78,7 +78,7 @@ const SingleGameScreenGallery = ({ idx }) => {
 		error      : errorGallery,
 		data       : galleryData,
 		isSuccess  : isSuccessGallery
-	} = useGetSingleGameGalleryQuery({ altId, galleryInView, idx })
+	} = useGetGameGalleryQuery({ altId, galleryInView, idx })
 
 	const handleOpenGalleryImageDialog = (imgIdxClicked) => {
 		setImgIdx(imgIdxClicked)
@@ -231,4 +231,4 @@ const SingleGameScreenGallery = ({ idx }) => {
 	)
 }
 
-export default SingleGameScreenGallery
+export default GameGallery

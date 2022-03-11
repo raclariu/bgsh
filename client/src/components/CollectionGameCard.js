@@ -123,7 +123,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 					<Box display="flex" gap={1} alignItems="center">
 						{currLoc === 'wishlist' && (
 							<CustomTooltip title={'Search for this game'}>
-								<CustomIconBtn component={RouterLink} to={`/games?search=${data.bggId}`}>
+								<CustomIconBtn component={RouterLink} to={`/sales?search=${data.bggId}`}>
 									<SearchIcon />
 								</CustomIconBtn>
 							</CustomTooltip>

@@ -30,19 +30,17 @@ import { light, dark } from './constants/themes'
 
 // @ Screens
 const Home = lazy(() => import('./screens/HomeScreen'))
-const Start = lazy(() => import('./screens/StartScreen'))
+const Dashboard = lazy(() => import('./screens/StartScreen'))
 const LogIn = lazy(() => import('./screens/LogInScreen'))
 const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
 const SellGames = lazy(() => import('./screens/SellGamesScreen'))
-const ListAuctions = lazy(() => import('./screens/AuctionsListScreen'))
 const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
 const AddWantedGames = lazy(() => import('./screens/AddWantedGamesScreen'))
 const BuyGames = lazy(() => import('./screens/BuyGamesScreen'))
 const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
-const AuctionsIndex = lazy(() => import('./screens/AuctionsIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
 const Inbox = lazy(() => import('./screens/InboxScreen'))
@@ -92,8 +90,8 @@ const App = () => {
 									<Home />
 								</Route>
 
-								<Route path="/start" exact>
-									<Start />
+								<Route path="/dashboard" exact>
+									<Dashboard />
 								</Route>
 
 								<Route path="/login" exact>
@@ -112,7 +110,7 @@ const App = () => {
 									<Settings />
 								</ProtectedRoute>
 
-								<ProtectedRoute path="/games" exact>
+								<ProtectedRoute path="/sales" exact>
 									<GamesIndex />
 								</ProtectedRoute>
 
@@ -124,11 +122,7 @@ const App = () => {
 									<GamesIndex />
 								</ProtectedRoute>
 
-								<ProtectedRoute path="/auctions" exact>
-									<AuctionsIndex />
-								</ProtectedRoute>
-
-								<ProtectedRoute path="/games/:altId" exact>
+								<ProtectedRoute path={[ '/sales/:altId', '/trades/:altId' ]} exact>
 									<SingleGame />
 								</ProtectedRoute>
 
@@ -142,10 +136,6 @@ const App = () => {
 
 								<ProtectedRoute path="/sell" exact>
 									<SellGames />
-								</ProtectedRoute>
-
-								<ProtectedRoute path="/auction" exact>
-									<ListAuctions />
 								</ProtectedRoute>
 
 								<ProtectedRoute path="/trade" exact>

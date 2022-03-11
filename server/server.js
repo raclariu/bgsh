@@ -1,7 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import chalk from 'chalk'
-import cron from 'node-cron'
 import cors from 'cors'
 import connectDB from './db/dbConnect.js'
 import { setInactiveTask, getKickstarters } from './tasks/tasks.js'

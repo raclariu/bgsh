@@ -172,16 +172,16 @@ const bggGetGallery = asyncHandler(async (req, res) => {
 			params : {
 				ajax       : 1,
 				date       : 'alltime',
-				gallery    : 'all',
+				gallery    : 'game',
 				nosession  : 1,
 				objectid   : bggId,
 				objecttype : 'thing',
 				pageid     : 1,
 				showcount  : 12,
 				size       : 'thumb',
-				sort       : 'hot',
+				sort       : 'hot'
 				// licensefilter : 'reuse'
-				tag        : 'Components' // Play
+				// tag        : 'Components' // Play
 			}
 		})
 

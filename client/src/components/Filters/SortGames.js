@@ -49,22 +49,6 @@ const SortGames = ({ handleFilters, mode }) => {
 				</Select>
 			)}
 
-			{mode === 'auction' && (
-				<Select
-					value={queryString.parse(location.search).sort || 'new'}
-					onChange={(e) => handleFilters(e.target.value, 'sort')}
-				>
-					<MenuItem value="new">Newest added</MenuItem>
-					<MenuItem value="old">Oldest added</MenuItem>
-					<MenuItem value="starting-price-low">Lowest starting price</MenuItem>
-					<MenuItem value="starting-price-high">Highest starting price</MenuItem>
-					<MenuItem value="buy-now-price-low">Lowest buy now</MenuItem>
-					<MenuItem value="buy-now-price-high">Highest buy now</MenuItem>
-					<MenuItem value="release-new">Newest releases</MenuItem>
-					<MenuItem value="release-old">Oldest releases</MenuItem>
-				</Select>
-			)}
-
 			{mode === 'want' && (
 				<Select
 					value={queryString.parse(location.search).sort || 'new'}

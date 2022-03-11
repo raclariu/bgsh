@@ -29,7 +29,7 @@ const GamesIndexScreen = () => {
 	const history = useHistory()
 	const dispatch = useDispatch()
 	const location = useLocation()
-	const currLoc = location.pathname === '/games' ? 'sell' : location.pathname === '/trades' ? 'trade' : 'want'
+	const currLoc = location.pathname === '/sales' ? 'sell' : location.pathname === '/trades' ? 'trade' : 'want'
 	const qryKey = currLoc === 'sell' ? 'saleGames' : currLoc === 'trade' ? 'tradeGames' : 'wantedGames'
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)

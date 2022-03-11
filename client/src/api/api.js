@@ -296,22 +296,6 @@ export const apiListGamesForSale = async (gamesData) => {
 	return await axsAUTH.post('/api/games/sell', gamesData)
 }
 
-export const apiListAuctions = async (gamesData) => {
-	return await axsAUTH.post('/api/games/auctions', gamesData)
-}
-
-export const apiGetAuctionsIndex = async ({ search, page, sort }) => {
-	const config = {
-		params : {
-			search : search ? search.trim() : null,
-			page   : +page ? +page : 1,
-			sort   : sort ? sort : 'new'
-		}
-	}
-	const { data } = await axsAUTH.get('/api/games/auctions', config)
-	return data
-}
-
 export const apiAddWantedGames = async (gamesData) => {
 	return await axsAUTH.post('/api/games/wanted', gamesData)
 }

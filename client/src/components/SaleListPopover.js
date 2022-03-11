@@ -156,8 +156,8 @@ const SaleListPopover = () => {
 									<CustomButton component={RouterLink} to="/wishlist" onClick={handleClose}>
 										Wishlist
 									</CustomButton>
-									<CustomButton component={RouterLink} to="/user/settings" onClick={handleClose}>
-										Settings
+									<CustomButton component={RouterLink} to="/dashboard" onClick={handleClose}>
+										Dashboard
 									</CustomButton>
 								</ButtonGroup>
 							</Box>
@@ -182,9 +182,6 @@ const SaleListPopover = () => {
 									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
 									</CustomButton>
-									<CustomButton component={RouterLink} to="/auction" onClick={handleClose}>
-										Auction
-									</CustomButton>
 								</ButtonGroup>
 							)}
 
@@ -196,7 +193,6 @@ const SaleListPopover = () => {
 									<CustomButton component={RouterLink} to="/want" onClick={handleClose}>
 										Wanted
 									</CustomButton>
-									<CustomButton onClick={() => handleModeClick('auction')}>Auction</CustomButton>
 								</ButtonGroup>
 							)}
 						</Box>

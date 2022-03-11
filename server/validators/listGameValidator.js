@@ -1,6 +1,6 @@
 import { check, body } from 'express-validator'
 
-// (*) Validation for games versions @ sell,trade,auction - done
+// (*) Validation for games versions @ sell,trade - done
 const validateGameVersion = check('games.*.version')
 	.custom((version, { req, path }) => {
 		try {
@@ -25,7 +25,7 @@ const validateGameVersion = check('games.*.version')
 		}
 	})
 
-// (*) Validation for games conditions @ sell,trade,auction - done
+// (*) Validation for games conditions @ sell,trade - done
 const validateGameCondition = check('games.*.condition')
 	.custom((condition) => {
 		try {
@@ -57,7 +57,7 @@ const validateGameCondition = check('games.*.condition')
 		}
 	})
 
-// (*) Validation for games extra info text @ sell,trade,auction - done
+// (*) Validation for games extra info text @ sell,trade - done
 const validateExtraInfoTxt = check('games.*.extraInfo')
 	.optional({ nullable: true })
 	.trim()
@@ -71,7 +71,7 @@ const validateExtraInfoTxt = check('games.*.extraInfo')
 		}
 	})
 
-// (*) Validation for pack extra info text @ sell,trade,auction - done
+// (*) Validation for pack extra info text @ sell,trade - done
 const validateExtraInfoPackTxt = check('extraInfoPack')
 	.optional({ nullable: true })
 	.if((value, { req }) => req.body.isPack) // if pack is true, continue
@@ -79,7 +79,7 @@ const validateExtraInfoPackTxt = check('extraInfoPack')
 	.isLength({ min: 0, max: 500 })
 	.withMessage('Invalid pack extra info. Only 0-500 character allowed')
 
-// (*) Validation for games sleeving @ sell,trade,auction - done
+// (*) Validation for games sleeving @ sell,trade - done
 const validateIsSleeved = check('games.*.isSleeved').isIn([ true, false ]).withMessage((value, { req, path }) => {
 	try {
 		const idx = path.split('[')[1].split(']')[0]
@@ -89,7 +89,7 @@ const validateIsSleeved = check('games.*.isSleeved').isIn([ true, false ]).withM
 	}
 })
 
-// (*) Validation if pack @ sell,trade,auction - done
+// (*) Validation if pack @ sell,trade - done
 const validateIsPack = check('isPack')
 	.isIn([ true, false ])
 	.withMessage('You can only sell games individually or as a pack')
@@ -117,118 +117,7 @@ const validateGameTotalPrice = check('totalPrice')
 	.bail()
 	.toInt()
 
-// (*) Validation for auction pack starting price @ auction - done
-const validateAuctionPackStartingPrice = check('startingPrice')
-	.if((value, { req }) => req.body.isPack)
-	.isInt({ min: 0, max: 10000 })
-	.withMessage('Pack starting price price must be a number between 0 and 10000')
-	.bail()
-	.toInt()
-
-// (*) Validation for auction pack buy now price @ auction - done
-const validateAuctionPackBuyNowPrice = check('buyNowPrice')
-	.if((value, { req }) => req.body.isPack)
-	.isInt({ min: 0, max: 10000 })
-	.withMessage('Pack buy now price must be a number between 0 and 10000')
-	.bail()
-	.toInt()
-	.custom((value, { req }) => {
-		if (+value > +req.body.startingPrice) {
-			return true
-		} else {
-			throw new Error()
-		}
-	})
-	.withMessage('Buy now price for the pack must be higher than starting price')
-
-// (*) Validation for individual auction end date @ auction - done
-const validateAuctionEndDate = check('games.*.endDate')
-	.if((value, { req }) => !req.body.isPack)
-	.isIn([ '12h', '1d', '2d', '3d', '4d', '5d', '6d', '7d' ])
-	.withMessage((value, { req, path }) => {
-		try {
-			const idx = path.split('[')[1].split(']')[0]
-			return `Invalid end date for ${req.body.games[idx].title}`
-		} catch (error) {
-			return 'Invalid end dates. Check end dates and resubmit'
-		}
-	})
-
-// (*) Validation for auction pack end date @ auction - done
-const validateAuctionSnipeRule = check('games.*.snipeRule')
-	.if((value, { req }) => !req.body.isPack)
-	.isIn([ '0m', '5m', '10m', '15m', '20m', '25m', '30m', '35m', '40m', '45m', '50m', '55m', '60m' ])
-	.withMessage((value, { req, path }) => {
-		try {
-			const idx = path.split('[')[1].split(']')[0]
-			return `Invalid snipe rule for ${req.body.games[idx].title}`
-		} catch (error) {
-			return 'Invalid snipe rule. Check snipe rules and resubmit'
-		}
-	})
-
-// (*) Validation for individual auction starting price @ auction - done
-const validateAuctionStartingPrice = check('games.*.startingPrice')
-	.if((value, { req }) => !req.body.isPack)
-	.isInt({ min: 0, max: 10000 })
-	.withMessage((value, { req, path }) => {
-		try {
-			const idx = path.split('[')[1].split(']')[0]
-			return `Invalid starting price "${value} RON" for ${req.body.games[idx]
-				.title}. Must be between 0 and 10000 RON`
-		} catch (error) {
-			return 'Starting price error. Must be between 0 and 10000 RON'
-		}
-	})
-	.bail()
-	.toInt()
-
-// (*) Validation for individual auction buy now price @ auction - done
-const validateAuctionBuyNowPrice = check('games.*.buyNowPrice')
-	.if((value, { req }) => !req.body.isPack)
-	.isInt({ min: 0, max: 10000 })
-	.withMessage((value, { req, path }) => {
-		try {
-			const idx = path.split('[')[1].split(']')[0]
-			return `Invalid buy now price "${value} RON" for ${req.body.games[idx]
-				.title}. Must be between 0 and 10000 RON`
-		} catch (error) {
-			return 'Buy now price error. Must be between 0 and 10000 RON'
-		}
-	})
-	.bail()
-	.toInt()
-	.custom((value, { req, path }) => {
-		const idx = path.split('[')[1].split(']')[0]
-		if (+value > +req.body.games[idx].startingPrice) {
-			return true
-		} else {
-			throw new Error()
-		}
-	})
-	.withMessage((value, { req, path }) => {
-		try {
-			const idx = path.split('[')[1].split(']')[0]
-			return `Buy now price "${value} RON" must be higher than starting price "${req.body.games[idx]
-				.startingPrice} RON" for ${req.body.games[idx].title}`
-		} catch (error) {
-			return 'Buy now price error. Must be between 0 and 10000 RON'
-		}
-	})
-
-// (*) Validation for auction pack end date @ auction - done
-const validateAuctionPackEndDate = check('endDate')
-	.if((value, { req }) => req.body.isPack)
-	.isIn([ '12h', '1d', '2d', '3d', '4d', '5d', '6d', '7d' ])
-	.withMessage('Invalid end date for the pack')
-
-// (*) Validation for auction pack end date @ auction - done
-const validateAuctionPackSnipeRule = check('snipeRule')
-	.if((value, { req }) => req.body.isPack)
-	.isIn([ '0m', '5m', '10m', '15m', '20m', '25m', '30m', '35m', '40m', '45m', '50m', '55m', '60m' ])
-	.withMessage('Invalid snipe rule for the pack')
-
-// (*) Validation for shipping method @ sell,trade,auction - done
+// (*) Validation for shipping method @ sell,trade - done
 const validateShippingMethod = body()
 	.custom((data) => {
 		if (!(data.shipPost || data.shipCourier || data.shipPersonal)) {
@@ -239,7 +128,7 @@ const validateShippingMethod = body()
 	})
 	.withMessage('Select at least one shipping method')
 
-// (*) Validation for shipping cities @ sell,trade,auction - done
+// (*) Validation for shipping cities @ sell,trade - done
 const validateShipCities = check('shipCities')
 	.custom((shipCities, { req }) => {
 		if (shipCities.length === 0 && req.body.shipPersonal) {
@@ -336,25 +225,6 @@ const sellValidators = [
 	validateShipCities
 ]
 
-const auctionValidators = [
-	validateGameVersion,
-	validateGameCondition,
-	validateIsSleeved,
-	validateAuctionEndDate,
-	validateAuctionSnipeRule,
-	validateExtraInfoTxt,
-	validateAuctionStartingPrice,
-	validateAuctionBuyNowPrice,
-	validateIsPack,
-	validateExtraInfoPackTxt,
-	validateShippingMethod,
-	validateShipCities,
-	validateAuctionPackEndDate,
-	validateAuctionPackSnipeRule,
-	validateAuctionPackStartingPrice,
-	validateAuctionPackBuyNowPrice
-]
-
 const tradeValidators = [
 	validateGameVersion,
 	validateGameCondition,
@@ -368,4 +238,4 @@ const tradeValidators = [
 
 const wantValidators = [ validateWantedPrefShipping, validateWantedGameVersion, validateWantedPrefMode ]
 
-export { sellValidators, auctionValidators, tradeValidators, wantValidators }
+export { sellValidators, tradeValidators, wantValidators }

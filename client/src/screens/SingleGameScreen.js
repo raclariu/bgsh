@@ -1,29 +1,22 @@
 // @ Modules
-import React, { useEffect, useState, Fragment } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState, Fragment } from 'react'
+import { useParams, useLocation } from 'react-router-dom'
 import Zoom from 'react-medium-image-zoom'
-import { useInView } from 'react-intersection-observer'
 
 import 'react-medium-image-zoom/dist/styles.css'
 import { parseEntities } from 'parse-entities'
-import { calculateTimeAgo } from '../helpers/helpers'
+import { calculateTimeAgoStrict } from '../helpers/helpers'
 
 // @ Mui
 import { styled } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import Chip from '@mui/material/Chip'
 import Fab from '@mui/material/Fab'
 import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Slide from '@mui/material/Slide'
 import Collapse from '@mui/material/Collapse'
-import Skeleton from '@mui/material/Skeleton'
-import Grow from '@mui/material/Grow'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -37,7 +30,6 @@ import PersonAddTwoToneIcon from '@mui/icons-material/PersonAddTwoTone'
 import ChildCareTwoToneIcon from '@mui/icons-material/ChildCareTwoTone'
 import FaceTwoToneIcon from '@mui/icons-material/FaceTwoTone'
 import PublicTwoToneIcon from '@mui/icons-material/PublicTwoTone'
-import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CloseIcon from '@mui/icons-material/Close'
@@ -58,15 +50,13 @@ import Loader from '../components/Loader'
 import SendMessage from '../components/SendMessage'
 import Helmet from '../components/Helmet'
 import CustomAlert from '../components/CustomAlert'
-import CustomTooltip from '../components/CustomTooltip'
-import LzLoad from '../components/LzLoad'
 import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
-import SingleGameScreenRecs from '../components/SingleGameScreenRecs'
-import SingleGameScreenVids from '../components/SingleGameScreenVids'
-import SingleGameScreenGallery from '../components/SingleGameScreenGallery'
+import GameGallery from '../components/GameGallery'
+import GameRecs from '../components/GameRecs'
+import GameVids from '../components/GameVids'
 
 // @ Others
-import { useGetSingleGameQuery, useGetSingleGameGalleryQuery } from '../hooks/hooks'
+import { useGetSingleGameQuery } from '../hooks/hooks'
 
 const StyledChipsBox = styled(Box)(({ theme }) => ({
 	display        : 'flex',
@@ -86,16 +76,6 @@ const StyledCoverImg = styled('img')(({ theme }) => ({
 		height : '320px'
 	}
 }))
-
-const StyledMasonryImg = styled('img')({
-	verticalAlign : 'middle',
-	// minHeight     : '100px',
-	maxHeight     : '100%',
-	width         : '100%',
-	objectFit     : 'contain',
-	cursor        : 'zoom-in',
-	borderRadius  : '4px'
-})
 
 const StyledUserImg = styled('img')({
 	imageRendering : '-webkit-optimize-contrast',
@@ -120,13 +100,10 @@ const StyledParagraph = styled('p')({
 // @ Main
 const SingleGameScreen = () => {
 	const params = useParams()
+	const location = useLocation()
+	console.log({ params, location })
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
-
-	const { ref: galleryRef, inView: galleryInView } = useInView({
-		threshold   : 0,
-		triggerOnce : true
-	})
 
 	const [ idx, setIdx ] = useState(0)
 
@@ -163,13 +140,6 @@ const SingleGameScreen = () => {
 		}
 	}
 
-	// const timer = intervalToDuration({
-	// 	start : new Date('2022-02-21T15:54:26.166+00:00'),
-	// 	end   : new Date('2022-02-24T18:23:19.166+00:00')
-	// })
-
-	// console.log(data && data)
-
 	return (
 		<Fragment>
 			{isLoading && (
@@ -183,8 +153,6 @@ const SingleGameScreen = () => {
 					<CustomAlert>{error.response.data.message}</CustomAlert>
 				</Box>
 			)}
-
-			{/* {console.log(formatDuration(timer))} */}
 
 			{isSuccess && (
 				<Fragment>
@@ -390,7 +358,7 @@ const SingleGameScreen = () => {
 								</Box>
 
 								<Box display="flex" alignItems="center" fontSize="1rem">
-									<Box mr={1} fontWeight="fontWeightMedium">{`Added ${calculateTimeAgo(
+									<Box mr={1} fontWeight="fontWeightMedium">{`Added ${calculateTimeAgoStrict(
 										data.createdAt
 									)} by`}</Box>
 									<CustomAvatar size={4} username={data.addedBy.username} src={data.addedBy.avatar} />
@@ -612,23 +580,24 @@ const SingleGameScreen = () => {
 					<CustomDivider light />
 
 					{/* Gallery */}
-					<SingleGameScreenGallery idx={idx} />
+					<GameGallery idx={idx} />
 
 					<CustomDivider light />
 
 					{/* Recommendations */}
-					<SingleGameScreenRecs idx={idx} />
+					<GameRecs idx={idx} />
 
 					<CustomDivider light />
 
 					{/* Videos */}
-					<SingleGameScreenVids idx={idx} />
+					<GameVids idx={idx} />
 
 					<CustomDivider light />
 
 					{/* Chips */}
 					<StyledChipsBox sx={{ my: 2 }}>
-						{data.games[idx].parent && (
+						{data.games[idx].parent &&
+						data.games[idx].parent.length > 0 && (
 							<Chip
 								sx={{ maxWidth: '100%' }}
 								icon={<DonutSmallOutlinedIcon />}
@@ -637,7 +606,15 @@ const SingleGameScreen = () => {
 							/>
 						)}
 
-						{data.games[idx].expansions.length > 0 &&
+						{data.games[idx].expansions.length > 15 ? (
+							<Chip
+								sx={{ maxWidth: '100%' }}
+								icon={<AllOutOutlinedIcon />}
+								key="expansions"
+								label="More than 15 expansions available"
+								color="warning"
+							/>
+						) : (
 							data.games[idx].expansions.map((exp) => (
 								<Chip
 									sx={{ maxWidth: '100%' }}
@@ -646,7 +623,8 @@ const SingleGameScreen = () => {
 									label={exp.title}
 									color="warning"
 								/>
-							))}
+							))
+						)}
 
 						{data.games[idx].categories.map((ctg) => (
 							<Chip key={ctg.id} icon={<CategoryOutlinedIcon />} label={ctg.name} color="secondary" />

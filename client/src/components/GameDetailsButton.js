@@ -1,5 +1,5 @@
 // @ Modules
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 // @ Components
@@ -10,13 +10,22 @@ import CustomTooltip from './CustomTooltip'
 import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTone'
 
 // @ Main
-const GameDetailsButton = ({ altId }) => {
+const GameDetailsButton = ({ altId, mode }) => {
 	return (
-		<CustomTooltip title="Details">
-			<CustomIconBtn component={RouterLink} to={{ pathname: `/games/${altId}` }} color="primary" size="large">
-				<CenterFocusWeakTwoToneIcon fontSize="small" />
-			</CustomIconBtn>
-		</CustomTooltip>
+		<Fragment>
+			{mode !== 'want' && (
+				<CustomTooltip title="Details">
+					<CustomIconBtn
+						component={RouterLink}
+						to={mode === 'sell' ? `/sales/${altId}` : `/trades/${altId}`}
+						color="primary"
+						size="large"
+					>
+						<CenterFocusWeakTwoToneIcon fontSize="small" />
+					</CustomIconBtn>
+				</CustomTooltip>
+			)}
+		</Fragment>
 	)
 }
 

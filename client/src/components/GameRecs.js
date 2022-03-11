@@ -24,7 +24,7 @@ import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
 
 // @ Others
-import { useGetSingleGameRecommendationsQuery } from '../hooks/hooks'
+import { useGetGameRecommendationsQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledRecImg = styled('img')({
@@ -69,7 +69,7 @@ const RecsSkeleton = () => {
 }
 
 // @ Main
-const SingleGameScreenRecs = ({ idx }) => {
+const GameRecs = ({ idx }) => {
 	const [ expanded, setExpanded ] = useState(false)
 	const { altId } = useParams()
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
@@ -84,7 +84,7 @@ const SingleGameScreenRecs = ({ idx }) => {
 		isFetching : isFetchingRecs,
 		data       : recData,
 		isSuccess  : isSuccessRec
-	} = useGetSingleGameRecommendationsQuery({ altId, recsInView, idx })
+	} = useGetGameRecommendationsQuery({ altId, recsInView, idx })
 
 	return (
 		<Box ref={recsRef} id="recommendations" my={2} display="flex" flexDirection="column" gap={2}>
@@ -185,4 +185,4 @@ const SingleGameScreenRecs = ({ idx }) => {
 	)
 }
 
-export default SingleGameScreenRecs
+export default GameRecs

@@ -200,7 +200,7 @@ const Header = () => {
 										onClick={(e) => handleClick(e, 33)}
 										selected={selectedIndex === 33}
 										component={RouterLink}
-										to="/start"
+										to="/dashboard"
 									>
 										<ListItemIcon>
 											<HomeTwoToneIcon color={selectedIndex === 33 ? 'primary' : 'inherit'} />
@@ -212,7 +212,7 @@ const Header = () => {
 													fontSize="subtitle2.fontSize"
 													color={selectedIndex === 33 ? 'primary.main' : 'text.secondary'}
 												>
-													Start
+													Dashboard
 												</Box>
 											}
 										/>
@@ -247,7 +247,7 @@ const Header = () => {
 												onClick={(e) => handleClick(e, 2)}
 												selected={selectedIndex === 2}
 												component={RouterLink}
-												to="/games"
+												to="/sales"
 											>
 												<ListItemIcon>
 													<MonetizationOnTwoToneIcon
@@ -318,33 +318,6 @@ const Header = () => {
 															}
 														>
 															Wanted
-														</Box>
-													}
-												/>
-											</ListItemButton>
-
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 33)}
-												selected={selectedIndex === 33}
-												component={RouterLink}
-												to="/auctions"
-											>
-												<ListItemIcon>
-													<GavelTwoToneIcon
-														color={selectedIndex === 33 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 33 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Auctions
 														</Box>
 													}
 												/>
