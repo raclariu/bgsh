@@ -27,3 +27,5 @@ da eroare clientside, trebuie sa apara pozele si cand se schimba jocul stanga-dr
 - searchbox sa ia keyword din querystring daca e
 - de sters poza uploadata daca joc bagat la istorie
 - bought games screen eroare cand scriu de mana la versiune
+- task de stergere notificari si jocuri inactive de mai mult de x timp
+- la delete game de facut notificare la fel ca la adaugare la istorie

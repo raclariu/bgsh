@@ -1,5 +1,6 @@
 // @ Modules
 import React, { Fragment } from 'react'
+import { useSelector } from 'react-redux'
 
 // @ Mui
 import Checkbox from '@mui/material/Checkbox'
@@ -18,6 +19,8 @@ import { useNotiSnackbar, useUpdateSaveGameStatusMutation, useGetSaveGameStatusQ
 
 // @ Main
 const SaveGameButton = ({ altId, addedById }) => {
+	const { userData } = useSelector((state) => state.userAuth)
+
 	const { isFetching, data, isSuccess } = useGetSaveGameStatusQuery({ altId })
 
 	const updateSaveStatusMutation = useUpdateSaveGameStatusMutation()
@@ -35,18 +38,17 @@ const SaveGameButton = ({ altId, addedById }) => {
 
 			{isSuccess &&
 			!isFetching && (
-				// disabled={addedById === userId}
-
 				<CustomTooltip title={data.isSaved ? 'Unsave' : 'Save'}>
 					<Checkbox
 						sx={{
 							height : '44px',
 							width  : '44px'
 						}}
-						color="secondary"
+						disabled={addedById && addedById.toString() === userData._id.toString()}
+						color={data.isSaved ? 'secondary' : 'primary'}
 						id="save-button"
 						onChange={saveGameHandler}
-						icon={<FavoriteBorder fontSize="small" />}
+						icon={<FavoriteBorder color="primary" fontSize="small" />}
 						checkedIcon={<Favorite fontSize="small" />}
 						name="saved"
 						checked={data.isSaved}

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { calculateTimeAgo, formatDate } from '../helpers/helpers'
+import { calculateTimeAgo, formatDateSimple } from '../helpers/helpers'
 
 // @ Mui
 import Chip from '@mui/material/Chip'
@@ -21,6 +21,7 @@ import CustomAlert from '../components/CustomAlert'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 import SendMessage from '../components/SendMessage'
+import ReportForm from '../components/ReportForm'
 import Helmet from '../components/Helmet'
 
 // @ Others
@@ -28,7 +29,6 @@ import { useGetUserProfileDataQuery } from '../hooks/hooks'
 
 // @ Main
 const UserProfileScreen = () => {
-	const dispatch = useDispatch()
 	const { username } = useParams()
 
 	const { isFetching, isError, error, data, isSuccess } = useGetUserProfileDataQuery({ username })
@@ -53,6 +53,7 @@ const UserProfileScreen = () => {
 				>
 					<CustomSkeleton width={96} height={96} variant="circular" />
 					<CustomSkeleton width={220} height={51} variant="text" />
+					<CustomSkeleton width={75} height={44} variant="text" />
 					<CustomSkeleton width={180} variant="text" />
 					<CustomSkeleton width={320} variant="text" />
 				</Box>
@@ -74,7 +75,10 @@ const UserProfileScreen = () => {
 					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
 						{`${data.user.username}'s profile`}
 					</Box>
-					<SendMessage recipientUsername={username} />
+					<Box display="flex" alignItems="center" gap={1}>
+						<SendMessage recipientUsername={username} />
+						<ReportForm type="user" username={data.user.username} />
+					</Box>
 
 					<Chip
 						color="primary"
@@ -86,7 +90,7 @@ const UserProfileScreen = () => {
 						color="primary"
 						size="small"
 						variant="outlined"
-						label={`Account created on ${formatDate(data.user.createdAt)}`}
+						label={`Account created on ${formatDateSimple(data.user.createdAt)}`}
 					/>
 				</Box>
 			)}

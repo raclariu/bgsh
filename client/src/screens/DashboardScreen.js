@@ -22,16 +22,14 @@ import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import CustomTooltip from '../components/CustomTooltip'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomButton from '../components/CustomButton'
+import ReportForm from '../components/ReportForm'
 import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
 import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
-import CustomDivider from '../components/CustomDivider'
-import ChangePasswordForm from '../components/ChangePasswordForm'
 import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
-import ChangeAvatar from '../components/ChangeAvatar'
 import SendMessage from '../components/SendMessage'
 import Helmet from '../components/Helmet'
 
@@ -39,9 +37,7 @@ import Helmet from '../components/Helmet'
 import { useGetHotGamesQuery, useGetKickstartersQuery, useGetRedditPostsQuery } from '../hooks/hooks'
 
 // @ Main
-const StartScreen = () => {
-	const dispatch = useDispatch()
-
+const DashboardScreen = () => {
 	const { userData } = useSelector((state) => state.userAuth)
 
 	const { ref: redditRef, inView: redditInView } = useInView({
@@ -82,6 +78,7 @@ const StartScreen = () => {
 				p={2}
 				borderRadius="4px"
 				boxShadow={2}
+				justifyContent="space-between"
 				bgcolor="background.paper"
 				alignItems="center"
 				gap={1}
@@ -89,7 +86,10 @@ const StartScreen = () => {
 				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
 					{`Welcome ${userData.username}`}
 				</Box>
-				<SendMessage />
+				<Box display="flex" alignItems="center">
+					<SendMessage />
+					<ReportForm />
+				</Box>
 			</Box>
 
 			<Box
@@ -227,7 +227,7 @@ const StartScreen = () => {
 					<ExtLinkIconBtn url={`https://reddit.com/r/boardgames`} tooltip="See more reddit posts" />
 				</Box>
 
-				{errorRedditPosts && <CustomAlert>'Error while fetching Reddit posts'</CustomAlert>}
+				{errorRedditPosts && <CustomAlert>Error while fetching Reddit posts</CustomAlert>}
 
 				{isFetchingRedditPosts && (
 					<Box display="flex" flexDirection="column" gap={1}>
@@ -251,7 +251,7 @@ const StartScreen = () => {
 											width        : '100%'
 										}}
 									>
-										{data.thumbnail !== 'self' && (
+										{data.is_gallery && (
 											<Box
 												sx={{
 													width  : {
@@ -304,4 +304,4 @@ const StartScreen = () => {
 	)
 }
 
-export default StartScreen
+export default DashboardScreen

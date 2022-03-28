@@ -29,7 +29,7 @@ const MessageCardSkeleton = () => {
 
 				<Box display="flex" height={56} justifyContent="space-between" alignItems="center" width="100%" p={2}>
 					<CustomSkeleton variant="rectangle" width={20} />
-					<CustomSkeleton variant="rectangle" width={20} />
+					<CustomSkeleton variant="circular" width={20} height={20} />
 				</Box>
 			</Box>
 		</Card>

@@ -7,6 +7,7 @@ import { useHistory, useLocation, useParams, Link as RouterLink } from 'react-ro
 
 // @ Mui
 import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Link from '@mui/material/Link'
@@ -96,87 +97,95 @@ const LogIn = () => {
 	let pwErrorMsg = isError && error.response.data.code === 10 ? error.response.data.message.passwordError : false
 
 	return (
-		<form onSubmit={submitHandler} autoComplete="off">
-			<Helmet title="Log in" />
+		<Grid container justifyContent="center" alignItems="center" height="100%" sx={{ flex: 1 }}>
+			<Grid item xs={12} sm={8} md={6}>
+				<form onSubmit={submitHandler} autoComplete="off" style={{ height: '100%' }}>
+					<Helmet title="Log in" />
 
-			<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
-				<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
-					<HomeTwoToneIcon />
-				</CustomIconBtn>
-				<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
-					Log In
-				</Box>
-			</Box>
-
-			<Box display="flex" alignItems="center" flexDirection="column" justifyContent="center">
-				<Input
-					sx={{ minHeight: '90px' }}
-					error={!!usernameErrorMsg}
-					helperText={usernameErrorMsg}
-					onChange={(inputVal) => setEmail(inputVal)}
-					value={email}
-					size="medium"
-					id="email"
-					name="email"
-					label="Email"
-					type="email"
-					fullWidth
-					autoFocus
-					required
-				/>
-
-				<Input
-					sx={{ minHeight: '90px' }}
-					error={!!pwErrorMsg}
-					helperText={pwErrorMsg}
-					onChange={(inputVal) => setPassword(inputVal)}
-					value={password}
-					size="medium"
-					id="password"
-					name="password"
-					label="Password"
-					type={passVisibility ? 'text' : 'password'}
-					InputProps={{
-						endAdornment : (
-							<InputAdornment position="end">
-								<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
-									{passVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-								</CustomIconBtn>
-							</InputAdornment>
-						)
-					}}
-					fullWidth
-					required
-				/>
-
-				<LoadingBtn
-					type="submit"
-					variant="contained"
-					color="primary"
-					size="large"
-					loading={isLoadingLogin}
-					fullWidth
-				>
-					Log In
-				</LoadingBtn>
-
-				<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
-					<Link component={RouterLink} to="/create-account" underline="none">
-						Create account
-					</Link>
-				</Box>
-			</Box>
-
-			<Backdrop sx={{ zIndex: 1000 }} open={isLoading}>
-				<Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap={4}>
-					<Loader />
-
-					<Box fontWeight="fontWeightMedium" fontSize="h6.fontSize">
-						Activating your account...
+					<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
+						<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
+							<HomeTwoToneIcon />
+						</CustomIconBtn>
+						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
+							Log In
+						</Box>
 					</Box>
-				</Box>
-			</Backdrop>
-		</form>
+
+					<Box display="flex" alignItems="center" flexDirection="column" justifyContent="center">
+						<Input
+							sx={{ minHeight: '90px' }}
+							error={!!usernameErrorMsg}
+							helperText={usernameErrorMsg}
+							onChange={(inputVal) => setEmail(inputVal)}
+							value={email}
+							size="medium"
+							id="email"
+							name="email"
+							label="Email"
+							type="email"
+							fullWidth
+							autoFocus
+							required
+						/>
+
+						<Input
+							sx={{ minHeight: '90px' }}
+							error={!!pwErrorMsg}
+							helperText={pwErrorMsg}
+							onChange={(inputVal) => setPassword(inputVal)}
+							value={password}
+							size="medium"
+							id="password"
+							name="password"
+							label="Password"
+							type={passVisibility ? 'text' : 'password'}
+							InputProps={{
+								endAdornment : (
+									<InputAdornment position="end">
+										<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
+											{passVisibility ? (
+												<VisibilityOutlinedIcon />
+											) : (
+												<VisibilityOffOutlinedIcon />
+											)}
+										</CustomIconBtn>
+									</InputAdornment>
+								)
+							}}
+							fullWidth
+							required
+						/>
+
+						<LoadingBtn
+							type="submit"
+							variant="contained"
+							color="primary"
+							size="large"
+							loading={isLoadingLogin}
+							fullWidth
+						>
+							Log In
+						</LoadingBtn>
+
+						<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
+							<Link component={RouterLink} to="/create-account" underline="none">
+								Create account
+							</Link>
+						</Box>
+					</Box>
+
+					<Backdrop sx={{ zIndex: 1000 }} open={isLoading}>
+						<Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap={4}>
+							<Loader />
+
+							<Box fontWeight="fontWeightMedium" fontSize="h6.fontSize">
+								Activating your account...
+							</Box>
+						</Box>
+					</Backdrop>
+				</form>
+			</Grid>
+		</Grid>
 	)
 }
 

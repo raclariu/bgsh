@@ -30,7 +30,7 @@ import { light, dark } from './constants/themes'
 
 // @ Screens
 const Home = lazy(() => import('./screens/HomeScreen'))
-const Dashboard = lazy(() => import('./screens/StartScreen'))
+const Dashboard = lazy(() => import('./screens/DashboardScreen'))
 const LogIn = lazy(() => import('./screens/LogInScreen'))
 const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
@@ -77,12 +77,19 @@ const App = () => {
 
 					<Suspense fallback={<LinearProgress />}>
 						{location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
+
 						<Container
 							maxWidth="md"
 							component="main"
 							sx={{
-								py        : 4,
-								minHeight : 'calc(100% - 244px)'
+								display       : 'flex',
+								flexDirection : 'column',
+								pt            : 4,
+								pb            : 8,
+								minHeight     :
+									location.pathname !== '/login' && location.pathname !== '/create-account'
+										? 'calc(100% - 155px)'
+										: '100%'
 							}}
 						>
 							<Switch>
@@ -195,6 +202,7 @@ const App = () => {
 								</Route>
 							</Switch>
 						</Container>
+
 						{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
 					</Suspense>
 				</SnackbarProvider>

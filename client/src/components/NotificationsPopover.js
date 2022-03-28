@@ -116,15 +116,21 @@ const NotificationsPopover = () => {
 									<Collapse key={ntf._id}>
 										<ListItem alignItems="flex-start" divider>
 											<ListItemAvatar>
-												<Avatar
-													sx={{ cursor: 'pointer' }}
-													onClick={() => handleThumbClick(ntf.meta.altId)}
-													variant="rounded"
-													src={ntf.meta.thumbnail}
-													alt={ntf.text}
-												>
-													{ntf.text.substring(0, 2).toUpperCase()}
-												</Avatar>
+												{ntf.type === 'wishlist' ? (
+													<Avatar
+														sx={{ cursor: 'pointer' }}
+														onClick={() => handleThumbClick(ntf.meta.altId)}
+														variant="rounded"
+														src={ntf.meta.thumbnail}
+														alt={ntf.text}
+													>
+														{ntf.text.substring(0, 2).toUpperCase()}
+													</Avatar>
+												) : (
+													<Avatar variant="rounded" src={ntf.meta.thumbnail} alt={ntf.text}>
+														{ntf.text.substring(0, 2).toUpperCase()}
+													</Avatar>
+												)}
 											</ListItemAvatar>
 
 											<ListItemText
@@ -132,7 +138,8 @@ const NotificationsPopover = () => {
 												primary={ntf.text}
 												secondary={calculateTimeAgo(ntf.createdAt)}
 												primaryTypographyProps={{
-													variant : 'body2'
+													variant : 'body2',
+													color   : 'primary.light'
 												}}
 												secondaryTypographyProps={{
 													color   : 'grey.500',

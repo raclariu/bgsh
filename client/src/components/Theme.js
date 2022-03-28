@@ -30,7 +30,7 @@ const Theme = () => {
 	return (
 		<Fragment>
 			<CustomIconBtn color="primary" onClick={(e) => changeHandler(e, theme)} size="large">
-				{theme === 'light' ? <Brightness4Icon /> : <Brightness7Icon color="secondary" />}
+				{theme === 'light' ? <Brightness4Icon color="secondary" /> : <Brightness7Icon color="secondary" />}
 			</CustomIconBtn>
 		</Fragment>
 	)

@@ -9,7 +9,6 @@ const Paginate = ({ pagination, handleFilters }) => {
 	const onPageChangeHandler = (e, page) => {
 		window.scrollTo({
 			top      : 0,
-			left     : 0,
 			behavior : 'smooth'
 		})
 		handleFilters(page, 'page')
@@ -23,6 +22,9 @@ const Paginate = ({ pagination, handleFilters }) => {
 					onChange={(e, page) => onPageChangeHandler(e, page)}
 					count={pagination.totalPages}
 					color="secondary"
+					variant="outlined"
+					shape="rounded"
+					size="large"
 				/>
 			)}
 		</div>

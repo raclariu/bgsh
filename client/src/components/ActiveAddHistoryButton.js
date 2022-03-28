@@ -158,6 +158,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										onChange={(inputVal) => setOtherUsername(inputVal)}
 										value={otherUsername}
 										inputProps={{
+											minLength : 4,
 											maxLength : 20
 										}}
 										id="username"

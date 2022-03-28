@@ -27,7 +27,7 @@ const SavedGamesScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isFetching, data, isSuccess } = useGetSavedGamesListQuery(search, page)
+	const { isLoading, data, isSuccess } = useGetSavedGamesListQuery(search, page)
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -73,7 +73,7 @@ const SavedGamesScreen = () => {
 				</CustomAlert>
 			)}
 
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid item key={k} xs={12} sm={6} md={4}>

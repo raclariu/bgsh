@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import chalk from 'chalk'
 import cors from 'cors'
 import connectDB from './db/dbConnect.js'
-import { setInactiveTask, getKickstarters } from './tasks/tasks.js'
+import { dailyTask, fetchKickstarters } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 import morganLogger from './middlewares/morganMiddleware.js'
 import userRoutes from './routes/userRoutes.js'
@@ -48,8 +48,8 @@ const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	const used = process.memoryUsage().heapUsed / 1024 / 1024
 
-	setInactiveTask.start()
-	// getKickstarters.start()
+	dailyTask.start()
+	fetchKickstarters.start()
 
 	console.log(chalk.bgMagenta.hex('#f7edcb').bold(`Memory usage: ~${Math.round(used * 100) / 100} MB`))
 	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 08:00 and 16:00`))

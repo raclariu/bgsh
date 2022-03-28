@@ -1,7 +1,9 @@
 // @ Modules
 import React, { useState } from 'react'
+import { useIsFetching } from 'react-query'
 
 // @ Mui
+import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import InputBase from '@mui/material/InputBase'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -11,11 +13,14 @@ import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 
 // @ Components
+import Loader from './Loader'
 import CustomIconBtn from './CustomIconBtn'
 
 // @ Main
 const SearchBox = ({ placeholder, handleFilters }) => {
 	const [ keyword, setKeyword ] = useState('')
+
+	const fetching = useIsFetching()
 
 	const submitSearchHandler = (e) => {
 		e.preventDefault()
@@ -28,9 +33,7 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 	return (
 		<Paper
 			component="form"
-			sx={{
-				padding : (theme) => theme.spacing(1.2, 1.5, 1.2, 1.5)
-			}}
+			sx={{ py: 1.5, px: 1 }}
 			elevation={2}
 			onSubmit={submitSearchHandler}
 			noValidate
@@ -45,7 +48,11 @@ const SearchBox = ({ placeholder, handleFilters }) => {
 				type="text"
 				endAdornment={
 					<InputAdornment position="end">
-						{keyword.trim().length > 2 ? (
+						{fetching ? (
+							<Box display="flex" alignItems="center" mr={1}>
+								<Loader size={20} />
+							</Box>
+						) : keyword.trim().length > 2 ? (
 							<CustomIconBtn size="small" onClick={submitSearchHandler}>
 								<SearchIcon color="primary" />
 							</CustomIconBtn>

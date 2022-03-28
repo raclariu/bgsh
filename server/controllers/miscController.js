@@ -1,6 +1,8 @@
 import axios from 'axios'
+import { validationResult } from 'express-validator'
 import asyncHandler from 'express-async-handler'
 import Kickstarter from '../models/ksModel.js'
+import Report from '../models/reportModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
 // ~ @desc    Get games from BGG by ID
@@ -365,6 +367,38 @@ const getKickstarters = asyncHandler(async (req, res) => {
 	return res.status(200).json(kickstarters)
 })
 
+// * @desc    Submit report
+// * @route   POST  /api/misc/report
+// * @access  Private route
+const submitReport = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+		console.log(err)
+
+		res.status(400)
+		throw {
+			message : {
+				type       : err.type ? err.type.msg : null,
+				reportText : err.reportText ? err.reportText.msg : null,
+				username   : err.username ? err.username.msg : null,
+				altId      : err.altId ? err.altId.msg : null
+			}
+		}
+	}
+
+	const { type, username, altId, reportText } = req.body
+
+	await Report.create({
+		type,
+		reportedUser      : type === 'user' ? username : null,
+		reportedGameAltId : type === 'game' ? altId : null,
+		reportText
+	})
+
+	return res.status(204).end()
+})
+
 export {
 	bggGetGamesDetails,
 	bggGetHotGamesList,
@@ -372,5 +406,6 @@ export {
 	bggSearchGame,
 	getKickstarters,
 	getBggReccomendations,
-	getBggVideos
+	getBggVideos,
+	submitReport
 }

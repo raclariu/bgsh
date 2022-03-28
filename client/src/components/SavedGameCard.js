@@ -17,8 +17,10 @@ import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlin
 import SwapHorizontalCircleOutlinedIcon from '@mui/icons-material/SwapHorizontalCircleOutlined'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import RefreshIcon from '@mui/icons-material/Refresh'
 
 // @ Components
+import SaveGameButton from './SaveGameButton'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomButton from './CustomButton'
@@ -27,10 +29,10 @@ import CustomTooltip from './CustomTooltip'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 
 // @ Styles
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
@@ -66,6 +68,9 @@ const SavedGameCard = ({ data }) => {
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
 					title={data.games[index].title}
+					sx={{
+						filter : `${!data.isActive && 'grayscale(1)'}`
+					}}
 				/>
 			</Box>
 
@@ -142,6 +147,19 @@ const SavedGameCard = ({ data }) => {
 				</Box>
 			)}
 
+			{!data.isActive && (
+				<Chip
+					sx={{
+						position : 'absolute',
+						top      : '8px',
+						right    : '8px'
+					}}
+					size="small"
+					color="secondary"
+					label="inactive"
+				/>
+			)}
+
 			<CustomDivider />
 
 			<CardContent>
@@ -163,7 +181,11 @@ const SavedGameCard = ({ data }) => {
 							>
 								<ArrowBackIcon fontSize="small" />
 							</CustomIconBtn>
-							<StyledTitleBox>
+							<StyledTitleBox
+								sx={{
+									color : `${!data.isActive && 'grey.500'}`
+								}}
+							>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
 							<CustomIconBtn
@@ -190,7 +212,11 @@ const SavedGameCard = ({ data }) => {
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
 					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 
-					<GameDetailsButton altId={data.altId} mode={data.mode} />
+					{data.isActive ? (
+						<GameDetailsButton altId={data.altId} mode={data.mode} />
+					) : (
+						<SaveGameButton altId={data.altId} />
+					)}
 				</Box>
 			</CardActions>
 		</Card>

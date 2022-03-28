@@ -34,7 +34,7 @@ const GamesIndexScreen = () => {
 
 	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
 
-	const { isFetching, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
+	const { isLoading, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode: currLoc })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -106,7 +106,7 @@ const GamesIndexScreen = () => {
 			data.gamesData.length === 0 && (
 				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
 			)}
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>

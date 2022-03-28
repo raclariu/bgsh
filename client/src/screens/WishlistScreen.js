@@ -36,7 +36,7 @@ const WishlistScreen = () => {
 
 	const userList = useGetListQuery()
 
-	const { isFetching, isSuccess, data } = useGetWishlistCollectionQuery(search, page)
+	const { isLoading, isSuccess, data } = useGetWishlistCollectionQuery(search, page)
 
 	const addMutation = useAddToListMutation()
 	const deleteMutation = useDeleteFromListMutation()
@@ -92,7 +92,7 @@ const WishlistScreen = () => {
 				<CustomAlert severity="warning">{search ? 'No results found' : 'Your wishlist is empty'}</CustomAlert>
 			)}
 
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>

@@ -57,7 +57,33 @@ const listSaleGames = asyncHandler(async (req, res) => {
 			isPack
 		})
 
-		return res.status(204).end()
+		res.status(204).end()
+
+		let notifArr = []
+		for (let game of games) {
+			const userWishlists = await Wishlist.find({ 'wishlist.bggId': game.bggId }).select('user').lean()
+
+			if (userWishlists.length > 0) {
+				const filteredUserWishlists = userWishlists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWishlists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wishlist',
+						text      : `A pack containing ${game.title} has been listed for sale`,
+						meta      : {
+							altId     : game.altId,
+							thumbnail : game.thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		await Notification.insertMany(notifArr)
+		notifArr = []
 	} else {
 		let sellList = []
 		games.forEach((game, index) => {
@@ -83,27 +109,29 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		const insertedGames = await Game.insertMany(sellList)
 		res.status(204).end()
 
-		console.log(insertedGames)
 		let notifArr = []
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
-			const foundUserWishlist = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
-			if (foundUserWishlist.length > 0) {
-				if (!foundUserWishlist.some((obj) => obj.user.toString() === req.user._id.toString())) {
-					for (let obj of foundUserWishlist) {
-						notifArr.push({
-							recipient : obj.user,
-							type      : 'wishlist',
-							text      : `${data.games[0].title} has been added for sale`,
-							meta      : {
-								altId     : data.altId,
-								thumbnail : data.games[0].thumbnail
-							}
-						})
-					}
-					await Notification.insertMany(notifArr)
-					notifArr = []
+			const userWishlists = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
+
+			if (userWishlists.length > 0) {
+				const filteredUserWishlists = userWishlists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWishlists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wishlist',
+						text      : `${data.games[0].title} has been listed for sale`,
+						meta      : {
+							altId     : data.altId,
+							thumbnail : data.games[0].thumbnail
+						}
+					})
 				}
+				await Notification.insertMany(notifArr)
+				notifArr = []
 			}
 		}
 	}
@@ -142,6 +170,34 @@ const listTradeGames = asyncHandler(async (req, res) => {
 			extraInfoPack,
 			isPack
 		})
+
+		res.status(204).end()
+
+		let notifArr = []
+		for (let game of games) {
+			const userWishlists = await Wishlist.find({ 'wishlist.bggId': game.bggId }).select('user').lean()
+
+			if (userWishlists.length > 0) {
+				const filteredUserWishlists = userWishlists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWishlists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wishlist',
+						text      : `A pack containing ${game.title} has been listed for trade`,
+						meta      : {
+							altId     : game.altId,
+							thumbnail : game.thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		await Notification.insertMany(notifArr)
+		notifArr = []
 	} else {
 		let tradeList = []
 		for (let game of games) {
@@ -161,10 +217,35 @@ const listTradeGames = asyncHandler(async (req, res) => {
 			tradeList.push(data)
 		}
 
-		await Game.insertMany(tradeList)
-	}
+		const insertedGames = await Game.insertMany(tradeList)
+		res.status(204).end()
 
-	return res.status(204).end()
+		let notifArr = []
+		for (let data of insertedGames) {
+			const { bggId } = data.games[0]
+			const userWishlists = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
+
+			if (userWishlists.length > 0) {
+				const filteredUserWishlists = userWishlists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWishlists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wishlist',
+						text      : `${data.games[0].title} has been listed for trade`,
+						meta      : {
+							altId     : data.altId,
+							thumbnail : data.games[0].thumbnail
+						}
+					})
+				}
+				await Notification.insertMany(notifArr)
+				notifArr = []
+			}
+		}
+	}
 })
 
 // * @desc    Add wanted games
@@ -463,7 +544,7 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	if (!game.isActive) {
 		res.status(404)
 		throw {
-			message : 'Game is no longer available'
+			message : 'Game is not active'
 		}
 	}
 
@@ -617,7 +698,37 @@ const deleteOneGame = asyncHandler(async (req, res) => {
 		}
 	}
 
-	return res.status(204).end()
+	res.status(204).end()
+
+	// Create notification for users that added this listing to their saved games
+	const users = await User.find({ savedGames: id }).select('_id savedGames').lean()
+	if (users.length > 0) {
+		let notifArr = []
+		for (let user of users) {
+			notifArr.push({
+				recipient : user._id,
+				type      : 'saved',
+				text      : game.isPack
+					? `One of your saved boardgame packs containing ${game.games
+							.map((game) => game.title)
+							.join(', ')} is no longer available for ${game.mode === 'sell' ? 'sale' : 'trade'}`
+					: `One of your saved boardgames (${game.games[0].title}) is no longer available for ${game.mode ===
+						'sell'
+							? 'sale'
+							: 'trade'}`,
+				meta      : {
+					thumbnail : game.games[0].thumbnail
+				}
+			})
+		}
+
+		for (let user of users) {
+			const newSavedGamesArr = user.savedGames.filter((gameId) => gameId.toString() !== id.toString())
+			await User.updateOne({ _id: user._id }, { savedGames: newSavedGamesArr })
+		}
+		await Notification.insertMany(notifArr)
+		notifArr = []
+	}
 })
 
 export {

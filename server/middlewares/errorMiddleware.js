@@ -41,8 +41,8 @@ const errorHandler = (err, req, res, next) => {
 	}
 
 	if (process.env.NODE_ENV === 'development') {
-		res.json({
-			code      : err.code || 0,
+		return res.json({
+			code      : err.code || null,
 			timestamp : new Date(),
 			status    : statusCode,
 			message   : err.message,
@@ -50,8 +50,8 @@ const errorHandler = (err, req, res, next) => {
 			devErr    : err.devErr
 		})
 	} else {
-		res.json({
-			code      : err.code || 0,
+		return res.json({
+			code      : err.code || null,
 			timestamp : err.timestamp,
 			status    : statusCode,
 			message   : err.message,

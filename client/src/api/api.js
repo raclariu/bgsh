@@ -1,6 +1,5 @@
-import store from '../store'
 import queryString from 'query-string'
-import { axsPUBLIC, axsAUTH, multipartAxsAUTH } from './axs'
+import { axsPUBLIC, axsAUTH } from './axs'
 
 export const apiActivateAccount = async (tokenUid) => {
 	await axsPUBLIC.get(`/api/users/activate/${tokenUid}`)
@@ -16,12 +15,16 @@ export const apiUserLogin = async ({ email, password }) => {
 }
 
 export const apiFetchKickstarters = async () => {
-	const { data } = await axsPUBLIC.get('/api/misc/kickstarters')
+	const { data } = await axsAUTH.get('/api/misc/kickstarters')
 	return data
 }
 
 export const apiFetchRedditPosts = async () => {
-	const { data } = await axsPUBLIC.get('https://www.reddit.com/r/boardgames/.json?limit=10')
+	const { data } = await axsPUBLIC.get('https://www.reddit.com/r/boardgames/.json', {
+		params : {
+			limit : 10
+		}
+	})
 	const { data: { children } } = data
 	return children
 }
@@ -272,7 +275,7 @@ export const apiReactivateListedGame = async (id) => {
 }
 
 export const apiFetchHotGames = async () => {
-	const { data } = await axsPUBLIC.get('/api/misc/bgg/hot')
+	const { data } = await axsAUTH.get('/api/misc/bgg/hot')
 	return data
 }
 
@@ -327,4 +330,8 @@ export const apiClearList = async () => {
 export const apiGetOwnAvatar = async () => {
 	const { data } = await axsAUTH.get(`/api/users/avatar`)
 	return data
+}
+
+export const apiSubmitReport = async (data) => {
+	await axsAUTH.post(`/api/misc/report`, data)
 }

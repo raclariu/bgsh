@@ -4,13 +4,14 @@ import { subDays } from 'date-fns'
 import Game from '../models/gameModel.js'
 import Kickstarter from '../models/ksModel.js'
 import Notification from '../models/notificationModel.js'
+import chalk from 'chalk'
 
 const options = {
 	scheduled : false,
 	timezone  : 'Europe/Bucharest'
 }
 
-const setInactiveTask = cron.schedule(
+const dailyTask = cron.schedule(
 	//'0 3,15 * * *',
 	'0 8,18 * * *',
 	// '*/10 * * * * *',
@@ -30,7 +31,6 @@ const setInactiveTask = cron.schedule(
 				type      : 'expired',
 				text,
 				meta      : {
-					altId     : obj.altId,
 					thumbnail : obj.games[0].thumbnail
 				}
 			})
@@ -40,59 +40,97 @@ const setInactiveTask = cron.schedule(
 		notifArr = []
 
 		const modify = await Game.updateMany({ isActive: true, updatedAt: { $lte: lookback } }, { isActive: false })
-		console.log(`ran inactive task at ${new Date()} - modified ${modify.modifiedCount}/${modify.matchedCount}`)
-		// await Game.updateMany({ updatedAt: { $lte: lookback }, isActive: false }, { isActive: true })
+
+		// Clear notifications older than 14 days
+		const ntfLookback = subDays(new Date(), 14)
+		const deletedNtfCount = await Notification.deleteMany({ createdAt: { $lte: ntfLookback } }).lean()
+
+		console.log(chalk.hex('#737373')('_____________________________________________'))
+		console.log(
+			chalk
+				.bgHex('#8c4f00')
+				.hex('#f7edcb')
+				.bold(
+					'\n' +
+						`Ran daily task at ${new Date().toLocaleString('ro-RO')}` +
+						'\n' +
+						`>> updated ${modify.modifiedCount}/${modify.matchedCount} games to inactive` +
+						'\n' +
+						`>> deleted ${deletedNtfCount.deletedCount} notifications older than 14 days` +
+						'\n'
+				)
+		)
+		console.log(chalk.hex('#737373')('_____________________________________________'))
 	},
 	options
 )
 
-const getKickstarters = cron.schedule(
-	'*/10 * * * * *',
+const fetchKickstarters = cron.schedule(
+	'0 7,17 * * *',
 	async () => {
-		const browser = await puppeteer.launch() //{ headless: false }
-		const page = await browser.newPage()
-		await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
+		const args = [
+			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+		]
 
-		await page.waitForSelector('#projects_list')
+		const browser = await puppeteer.launch({ args, headless: true, ignoreHTTPSErrors: true }) //{ headless: false }
+		const page = (await browser.pages())[0]
 
-		const data = await page.evaluate(() => {
-			let kickstartersRaw = []
+		try {
+			await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
+			// await page.screenshot({ path: './buddy-screenshot.png' })
+			// await page.waitForNavigation()
+			await page.waitForSelector('#projects_list')
 
-			let documents = [ ...document.querySelectorAll('[data-pid]') ]
-			console.log(documents)
+			const data = await page.evaluate(() => {
+				let kickstartersRaw = []
 
-			for (let ks of documents) {
-				kickstartersRaw.push(JSON.parse(ks.dataset.project))
-			}
+				let documents = [ ...document.querySelectorAll('[data-pid]') ]
 
-			const kickstarters = kickstartersRaw.map((ks) => {
-				return {
-					ksId             : ks.id,
-					title            : ks.name,
-					shortDescription : ks.blurb,
-					backers          : ks.backers_count,
-					currencySymbol   : ks.currency_symbol,
-					pledged          : ks.pledged,
-					goal             : ks.goal,
-					percentFunded    : ks.percent_funded,
-					url              : ks.urls.web.project,
-					creator          : ks.creator.name,
-					country          : ks.country,
-					launched         : ks.launched_at,
-					deadline         : ks.deadline,
-					image            : ks.photo.ed
+				for (let ks of documents) {
+					kickstartersRaw.push(JSON.parse(ks.dataset.project))
 				}
+
+				const kickstarters = kickstartersRaw.map((ks) => {
+					return {
+						ksId             : ks.id,
+						title            : ks.name,
+						shortDescription : ks.blurb,
+						backers          : ks.backers_count,
+						pledged          : ks.converted_pledged_amount,
+						goal             : ks.goal,
+						percentFunded    : ks.percent_funded,
+						url              : ks.urls.web.project,
+						creator          : ks.creator.name,
+						exchangeRate     : ks.usd_exchange_rate,
+						location         : ks.location.displayable_name,
+						launched         : ks.launched_at,
+						deadline         : ks.deadline,
+						image            : ks.photo.ed
+					}
+				})
+
+				return kickstarters
 			})
 
-			return kickstarters
-		})
+			await browser.close()
 
-		await browser.close()
+			await Kickstarter.deleteMany({})
+			await Kickstarter.insertMany(data)
 
-		await Kickstarter.deleteMany({})
-		await Kickstarter.insertMany(data)
+			console.log(chalk.hex('#737373')('_____________________________________________'))
+			console.log(
+				chalk
+					.bgHex('#85b500')
+					.hex('#f7edcb')
+					.bold('\n' + `Ran kickstarter task at ${new Date().toLocaleString('ro-RO')}` + '\n')
+			)
+			console.log(chalk.hex('#737373')('_____________________________________________'))
+		} catch (error) {
+			console.log(error)
+			await browser.close()
+		}
 	},
 	options
 )
 
-export { setInactiveTask, getKickstarters }
+export { dailyTask, fetchKickstarters }

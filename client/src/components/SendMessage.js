@@ -12,6 +12,7 @@ import DialogActions from '@mui/material/DialogActions'
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
 
 // @ Components
+import CustomButton from './CustomButton'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomTooltip from './CustomTooltip'
@@ -34,7 +35,8 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 		setOpen(true)
 	}
 
-	const handleCloseDialog = () => {
+	const handleCloseDialog = (e, reason) => {
+		if (reason && reason === 'backdropClick') return
 		setOpen(false)
 		setSubject('')
 		setMessage('')
@@ -52,13 +54,14 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 		<Fragment>
 			<CustomTooltip title="Send message">
 				<CustomIconBtn
-					// disabled={currUsername === recipientUsername}
+					disabled={currUsername === recipientUsername}
 					color="primary"
 					onClick={handleOpenDialog}
 					size="large"
 					{...other}
+					sx={{ height: 44, width: 44 }}
 				>
-					<MailTwoToneIcon fontSize="small" />
+					<MailTwoToneIcon />
 				</CustomIconBtn>
 			</CustomTooltip>
 
@@ -82,7 +85,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 							name="recipient"
 							label="Username of recipient"
 							type="text"
-							disabled={recipientUsername ? true : false}
+							disabled={!!recipientUsername}
 							fullWidth
 							required
 						/>
@@ -102,6 +105,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 							name="subject"
 							label={`Subject (${subject.length}/60)`}
 							type="text"
+							disabled={currUsername === recipientUsername}
 							fullWidth
 							required
 						/>
@@ -123,6 +127,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 							multiline
 							minRows={3}
 							maxRows={10}
+							disabled={currUsername === recipientUsername}
 							fullWidth
 							required
 						/>
@@ -131,10 +136,11 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 					<CustomDivider />
 
 					<DialogActions>
+						<CustomButton onClick={handleCloseDialog}>Cancel</CustomButton>
 						<LoadingBtn
 							disabled={currUsername.trim().toLowerCase() === recipient.trim().toLowerCase()}
 							type="submit"
-							variant="outlined"
+							variant="contained"
 							color="primary"
 							loading={mutation.isLoading}
 						>

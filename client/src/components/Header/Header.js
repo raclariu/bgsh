@@ -47,6 +47,7 @@ import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
 import LogoutIcon from '@mui/icons-material/Logout'
 import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone'
 import GavelTwoToneIcon from '@mui/icons-material/GavelTwoTone'
+import KeyboardAltTwoToneIcon from '@mui/icons-material/KeyboardAltTwoTone'
 
 // @ Components
 import CustomIconBtn from '../CustomIconBtn'
@@ -103,7 +104,18 @@ const Header = () => {
 	const ClgTheme = styled('span')(({ theme }) => console.log(theme))
 
 	return (
-		<AppBar elevation={0} position="static" color="transparent">
+		<AppBar
+			elevation={0}
+			position="static"
+			color="transparent"
+			sx={{
+				borderStyle       : 'solid',
+				borderColor       : (theme) =>
+					theme.palette.mode === 'light' ? '#E7EBF0' : 'rgba(194, 224, 255, 0.08)',
+				borderWidth       : '0',
+				borderBottomWidth : 'thin'
+			}}
+		>
 			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
 				{!userData && (
 					<Box mr={1}>
@@ -203,7 +215,9 @@ const Header = () => {
 										to="/dashboard"
 									>
 										<ListItemIcon>
-											<HomeTwoToneIcon color={selectedIndex === 33 ? 'primary' : 'inherit'} />
+											<KeyboardAltTwoToneIcon
+												color={selectedIndex === 33 ? 'primary' : 'inherit'}
+											/>
 										</ListItemIcon>
 										<ListItemText
 											primary={

@@ -145,38 +145,42 @@ const InboxScreen = () => {
 				</Grid>
 			</Box>
 
-			<Box display="flex" alignItems="center" justifyContent="space-between" width="100%" height={50} mb={2}>
-				<Box display="flex" alignItems="center" gap={2}>
-					{search && <BackButton />}
+			<Grid container justifyContent="center" sx={{ mb: 2 }}>
+				<Grid item xs={12} md={8}>
+					<Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
+						<Box display="flex" alignItems="center" gap={2}>
+							{search && <BackButton />}
 
-					<FormControlLabel
-						label={selected.length > 0 ? `Select all (${selected.length})` : 'Select all'}
-						disabled={!isSuccess}
-						control={
-							<Checkbox
-								sx={{ mr: 1 }}
-								label="Select all"
-								indeterminate={isChecked && data && data.messages.length !== selected.length}
-								checked={isChecked}
-								onChange={(e) => handleSelectAll(e)}
+							<FormControlLabel
+								label={selected.length > 0 ? `Select all (${selected.length})` : 'Select all'}
+								disabled={!isSuccess}
+								control={
+									<Checkbox
+										sx={{ mr: 1 }}
+										label="Select all"
+										indeterminate={isChecked && data && data.messages.length !== selected.length}
+										checked={isChecked}
+										onChange={(e) => handleSelectAll(e)}
+									/>
+								}
 							/>
-						}
-					/>
-				</Box>
+						</Box>
 
-				{selected.length > 0 && (
-					<CustomIconBtn onClick={handleDelete} color="error">
-						<DeleteOutlineIcon />
-					</CustomIconBtn>
-				)}
-			</Box>
+						{selected.length > 0 && (
+							<CustomIconBtn onClick={handleDelete} color="error">
+								<DeleteOutlineIcon />
+							</CustomIconBtn>
+						)}
+					</Box>
+				</Grid>
+			</Grid>
 
 			{isSuccess && data.messages.length === 0 && <CustomAlert severity="warning">No messages</CustomAlert>}
 
 			{isLoading && (
-				<Grid container spacing={2}>
+				<Grid container spacing={2} justifyContent="center">
 					{[ ...Array(12).keys() ].map((i, k) => (
-						<Grid key={k} item xs={12} md={6}>
+						<Grid key={k} item xs={12} md={8}>
 							<MessageCardSkeleton />
 						</Grid>
 					))}
@@ -184,9 +188,9 @@ const InboxScreen = () => {
 			)}
 
 			{isSuccess && (
-				<Grid container spacing={2}>
+				<Grid container spacing={2} justifyContent="center">
 					{data.messages.map((msg) => (
-						<Grid item key={msg._id} xs={12} md={6}>
+						<Grid item key={msg._id} xs={12} md={8}>
 							<LzLoad placeholder={<MessageCardSkeleton />}>
 								<MessageCard
 									msg={msg}

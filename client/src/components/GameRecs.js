@@ -128,7 +128,11 @@ const GameRecs = ({ idx }) => {
 													target="_blank"
 													rel="noreferrer"
 												>
-													<StyledRecImg src={rec.thumbnail} alt={rec.title} />
+													<StyledRecImg
+														src={rec.thumbnail}
+														alt={rec.title}
+														title={rec.title}
+													/>
 												</a>
 
 												<Box

@@ -11,8 +11,8 @@ const kickstarterSchema = mongoose.Schema(
 		pledged          : Number,
 		goal             : Number,
 		percentFunded    : Number,
-		country          : String,
-		currencySymbol   : String,
+		location         : String,
+		exchangeRate     : Number,
 		url              : String,
 		launched         : Number,
 		deadline         : Number

@@ -13,3 +13,9 @@ export const formatDate = (date) => {
 		weekStartsOn : 1
 	})
 }
+
+export const formatDateSimple = (date) => {
+	return format(parseISO(date), 'd MMMM y', {
+		weekStartsOn : 1
+	})
+}

@@ -4,6 +4,7 @@ import Fuse from 'fuse.js'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import History from '../models/historyModel.js'
+import Notification from '../models/notificationModel.js'
 import storage from '../helpers/storage.js'
 
 // * @desc    Add sold games to history
@@ -44,7 +45,7 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 		if (gameExists.isActive === false) {
 			res.status(404)
 			throw {
-				message : 'Game is no longer available'
+				message : 'Game is not active'
 			}
 		}
 
@@ -75,7 +76,35 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 				}
 			}
 			await Game.findOneAndDelete({ _id: gameId })
-			return res.status(204).end()
+			res.status(204).end()
+
+			// Create notification for users that added this listing to their saved games
+			const users = await User.find({ savedGames: gameId }).select('_id savedGames').lean()
+			if (users.length > 0) {
+				let notifArr = []
+				for (let user of users) {
+					notifArr.push({
+						recipient : user._id,
+						type      : 'saved',
+						text      : gameExists.isPack
+							? `One of your saved boardgame packs containing ${simplifyGames
+									.map((game) => game.title)
+									.join(', ')} is no longer available for sale`
+							: `One of your saved boardgames (${simplifyGames[0]
+									.title}) is no longer available for sale`,
+						meta      : {
+							thumbnail : simplifyGames[0].thumbnail
+						}
+					})
+				}
+
+				for (let user of users) {
+					const newSavedGamesArr = user.savedGames.filter((id) => id.toString() !== gameId.toString())
+					await User.updateOne({ _id: user._id }, { savedGames: newSavedGamesArr })
+				}
+				await Notification.insertMany(notifArr)
+				notifArr = []
+			}
 		} else {
 			res.status(500)
 			throw {
@@ -157,7 +186,35 @@ const addTradedGamesToHistory = asyncHandler(async (req, res) => {
 				}
 			}
 			await Game.findOneAndDelete({ _id: gameId })
-			return res.status(204).end()
+			res.status(204).end()
+
+			// Create notification for users that added this listing to their saved games
+			const users = await User.find({ savedGames: gameId }).select('_id savedGames').lean()
+			if (users.length > 0) {
+				let notifArr = []
+				for (let user of users) {
+					notifArr.push({
+						recipient : user._id,
+						type      : 'saved',
+						text      : gameExists.isPack
+							? `One of your saved boardgame packs containing ${simplifyGames
+									.map((game) => game.title)
+									.join(', ')} is no longer available for trade`
+							: `One of your saved boardgames (${simplifyGames[0]
+									.title}) is no longer available for trade`,
+						meta      : {
+							thumbnail : simplifyGames[0].thumbnail
+						}
+					})
+				}
+
+				for (let user of users) {
+					const newSavedGamesArr = user.savedGames.filter((id) => id.toString() !== gameId.toString())
+					await User.updateOne({ _id: user._id }, { savedGames: newSavedGamesArr })
+				}
+				await Notification.insertMany(notifArr)
+				notifArr = []
+			}
 		} else {
 			res.status(500)
 			throw {
@@ -190,8 +247,6 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 	}
 
 	const { games, extraInfoPack, finalPrice, isPack, otherUsername } = req.body
-
-	console.log(games)
 
 	if (isPack) {
 		// const otherUserId = otherUsername ? await User.findOne({ username: otherUsername }).select('_id').lean() : null

@@ -47,6 +47,7 @@ import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
 import InfoBox from '../components/SingleGameScreen/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
+import ReportForm from '../components/ReportForm'
 import SendMessage from '../components/SendMessage'
 import Helmet from '../components/Helmet'
 import CustomAlert from '../components/CustomAlert'
@@ -149,8 +150,11 @@ const SingleGameScreen = () => {
 			)}
 
 			{isError && (
-				<Box>
-					<CustomAlert>{error.response.data.message}</CustomAlert>
+				<Box display="flex" alignItems="center" width="100%" gap={1}>
+					<SaveGameButton altId={altId} />
+					<Box width="100%">
+						<CustomAlert>{error.response.data.message}</CustomAlert>
+					</Box>
 				</Box>
 			)}
 
@@ -310,6 +314,7 @@ const SingleGameScreen = () => {
 								width="100%"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
+									<ReportForm type="game" altId={data.altId} />
 									<ExtLinkIconBtn
 										url={`https://boardgamegeek.com/boardgame/${data.games[idx].bggId}`}
 									/>

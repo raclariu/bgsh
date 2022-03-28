@@ -181,6 +181,7 @@ const BuyGamesScreen = () => {
 									value={data.otherUsername}
 									onChange={(inputVal) => setOtherUsername(inputVal)}
 									inputProps={{
+										minLength : 4,
 										maxLength : 20
 									}}
 									id="username"

@@ -16,13 +16,13 @@ import { useGetHotGamesQuery } from '../hooks/hooks'
 
 // @ Main
 const HotGamesScreen = () => {
-	const { isFetching, error, data, isSuccess } = useGetHotGamesQuery()
+	const { isLoading, error, data, isSuccess } = useGetHotGamesQuery()
 
 	return (
 		<Fragment>
 			<Helmet title="BGG hot games" />
 
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid item key={k} xs={12} sm={6} md={4}>

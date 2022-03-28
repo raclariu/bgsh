@@ -108,7 +108,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					variant : 'subtitle2'
 				}}
 				subheaderTypographyProps={{
-					color   : 'grey.400',
+					color   : 'grey.500',
 					variant : 'caption'
 				}}
 			/>
@@ -191,6 +191,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 						value={data.otherUsername}
 						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'otherUsername')}
 						inputProps={{
+							minLength : 4,
 							maxLength : 20
 						}}
 						id="username"

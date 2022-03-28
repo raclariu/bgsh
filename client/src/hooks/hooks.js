@@ -191,9 +191,10 @@ export const useGetOwnedCollectionQuery = (search, page) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useQuery([ 'collection', { search, page } ], () => api.apiFetchOwnedCollection(search, page), {
-		staleTime : Infinity,
-		enabled   : !!userList.data,
-		onError   : (err) => {
+		staleTime        : Infinity,
+		enabled          : !!userList.data,
+		keepPreviousData : true,
+		onError          : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching collection'
 			showSnackbar.error({ text })
 		}
@@ -205,9 +206,10 @@ export const useGetWishlistCollectionQuery = (search, page) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useQuery([ 'wishlist', { search, page } ], () => api.apiFetchWishlistCollection(search, page), {
-		staleTime : Infinity,
-		enabled   : !!userList.data,
-		onError   : (err) => {
+		staleTime        : Infinity,
+		enabled          : !!userList.data,
+		keepPreviousData : true,
+		onError          : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching wishlist'
 			showSnackbar.error({ text })
 		}
@@ -218,8 +220,9 @@ export const useGetSavedGamesListQuery = (search, page) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useQuery([ 'savedGames', { search, page } ], () => api.apiFetchSavedGames(search, page), {
-		staleTime : 1000 * 60 * 60,
-		onError   : (err) => {
+		staleTime        : 1000 * 60 * 60,
+		keepPreviousData : true,
+		onError          : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching saved games'
 			showSnackbar.error({ text })
 		}
@@ -230,8 +233,9 @@ export const useGetMyListedGames = (search, page) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useQuery([ 'myListedGames', { search, page } ], () => api.apiFetchMyListedGames(search, page), {
-		staleTime : 1000 * 60 * 60,
-		onError   : (err) => {
+		staleTime        : 1000 * 60 * 60,
+		keepPreviousData : true,
+		onError          : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching listed games'
 			showSnackbar.error({ text })
 		}
@@ -241,8 +245,9 @@ export const useGetMyListedGames = (search, page) => {
 export const useGetGamesHistoryListQuery = ({ search, page, mode }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 	return useQuery([ 'history', mode, { search, page } ], () => api.apiFetchGamesHistory({ search, page, mode }), {
-		staleTime : 1000 * 60 * 60,
-		onError   : (err) => {
+		staleTime        : 1000 * 60 * 60,
+		keepPreviousData : true,
+		onError          : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching history'
 			showSnackbar.error({ text })
 		}
@@ -256,9 +261,10 @@ export const useGetGamesIndexQuery = ({ sort, search, page, mode }) => {
 		[ 'index', mode, { sort, search, page } ],
 		() => api.apiGetGamesIndex({ sort, search, page, mode }),
 		{
-			staleTime      : 1000 * 60 * 5,
-			refetchOnMount : true,
-			onError        : (err) => {
+			staleTime        : 1000 * 60 * 5,
+			refetchOnMount   : true,
+			keepPreviousData : true,
+			onError          : (err) => {
 				const text = err.response.data.message || 'Error occured while fetching games'
 				showSnackbar.error({ text })
 			}
@@ -422,16 +428,15 @@ export const useChangeOwnAvatarMutation = ({ changeState }) => {
 
 export const useGetHotGamesQuery = () => {
 	return useQuery([ 'hotGames' ], api.apiFetchHotGames, {
-		staleTime      : 1000 * 60 * 60,
-		refetchOnMount : false
+		staleTime        : 1000 * 60 * 60,
+		keepPreviousData : true
 	})
 }
 
 export const useGetKickstartersQuery = ({ inView }) => {
 	return useQuery([ 'kickstarters' ], api.apiFetchKickstarters, {
-		enabled        : inView,
-		staleTime      : 1000 * 60 * 60,
-		refetchOnMount : false
+		enabled   : inView,
+		staleTime : 1000 * 60 * 60
 	})
 }
 
@@ -729,6 +734,17 @@ export const useGetSaveGameStatusQuery = ({ altId }) => {
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while fetching saved status'
 			showSnackbar.error({ text })
+		}
+	})
+}
+
+export const useSubmitReportMutation = (closeModal) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((data) => api.apiSubmitReport(data), {
+		onSuccess : () => {
+			closeModal()
+			showSnackbar.success({ text: 'Report sent successfully' })
 		}
 	})
 }

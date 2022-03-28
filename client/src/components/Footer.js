@@ -8,35 +8,27 @@ import Container from '@mui/material/Container'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary">
-			{'Copyright © '}
-			<Link color="inherit" href="/">
-				Your Website
-			</Link>{' '}
-			{new Date().getFullYear()}
-		</Typography>
-	)
-}
-
 // @ Main
-export default function StickyFooter() {
+const Footer = () => {
 	return (
 		<Box
 			component="footer"
 			sx={{
-				height          : '180px',
-				padding         : (theme) => theme.spacing(8, 2),
-				marginTop       : 'auto',
-				backgroundColor : (theme) =>
-					theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.paper
+				height         : '90px',
+				p              : 1,
+				borderStyle    : 'solid',
+				borderColor    : (theme) => (theme.palette.mode === 'light' ? '#E7EBF0' : 'rgba(194, 224, 255, 0.08)'),
+				borderWidth    : '0',
+				borderTopWidth : 'thin'
 			}}
 		>
-			<Container maxWidth="sm">
-				<Typography variant="body1">Footer Placeholder</Typography>
-				<Copyright />
-			</Container>
+			<Box display="flex" alignItems="center" justifyContent="center" height="100%">
+				<Typography variant="body1" fontWeight="fontWeightMedium">
+					BGMarket.ro
+				</Typography>
+			</Box>
 		</Box>
 	)
 }
+
+export default Footer

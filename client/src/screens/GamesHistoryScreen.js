@@ -32,7 +32,7 @@ const GamesHistoryScreen = () => {
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isFetching, data, isSuccess } = useGetGamesHistoryListQuery({ search, page, mode: currLoc })
+	const { isLoading, data, isSuccess } = useGetGamesHistoryListQuery({ search, page, mode: currLoc })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -85,7 +85,7 @@ const GamesHistoryScreen = () => {
 			data.historyList.length === 0 &&
 			!search && <CustomAlert severity="warning">{`Your ${currLoc} history list is empty`}</CustomAlert>}
 
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>

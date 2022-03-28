@@ -37,7 +37,7 @@ const CollectionScreen = () => {
 
 	const userList = useGetListQuery()
 
-	const { isFetching, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
+	const { isLoading, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
 
 	const addMutation = useAddToListMutation()
 
@@ -94,7 +94,7 @@ const CollectionScreen = () => {
 				<CustomAlert severity="warning">{search ? 'No results found' : 'Your collection is empty'}</CustomAlert>
 			)}
 
-			{isFetching && (
+			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>
