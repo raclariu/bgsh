@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
 
 // @ Mui
@@ -30,7 +30,7 @@ import {
 
 // @ Main
 const CollectionScreen = () => {
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
@@ -55,7 +55,7 @@ const CollectionScreen = () => {
 			query = queryString.stringify({ search, page: filter }, options)
 		}
 
-		history.push(`${location.pathname}?${query}`)
+		navigate(`${location.pathname}?${query}`)
 	}
 
 	const listHandler = (e, game) => {

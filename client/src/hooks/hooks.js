@@ -451,12 +451,18 @@ export const useGetRedditPostsQuery = ({ inView }) => {
 export const useGetUserProfileDataQuery = ({ username }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	return useQuery([ 'profile', { username } ], () => api.apiGetProfileData(username), {
+	return useQuery([ 'userData', { username } ], () => api.apiGetProfileData(username), {
 		staleTime : 1000 * 60 * 5,
 		onError   : (err) => {
-			const text = err.response.data.message || 'Error occured while trying to fetch user profile data'
+			const text = err.response.data.message || 'Error occured while trying to fetch user data'
 			showSnackbar.error({ text })
 		}
+	})
+}
+
+export const useGetUserProfileListingsDataQuery = ({ username }) => {
+	return useQuery([ 'profile', { username } ], () => api.apiGetProfileListingsData(username), {
+		staleTime : 1000 * 60 * 30
 	})
 }
 

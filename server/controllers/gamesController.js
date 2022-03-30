@@ -556,12 +556,19 @@ const getSingleGame = asyncHandler(async (req, res) => {
 // <> @access  Private route
 const switchSaveGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const game = await Game.findOne({ altId }).select('_id').lean()
+	const game = await Game.findOne({ altId }).select('_id addedBy').lean()
 
 	if (!game) {
 		res.status(404)
 		throw {
 			message : 'Game not found'
+		}
+	}
+
+	if (game.addedBy.toString() === req.user._id.toString()) {
+		res.status(400)
+		throw {
+			message : 'You cannot save your own listing'
 		}
 	}
 

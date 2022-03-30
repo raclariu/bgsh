@@ -58,7 +58,7 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 					<Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={3}>
 						<Box display="flex" flexDirection="column" gap={0.5}>
 							<Box fontSize="h6.fontSize">{data.games[index].title}</Box>
-							<Box fontSize="0.75rem" color="grey.500">
+							<Box fontSize="caption.fontSize" color="grey.500">
 								{`${data.games[index].subtype} • ${data.games[index].year}`}
 							</Box>
 						</Box>

@@ -2,7 +2,7 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
 
 // @ Mui
@@ -32,7 +32,7 @@ import {
 const BuyGamesScreen = () => {
 	const dispatch = useDispatch()
 	const location = useLocation()
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	let { pack: isPack = false } = queryString.parse(location.search)
 	isPack = !!isPack
@@ -66,12 +66,12 @@ const BuyGamesScreen = () => {
 
 	if (isPack !== false && isPack !== true) {
 		addMutation.reset()
-		history.push('/sell')
+		navigate('/sell')
 	}
 
 	if (userList.isSuccess && userList.data.list.length === 1 && isPack) {
 		addMutation.reset()
-		history.push('/sell')
+		navigate('/sell')
 	}
 
 	const removeFromListHandler = (bggId, title) => {

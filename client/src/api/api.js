@@ -308,6 +308,11 @@ export const apiGetProfileData = async (username) => {
 	return data
 }
 
+export const apiGetProfileListingsData = async (username) => {
+	const { data } = await axsAUTH.get(`/api/users/${username}/listings`)
+	return data
+}
+
 export const apiGetList = async () => {
 	const { data } = await axsAUTH.get(`/api/list`)
 	return data

@@ -32,12 +32,6 @@ import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import {
-	apiAddSoldGamesToHistory,
-	apiDeleteListedGame,
-	apiReactivateListedGame,
-	apiAddTradedGamesToHistory
-} from '../api/api'
-import {
 	useNotiSnackbar,
 	useHistoryAddGameMutation,
 	useDeleteListedGameMutation,

@@ -1,6 +1,6 @@
 // @ Modules
 import React, { Fragment } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 
 // @ Mui
@@ -29,7 +29,7 @@ import {
 
 // @ Main
 const WishlistScreen = () => {
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
@@ -53,7 +53,7 @@ const WishlistScreen = () => {
 			query = queryString.stringify({ search, page: filter }, options)
 		}
 
-		history.push(`${location.pathname}?${query}`)
+		navigate(`${location.pathname}?${query}`)
 	}
 
 	const listHandler = (e, game) => {

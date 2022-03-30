@@ -15,6 +15,7 @@ import App from './App'
 const queryClient = new QueryClient({
 	defaultOptions : {
 		queries : {
+			retry                : 1,
 			refetchOnWindowFocus : false
 		}
 	}

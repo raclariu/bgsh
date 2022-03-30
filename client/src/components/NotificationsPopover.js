@@ -1,6 +1,6 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { TransitionGroup } from 'react-transition-group'
 
 // @ Mui
@@ -41,7 +41,7 @@ import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Main
 const NotificationsPopover = () => {
-	const history = useHistory()
+	const navigate = useNavigate()
 
 	const [ anchorEl, setAnchorEl ] = useState(null)
 	const open = Boolean(anchorEl)
@@ -52,7 +52,7 @@ const NotificationsPopover = () => {
 
 	const handleThumbClick = (altId) => {
 		setAnchorEl(null)
-		history.push(`/games/${altId}`)
+		navigate(`/games/${altId}`)
 	}
 
 	const deleteNotificationHandler = (ntfId) => {

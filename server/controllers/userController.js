@@ -213,12 +213,10 @@ const changeAvatar = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get single user profile data
+// ~ @desc    Get single user data
 // ~ @route   GET  /api/users/:username
 // ~ @access  Private route
 const getUserProfileData = asyncHandler(async (req, res) => {
-	const { _id: userId } = req.userId
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
@@ -227,6 +225,30 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 			message : err.username.msg
 		}
 	}
+
+	const { _id: userId } = req.userId
+
+	const user = await User.findById({ _id: userId }).select('_id username avatar lastSeen createdAt').lean()
+
+	const { _id, username, avatar, lastSeen, createdAt } = user
+
+	return res.status(200).json({ user: { _id, username, avatar, lastSeen, createdAt } })
+})
+
+// ~ @desc    Get single user profile data
+// ~ @route   GET  /api/users/:username/listings
+// ~ @access  Private route
+const getUserProfileListingsData = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+		res.status(404)
+		throw {
+			message : err.username.msg
+		}
+	}
+
+	const { _id: userId } = req.userId
 
 	const saleGames = await Game.find({ addedBy: userId, isActive: true, mode: 'sell' })
 		.select('_id mode games isPack altId totalPrice')
@@ -246,13 +268,7 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 		.sort({ updatedAt: -1 })
 		.lean()
 
-	const user = await User.findById({ _id: userId }).select('_id username avatar lastSeen createdAt').lean()
-
-	const { _id, username, avatar, lastSeen, createdAt } = user
-
-	return res
-		.status(200)
-		.json({ saleGames, tradeGames, wantedGames, user: { _id, username, avatar, lastSeen, createdAt } })
+	return res.status(200).json({ saleGames, tradeGames, wantedGames })
 })
 
 // ~ @desc    Get own avatar
@@ -263,4 +279,13 @@ const getOwnAvatar = asyncHandler(async (req, res) => {
 	return res.status(200).json({ avatar: user.avatar })
 })
 
-export { userLogin, userRegister, activateAccount, changePassword, getUserProfileData, changeAvatar, getOwnAvatar }
+export {
+	userLogin,
+	userRegister,
+	activateAccount,
+	changePassword,
+	getUserProfileData,
+	getUserProfileListingsData,
+	changeAvatar,
+	getOwnAvatar
+}

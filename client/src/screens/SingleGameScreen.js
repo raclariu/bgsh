@@ -71,7 +71,7 @@ const StyledCoverImg = styled('img')(({ theme }) => ({
 	width                          : '100%',
 	overflow                       : 'hidden',
 	[theme.breakpoints.down('md')]: {
-		height : '220px'
+		height : '240px'
 	},
 	[theme.breakpoints.up('md')]: {
 		height : '320px'
@@ -101,8 +101,6 @@ const StyledParagraph = styled('p')({
 // @ Main
 const SingleGameScreen = () => {
 	const params = useParams()
-	const location = useLocation()
-	console.log({ params, location })
 	const { altId } = params
 	const matches = useMediaQuery((theme) => theme.breakpoints.up('md'))
 
@@ -229,10 +227,10 @@ const SingleGameScreen = () => {
 							alignItems="center"
 							justifyContent="flex-end"
 						>
-							<Box fontSize="1.5rem" fontWeight="fontWeightMedium" textAlign="center">
+							<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium" textAlign="center">
 								{data.games[idx].title}
 							</Box>
-							<Box fontSize="0.75rem" fontStyle="italic" color="grey.500">
+							<Box fontSize="caption.fontSize" color="grey.500">
 								{`${data.games[idx].subtype} • ${data.games[idx].year}`}
 							</Box>
 							<Box display="flex" gap={1} my={2}>
@@ -245,7 +243,7 @@ const SingleGameScreen = () => {
 
 							<Box display="flex" alignItems="center">
 								<FaceTwoToneIcon fontSize="small" color="primary" />
-								<Box ml={0.5} fontSize="0.75rem">
+								<Box ml={0.5} fontSize="caption.fontSize">
 									{data.games[idx].designers.length > 0 ? (
 										data.games[idx].designers.join(', ')
 									) : (
@@ -256,7 +254,7 @@ const SingleGameScreen = () => {
 
 							<Box display="flex" alignItems="center">
 								<PublicTwoToneIcon fontSize="small" color="primary" />
-								<Box ml={0.5} fontSize="0.75rem">
+								<Box ml={0.5} fontSize="caption.fontSize">
 									{data.games[idx].languageDependence === null ? (
 										'Not enough votes'
 									) : (

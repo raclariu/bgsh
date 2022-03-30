@@ -2,7 +2,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, Link as RouterLink } from 'react-router-dom'
+import { useNavigate, Link as RouterLink } from 'react-router-dom'
 import { useMutation } from 'react-query'
 
 // @ Mui
@@ -28,9 +28,19 @@ import { apiCreateAccount } from '../api/api'
 
 // @ Main
 const CreateAccountScreen = () => {
-	const dispatch = useDispatch()
-	const history = useHistory()
+	const navigate = useNavigate()
 	const [ showSnackbar ] = useNotiSnackbar()
+
+	const userData = useSelector((state) => state.userAuth.userData)
+
+	useEffect(
+		() => {
+			if (userData) {
+				navigate('/collection', { replace: true })
+			}
+		},
+		[ navigate, userData ]
+	)
 
 	const [ email, setEmail ] = useState('')
 	const [ username, setUsername ] = useState('')
@@ -41,7 +51,6 @@ const CreateAccountScreen = () => {
 
 	const { mutate, isError, error, isSuccess, isLoading } = useMutation((data) => apiCreateAccount(data), {
 		onSuccess : (data, vars) => {
-			console.log(vars)
 			showSnackbar.info({
 				text             : `Account created successfully. An activation email was sent to ${vars.email}`,
 				preventDuplicate : true
@@ -50,7 +59,7 @@ const CreateAccountScreen = () => {
 				text             : "It may take a few minutes. Don't forget to check your spam folder",
 				preventDuplicate : true
 			})
-			history.push('/login')
+			navigate('/login')
 		}
 	})
 
@@ -65,7 +74,7 @@ const CreateAccountScreen = () => {
 				<form onSubmit={submitHandler} autoComplete="off">
 					<Helmet title="Create an account" />
 					<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
-						<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
+						<CustomIconBtn color="primary" onClick={() => navigate('/')} size="large" edge="start">
 							<HomeTwoToneIcon />
 						</CustomIconBtn>
 						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>

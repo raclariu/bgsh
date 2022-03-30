@@ -409,7 +409,7 @@ const Header = () => {
 
 									<ListItemButton onClick={() => handleExpandClick('inbox')}>
 										<ListItemIcon>
-											<EmailTwoToneIcon />
+											<CommentTwoToneIcon />
 										</ListItemIcon>
 										<ListItemText
 											primary={
@@ -418,7 +418,7 @@ const Header = () => {
 													fontSize="subtitle2.fontSize"
 													color="text.secondary"
 												>
-													Inbox
+													Messages
 												</Box>
 											}
 										/>
@@ -439,7 +439,7 @@ const Header = () => {
 												to="/received"
 											>
 												<ListItemIcon>
-													<CommentTwoToneIcon
+													<EmailTwoToneIcon
 														color={selectedIndex === 8 ? 'primary' : 'inherit'}
 													/>
 												</ListItemIcon>

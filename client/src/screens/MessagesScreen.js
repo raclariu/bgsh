@@ -2,7 +2,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import queryString from 'query-string'
 
@@ -36,19 +36,18 @@ import Helmet from '../components/Helmet'
 import { useGetMessagesQuery, useUpdateMessageStatusMutation, useDeleteMessagesMutation } from '../hooks/hooks'
 
 // @ Main
-const InboxScreen = () => {
-	const history = useHistory()
+const MessagesScreen = ({ type }) => {
+	const navigate = useNavigate()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
-	const currLoc = location.pathname === '/received' ? 'received' : 'sent'
 
 	const [ selected, setSelected ] = useState([])
 	const [ isChecked, setIsChecked ] = useState(false)
 	const [ expanded, setExpanded ] = useState([])
 
-	const { isLoading, isSuccess, data } = useGetMessagesQuery({ search, page, type: currLoc })
-	const deleteMutation = useDeleteMessagesMutation(currLoc)
+	const { isLoading, isSuccess, data } = useGetMessagesQuery({ search, page, type })
+	const deleteMutation = useDeleteMessagesMutation(type)
 	const statusMutation = useUpdateMessageStatusMutation({ page, search })
 
 	useEffect(
@@ -94,7 +93,7 @@ const InboxScreen = () => {
 			query = queryString.stringify({ search, page: filter }, options)
 		}
 
-		history.push(`${location.pathname}?${query}`)
+		navigate(`${location.pathname}?${query}`)
 	}
 
 	const handleSelect = (e, id) => {
@@ -112,10 +111,10 @@ const InboxScreen = () => {
 	const handleDelete = () => {
 		setIsChecked(false)
 
-		if (currLoc === 'received') {
+		if (type === 'received') {
 			deleteMutation.mutate({ ids: selected, type: 'received' })
 		}
-		if (currLoc === 'sent') {
+		if (type === 'sent') {
 			deleteMutation.mutate({ ids: selected, type: 'sent' })
 		}
 	}
@@ -126,7 +125,7 @@ const InboxScreen = () => {
 		} else {
 			setExpanded([ { id, open: true } ])
 			if (!read) {
-				if (currLoc === 'received') {
+				if (type === 'received') {
 					statusMutation.mutate(id)
 				}
 			}
@@ -135,7 +134,7 @@ const InboxScreen = () => {
 
 	return (
 		<Fragment>
-			<Helmet title={currLoc === 'received' ? 'Received messages' : 'Sent messages'} />
+			<Helmet title={type === 'received' ? 'Received messages' : 'Sent messages'} />
 
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
@@ -198,7 +197,7 @@ const InboxScreen = () => {
 									isChecked={selected.some((el) => el === msg._id)}
 									handleExpandClick={handleExpandClick}
 									handleSelect={handleSelect}
-									path={currLoc}
+									path={type}
 								/>
 							</LzLoad>
 						</Grid>
@@ -225,4 +224,4 @@ const InboxScreen = () => {
 	)
 }
 
-export default InboxScreen
+export default MessagesScreen

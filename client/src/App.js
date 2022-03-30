@@ -1,7 +1,7 @@
 // @ Modules
 import React, { lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
-import { Route, Redirect, Switch, useLocation } from 'react-router-dom'
+import { Route, Navigate, Routes, useLocation } from 'react-router-dom'
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles'
 import { isMobile } from 'react-device-detect'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -43,7 +43,7 @@ const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
-const Inbox = lazy(() => import('./screens/InboxScreen'))
+const Messages = lazy(() => import('./screens/MessagesScreen'))
 const MyListedGames = lazy(() => import('./screens/MyListedGamesScreen'))
 const GamesHistory = lazy(() => import('./screens/GamesHistoryScreen'))
 const HotGames = lazy(() => import('./screens/HotGamesScreen'))
@@ -92,115 +92,226 @@ const App = () => {
 										: '100%'
 							}}
 						>
-							<Switch>
-								<Route path="/" exact>
-									<Home />
-								</Route>
+							<Routes>
+								<Route index path="/" element={<Home />} />
 
-								<Route path="/dashboard" exact>
-									<Dashboard />
-								</Route>
+								<Route path="dashboard" element={<Dashboard />} />
 
-								<Route path="/login" exact>
-									<LogIn />
-								</Route>
+								<Route path="login" element={<LogIn isActivationPage={false} />} />
 
-								<Route path="/activate/:tokenUid" exact>
-									<LogIn />
-								</Route>
+								<Route path="activate/:tokenUid" element={<LogIn isActivationPage={true} />} />
 
-								<Route path="/create-account" exact>
-									<CreateAccount />
-								</Route>
+								<Route path="create-account" element={<CreateAccount />} />
 
-								<ProtectedRoute path="/user/settings" exact>
-									<Settings />
-								</ProtectedRoute>
+								<Route
+									path="sales"
+									element={
+										<ProtectedRoute>
+											<GamesIndex mode="sell" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/sales" exact>
-									<GamesIndex />
-								</ProtectedRoute>
+								<Route
+									path="trades"
+									element={
+										<ProtectedRoute>
+											<GamesIndex mode="trade" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/trades" exact>
-									<GamesIndex />
-								</ProtectedRoute>
+								<Route
+									path="wanted"
+									element={
+										<ProtectedRoute>
+											<GamesIndex mode="want" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/wanted" exact>
-									<GamesIndex />
-								</ProtectedRoute>
+								<Route
+									path="sales/:altId"
+									element={
+										<ProtectedRoute>
+											<SingleGame />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path={[ '/sales/:altId', '/trades/:altId' ]} exact>
-									<SingleGame />
-								</ProtectedRoute>
+								<Route
+									path="trades/:altId"
+									element={
+										<ProtectedRoute>
+											<SingleGame />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/collection" exact>
-									<Collection />
-								</ProtectedRoute>
+								<Route
+									path="collection"
+									element={
+										<ProtectedRoute>
+											<Collection />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/wishlist" exact>
-									<Wishlist />
-								</ProtectedRoute>
+								<Route
+									path="wishlist"
+									element={
+										<ProtectedRoute>
+											<Wishlist />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/sell" exact>
-									<SellGames />
-								</ProtectedRoute>
+								<Route
+									path="sell"
+									element={
+										<ProtectedRoute>
+											<SellGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/trade" exact>
-									<TradeGames />
-								</ProtectedRoute>
+								<Route
+									path="trade"
+									element={
+										<ProtectedRoute>
+											<TradeGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/want" exact>
-									<AddWantedGames />
-								</ProtectedRoute>
+								<Route
+									path="want"
+									element={
+										<ProtectedRoute>
+											<AddWantedGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/buy" exact>
-									<BuyGames />
-								</ProtectedRoute>
+								<Route
+									path="buy"
+									element={
+										<ProtectedRoute>
+											<BuyGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/saved" exact>
-									<SavedGames />
-								</ProtectedRoute>
+								<Route
+									path="saved"
+									element={
+										<ProtectedRoute>
+											<SavedGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/received" exact>
-									<Inbox />
-								</ProtectedRoute>
+								<Route
+									path="received"
+									element={
+										<ProtectedRoute>
+											<Messages type="received" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/sent" exact>
-									<Inbox />
-								</ProtectedRoute>
+								<Route
+									path="sent"
+									element={
+										<ProtectedRoute>
+											<Messages type="sent" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/user/listed" exact>
-									<MyListedGames />
-								</ProtectedRoute>
+								<Route
+									path="settings"
+									element={
+										<ProtectedRoute>
+											<Settings />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/user/history/sold" exact>
-									<GamesHistory />
-								</ProtectedRoute>
+								<Route
+									path="user/settings"
+									element={
+										<ProtectedRoute>
+											<Settings />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/user/history/traded" exact>
-									<GamesHistory />
-								</ProtectedRoute>
+								<Route
+									path="user/listed"
+									element={
+										<ProtectedRoute>
+											<MyListedGames />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/user/history/bought" exact>
-									<GamesHistory />
-								</ProtectedRoute>
+								<Route
+									path="user/history/sold"
+									element={
+										<ProtectedRoute>
+											<GamesHistory mode="sell" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/hot" exact>
-									<HotGames />
-								</ProtectedRoute>
+								<Route
+									path="user/history/traded"
+									element={
+										<ProtectedRoute>
+											<GamesHistory mode="trade" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/profile/:username" exact>
-									<UserProfile />
-								</ProtectedRoute>
+								<Route
+									path="user/history/bought"
+									element={
+										<ProtectedRoute>
+											<GamesHistory mode="buy" />
+										</ProtectedRoute>
+									}
+								/>
 
-								<ProtectedRoute path="/logout" exact>
-									<Redirect to="/" />
-								</ProtectedRoute>
+								<Route
+									path="profile/:username"
+									element={
+										<ProtectedRoute>
+											<UserProfile />
+										</ProtectedRoute>
+									}
+								/>
 
-								<Route>
-									<NotFound />
-								</Route>
-							</Switch>
+								<Route
+									path="hot"
+									element={
+										<ProtectedRoute>
+											<HotGames />
+										</ProtectedRoute>
+									}
+								/>
+
+								<Route
+									path="logout"
+									element={
+										<ProtectedRoute>
+											<Navigate to="/" />
+										</ProtectedRoute>
+									}
+								/>
+
+								<Route path="*" element={<NotFound />} />
+							</Routes>
 						</Container>
 
 						{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}

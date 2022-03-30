@@ -159,8 +159,8 @@ const GameGallery = ({ idx }) => {
 								<Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={3}>
 									<Box display="flex" flexDirection="column" gap={0.5}>
 										<Box fontSize="1rem">{galleryData[imgIdx].caption}</Box>
-										<Box fontSize="0.75rem" color="grey.500">
-											{`Posted on BGG by ${galleryData[imgIdx].postedBy}`}
+										<Box fontStyle="italic" fontSize="caption.fontSize" color="grey.500">
+											{`uploaded by ${galleryData[imgIdx].postedBy}`}
 										</Box>
 									</Box>
 									<CustomIconBtn

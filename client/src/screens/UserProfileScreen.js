@@ -2,7 +2,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { calculateTimeAgo, formatDateSimple } from '../helpers/helpers'
+import { calculateTimeAgoStrict, formatDateSimple } from '../helpers/helpers'
 
 // @ Mui
 import Chip from '@mui/material/Chip'
@@ -25,13 +25,18 @@ import ReportForm from '../components/ReportForm'
 import Helmet from '../components/Helmet'
 
 // @ Others
-import { useGetUserProfileDataQuery } from '../hooks/hooks'
+import { useGetUserProfileDataQuery, useGetUserProfileListingsDataQuery } from '../hooks/hooks'
 
 // @ Main
 const UserProfileScreen = () => {
 	const { username } = useParams()
 
-	const { isFetching, isError, error, data, isSuccess } = useGetUserProfileDataQuery({ username })
+	const {
+		isFetching : isFetchingUserData,
+		data       : userData,
+		isSuccess  : isSuccessUserData
+	} = useGetUserProfileDataQuery({ username })
+	const { isFetching, isError, error, data, isSuccess } = useGetUserProfileListingsDataQuery({ username })
 
 	const [ tab, setTab ] = useState('sale')
 
@@ -41,7 +46,7 @@ const UserProfileScreen = () => {
 
 	return (
 		<Fragment>
-			{isFetching && (
+			{isFetchingUserData && (
 				<Box
 					display="flex"
 					width="100%"
@@ -59,9 +64,9 @@ const UserProfileScreen = () => {
 				</Box>
 			)}
 
-			{isSuccess && <Helmet title={`${data.user.username}'s profile`} />}
+			{isSuccessUserData && <Helmet title={`${userData.user.username}'s profile`} />}
 
-			{isSuccess && (
+			{isSuccessUserData && (
 				<Box
 					display="flex"
 					width="100%"
@@ -71,26 +76,26 @@ const UserProfileScreen = () => {
 					alignItems="center"
 					gap={1}
 				>
-					<CustomAvatar noClick size={12} username={data.user.username} src={data.user.avatar} />
+					<CustomAvatar noClick size={12} username={userData.user.username} src={userData.user.avatar} />
 					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
-						{`${data.user.username}'s profile`}
+						{`${userData.user.username}'s profile`}
 					</Box>
 					<Box display="flex" alignItems="center" gap={1}>
 						<SendMessage recipientUsername={username} />
-						<ReportForm type="user" username={data.user.username} />
+						<ReportForm type="user" username={userData.user.username} />
 					</Box>
 
 					<Chip
 						color="primary"
 						size="small"
 						variant="outlined"
-						label={`Last seen ${calculateTimeAgo(data.user.lastSeen)}`}
+						label={`Last seen ~${calculateTimeAgoStrict(userData.user.lastSeen)}`}
 					/>
 					<Chip
 						color="primary"
 						size="small"
 						variant="outlined"
-						label={`Account created on ${formatDateSimple(data.user.createdAt)}`}
+						label={`Account created on ${formatDateSimple(userData.user.createdAt)}`}
 					/>
 				</Box>
 			)}
@@ -123,6 +128,7 @@ const UserProfileScreen = () => {
 				<Fragment>
 					{isSuccess &&
 					data.saleGames.length === 0 && <CustomAlert severity="warning">No games found</CustomAlert>}
+					{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 					<Grid container spacing={3}>
 						{isSuccess &&
 							data.saleGames.map((data) => (

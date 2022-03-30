@@ -309,7 +309,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				{(mode === 'sell' || mode === 'trade') && (
 					<Fragment>
 						<CustomDivider textAlign="left" sx={{ mt: 2 }}>
-							<Box fontSize={'0.75rem'}>ADD IMAGE</Box>
+							<Box fontSize="caption.fontSize">ADD IMAGE</Box>
 						</CustomDivider>
 
 						<Box mt={2}>

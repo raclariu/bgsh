@@ -1,6 +1,6 @@
 // @ Modules
 import React, { Fragment } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 
 // @ Mui
@@ -22,7 +22,7 @@ import { useGetSavedGamesListQuery } from '../hooks/hooks'
 
 // @ Main
 const SavedGamesScreen = () => {
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 
 	const { search, page = 1 } = queryString.parse(location.search)
@@ -41,7 +41,7 @@ const SavedGamesScreen = () => {
 			query = queryString.stringify({ search, page: filter }, options)
 		}
 
-		history.push(`${location.pathname}?${query}`)
+		navigate(`${location.pathname}?${query}`)
 	}
 
 	return (

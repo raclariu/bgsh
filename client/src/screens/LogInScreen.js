@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQuery, useMutation } from 'react-query'
-import { useHistory, useLocation, useParams, Link as RouterLink } from 'react-router-dom'
+import { useNavigate, useLocation, useParams, Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -31,22 +31,29 @@ import { useNotiSnackbar } from '../hooks/hooks'
 import { apiActivateAccount, apiUserLogin } from '../api/api'
 
 // @ Main
-const LogIn = () => {
+const LogIn = ({ isActivationPage }) => {
 	const dispatch = useDispatch()
-	const history = useHistory()
+	const navigate = useNavigate()
 	const location = useLocation()
 	const params = useParams()
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	const { tokenUid } = params
-	const isActivationPage = location.pathname !== '/login' && location.pathname.startsWith('/activate') && !!tokenUid
 
 	const [ email, setEmail ] = useState('')
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
 
-	const userAuth = useSelector((state) => state.userAuth)
-	const { userData } = userAuth
+	const userData = useSelector((state) => state.userAuth.userData)
+
+	useEffect(
+		() => {
+			if (userData) {
+				navigate('/collection', { replace: true })
+			}
+		},
+		[ navigate, userData ]
+	)
 
 	const { isLoading } = useQuery([ 'activate' ], () => apiActivateAccount(tokenUid), {
 		staleTime : Infinity,
@@ -56,14 +63,14 @@ const LogIn = () => {
 			const text = err.response.data.message || 'Error occured while activating account'
 			showSnackbar.error({ text })
 			if (userData) {
-				history.replace('/collection')
+				navigate('/collection', { replace: true })
 			} else {
-				history.replace('/login')
+				navigate('/login', { replace: true })
 			}
 		},
 		onSuccess : () => {
 			showSnackbar.success({ text: 'Account successfully activated. Use your credentials to log in' })
-			history.replace('/login')
+			navigate('/login', { replace: true })
 		}
 	})
 
@@ -80,10 +87,10 @@ const LogIn = () => {
 			onSuccess : (data) => {
 				dispatch(logIn(data))
 				showSnackbar.success({ text: 'You are now logged in' })
-				console.log(location.state)
-				location.state && location.state.from && location.state.from.pathname
-					? history.replace(`${location.state.from.pathname}`)
-					: history.replace('/')
+
+				location.state && location.state.from && location.state.from !== '/'
+					? navigate(`${location.state.from}`, { replace: true })
+					: navigate('/', { replace: true })
 			}
 		}
 	)
@@ -103,7 +110,7 @@ const LogIn = () => {
 					<Helmet title="Log in" />
 
 					<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
-						<CustomIconBtn color="primary" onClick={() => history.push('/')} size="large" edge="start">
+						<CustomIconBtn color="primary" onClick={() => navigate('/')} size="large" edge="start">
 							<HomeTwoToneIcon />
 						</CustomIconBtn>
 						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>

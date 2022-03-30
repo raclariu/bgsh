@@ -90,12 +90,14 @@ const KsDetails = ({ data }) => {
 						>
 							<Box fontSize="caption.fontSize">{`by ${data.creator}`}</Box>
 							<Box display="flex" alignItems="center">
-								<LocationOnTwoToneIcon fontSize="small" />
+								<LocationOnTwoToneIcon color="primary" fontSize="small" />
 								<Box fontSize="caption.fontSize">{data.location}</Box>
 							</Box>
 						</Box>
 
-						<Box fontWeight="fontWeightMedium">{data.title}</Box>
+						<Box fontWeight="fontWeightMedium" fontSize="h6.fontSize" sx={{ lineHeight: 'normal' }} mb={1}>
+							{data.title}
+						</Box>
 
 						<Box mb={2} fontSize="caption.fontSize">
 							{data.shortDescription}
@@ -130,7 +132,7 @@ const KsDetails = ({ data }) => {
 							<Box fontSize="caption.fontSize">backers</Box>
 						</Box>
 
-						<Box display="flex" flexDirection="column" mb={2}>
+						<Box display="flex" flexDirection="column">
 							<Box fontWeight="fontWeightMedium" fontSize="h5.fontSize">
 								{differenceInHours(new Date(data.deadline * 1000), new Date()) > 48 ? (
 									differenceInDays(new Date(data.deadline * 1000), new Date())

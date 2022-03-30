@@ -145,7 +145,7 @@ const GameVids = ({ idx }) => {
 									>
 										{video.title}
 									</Box>
-									<Box fontSize="0.75rem" color="grey.500" fontStyle="italic">
+									<Box fontSize="caption.fontSize" color="grey.500" fontStyle="italic">
 										{video.user} • {video.type}
 									</Box>
 								</Box>

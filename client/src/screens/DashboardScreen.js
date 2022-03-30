@@ -86,7 +86,7 @@ const DashboardScreen = () => {
 				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
 					{`Welcome ${userData.username}`}
 				</Box>
-				<Box display="flex" alignItems="center">
+				<Box display="flex" alignItems="center" gap={1}>
 					<SendMessage />
 					<ReportForm />
 				</Box>
@@ -97,6 +97,7 @@ const DashboardScreen = () => {
 				borderRadius="4px"
 				boxShadow={2}
 				bgcolor="background.paper"
+				mb={6}
 				sx={{
 					display             : 'grid',
 					gridTemplateColumns : {
@@ -114,7 +115,7 @@ const DashboardScreen = () => {
 				</Box>
 			</Box>
 
-			<Box id="hot-games">
+			<Box id="hot-games" mb={6}>
 				<Box
 					display="flex"
 					justifyContent="space-between"
@@ -163,7 +164,7 @@ const DashboardScreen = () => {
 				)}
 			</Box>
 
-			<Box ref={ksRef} id="kickstarters">
+			<Box ref={ksRef} id="kickstarters" mb={6}>
 				<Box
 					display="flex"
 					fontSize="h5.fontSize"
@@ -285,7 +286,7 @@ const DashboardScreen = () => {
 										>
 											<Box sx={{ wordBreak: 'break-word' }}>{data.title}</Box>
 											<Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-												<Box fontSize="0.75rem" color="grey.500" fontStyle="italic">
+												<Box fontSize="caption.fontSize" color="grey.500">
 													by {data.author}
 												</Box>
 												<ExtLinkIconBtn

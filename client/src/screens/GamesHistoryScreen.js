@@ -1,7 +1,7 @@
 // @ Modules
 import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useHistory, useLocation } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import queryString from 'query-string'
 
 // @ Mui
@@ -22,17 +22,13 @@ import Helmet from '../components/Helmet'
 import { useGetGamesHistoryListQuery } from '../hooks/hooks'
 
 // @ Main
-const GamesHistoryScreen = () => {
-	const history = useHistory()
+const GamesHistoryScreen = ({ mode }) => {
+	const navigate = useNavigate()
 	const location = useLocation()
-	const currLoc =
-		location.pathname === '/user/history/sold'
-			? 'sell'
-			: location.pathname === '/user/history/traded' ? 'trade' : 'buy'
 
 	const { search, page = 1 } = queryString.parse(location.search)
 
-	const { isLoading, data, isSuccess } = useGetGamesHistoryListQuery({ search, page, mode: currLoc })
+	const { isLoading, data, isSuccess } = useGetGamesHistoryListQuery({ search, page, mode })
 
 	const handleFilters = (filter, type) => {
 		const options = { sort: false, skipEmptyString: true, skipNull: true }
@@ -46,16 +42,16 @@ const GamesHistoryScreen = () => {
 			query = queryString.stringify({ search, page: filter }, options)
 		}
 
-		history.push(`${location.pathname}?${query}`)
+		navigate(`${location.pathname}?${query}`)
 	}
 
 	return (
 		<Fragment>
 			<Helmet
 				title={
-					currLoc === 'sell' ? (
+					mode === 'sell' ? (
 						'Sold games history'
-					) : currLoc === 'trade' ? (
+					) : mode === 'trade' ? (
 						'Traded games history'
 					) : (
 						'Bought games history'
@@ -83,7 +79,7 @@ const GamesHistoryScreen = () => {
 
 			{isSuccess &&
 			data.historyList.length === 0 &&
-			!search && <CustomAlert severity="warning">{`Your ${currLoc} history list is empty`}</CustomAlert>}
+			!search && <CustomAlert severity="warning">{`Your ${mode} history list is empty`}</CustomAlert>}
 
 			{isLoading && (
 				<Grid container spacing={3} direction="row">

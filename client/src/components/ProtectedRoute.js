@@ -1,24 +1,19 @@
 // @ Modules
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Route, Redirect } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 // @ Main
-const ProtectedRoute = ({ children: component, ...rest }) => {
+const ProtectedRoute = ({ children }) => {
+	const location = useLocation()
+
 	const { userData } = useSelector((state) => state.userAuth)
 
-	return (
-		<Route
-			{...rest}
-			render={(props) => {
-				if (userData) {
-					return component
-				} else {
-					return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-				}
-			}}
-		/>
-	)
+	if (!userData) {
+		return <Navigate to="/login" state={{ from: location.pathname }} replace />
+	}
+
+	return children
 }
 
 export default ProtectedRoute

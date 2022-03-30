@@ -2,7 +2,7 @@
 import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
@@ -30,11 +30,11 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 
 // @ Main
 const CustomAvatar = ({ size, username, src, noClick = false }) => {
-	const history = useHistory()
+	const navigate = useNavigate()
 	const [ anchorEl, setAnchorEl ] = useState(null)
 
 	const handleProfileClick = () => {
-		history.push(`/profile/${username}`)
+		navigate(`/profile/${username}`)
 	}
 
 	return (
