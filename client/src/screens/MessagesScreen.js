@@ -174,7 +174,14 @@ const MessagesScreen = ({ type }) => {
 				</Grid>
 			</Grid>
 
-			{isSuccess && data.messages.length === 0 && <CustomAlert severity="warning">No messages</CustomAlert>}
+			{isSuccess &&
+			data.messages.length === 0 && (
+				<Grid container justifyContent="center" sx={{ mb: 2 }}>
+					<Grid item xs={12} md={8}>
+						<CustomAlert severity="warning">No messages</CustomAlert>
+					</Grid>
+				</Grid>
+			)}
 
 			{isLoading && (
 				<Grid container spacing={2} justifyContent="center">

@@ -72,12 +72,12 @@ const fetchKickstarters = cron.schedule(
 			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36"'
 		]
 
-		const browser = await puppeteer.launch({ args, headless: true, ignoreHTTPSErrors: true }) //{ headless: false }
+		const browser = await puppeteer.launch({ args, headless: false, ignoreHTTPSErrors: true }) //{ headless: false }
 		const page = (await browser.pages())[0]
 
 		try {
 			await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
-			// await page.screenshot({ path: './buddy-screenshot.png' })
+			// await page.screenshot({ path: './kickstarter.png' })
 			// await page.waitForNavigation()
 			await page.waitForSelector('#projects_list')
 
