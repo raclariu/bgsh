@@ -120,7 +120,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 				<Fragment>
 					<CustomTooltip title={mode === 'sell' ? 'Sold' : 'Traded'}>
 						<CustomIconBtn disabled={!isActive} onClick={handleOpenDialog} color="primary" size="large">
-							<CheckCircleOutlineOutlinedIcon fontSize="small" />
+							<CheckCircleOutlineOutlinedIcon />
 						</CustomIconBtn>
 					</CustomTooltip>
 
@@ -234,8 +234,8 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 			{display === 'delete' && (
 				<Fragment>
 					<CustomTooltip title="Delete">
-						<CustomIconBtn onClick={handleOpenDialog} size="large">
-							<DeleteOutlineIcon color="error" fontSize="small" />
+						<CustomIconBtn color="error" onClick={handleOpenDialog} size="large">
+							<DeleteOutlineIcon color="error" />
 						</CustomIconBtn>
 					</CustomTooltip>
 
@@ -270,7 +270,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 				<Fragment>
 					<CustomTooltip title="Reactivate">
 						<CustomIconBtn disabled={isActive} onClick={handleOpenDialog} color="primary" size="large">
-							<RefreshIcon fontSize="small" />
+							<RefreshIcon />
 						</CustomIconBtn>
 					</CustomTooltip>
 

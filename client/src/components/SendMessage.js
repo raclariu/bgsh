@@ -59,7 +59,6 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 					onClick={handleOpenDialog}
 					size="large"
 					{...other}
-					sx={{ height: 44, width: 44 }}
 				>
 					<MailTwoToneIcon />
 				</CustomIconBtn>

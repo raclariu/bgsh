@@ -123,8 +123,13 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 					<Box display="flex" gap={1} alignItems="center">
 						{currLoc === 'wishlist' && (
 							<CustomTooltip title={'Search for this game'}>
-								<CustomIconBtn component={RouterLink} to={`/sales?search=${data.bggId}`}>
-									<SearchIcon />
+								<CustomIconBtn
+									color="primary"
+									size="large"
+									component={RouterLink}
+									to={`/sales?search=${data.bggId}`}
+								>
+									<SearchIcon color="primary" />
 								</CustomIconBtn>
 							</CustomTooltip>
 						)}
@@ -133,6 +138,7 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 							title={isChecked ? `Remove "${data.title}" from list` : `Add "${data.title}" to list`}
 						>
 							<Checkbox
+								sx={{ height: 48, width: 48 }}
 								checked={isChecked}
 								disabled={isDisabled}
 								onChange={(e) => listHandler(e, data)}

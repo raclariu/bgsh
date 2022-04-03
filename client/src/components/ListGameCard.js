@@ -29,7 +29,7 @@ import Input from './Input'
 import Loader from './Loader'
 
 // @ Icons
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import CloseIcon from '@mui/icons-material/Close'
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone'
 
 // @ Others
@@ -99,8 +99,12 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 				title={game.title}
 				subheader={`${game.subtype} • ${game.year}`}
 				action={
-					<CustomIconBtn onClick={() => removeFromListHandler(game.bggId, game.title)} size="large">
-						<HighlightOffIcon color="error" />
+					<CustomIconBtn
+						onClick={() => removeFromListHandler(game.bggId, game.title)}
+						color="error"
+						size="large"
+					>
+						<CloseIcon color="error" />
 					</CustomIconBtn>
 				}
 				titleTypographyProps={{
@@ -348,14 +352,14 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 										<CustomIconBtn
 											sx={{
 												position : 'absolute',
-
 												right    : '-5px',
 												top      : '-5px'
 											}}
+											size="small"
 											color="error"
 											onClick={removeImage}
 										>
-											<HighlightOffIcon />
+											<CloseIcon color="error" />
 										</CustomIconBtn>
 									</Box>
 								)

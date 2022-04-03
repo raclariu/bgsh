@@ -39,10 +39,6 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 
 	return (
 		<Fragment>
-			{/* <Box fontSize={12} fontWeight="fontWeightMedium">
-					{username ? username.substring(0, 2).toUpperCase() : 'N/A'}
-				</Box> */}
-
 			{noClick && (
 				<StyledAvatar
 					sx={{
@@ -91,8 +87,6 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 							src={src}
 						/>
 
-						{/* <Box>{username.substring(0, 2).toUpperCase()}</Box> */}
-
 						<CustomDivider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
 
 						<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
@@ -101,7 +95,7 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 							<Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={0.5}>
 								<CustomTooltip title="View profile">
 									<CustomIconBtn color="primary" onClick={handleProfileClick} size="large">
-										<AccountCircleTwoToneIcon fontSize="small" />
+										<AccountCircleTwoToneIcon />
 									</CustomIconBtn>
 								</CustomTooltip>
 

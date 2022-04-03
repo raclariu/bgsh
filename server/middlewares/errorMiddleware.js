@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import winstonLogger from '../helpers/winstonLogger.js'
 
 const notFound = (req, res, next) => {
 	if (process.env.NODE_ENV === 'development') {
@@ -36,6 +37,20 @@ const errorHandler = (err, req, res, next) => {
 		} else if (typeof err.message === 'string') {
 			console.log(chalk.bgHex('#c21313').hex('#f7edcb').bold('\n' + 'Error(s)' + '\n' + `${err.message}` + '\n'))
 		}
+
+		winstonLogger.log({
+			level   : 'error',
+			message : {
+				code      : err.code || null,
+				timestamp : new Date(),
+				status    : statusCode,
+				message   : err.message,
+				path      : req.originalUrl,
+				devErr    : err.devErr,
+				ref       : req.headers.referer,
+				method    : req.method || null
+			}
+		})
 
 		console.log(chalk.hex('#737373')('________________________________________________'))
 	}

@@ -46,6 +46,9 @@ const validatePasswordLogIn = check('password')
 	.isLength({ min: 6 })
 	.withMessage('Password must be longer than 6 characters')
 	.bail()
+	.isLength({ max: 64 })
+	.withMessage('Password must be shorter than 64 characters')
+	.bail()
 	.custom(async (password, { req }) => {
 		const { email } = req.body
 		const userExists = await User.findOne({ email }).select('password').lean()
@@ -66,6 +69,9 @@ const validatePasswordSignUp = check('password')
 	.bail()
 	.isLength({ min: 6 })
 	.withMessage('Password must be longer than 6 characters')
+	.bail()
+	.isLength({ max: 64 })
+	.withMessage('Password must be shorter than 64 characters')
 
 const validatePasswordConfirmation = check('passwordConfirmation')
 	.trim()
@@ -75,8 +81,11 @@ const validatePasswordConfirmation = check('passwordConfirmation')
 	.isLength({ min: 6 })
 	.withMessage('Password confirmation must be longer than 6 characters')
 	.bail()
+	.isLength({ max: 64 })
+	.withMessage('Password confirmation must be shorter than 64 characters')
+	.bail()
 	.custom((passwordConfirmation, { req }) => {
-		return passwordConfirmation === req.body.password
+		return passwordConfirmation.toLowerCase() === req.body.password.toLowerCase()
 	})
 	.withMessage('Password confirmation does not match password')
 
@@ -131,6 +140,9 @@ const validatePasswordCurrent = check('passwordCurrent')
 	.isLength({ min: 6 })
 	.withMessage('Password must be longer than 6 characters')
 	.bail()
+	.isLength({ max: 64 })
+	.withMessage('Password must be shorter than 64 characters')
+	.bail()
 	.custom(async (passwordCurrent, { req }) => {
 		const { email } = req.user
 		const userExists = await User.findOne({ email }).select('password').lean()
@@ -144,6 +156,17 @@ const validatePasswordCurrent = check('passwordCurrent')
 		}
 	})
 
+const validateResetPasswordNew = check('passwordNew')
+	.trim()
+	.notEmpty()
+	.withMessage('New password is required')
+	.bail()
+	.isLength({ min: 6 })
+	.withMessage('New password must be longer than 6 characters')
+	.bail()
+	.isLength({ max: 64 })
+	.withMessage('New password must be shorter than 64 characters')
+
 const validatePasswordNew = check('passwordNew')
 	.trim()
 	.notEmpty()
@@ -151,6 +174,9 @@ const validatePasswordNew = check('passwordNew')
 	.bail()
 	.isLength({ min: 6 })
 	.withMessage('New password must be longer than 6 characters')
+	.bail()
+	.isLength({ max: 64 })
+	.withMessage('New password must be shorter than 64 characters')
 	.bail()
 	.custom((passwordNew, { req }) => {
 		return passwordNew !== req.body.passwordCurrent
@@ -165,8 +191,11 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 	.isLength({ min: 6 })
 	.withMessage('New password confirmation must be longer than 6 characters')
 	.bail()
+	.isLength({ max: 64 })
+	.withMessage('New password confirmation must be shorter than 64 characters')
+	.bail()
 	.custom((passwordNewConfirmation, { req }) => {
-		return passwordNewConfirmation === req.body.passwordNew
+		return passwordNewConfirmation.toLowerCase() === req.body.passwordNew.toLowerCase()
 	})
 	.withMessage('New password confirmation does not match new password')
 
@@ -179,4 +208,12 @@ const validateSignUp = [
 ]
 const validatePasswordChange = [ validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ]
 
-export { validateLogin, validateSignUp, validatePasswordChange, validateUsernameExist }
+export {
+	validateLogin,
+	validateSignUp,
+	validatePasswordChange,
+	validateUsernameExist,
+	validateEmail,
+	validateResetPasswordNew,
+	validatePasswordNewConfirmation
+}

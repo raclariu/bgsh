@@ -13,7 +13,7 @@ import CustomDivider from '../CustomDivider'
 const CollectionCardSkeleton = ({ page }) => {
 	return (
 		<Card elevation={2}>
-			<Box height={page === 'collection' ? 478 : 433} display="flex" flexDirection="column" alignItems="center">
+			<Box height={page === 'collection' ? 484 : 439} display="flex" flexDirection="column" alignItems="center">
 				<Box display="flex" flexDirection="column" height={page === 'collection' ? 241 : 196} gap={1} p={1}>
 					<CustomSkeleton variant="rectangle" width={175} height="100%" />
 					{page === 'collection' && (
@@ -71,23 +71,8 @@ const CollectionCardSkeleton = ({ page }) => {
 
 				<CustomDivider flexItem />
 
-				<Box
-					display="flex"
-					alignItems="center"
-					justifyContent="space-between"
-					height={58}
-					gap={1}
-					p={2}
-					width="100%"
-				>
-					<CustomSkeleton variant="retangle" width={40} sx={{ borderRadius: 1 }} />
-					{page === 'collection' && <CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />}
-					{page === 'wishlist' && (
-						<Box display="flex" justifyContent="center" alignItems="center" gap={3}>
-							<CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />
-							<CustomSkeleton variant="retangle" width={24} sx={{ borderRadius: 1 }} />
-						</Box>
-					)}
+				<Box display="flex" justifyContent="center" width="100%" alignItems="center" height={64} gap={1}>
+					<CustomSkeleton variant="text" width="75%" />
 				</Box>
 			</Box>
 		</Card>

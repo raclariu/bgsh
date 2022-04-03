@@ -133,7 +133,7 @@ const DashboardScreen = () => {
 					{!errorHotGames && (
 						<CustomTooltip title="See more hot games">
 							<CustomIconBtn component={RouterLink} to="/hot" color="primary" size="large">
-								<LocalFireDepartmentIcon fontSize="small" />
+								<LocalFireDepartmentIcon />
 							</CustomIconBtn>
 						</CustomTooltip>
 					)}

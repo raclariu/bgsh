@@ -539,6 +539,26 @@ export const useChangePasswordMutation = ({ resetForm }) => {
 	)
 }
 
+export const useResetPasswordMutation = ({ resetForm }) => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(
+		({ tokenUid, passwordNew, passwordNewConfirmation }) =>
+			api.apiResetPassword({ tokenUid, passwordNew, passwordNewConfirmation }),
+		{
+			onError   : (err) => {
+				resetForm()
+				const text = err.response.data.message || 'Error occured while trying to change password'
+				showSnackbar.error({ text })
+			},
+			onSuccess : () => {
+				resetForm()
+				showSnackbar.success({ text: 'Password changed successfully' })
+			}
+		}
+	)
+}
+
 export const useBggFetchCollectionMutation = () => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()

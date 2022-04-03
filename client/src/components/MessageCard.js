@@ -84,10 +84,19 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 
 			<CardActions>
 				<Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-					<Checkbox checked={isChecked} onChange={(e) => handleSelect(e, msg._id, 'received')} size="small" />
+					<Checkbox
+						sx={{ height: 48, width: 48 }}
+						color="primary"
+						checked={isChecked}
+						onChange={(e) => handleSelect(e, msg._id, 'received')}
+					/>
 					<CustomTooltip title={expanded ? 'Close message' : 'Open message'}>
-						<CustomIconBtn onClick={() => handleExpandClick(msg._id, msg.read)}>
-							{expanded ? <ExpandLessIcon color="primary" /> : <ExpandMoreIcon color="primary" />}
+						<CustomIconBtn
+							onClick={() => handleExpandClick(msg._id, msg.read)}
+							size="large"
+							color="primary"
+						>
+							{expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
 						</CustomIconBtn>
 					</CustomTooltip>
 				</Box>

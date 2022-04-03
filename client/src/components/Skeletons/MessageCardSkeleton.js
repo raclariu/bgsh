@@ -13,7 +13,7 @@ import CustomSkeleton from './CustomSkeleton'
 const MessageCardSkeleton = () => {
 	return (
 		<Card elevation={2}>
-			<Box height={137} display="flex" flexDirection="column" alignItems="center">
+			<Box height={145} display="flex" flexDirection="column" alignItems="center">
 				<Box display="flex" justifyContent="flex-start" height={80} gap={1} p={2} width="100%">
 					<CustomSkeleton variant="circular" width={48} height={48} />
 					<Box display="flex" flexDirection="column">
@@ -27,9 +27,9 @@ const MessageCardSkeleton = () => {
 
 				<CustomDivider flexItem />
 
-				<Box display="flex" height={56} justifyContent="space-between" alignItems="center" width="100%" p={2}>
-					<CustomSkeleton variant="rectangle" width={20} />
-					<CustomSkeleton variant="circular" width={20} height={20} />
+				<Box display="flex" height={64} justifyContent="space-between" alignItems="center" width="100%" p={2}>
+					<CustomSkeleton variant="rectangle" width={20} sx={{ borderRadius: 1 }} />
+					<CustomSkeleton variant="rectangle" width={20} sx={{ borderRadius: 1 }} />
 				</Box>
 			</Box>
 		</Card>

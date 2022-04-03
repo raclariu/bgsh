@@ -16,7 +16,7 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 	return (
 		<Card elevation={2}>
 			<Box
-				height={mode === 'sell' ? 504 : mode === 'trade' ? 468 : 492}
+				height={mode === 'sell' ? 508 : mode === 'trade' ? 472 : 492}
 				display="flex"
 				flexDirection="column"
 				alignItems="center"
@@ -68,9 +68,8 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 
 				<CustomDivider flexItem />
 
-				<Box display="flex" width="100%" alignItems="center" height={60} gap={1}>
-					<CustomSkeleton variant="circular" height={40} width={40} sx={{ ml: 1 }} />
-					<CustomSkeleton variant="text" width={110} />
+				<Box display="flex" justifyContent="center" width="100%" alignItems="center" height={64} gap={1}>
+					<CustomSkeleton variant="text" width="75%" />
 				</Box>
 			</Box>
 		</Card>

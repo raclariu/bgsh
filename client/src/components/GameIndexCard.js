@@ -106,20 +106,18 @@ const GameIndexCard = ({ data }) => {
 								color="primary"
 								disabled={index === 0}
 								onClick={() => handleIndex('minus')}
-								size="large"
 								edge="start"
 							>
-								<ArrowBackIcon fontSize="small" />
+								<ArrowBackIcon />
 							</CustomIconBtn>
 							<StyledTitleBox>{`${data.games[index].title} (${data.games[index].year})`}</StyledTitleBox>
 							<CustomIconBtn
 								color="primary"
 								disabled={data.games.length === index + 1}
 								onClick={() => handleIndex('plus')}
-								size="large"
 								edge="end"
 							>
-								<ArrowForwardIcon fontSize="small" />
+								<ArrowForwardIcon />
 							</CustomIconBtn>
 						</Fragment>
 					) : (

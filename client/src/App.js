@@ -32,6 +32,7 @@ import { light, dark } from './constants/themes'
 const Home = lazy(() => import('./screens/HomeScreen'))
 const Dashboard = lazy(() => import('./screens/DashboardScreen'))
 const LogIn = lazy(() => import('./screens/LogInScreen'))
+const ResetPassword = lazy(() => import('./screens/ResetPasswordScreen'))
 const CreateAccount = lazy(() => import('./screens/CreateAccountScreen'))
 const Settings = lazy(() => import('./screens/SettingsScreen'))
 const Collection = lazy(() => import('./screens/CollectionScreen'))
@@ -68,8 +69,8 @@ const App = () => {
 					dense={isMobile ? true : false}
 					ref={notistackRef}
 					action={(key) => (
-						<CustomIconBtn size="small" onClick={onClickDismiss(key)}>
-							<ClearIcon fontSize="small" />
+						<CustomIconBtn sx={{ color: '#fff' }} size="small" onClick={onClickDismiss(key)}>
+							<ClearIcon sx={{ color: '#fff' }} fontSize="small" />
 						</CustomIconBtn>
 					)}
 				>
@@ -95,13 +96,22 @@ const App = () => {
 							<Routes>
 								<Route index path="/" element={<Home />} />
 
-								<Route path="dashboard" element={<Dashboard />} />
-
 								<Route path="login" element={<LogIn isActivationPage={false} />} />
 
 								<Route path="activate/:tokenUid" element={<LogIn isActivationPage={true} />} />
 
+								<Route path="reset-password/:tokenUid" element={<ResetPassword />} />
+
 								<Route path="create-account" element={<CreateAccount />} />
+
+								<Route
+									path="dashboard"
+									element={
+										<ProtectedRoute>
+											<Dashboard />
+										</ProtectedRoute>
+									}
+								/>
 
 								<Route
 									path="sales"

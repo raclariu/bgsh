@@ -60,7 +60,7 @@ const KsDetails = ({ data }) => {
 		<Fragment>
 			<CustomTooltip title="Details">
 				<CustomIconBtn onClick={handleOpenDialog} color="primary" size="large">
-					<CenterFocusWeakTwoToneIcon fontSize="small" />
+					<CenterFocusWeakTwoToneIcon />
 				</CustomIconBtn>
 			</CustomTooltip>
 

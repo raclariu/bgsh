@@ -1,5 +1,5 @@
 // @ Modules
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQuery, useMutation } from 'react-query'
@@ -12,6 +12,10 @@ import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import Link from '@mui/material/Link'
 import Backdrop from '@mui/material/Backdrop'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
 
 // @ Icons
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
@@ -22,13 +26,104 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import Loader from '../components/Loader'
 import CustomIconBtn from '../components/CustomIconBtn'
 import Input from '../components/Input'
+import CustomButton from '../components/CustomButton'
 import LoadingBtn from '../components/LoadingBtn'
 import Helmet from '../components/Helmet'
 
 // @ Others
 import { logIn } from '../actions/userActions'
 import { useNotiSnackbar } from '../hooks/hooks'
-import { apiActivateAccount, apiUserLogin } from '../api/api'
+import { apiActivateAccount, apiUserLogin, apiForgotPasswordRequest } from '../api/api'
+
+// @ Forgot password dialog
+const ForgotPasswordDialog = () => {
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	const [ open, setOpen ] = useState(false)
+	const [ email, setEmail ] = useState('')
+
+	const { mutate, isError, error, isLoading } = useMutation((email) => apiForgotPasswordRequest(email), {
+		onError   : (err) => {
+			if (err.response.data.code === 14) {
+				showSnackbar.error({ text: err.response.data.message })
+			}
+			return
+		},
+		onSuccess : (data, email) => {
+			setOpen(false)
+			setEmail('')
+			showSnackbar.success({
+				text             : `A reset email was sent to ${email}`,
+				preventDuplicate : true
+			})
+			showSnackbar.info({
+				text             : "It may take a few minutes. Don't forget to check your spam folder",
+				preventDuplicate : true
+			})
+		}
+	})
+
+	const handleDialogClose = () => {
+		setOpen(false)
+	}
+
+	const handleDialogOpen = () => {
+		setOpen(true)
+	}
+
+	const submitHandler = (e) => {
+		e.preventDefault()
+		mutate(email)
+	}
+
+	return (
+		<Fragment>
+			<Link sx={{ cursor: 'pointer' }} onClick={handleDialogOpen} underline="none">
+				Forgot your password?
+			</Link>
+
+			<Dialog open={open} onClose={handleDialogClose} maxWidth="xs" fullWidth>
+				<form onSubmit={submitHandler} autoComplete="off">
+					<DialogTitle>
+						<Box textAlign="center">Enter your email address</Box>
+						<Box textAlign="center" mt={1} color="text.secondary" fontSize="subtitle2.fontSize">
+							An email will be sent to your email address containing instructions on how to reset your
+							password
+						</Box>
+					</DialogTitle>
+
+					<DialogContent dividers>
+						<Input
+							error={
+								isError && error.response.data.message ? error.response.data.message.emailError : false
+							}
+							helperText={
+								isError && error.response.data.message ? error.response.data.message.emailError : false
+							}
+							onChange={(inputVal) => setEmail(inputVal)}
+							value={email}
+							size="medium"
+							id="email"
+							name="email"
+							label="Your email address"
+							type="email"
+							fullWidth
+							autoFocus
+							required
+						/>
+					</DialogContent>
+
+					<DialogActions>
+						<CustomButton onClick={handleDialogClose}>Cancel</CustomButton>
+						<LoadingBtn type="submit" loading={isLoading} variant="contained">
+							Send email
+						</LoadingBtn>
+					</DialogActions>
+				</form>
+			</Dialog>
+		</Fragment>
+	)
+}
 
 // @ Main
 const LogIn = ({ isActivationPage }) => {
@@ -61,10 +156,11 @@ const LogIn = ({ isActivationPage }) => {
 		enabled   : isActivationPage,
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while activating account'
-			showSnackbar.error({ text })
+
 			if (userData) {
 				navigate('/collection', { replace: true })
 			} else {
+				showSnackbar.error({ text })
 				navigate('/login', { replace: true })
 			}
 		},
@@ -113,7 +209,7 @@ const LogIn = ({ isActivationPage }) => {
 						<CustomIconBtn color="primary" onClick={() => navigate('/')} size="large" edge="start">
 							<HomeTwoToneIcon />
 						</CustomIconBtn>
-						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
+						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize="h5.fontSize">
 							Log In
 						</Box>
 					</Box>
@@ -149,7 +245,7 @@ const LogIn = ({ isActivationPage }) => {
 							InputProps={{
 								endAdornment : (
 									<InputAdornment position="end">
-										<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
+										<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)}>
 											{passVisibility ? (
 												<VisibilityOutlinedIcon />
 											) : (
@@ -173,12 +269,6 @@ const LogIn = ({ isActivationPage }) => {
 						>
 							Log In
 						</LoadingBtn>
-
-						<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
-							<Link component={RouterLink} to="/create-account" underline="none">
-								Create account
-							</Link>
-						</Box>
 					</Box>
 
 					<Backdrop sx={{ zIndex: 1000 }} open={isLoading}>
@@ -191,6 +281,13 @@ const LogIn = ({ isActivationPage }) => {
 						</Box>
 					</Backdrop>
 				</form>
+
+				<Box display="flex" justifyContent="space-between" width="100%" mt={2} fontSize={12}>
+					<ForgotPasswordDialog />
+					<Link component={RouterLink} to="/create-account" underline="none">
+						Don't have an account?
+					</Link>
+				</Box>
 			</Grid>
 		</Grid>
 	)

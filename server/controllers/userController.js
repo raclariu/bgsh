@@ -3,11 +3,13 @@ import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import Token from '../models/tokenModel.js'
+import PwToken from '../models/pwTokenModel.js'
 import Notification from '../models/notificationModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
-import { sendAccountActivationMail } from '../helpers/mailer.js'
+import winstonLogger from '../helpers/winstonLogger.js'
+import { sendAccountActivationMail, sendForgotPasswordMail } from '../helpers/mailer.js'
 import { differenceInMinutes } from 'date-fns'
 
 // * @desc    Log in user & get jwt token
@@ -130,7 +132,7 @@ const activateAccount = asyncHandler(async (req, res) => {
 	if (!tokenDoc) {
 		res.status(400)
 		throw {
-			message : 'Link expired, altered or already used. Try to log in and a new activation email will be sent'
+			message : 'Link expired, altered or already used'
 		}
 	}
 
@@ -145,6 +147,17 @@ const activateAccount = asyncHandler(async (req, res) => {
 
 	await User.updateOne({ _id: tokenDoc.addedBy }, { status: 'active' })
 	await Token.deleteOne({ tokenUid })
+
+	winstonLogger.log({
+		level   : 'info',
+		message : {
+			_id       : user._id,
+			username  : user.username,
+			timestamp : new Date(),
+			info      : 'new account'
+		}
+	})
+
 	return res.status(200).json({
 		_id      : user._id,
 		username : user.username,
@@ -154,11 +167,9 @@ const activateAccount = asyncHandler(async (req, res) => {
 })
 
 // * @desc    Change password
-// * @route   POST  /api/users/password
+// * @route   POST  /api/users/password/change
 // * @access  Private route
 const changePassword = asyncHandler(async (req, res) => {
-	const { passwordNew } = req.body
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
@@ -172,10 +183,99 @@ const changePassword = asyncHandler(async (req, res) => {
 			}
 		}
 	} else {
+		const { passwordNew } = req.body
 		const hashed = await hashPassword(passwordNew)
 		await User.updateOne({ _id: req.user._id }, { password: hashed })
 
-		res.status(204).end()
+		return res.status(204).end()
+	}
+})
+
+// * @desc    Forgot password
+// * @route   POST  /api/users/password/forgot
+// * @access  Private route
+const forgotPassword = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message : {
+				emailError : err.email ? err.email.msg : null
+			}
+		}
+	} else {
+		const { email } = req.body
+		const user = await User.findOne({ email }).select('_id email').lean()
+		const pwTokenDoc = await PwToken.findOne({ addedBy: user._id }).lean()
+		const baseDomain = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
+
+		if (pwTokenDoc) {
+			const lookback = differenceInMinutes(new Date(), pwTokenDoc.sent)
+
+			if (lookback >= 15) {
+				const resetUrl = baseDomain + `/reset-password/${pwTokenDoc.tokenUid}`
+				await sendForgotPasswordMail({ address: user.email, url: resetUrl })
+				await PwToken.updateOne({ _id: pwTokenDoc._id }, { sent: new Date() })
+
+				res.status(403)
+				throw {
+					code    : 14,
+					message : `A new reset email has been sent to ${user.email}`
+				}
+			} else {
+				res.status(403)
+				throw {
+					code    : 14,
+					message : `Reset email already send. You can retry in ${15 - lookback} minutes`
+				}
+			}
+		} else {
+			const createdPwTokenDoc = await PwToken.create({
+				addedBy : user._id
+			})
+
+			const resetUrl = baseDomain + `/reset-password/${createdPwTokenDoc.tokenUid}`
+			await sendForgotPasswordMail({ address: user.email, url: resetUrl })
+
+			return res.status(204).end()
+		}
+	}
+})
+
+// * @desc    Reset and change password after user forgot their password
+// * @route   POST  /api/users/password/change
+// * @access  Private route
+const resetPassword = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message : {
+				passwordNewError             : err.passwordNew ? err.passwordNew.msg : null,
+				passwordNewConfirmationError : err.passwordNewConfirmation ? err.passwordNewConfirmation.msg : null
+			}
+		}
+	} else {
+		const { passwordNew, tokenUid } = req.body
+
+		const pwTokenDoc = await PwToken.findOne({ tokenUid }).lean()
+
+		if (!pwTokenDoc) {
+			res.status(400)
+			throw {
+				message : 'Link expired. Use the password reset form again'
+			}
+		}
+
+		const hashed = await hashPassword(passwordNew)
+		await User.updateOne({ _id: pwTokenDoc.addedBy }, { password: hashed })
+		await PwToken.deleteOne({ _id: pwTokenDoc._id })
+
+		return res.status(204).end()
 	}
 })
 
@@ -284,6 +384,8 @@ export {
 	userRegister,
 	activateAccount,
 	changePassword,
+	forgotPassword,
+	resetPassword,
 	getUserProfileData,
 	getUserProfileListingsData,
 	changeAvatar,

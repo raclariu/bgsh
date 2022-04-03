@@ -151,11 +151,11 @@ const MessagesScreen = ({ type }) => {
 							{search && <BackButton />}
 
 							<FormControlLabel
-								label={selected.length > 0 ? `Select all (${selected.length})` : 'Select all'}
+								label={isChecked ? `Select all (${selected.length})` : 'Select all'}
 								disabled={!isSuccess}
 								control={
 									<Checkbox
-										sx={{ mr: 1 }}
+										sx={{ height: 48, width: 48, mr: 1 }}
 										label="Select all"
 										indeterminate={isChecked && data && data.messages.length !== selected.length}
 										checked={isChecked}
@@ -166,8 +166,8 @@ const MessagesScreen = ({ type }) => {
 						</Box>
 
 						{selected.length > 0 && (
-							<CustomIconBtn onClick={handleDelete} color="error">
-								<DeleteOutlineIcon />
+							<CustomIconBtn onClick={handleDelete} color="error" size="large" edge="end">
+								<DeleteOutlineIcon color="error" />
 							</CustomIconBtn>
 						)}
 					</Box>

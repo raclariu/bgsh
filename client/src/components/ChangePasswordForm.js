@@ -15,7 +15,7 @@ import Input from './Input'
 import LoadingBtn from './LoadingBtn'
 
 // @ Others
-import { useNotiSnackbar, useChangePasswordMutation } from '../hooks/hooks'
+import { useChangePasswordMutation } from '../hooks/hooks'
 
 // @ Main
 const ChangePasswordForm = () => {
@@ -74,7 +74,7 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<CustomIconBtn onClick={() => handlePassVisibility('passCurrent')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passCurrent')}>
 								{passCurrentVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 							</CustomIconBtn>
 						</InputAdornment>
@@ -98,7 +98,7 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<CustomIconBtn onClick={() => handlePassVisibility('passNew')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passNew')}>
 								{passNewVisibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
 							</CustomIconBtn>
 						</InputAdornment>
@@ -122,7 +122,7 @@ const ChangePasswordForm = () => {
 				InputProps={{
 					endAdornment : (
 						<InputAdornment position="end">
-							<CustomIconBtn onClick={() => handlePassVisibility('passNewConfirmation')} size="large">
+							<CustomIconBtn onClick={() => handlePassVisibility('passNewConfirmation')}>
 								{passNewConfirmationVisibility ? (
 									<VisibilityOutlinedIcon />
 								) : (
@@ -137,7 +137,7 @@ const ChangePasswordForm = () => {
 			/>
 
 			<Box display="flex" justifyContent="flex-end">
-				<LoadingBtn variant="outlined" type="submit" color="primary" size="large" loading={isLoading}>
+				<LoadingBtn variant="contained" type="submit" color="primary" size="large" loading={isLoading}>
 					Change password
 				</LoadingBtn>
 			</Box>

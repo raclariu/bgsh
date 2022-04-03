@@ -56,13 +56,12 @@ const ReportForm = ({ type, username, altId }) => {
 		<Fragment>
 			<CustomTooltip title="Report">
 				<CustomIconBtn
-					size="large"
-					color="error"
 					onClick={() => setIsOpen(true)}
 					disabled={currUsername === username}
-					sx={{ height: 44, width: 44 }}
+					color="error"
+					size="large"
 				>
-					<ReportTwoToneIcon />
+					<ReportTwoToneIcon color="error" />
 				</CustomIconBtn>
 			</CustomTooltip>
 

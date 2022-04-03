@@ -51,7 +51,7 @@ const CreateAccountScreen = () => {
 
 	const { mutate, isError, error, isSuccess, isLoading } = useMutation((data) => apiCreateAccount(data), {
 		onSuccess : (data, vars) => {
-			showSnackbar.info({
+			showSnackbar.success({
 				text             : `Account created successfully. An activation email was sent to ${vars.email}`,
 				preventDuplicate : true
 			})
@@ -77,7 +77,7 @@ const CreateAccountScreen = () => {
 						<CustomIconBtn color="primary" onClick={() => navigate('/')} size="large" edge="start">
 							<HomeTwoToneIcon />
 						</CustomIconBtn>
-						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize={22}>
+						<Box color="primary.main" fontWeight="fontWeightMedium" fontSize="h5.fontSize">
 							Create account
 						</Box>
 					</Box>
@@ -128,7 +128,7 @@ const CreateAccountScreen = () => {
 							InputProps={{
 								endAdornment : (
 									<InputAdornment position="end">
-										<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)} size="large">
+										<CustomIconBtn onClick={() => setPassVisibility(!passVisibility)}>
 											{passVisibility ? (
 												<VisibilityOutlinedIcon />
 											) : (
@@ -159,7 +159,6 @@ const CreateAccountScreen = () => {
 									<InputAdornment position="end">
 										<CustomIconBtn
 											onClick={() => setPassConfirmationVisibility(!passConfirmationVisibility)}
-											size="large"
 										>
 											{passConfirmationVisibility ? (
 												<VisibilityOutlinedIcon />
@@ -185,7 +184,7 @@ const CreateAccountScreen = () => {
 							Create account
 						</LoadingBtn>
 
-						<Box display="flex" justifyContent="right" mt={2} fontSize={12}>
+						<Box display="flex" justifyContent="right" width="100%" mt={2} fontSize={12}>
 							<Link component={RouterLink} to="/login" underline="none">
 								Already have an account?
 							</Link>

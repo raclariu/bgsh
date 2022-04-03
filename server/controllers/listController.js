@@ -27,10 +27,6 @@ const addOneToList = asyncHandler(async (req, res) => {
 	const { bggId, title, year, thumbnail, image, version = null } = req.body
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
-	if (!userList) {
-		userList = userList = await List.findOne({ addedBy: req.user._id }).lean()
-	}
-
 	if (userList.list.length === 6) {
 		res.status(400)
 		throw {

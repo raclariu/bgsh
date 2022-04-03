@@ -21,7 +21,7 @@ const GameDetailsButton = ({ altId, mode }) => {
 						color="primary"
 						size="large"
 					>
-						<CenterFocusWeakTwoToneIcon fontSize="small" />
+						<CenterFocusWeakTwoToneIcon />
 					</CustomIconBtn>
 				</CustomTooltip>
 			)}

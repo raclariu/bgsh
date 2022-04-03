@@ -140,15 +140,6 @@ const Header = () => {
 							<Theme />
 						</Box>
 
-						{/* <CustomIconBtn
-							color="primary"
-							onClick={() => setIsOpen(!isOpen)}
-							aria-label="menu"
-							size="large"
-						>
-							<MenuIcon />
-						</CustomIconBtn> */}
-
 						<ButtonBase
 							disableRipple
 							color="primary"

@@ -7,6 +7,8 @@ import {
 	userRegister,
 	activateAccount,
 	changePassword,
+	forgotPassword,
+	resetPassword,
 	getUserProfileData,
 	getUserProfileListingsData,
 	changeAvatar,
@@ -16,14 +18,19 @@ import {
 	validateLogin,
 	validateSignUp,
 	validatePasswordChange,
-	validateUsernameExist
+	validateUsernameExist,
+	validateEmail,
+	validateResetPasswordNew,
+	validatePasswordNewConfirmation
 } from '../validators/userValidators.js'
 
 // @route /api/users
 router.route('/login').post(validateLogin, userLogin)
 router.route('/signup').post(validateSignUp, userRegister)
 router.route('/activate/:tokenUid').get(activateAccount)
-router.route('/password').post([ protect, ...validatePasswordChange ], changePassword)
+router.route('/password/change').post([ protect, ...validatePasswordChange ], changePassword)
+router.route('/password/forgot').post(validateEmail, forgotPassword)
+router.route('/password/reset').post([ validateResetPasswordNew, validatePasswordNewConfirmation ], resetPassword)
 router.route('/avatar').post([ protect, uploadAvatar, resizeAvatar ], changeAvatar).get([ protect ], getOwnAvatar)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
 router.route('/:username/listings').get([ protect, validateUsernameExist ], getUserProfileListingsData)

@@ -69,7 +69,7 @@ const fetchKickstarters = cron.schedule(
 	'0 7,17 * * *',
 	async () => {
 		const args = [
-			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36"'
 		]
 
 		const browser = await puppeteer.launch({ args, headless: true, ignoreHTTPSErrors: true }) //{ headless: false }

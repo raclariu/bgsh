@@ -32,7 +32,7 @@ const ExtLinkIconBtn = ({ url, tooltip = 'See on BGG' }) => {
 		<Fragment>
 			<CustomTooltip title={tooltip}>
 				<CustomIconBtn onClick={handleOpenDialog} color="primary" size="large">
-					<LaunchIcon fontSize="small" />
+					<LaunchIcon />
 				</CustomIconBtn>
 			</CustomTooltip>
 

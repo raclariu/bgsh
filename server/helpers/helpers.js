@@ -2,6 +2,10 @@ import bcrypt from 'bcryptjs'
 import { parseString } from 'xml2js'
 import jwt from 'jsonwebtoken'
 import { customAlphabet } from 'nanoid/non-secure'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const genNanoId = (length) => {
 	const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', length)
@@ -40,4 +44,4 @@ const generateToken = (id) => {
 	})
 }
 
-export { parseXML, comparePasswords, hashPassword, generateToken, genNanoId }
+export { parseXML, comparePasswords, hashPassword, generateToken, genNanoId, __dirname }

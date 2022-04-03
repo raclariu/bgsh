@@ -44,7 +44,15 @@ export const apiClearAllNotifications = async () => {
 }
 
 export const apiUserChangePassword = async ({ passwordCurrent, passwordNew, passwordNewConfirmation }) => {
-	await axsAUTH.post('/api/users/password', { passwordCurrent, passwordNew, passwordNewConfirmation })
+	await axsAUTH.post('/api/users/password/change', { passwordCurrent, passwordNew, passwordNewConfirmation })
+}
+
+export const apiForgotPasswordRequest = async (email) => {
+	await axsPUBLIC.post('/api/users/password/forgot', { email })
+}
+
+export const apiResetPassword = async ({ tokenUid, passwordNew, passwordNewConfirmation }) => {
+	await axsPUBLIC.post('/api/users/password/reset', { tokenUid, passwordNew, passwordNewConfirmation })
 }
 
 export const apiUserChangeAvatar = async (img) => {
