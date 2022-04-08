@@ -4,7 +4,8 @@ import { logOut } from '../actions/userActions'
 
 const getBearer = () => {
 	const state = store.getState()
-	return `Bearer ${state.userAuth.userData.token}`
+
+	return state.userToken
 }
 
 export const axsAUTH = axios.create({
@@ -23,8 +24,9 @@ export const axsPUBLIC = axios.create({
 
 axsAUTH.interceptors.request.use(
 	(config) => {
-		if (!config.headers.Authorization) {
-			config.headers.Authorization = getBearer()
+		const token = getBearer()
+		if (!config.headers.Authorization && token) {
+			config.headers.Authorization = `Bearer ${token}`
 		}
 		return config
 	},

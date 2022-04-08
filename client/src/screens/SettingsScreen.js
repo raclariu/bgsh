@@ -31,9 +31,6 @@ const SettingsScreen = () => {
 						}
 					}}
 				>
-					{/* <Box textAlign="center" fontWeight="fontWeightMedium" fontSize="h5.fontSize" mb={2}>
-						Change password
-					</Box> */}
 					<ChangePasswordForm />
 				</Box>
 			</Box>

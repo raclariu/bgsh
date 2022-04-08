@@ -19,7 +19,7 @@ import { useNotiSnackbar, useUpdateSaveGameStatusMutation, useGetSaveGameStatusQ
 
 // @ Main
 const SaveGameButton = ({ altId, addedById }) => {
-	const { userData } = useSelector((state) => state.userAuth)
+	const currUserId = useSelector((state) => state.userData._id)
 
 	const { isFetching, data, isSuccess } = useGetSaveGameStatusQuery({ altId })
 
@@ -48,7 +48,7 @@ const SaveGameButton = ({ altId, addedById }) => {
 								color : 'secondary.main'
 							}
 						}}
-						disabled={addedById && addedById.toString() === userData._id.toString()}
+						disabled={addedById && addedById.toString() === currUserId.toString()}
 						id="save-button"
 						onChange={saveGameHandler}
 						icon={<FavoriteBorder />}

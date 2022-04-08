@@ -155,7 +155,7 @@ const NotificationsPopover = () => {
 													size="large"
 													color="error"
 												>
-													<CloseIcon color="error" />
+													<CloseIcon />
 												</CustomIconBtn>
 											</ListItemSecondaryAction>
 										</ListItem>

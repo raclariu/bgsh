@@ -10,6 +10,7 @@ import Box from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
 
 // @ Components
 import LzLoad from './LzLoad'
@@ -47,16 +48,7 @@ const StyledTitleBox = styled(Box)({
 // @ Recs skeleton
 const RecsSkeleton = () => {
 	return (
-		<Box
-			p={1}
-			display="flex"
-			boxShadow={1}
-			borderRadius="4px"
-			bgcolor="background.paper"
-			gap={1}
-			width="100%"
-			height={80}
-		>
+		<Box component={Paper} p={1} display="flex" boxShadow={1} borderRadius="4px" gap={1} width="100%" height={80}>
 			<Box>
 				<CustomSkeleton variant="rectangular" width={64} height={64} sx={{ borderRadius: '4px' }} />
 			</Box>
@@ -116,11 +108,11 @@ const GameRecs = ({ idx }) => {
 									<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
 										<LzLoad placeholder={<RecsSkeleton />}>
 											<Box
+												component={Paper}
 												display="flex"
 												p={1}
 												boxShadow={1}
 												borderRadius="4px"
-												bgcolor="background.paper"
 												gap={1}
 											>
 												<a

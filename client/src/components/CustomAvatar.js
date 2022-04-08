@@ -48,7 +48,9 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 					}}
 					imgProps={{ alt: 'avatar' }}
 					src={src}
-				/>
+				>
+					{username ? username.substring(0, 2).toUpperCase() : 'ME'}
+				</StyledAvatar>
 			)}
 
 			{!noClick && (
@@ -60,7 +62,9 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 					imgProps={{ alt: 'avatar' }}
 					src={src}
 					onClick={(e) => setAnchorEl(e.currentTarget)}
-				/>
+				>
+					{username ? username.substring(0, 2).toUpperCase() : 'ME'}
+				</StyledAvatar>
 			)}
 
 			<Popover
@@ -85,7 +89,9 @@ const CustomAvatar = ({ size, username, src, noClick = false }) => {
 								cursor : 'default'
 							}}
 							src={src}
-						/>
+						>
+							{username ? username.substring(0, 2).toUpperCase() : 'ME'}
+						</StyledAvatar>
 
 						<CustomDivider sx={{ ml: 2, mr: 1 }} orientation="vertical" variant="middle" flexItem />
 

@@ -24,7 +24,7 @@ import { useSendNewMessageMutation } from '../hooks/hooks'
 
 // @Main
 const SendMessage = ({ recipientUsername = '', ...other }) => {
-	const currUsername = useSelector((state) => state.userAuth.userData.username)
+	const currUsername = useSelector((state) => state.userData.username)
 
 	const [ open, setOpen ] = useState(false)
 	const [ recipient, setRecipient ] = useState(recipientUsername ? recipientUsername : '')

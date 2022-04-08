@@ -72,7 +72,7 @@ const Header = () => {
 	const [ selectedIndex, setSelectedIndex ] = useState(0)
 	const [ openDialog, setOpenDialog ] = useState(false)
 
-	const { userData } = useSelector((state) => state.userAuth)
+	const { _id: currUserId, username: currUsername } = useSelector((state) => state.userData)
 
 	const handleExpandClick = (type) => {
 		if (type === openCollapseType) {
@@ -117,7 +117,7 @@ const Header = () => {
 			}}
 		>
 			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
-				{!userData && (
+				{!currUserId && (
 					<Box mr={1}>
 						<Theme />
 					</Box>
@@ -125,7 +125,7 @@ const Header = () => {
 
 				<ClgTheme />
 
-				{userData ? (
+				{currUserId ? (
 					<Fragment>
 						<Box mr={1}>
 							<NotificationsPopover />
@@ -166,11 +166,9 @@ const Header = () => {
 							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
 								<Box display="flex" alignItems="center">
 									<Box fontWeight="fontWeightMedium" mr={1} color="primary.main">
-										{userData.username}
+										{currUsername}
 									</Box>
-									<MyAvatar size={6}>
-										<Box fontSize={14}>{userData.username.substring(0, 2).toUpperCase()}</Box>
-									</MyAvatar>
+									<MyAvatar size={6} />
 								</Box>
 							</Box>
 

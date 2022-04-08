@@ -1,8 +1,10 @@
+// @ Modules
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { useInView } from 'react-intersection-observer'
 
+// @ Mui
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
@@ -10,12 +12,15 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Slide from '@mui/material/Slide'
+import Paper from '@mui/material/Paper'
 
+// @ Icons
 import ImageTwoToneIcon from '@mui/icons-material/ImageTwoTone'
 import CloseIcon from '@mui/icons-material/Close'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
+// @ Components
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomTooltip from './CustomTooltip'
 import CustomIconBtn from './CustomIconBtn'
@@ -27,6 +32,7 @@ import CustomSkeleton from './Skeletons/CustomSkeleton'
 // @ Others
 import { useGetGameGalleryQuery } from '../hooks/hooks'
 
+// @ Styles
 const StyledMasonryImg = styled('img')({
 	verticalAlign : 'middle',
 	// minHeight     : '100px',
@@ -47,10 +53,10 @@ const StyledDialogImg = styled('img')({
 const GallerySkeleton = () => {
 	return (
 		<Box
+			component={Paper}
 			borderRadius="4px"
 			boxShadow={1}
 			p={1}
-			bgcolor="background.paper"
 			width="100%"
 			height={Math.floor(Math.random() * (270 - 100 + 1) + 100)}
 		>
@@ -135,7 +141,7 @@ const GameGallery = ({ idx }) => {
 						<Masonry gutter="8px">
 							{galleryData.map((obj, i) => (
 								<LzLoad key={obj.imageid}>
-									<Box borderRadius="4px" boxShadow={1} p={1} bgcolor="background.paper">
+									<Box component={Paper} borderRadius="4px" boxShadow={1} p={1}>
 										<StyledMasonryImg
 											onClick={() => handleOpenGalleryImageDialog(i)}
 											src={obj.thumbnail}
@@ -169,7 +175,7 @@ const GameGallery = ({ idx }) => {
 										edge="end"
 										color="error"
 									>
-										<CloseIcon color="error" />
+										<CloseIcon />
 									</CustomIconBtn>
 								</Box>
 							</DialogTitle>

@@ -4,34 +4,21 @@ import { createTheme } from '@mui/material/styles'
 // @ Light
 export const light = createTheme({
 	palette : {
-		mode      : 'light',
-		primary   : {
-			main : '#651fff' // #5333ed
+		mode       : 'light',
+		primary    : {
+			main : '#651fff'
 		},
-		secondary : {
+		secondary  : {
 			main : '#ff3d00'
+		},
+		background : {
+			paper   : '#ffffff',
+			default : '#fcfcfc'
 		}
 	}
 })
 
-// // @ Dark
-// export const dark = createTheme({
-// 	palette : {
-// 		type       : 'dark',
-// 		primary    : {
-// 			main         : '#bb86fc',
-// 			contrastText : '#fff'
-// 		},
-// 		secondary  : {
-// 			main : '#03dac5'
-// 		},
-// 		background : {
-// 			paper   : '#332940',
-// 			default : '#1f1a24'
-// 		}
-// 	}
-// })
-
+// @ Dark
 export const dark = createTheme({
 	palette : {
 		mode       : 'dark',

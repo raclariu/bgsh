@@ -17,6 +17,7 @@ import Fab from '@mui/material/Fab'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import Collapse from '@mui/material/Collapse'
+import Paper from '@mui/material/Paper'
 
 // @ Icons
 import MarkunreadMailboxTwoToneIcon from '@mui/icons-material/MarkunreadMailboxTwoTone'
@@ -199,6 +200,7 @@ const SingleGameScreen = () => {
 						mb={2}
 					>
 						<Box
+							component={Paper}
 							id="cover"
 							display="flex"
 							alignItems="center"
@@ -206,7 +208,6 @@ const SingleGameScreen = () => {
 							boxShadow={1}
 							p={2}
 							borderRadius="4px"
-							bgcolor="background.paper"
 						>
 							<Zoom
 								zoomMargin={16}
@@ -300,6 +301,7 @@ const SingleGameScreen = () => {
 							</Box>
 
 							<Box
+								component={Paper}
 								mt={2}
 								p={1}
 								px={2}
@@ -308,7 +310,6 @@ const SingleGameScreen = () => {
 								justifyContent={data.mode === 'sell' ? 'space-between' : 'center'}
 								boxShadow={1}
 								borderRadius="4px"
-								bgcolor="background.paper"
 								width="100%"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
@@ -343,6 +344,7 @@ const SingleGameScreen = () => {
 							}}
 						>
 							<Box
+								component={Paper}
 								display="flex"
 								flexDirection="column"
 								gap={2}
@@ -351,7 +353,6 @@ const SingleGameScreen = () => {
 								p={2}
 								boxShadow={1}
 								borderRadius="4px"
-								bgcolor="background.paper"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
 									<InfoTwoToneIcon color="primary" />
@@ -426,7 +427,7 @@ const SingleGameScreen = () => {
 												size="large"
 												color="error"
 											>
-												<CloseIcon color="error" />
+												<CloseIcon />
 											</CustomIconBtn>
 
 											<DialogContent
@@ -482,6 +483,7 @@ const SingleGameScreen = () => {
 							{/* Shipping */}
 							<Box id="shipping">
 								<Box
+									component={Paper}
 									display="flex"
 									flexDirection="column"
 									gap={2}
@@ -489,7 +491,6 @@ const SingleGameScreen = () => {
 									p={2}
 									boxShadow={1}
 									borderRadius="4px"
-									bgcolor="background.paper"
 								>
 									<Box display="flex" alignItems="center" gap={1}>
 										<LocalShippingTwoToneIcon color="primary" />

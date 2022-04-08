@@ -14,6 +14,11 @@ export const apiUserLogin = async ({ email, password }) => {
 	return data
 }
 
+export const apiGetMe = async () => {
+	const { data } = await axsAUTH.get('/api/users/me')
+	return data
+}
+
 export const apiFetchKickstarters = async () => {
 	const { data } = await axsAUTH.get('/api/misc/kickstarters')
 	return data

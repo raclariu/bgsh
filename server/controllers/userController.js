@@ -74,12 +74,7 @@ const userLogin = asyncHandler(async (req, res) => {
 		}
 
 		await User.updateOne({ _id: user._id }, { lastSeen: Date.now() })
-		return res.status(200).json({
-			_id      : user._id,
-			username : user.username,
-			isAdmin  : user.isAdmin,
-			token    : generateToken(user._id)
-		})
+		return res.status(200).json(generateToken(user._id))
 	}
 })
 
@@ -158,12 +153,14 @@ const activateAccount = asyncHandler(async (req, res) => {
 		}
 	})
 
-	return res.status(200).json({
-		_id      : user._id,
-		username : user.username,
-		isAdmin  : user.isAdmin,
-		token    : generateToken(user._id)
-	})
+	return res.status(200).json(generateToken(user._id))
+})
+
+// ~ @desc    Get current user data
+// ~ @route   GET  /api/users/me
+// ~ @access  Private route
+const getMe = asyncHandler(async (req, res) => {
+	return res.status(200).json({ _id: req.user._id, username: req.user.username, isAdmin: req.user.isAdmin })
 })
 
 // * @desc    Change password
@@ -384,6 +381,7 @@ export {
 	userRegister,
 	activateAccount,
 	changePassword,
+	getMe,
 	forgotPassword,
 	resetPassword,
 	getUserProfileData,

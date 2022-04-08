@@ -31,7 +31,7 @@ import { useSubmitReportMutation } from '../hooks/hooks'
 
 // @ Main
 const ReportForm = ({ type, username, altId }) => {
-	const currUsername = useSelector((state) => state.userAuth.userData.username)
+	const currUsername = useSelector((state) => state.userData.username)
 
 	const [ open, setIsOpen ] = useState(false)
 	const [ selected, setSelected ] = useState(type || 'other')
@@ -61,7 +61,7 @@ const ReportForm = ({ type, username, altId }) => {
 					color="error"
 					size="large"
 				>
-					<ReportTwoToneIcon color="error" />
+					<ReportTwoToneIcon />
 				</CustomIconBtn>
 			</CustomTooltip>
 

@@ -133,7 +133,7 @@ const SaleListPopover = () => {
 												size="large"
 												color="error"
 											>
-												<CloseIcon color="error" />
+												<CloseIcon />
 											</CustomIconBtn>
 										</ListItemSecondaryAction>
 									</ListItem>

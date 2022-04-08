@@ -5,11 +5,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useInView } from 'react-intersection-observer'
 
 // @ Mui
-import { alpha } from '@mui/material/styles'
+import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Paper from '@mui/material/Paper'
 import ButtonBase from '@mui/material/ButtonBase'
 
 // @ Icons
@@ -21,7 +20,6 @@ import KsCardSkeleton from '../components/Skeletons/KsCardSkeleton'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import CustomTooltip from '../components/CustomTooltip'
 import CustomIconBtn from '../components/CustomIconBtn'
-import CustomButton from '../components/CustomButton'
 import ReportForm from '../components/ReportForm'
 import HotGameCard from '../components/HotGameCard'
 import KsCard from '../components/KsCard'
@@ -38,7 +36,7 @@ import { useGetHotGamesQuery, useGetKickstartersQuery, useGetRedditPostsQuery } 
 
 // @ Main
 const DashboardScreen = () => {
-	const { userData } = useSelector((state) => state.userAuth)
+	const currUsername = useSelector((state) => state.userData.username)
 
 	const { ref: redditRef, inView: redditInView } = useInView({
 		threshold   : 0,
@@ -73,18 +71,18 @@ const DashboardScreen = () => {
 			<Helmet title="My dashboard" />
 
 			<Box
+				component={Paper}
 				display="flex"
 				mb={2}
 				p={2}
 				borderRadius="4px"
 				boxShadow={2}
 				justifyContent="space-between"
-				bgcolor="background.paper"
 				alignItems="center"
 				gap={1}
 			>
 				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
-					{`Welcome ${userData.username}`}
+					{`Welcome ${currUsername}`}
 				</Box>
 				<Box display="flex" alignItems="center" gap={1}>
 					<SendMessage />
@@ -93,10 +91,10 @@ const DashboardScreen = () => {
 			</Box>
 
 			<Box
+				component={Paper}
 				p={2}
 				borderRadius="4px"
 				boxShadow={2}
-				bgcolor="background.paper"
 				mb={6}
 				sx={{
 					display             : 'grid',
@@ -110,6 +108,7 @@ const DashboardScreen = () => {
 				<Box id="collection-fetch-box">
 					<CollectionFetchBox />
 				</Box>
+
 				<Box id="bgg-search-box">
 					<BggSearchGamesBox />
 				</Box>
@@ -117,12 +116,12 @@ const DashboardScreen = () => {
 
 			<Box id="hot-games" mb={6}>
 				<Box
+					component={Paper}
 					display="flex"
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
 					fontSize="h5.fontSize"
-					bgcolor="background.paper"
 					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"
@@ -166,12 +165,12 @@ const DashboardScreen = () => {
 
 			<Box ref={ksRef} id="kickstarters" mb={6}>
 				<Box
+					component={Paper}
 					display="flex"
 					fontSize="h5.fontSize"
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
-					bgcolor="background.paper"
 					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"
@@ -212,12 +211,12 @@ const DashboardScreen = () => {
 
 			<Box ref={redditRef} id="reddit-posts">
 				<Box
+					component={Paper}
 					display="flex"
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
 					fontSize="h5.fontSize"
-					bgcolor="background.paper"
 					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"

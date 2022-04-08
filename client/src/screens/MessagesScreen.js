@@ -167,7 +167,7 @@ const MessagesScreen = ({ type }) => {
 
 						{selected.length > 0 && (
 							<CustomIconBtn onClick={handleDelete} color="error" size="large" edge="end">
-								<DeleteOutlineIcon color="error" />
+								<DeleteOutlineIcon />
 							</CustomIconBtn>
 						)}
 					</Box>

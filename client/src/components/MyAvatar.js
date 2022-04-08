@@ -18,7 +18,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 
 // @ Main
 const MyAvatar = ({ size }) => {
-	const username = useSelector((state) => state.userAuth.userData.username)
+	const currUsername = useSelector((state) => state.userData.username)
 
 	const { isSuccess, data: avatarData } = useGetOwnAvatarQuery()
 
@@ -30,10 +30,10 @@ const MyAvatar = ({ size }) => {
 						width  : (theme) => theme.spacing(size),
 						height : (theme) => theme.spacing(size)
 					}}
-					imgProps={{ alt: username }}
+					imgProps={{ alt: currUsername }}
 					src={avatarData.avatar}
 				>
-					<Box fontSize={12}>{username ? username.substring(0, 2).toUpperCase() : 'XX'}</Box>
+					{currUsername ? currUsername.substring(0, 2).toUpperCase() : 'ME'}
 				</StyledAvatar>
 			)}
 		</Fragment>

@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer'
 // @ Mui
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 
 // @ Components
 import LzLoad from './LzLoad'
@@ -33,16 +34,7 @@ const StyledYtImg = styled('img')({
 // @ Vids skeleton
 const VidsSkeleton = () => {
 	return (
-		<Box
-			p={1}
-			display="flex"
-			boxShadow={1}
-			borderRadius="4px"
-			bgcolor="background.paper"
-			gap={1}
-			width="100%"
-			height={106}
-		>
+		<Box component={Paper} p={1} display="flex" boxShadow={1} borderRadius="4px" gap={1} width="100%" height={106}>
 			<Box>
 				<CustomSkeleton variant="rectangular" width={120} height={90} sx={{ borderRadius: '4px' }} />
 			</Box>
@@ -111,13 +103,13 @@ const GameVids = ({ idx }) => {
 					{vidsData.map((video) => (
 						<LzLoad key={video.ytId} placeholder={<VidsSkeleton />}>
 							<Box
+								component={Paper}
 								display="flex"
 								gap={1}
 								alignItems="flex-start"
 								boxShadow={1}
 								borderRadius="4px"
 								width="100%"
-								bgcolor="background.paper"
 								p={1}
 							>
 								<Box boxShadow={1} borderRadius="4px">

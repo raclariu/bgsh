@@ -139,15 +139,15 @@ const LogIn = ({ isActivationPage }) => {
 	const [ password, setPassword ] = useState('')
 	const [ passVisibility, setPassVisibility ] = useState(false)
 
-	const userData = useSelector((state) => state.userAuth.userData)
+	const { success } = useSelector((state) => state.userData)
 
 	useEffect(
 		() => {
-			if (userData) {
+			if (success) {
 				navigate('/collection', { replace: true })
 			}
 		},
-		[ navigate, userData ]
+		[ navigate, success ]
 	)
 
 	const { isLoading } = useQuery([ 'activate' ], () => apiActivateAccount(tokenUid), {
@@ -157,7 +157,7 @@ const LogIn = ({ isActivationPage }) => {
 		onError   : (err) => {
 			const text = err.response.data.message || 'Error occured while activating account'
 
-			if (userData) {
+			if (success) {
 				navigate('/collection', { replace: true })
 			} else {
 				showSnackbar.error({ text })

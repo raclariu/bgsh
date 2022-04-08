@@ -31,15 +31,15 @@ const CreateAccountScreen = () => {
 	const navigate = useNavigate()
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	const userData = useSelector((state) => state.userAuth.userData)
+	const { success } = useSelector((state) => state.userData)
 
 	useEffect(
 		() => {
-			if (userData) {
+			if (success) {
 				navigate('/collection', { replace: true })
 			}
 		},
-		[ navigate, userData ]
+		[ navigate, success ]
 	)
 
 	const [ email, setEmail ] = useState('')

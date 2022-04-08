@@ -188,7 +188,7 @@ const updateMessageStatus = asyncHandler(async (req, res) => {
 				{ read: true, readAt: Date.now() },
 				{ new: true }
 			)
-				.populate('sender')
+				.populate('sender', '_id username avatar')
 				.lean()
 
 			return res.status(200).json(updatedMsg)

@@ -104,7 +104,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 						color="error"
 						size="large"
 					>
-						<CloseIcon color="error" />
+						<CloseIcon />
 					</CustomIconBtn>
 				}
 				titleTypographyProps={{
@@ -359,7 +359,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 											color="error"
 											onClick={removeImage}
 										>
-											<CloseIcon color="error" />
+											<CloseIcon />
 										</CustomIconBtn>
 									</Box>
 								)

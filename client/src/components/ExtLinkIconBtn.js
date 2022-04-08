@@ -18,25 +18,32 @@ import CustomDivider from './CustomDivider'
 
 // @ Main
 const ExtLinkIconBtn = ({ url, tooltip = 'See on BGG' }) => {
-	const [ openDialog, setOpenDialog ] = useState(false)
+	// const [ openDialog, setOpenDialog ] = useState(false)
 
-	const handleOpenDialog = () => {
-		setOpenDialog(true)
-	}
+	// const handleOpenDialog = () => {
+	// 	setOpenDialog(true)
+	// }
 
-	const handleCloseDialog = () => {
-		setOpenDialog(false)
-	}
+	// const handleCloseDialog = () => {
+	// 	setOpenDialog(false)
+	// }
 
 	return (
 		<Fragment>
 			<CustomTooltip title={tooltip}>
-				<CustomIconBtn onClick={handleOpenDialog} color="primary" size="large">
+				<CustomIconBtn
+					href={url}
+					target="_blank"
+					rel="noreferrer"
+					variant="contained"
+					color="primary"
+					size="large"
+				>
 					<LaunchIcon />
 				</CustomIconBtn>
 			</CustomTooltip>
 
-			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
+			{/* <Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 				<DialogTitle>
 					<Box textAlign="center">Follow external link?</Box>
 					<Box
@@ -67,7 +74,7 @@ const ExtLinkIconBtn = ({ url, tooltip = 'See on BGG' }) => {
 						Open page
 					</CustomButton>
 				</DialogActions>
-			</Dialog>
+			</Dialog> */}
 		</Fragment>
 	)
 }

@@ -24,7 +24,7 @@ const Footer = () => {
 		>
 			<Box display="flex" alignItems="center" justifyContent="center" height="100%">
 				<Typography variant="body1" fontWeight="fontWeightMedium">
-					BGMarket.ro
+					Meeples.ro
 				</Typography>
 			</Box>
 		</Box>

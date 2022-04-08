@@ -8,6 +8,7 @@ import {
 	activateAccount,
 	changePassword,
 	forgotPassword,
+	getMe,
 	resetPassword,
 	getUserProfileData,
 	getUserProfileListingsData,
@@ -27,6 +28,7 @@ import {
 // @route /api/users
 router.route('/login').post(validateLogin, userLogin)
 router.route('/signup').post(validateSignUp, userRegister)
+router.route('/me').get(protect, getMe)
 router.route('/activate/:tokenUid').get(activateAccount)
 router.route('/password/change').post([ protect, ...validatePasswordChange ], changePassword)
 router.route('/password/forgot').post(validateEmail, forgotPassword)

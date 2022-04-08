@@ -86,7 +86,7 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 							</Box>
 						</Box>
 						<CustomIconBtn onClick={handleCloseDialog} color="error" size="large">
-							<CloseIcon color="error" />
+							<CloseIcon />
 						</CustomIconBtn>
 					</Box>
 				</DialogTitle>

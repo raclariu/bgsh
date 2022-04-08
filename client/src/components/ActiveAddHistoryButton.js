@@ -42,7 +42,7 @@ import {
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
 	const queryClient = useQueryClient()
 
-	const currUsername = useSelector((state) => state.userAuth.userData.username)
+	const currUsername = useSelector((state) => state.userData.username)
 
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ otherUsername, setOtherUsername ] = useState('')
@@ -235,7 +235,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 				<Fragment>
 					<CustomTooltip title="Delete">
 						<CustomIconBtn color="error" onClick={handleOpenDialog} size="large">
-							<DeleteOutlineIcon color="error" />
+							<DeleteOutlineIcon />
 						</CustomIconBtn>
 					</CustomTooltip>
 
