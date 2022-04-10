@@ -12,10 +12,16 @@ const validateEmail = check('email')
 	.withMessage('Invalid email address')
 	.bail()
 	.custom(async (email) => {
-		const userExists = await User.findOne({ email }).select('_id').lean()
+		const userExists = await User.findOne({ email }).select('_id status').lean()
+
 		if (!userExists) {
 			throw new Error('User with this email address does not exist')
 		} else {
+			if (userExists) {
+				if (userExists.status === 'banned') {
+					throw new Error('User is banned')
+				}
+			}
 			return true
 		}
 	})

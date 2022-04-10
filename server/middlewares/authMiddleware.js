@@ -12,7 +12,14 @@ const protect = asyncHandler(async (req, res, next) => {
 
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-			req.user = await User.findById(decoded.id).select('_id isAdmin email username lastSeen').lean()
+			req.user = await User.findById(decoded.id).select('_id isAdmin email username status lastSeen').lean()
+
+			if (req.user.status === 'banned') {
+				res.status(401)
+				throw {
+					message : 'User is banned'
+				}
+			}
 
 			if (differenceInMinutes(new Date(), new Date(req.user.lastSeen)) >= 20) {
 				const updated = await User.findOneAndUpdate(
