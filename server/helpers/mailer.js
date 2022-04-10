@@ -14,22 +14,17 @@ export const sendAccountActivationMail = async ({ address, url }) => {
 
 	try {
 		// send mail with defined transport object
-		const info = await transporter.sendMail({
-			from    : 'Meeps <noreply@meeps.ro>', // sender address
+		await transporter.sendMail({
+			from    : 'Meeples <no-reply@meeples.ro>', // sender address
 			to      : address, // list of receivers
-			subject : 'MEEPS.RO - Activate your account', // Subject line
+			subject : 'Activate your account', // Subject line
 			text    :
-				'Activate your Meeps account by clicking the link below' +
+				'Activate your Meeples account by clicking the link below' +
 				'\n\n' +
 				`${url}` +
 				'\n\n' +
 				'Link expires after 6 hours'
 		})
-
-		console.log('Message sent: %s', info.messageId)
-		console.log('Message', info)
-
-		// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 	} catch (error) {
 		console.log(error)
 	}
@@ -49,22 +44,17 @@ export const sendForgotPasswordMail = async ({ address, url }) => {
 
 	try {
 		// send mail with defined transport object
-		const info = await transporter.sendMail({
-			from    : 'Meeps <noreply@meeps.ro>', // sender address
+		await transporter.sendMail({
+			from    : 'Meeples <no-reply@meeples.ro>', // sender address
 			to      : address, // list of receivers
-			subject : 'MEEPS.RO - Reset password request', // Subject line
+			subject : 'Reset password request', // Subject line
 			text    :
-				'Reset your Meeps password bu clicking the link below' +
+				'Reset your Meeples password bu clicking the link below' +
 				'\n\n' +
 				`${url}` +
 				'\n\n' +
 				'Link expires after 6 hours'
 		})
-
-		console.log('Message sent: %s', info.messageId)
-		console.log('Message', info)
-
-		// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 	} catch (error) {
 		console.log(error)
 	}

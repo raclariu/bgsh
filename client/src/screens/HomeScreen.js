@@ -2,6 +2,7 @@
 import React, { Fragment } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import { Link as RouterLink } from 'react-router-dom'
 
 // @ Components
 import Helmet from '../components/Helmet'
@@ -17,7 +18,7 @@ const HomeScreen = () => {
 				flexDirection="column"
 				alignItems="center"
 				justifyContent="center"
-				sx={{ lineHeight: 0.9 }}
+				sx={{ lineHeight: 1 }}
 				width="100%"
 				textAlign="center"
 			>
@@ -28,18 +29,21 @@ const HomeScreen = () => {
 					Trade
 				</Box>
 				<Box fontSize="h2.fontSize" fontWeight="fontWeightBold">
-					Your board games
-				</Box>
-				<Box fontSize="h6.fontSize" fontStyle="italic" mt={1}>
-					...and more
+					Board games
 				</Box>
 			</Box>
 
 			<Box display="flex" alignItems="center" justifyContent="center" mt={10} gap={2}>
-				<Button sx={{ width: 160 }} variant="contained" color="primary">
+				<Button
+					component={RouterLink}
+					to="/create-account"
+					sx={{ width: 160 }}
+					variant="contained"
+					color="primary"
+				>
 					Create account
 				</Button>
-				<Button sx={{ width: 160 }} variant="contained" color="secondary">
+				<Button component={RouterLink} to="/login" sx={{ width: 160 }} variant="contained" color="secondary">
 					Login
 				</Button>
 			</Box>

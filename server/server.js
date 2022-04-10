@@ -1,7 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import chalk from 'chalk'
 import cors from 'cors'
+import helmet from 'helmet'
+import chalk from 'chalk'
 import connectDB from './db/dbConnect.js'
 import { dailyTask, fetchKickstarters } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
@@ -16,14 +17,12 @@ import listRoutes from './routes/listRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
 
 dotenv.config()
-
 connectDB()
-
 const app = express()
-app.disable('x-powered-by')
 
 // @ Middlewares
-app.use(cors())
+app.use(cors({ origin: process.env.BASE_DOMAIN, optionSuccessStatus: 200 }))
+app.use(helmet())
 app.use(morganLogger())
 app.use(express.json())
 
@@ -46,12 +45,9 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-	const used = process.memoryUsage().heapUsed / 1024 / 1024
-
 	dailyTask.start()
 	fetchKickstarters.start()
 
-	console.log(chalk.bgMagenta.hex('#f7edcb').bold(`Memory usage: ~${Math.round(used * 100) / 100} MB`))
 	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 08:00 and 16:00`))
 	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
 })
