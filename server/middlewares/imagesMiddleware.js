@@ -56,7 +56,6 @@ const checkAvatarFileType = (file, cb) => {
 
 const resizeAvatar = asyncHandler(async (req, res, next) => {
 	try {
-		console.log('file before => ', req.file)
 		const resized = await sharp(req.file.buffer)
 			.resize(96)
 			.toFormat('webp')
@@ -69,8 +68,6 @@ const resizeAvatar = asyncHandler(async (req, res, next) => {
 			size     : resized.info.size,
 			buffer   : resized.data
 		}
-		console.log('resized file => ', resized)
-		console.log('file after => ', req.file)
 
 		next()
 	} catch (error) {

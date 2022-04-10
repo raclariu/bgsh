@@ -90,7 +90,6 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 
 	const addGameHandler = (e) => {
 		e.preventDefault()
-		console.log({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 		historyAddGame.mutate({ games, otherUsername, finalPrice, extraInfo, gameId, mode })
 	}
 

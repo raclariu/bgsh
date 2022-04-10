@@ -374,7 +374,6 @@ const submitReport = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
-		console.log(err)
 
 		res.status(400)
 		throw {

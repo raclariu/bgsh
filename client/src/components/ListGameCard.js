@@ -87,10 +87,6 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 		removeImageMutation.mutate({ fileName: data.userImage.name, bggId: game.bggId, title: game.title })
 	}
 
-	const handleImgLoad = (e) => {
-		console.log('here')
-	}
-
 	const prefModeError = mode === 'want' && !data.prefMode.buy && !data.prefMode.trade
 
 	return (
@@ -333,12 +329,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 											position : 'relative'
 										}}
 									>
-										<StyledImg
-											src={data.userImage.thumbnail}
-											alt={data.title}
-											title={data.title}
-											onLoad={handleImgLoad}
-										/>
+										<StyledImg src={data.userImage.thumbnail} alt={data.title} title={data.title} />
 
 										<CustomIconBtn
 											sx={{

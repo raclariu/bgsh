@@ -64,7 +64,6 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 		if (history) {
 			for (let game of games) {
 				if (game.userImage) {
-					console.log(game.userImage)
 					await storage
 						.bucket(process.env.IMG_BUCKET)
 						.file(`f/${game.userImage.name}`)
@@ -174,7 +173,6 @@ const addTradedGamesToHistory = asyncHandler(async (req, res) => {
 		if (history) {
 			for (let game of games) {
 				if (game.userImage) {
-					console.log(game.userImage)
 					await storage
 						.bucket(process.env.IMG_BUCKET)
 						.file(`f/${game.userImage.name}`)

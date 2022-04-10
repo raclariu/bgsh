@@ -92,7 +92,7 @@ const Header = () => {
 		setIsOpen(false)
 	}
 
-	const ClgTheme = styled('span')(({ theme }) => console.log(theme))
+	// const ClgTheme = styled('span')(({ theme }) => console.log(theme))
 
 	return (
 		<AppBar
@@ -113,8 +113,6 @@ const Header = () => {
 						<Theme />
 					</Box>
 				)}
-
-				<ClgTheme />
 
 				{currUserId ? (
 					<Fragment>

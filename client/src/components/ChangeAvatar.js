@@ -52,7 +52,6 @@ const ChangeAvatar = () => {
 
 	const mutation = useChangeOwnAvatarMutation({
 		changeState : () => {
-			console.log('here in changeState')
 			setOpenDialog(false)
 			setImage(null)
 		}
@@ -69,7 +68,6 @@ const ChangeAvatar = () => {
 
 	const handleImageChange = (e) => {
 		const uploadedImg = e.target.files[0]
-		console.log(uploadedImg)
 		if (!uploadedImg) return
 
 		if (uploadedImg.type !== 'image/jpeg' && uploadedImg.type !== 'image/png') {
@@ -78,8 +76,8 @@ const ChangeAvatar = () => {
 			return
 		}
 
-		if (uploadedImg.size > 5 * 1024 * 1024) {
-			showSnackbar.error({ text: 'Image too large. Maximum size is 5MB' })
+		if (uploadedImg.size > 7 * 1024 * 1024) {
+			showSnackbar.error({ text: 'Image too large. Maximum size is 7MB' })
 			setImage(null)
 			return
 		}
@@ -109,7 +107,6 @@ const ChangeAvatar = () => {
 		if (image.type === 'image/jpeg') {
 			ref.current.getImageScaledToCanvas().toBlob(
 				(blob) => {
-					console.log('blob', blob)
 					const fd = new FormData()
 					fd.append('avatar', blob, image.name)
 
@@ -120,7 +117,6 @@ const ChangeAvatar = () => {
 			)
 		} else if (image.type === 'image/png') {
 			ref.current.getImageScaledToCanvas().toBlob((blob) => {
-				console.log('blob', blob)
 				const fd = new FormData()
 				fd.append('avatar', blob, image.name)
 

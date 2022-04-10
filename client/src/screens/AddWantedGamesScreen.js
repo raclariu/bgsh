@@ -60,8 +60,6 @@ const AddWantedGamesScreen = () => {
 		deleteMutation.mutate({ bggId, title })
 	}
 
-	console.log(values)
-
 	const handleSubmit = (e) => {
 		e.preventDefault()
 

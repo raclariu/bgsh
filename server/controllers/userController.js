@@ -62,7 +62,6 @@ const userLogin = asyncHandler(async (req, res) => {
 						message : `Account is not active. An activation email has been sent to ${user.email}`
 					}
 				} else {
-					console.log(lookback)
 					res.status(403)
 					throw {
 						code    : 11,
