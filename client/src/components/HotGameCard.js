@@ -1,7 +1,6 @@
 // @ Modules
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
 
 // @ Mui
 import Card from '@mui/material/Card'
@@ -13,8 +12,6 @@ import Box from '@mui/material/Box'
 // @ Components
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomDivider from './CustomDivider'
-import CustomButton from './CustomButton'
-import CustomTooltip from './CustomTooltip'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({

@@ -1,6 +1,6 @@
 // @ Modules
 import React, { useState, Fragment } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import Zoom from 'react-medium-image-zoom'
 
 import 'react-medium-image-zoom/dist/styles.css'
@@ -44,8 +44,8 @@ import DonutSmallOutlinedIcon from '@mui/icons-material/DonutSmallOutlined'
 import CustomAvatar from '../components/CustomAvatar'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomDivider from '../components/CustomDivider'
-import StatsBoxes from '../components/SingleGameScreen/StatsBoxes'
-import InfoBox from '../components/SingleGameScreen/InfoBox'
+import StatsBoxes from '../components/StatsBoxes'
+import InfoBox from '../components/InfoBox'
 import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
 import ReportForm from '../components/ReportForm'

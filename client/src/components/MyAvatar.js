@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 
 // @ Mui
 import Avatar from '@mui/material/Avatar'
-import Box from '@mui/material/Box'
 
 // @ Others
 import { useGetOwnAvatarQuery } from '../hooks/hooks'

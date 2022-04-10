@@ -1,7 +1,6 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
 
 // @ Mui
 import Card from '@mui/material/Card'
@@ -19,8 +18,6 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
-import CustomButton from './CustomButton'
-import CustomTooltip from './CustomTooltip'
 import GameDetailsButton from './GameDetailsButton'
 
 // @ Styles

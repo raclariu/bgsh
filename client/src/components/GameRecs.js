@@ -1,5 +1,5 @@
 // @ Modules
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import approx from 'approximate-number'
 import { useInView } from 'react-intersection-observer'

@@ -2,7 +2,6 @@
 import React from 'react'
 import { styled } from '@mui/material/styles'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -17,9 +16,8 @@ import Chip from '@mui/material/Chip'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
-import CustomButton from './CustomButton'
 import CustomTooltip from './CustomTooltip'
-import StatsBoxes from './SingleGameScreen/StatsBoxes'
+import StatsBoxes from './StatsBoxes'
 
 // @ Icons
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined'

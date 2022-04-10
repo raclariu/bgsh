@@ -1,5 +1,5 @@
 // @ Modules
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 
 // @ Mui
@@ -212,7 +212,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 						value={data.version}
 						isOptionEqualToValue={(option, value) => option.title === value.title}
 						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'version')}
-						options={[ ...game.versions, { title: 'TEST FOR ERROR', year: 1999 } ]}
+						options={game.versions}
 						getOptionLabel={(option) => `${option.title} (${option.year})`}
 						renderInput={(params) => (
 							<Input
@@ -234,16 +234,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 						isOptionEqualToValue={(option, value) => option === value}
 						onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'condition')}
 						// if options change, don't forget to also change the arr on the server validator
-						options={[
-							'New',
-							'asd',
-							'Opened, not played',
-							'Like new',
-							'Very Good',
-							'Good',
-							'Acceptable',
-							'Poor'
-						]}
+						options={[ 'New', 'Opened, not played', 'Like new', 'Very Good', 'Good', 'Acceptable', 'Poor' ]}
 						renderInput={(params) => (
 							<Input
 								{...params}

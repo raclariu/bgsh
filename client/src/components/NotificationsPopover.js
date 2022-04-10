@@ -6,11 +6,8 @@ import { TransitionGroup } from 'react-transition-group'
 // @ Mui
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
-import Grow from '@mui/material/Grow'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import Badge from '@mui/material/Badge'
@@ -21,13 +18,10 @@ import Collapse from '@mui/material/Collapse'
 // @ Components
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
-import CustomButton from './CustomButton'
 import LoadingBtn from './LoadingBtn'
 
 // @ Icons
 import NotificationsOffTwoToneIcon from '@mui/icons-material/NotificationsOffTwoTone'
-import NotificationsNoneTwoToneIcon from '@mui/icons-material/NotificationsNoneTwoTone'
-import FavoriteIcon from '@mui/icons-material/Favorite'
 import CloseIcon from '@mui/icons-material/Close'
 import NotificationsActiveTwoToneIcon from '@mui/icons-material/NotificationsActiveTwoTone'
 

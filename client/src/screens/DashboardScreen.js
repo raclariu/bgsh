@@ -1,15 +1,13 @@
 // @ Modules
-import React, { useEffect, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useInView } from 'react-intersection-observer'
 
 // @ Mui
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import ButtonBase from '@mui/material/ButtonBase'
 
 // @ Icons
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'

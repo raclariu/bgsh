@@ -15,7 +15,7 @@ import CustomIconBtn from './CustomIconBtn'
 import Loader from './Loader'
 
 // @ Others
-import { useNotiSnackbar, useUpdateSaveGameStatusMutation, useGetSaveGameStatusQuery } from '../hooks/hooks'
+import { useUpdateSaveGameStatusMutation, useGetSaveGameStatusQuery } from '../hooks/hooks'
 
 // @ Main
 const SaveGameButton = ({ altId, addedById }) => {

@@ -1,5 +1,5 @@
 // @ Modules
-import React, { Fragment } from 'react'
+import React from 'react'
 
 // @ Mui
 import Divider from '@mui/material/Divider'

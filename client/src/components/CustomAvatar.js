@@ -1,7 +1,6 @@
 // @ Modules
 import React, { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 // @ Mui
@@ -17,9 +16,6 @@ import CustomTooltip from './CustomTooltip'
 
 // @ Icons
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
-
-// @ Others
-import { apiGetOwnAvatar } from '../api/api'
 
 // @ Styles
 const StyledAvatar = styled(Avatar)(({ theme }) => ({

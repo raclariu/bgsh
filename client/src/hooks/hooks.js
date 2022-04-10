@@ -3,7 +3,7 @@ import { useSnackbar } from 'notistack'
 import * as api from '../api/api'
 
 export const useNotiSnackbar = () => {
-	const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+	const { enqueueSnackbar } = useSnackbar()
 
 	const showSuccessSnackbar = ({ text, preventDuplicate }) => {
 		enqueueSnackbar(text, {
@@ -319,8 +319,6 @@ export const useUpdateMessageStatusMutation = ({ page, search }) => {
 			queryClient.setQueryData([ 'inbox', 'received', { page, search } ], context.data)
 		},
 		onSuccess : (updatedMsg) => {
-			showSnackbar.info({ text: 'Message has been read' })
-
 			queryClient.setQueryData([ 'inbox', 'received', { page, search } ], (data) => {
 				const copyData = { ...data }
 				const idx = copyData.messages.findIndex((msg) => msg._id === updatedMsg._id)
@@ -764,12 +762,12 @@ export const useGetSaveGameStatusQuery = ({ altId }) => {
 	})
 }
 
-export const useSubmitReportMutation = (closeModal) => {
+export const useSubmitReportMutation = ({ handleCloseDialog }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation((data) => api.apiSubmitReport(data), {
 		onSuccess : () => {
-			closeModal()
+			handleCloseDialog()
 			showSnackbar.success({ text: 'Report sent successfully' })
 		}
 	})

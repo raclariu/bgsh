@@ -33,13 +33,19 @@ import { useSubmitReportMutation } from '../hooks/hooks'
 const ReportForm = ({ type, username, altId }) => {
 	const currUsername = useSelector((state) => state.userData.username)
 
-	const [ open, setIsOpen ] = useState(false)
+	const [ open, setOpen ] = useState(false)
 	const [ selected, setSelected ] = useState(type || 'other')
 	const [ typedUsername, setTypedUsername ] = useState(username || '')
 	const [ typedAltId, setTypedAltId ] = useState(altId || '')
 	const [ reportText, setReportText ] = useState('')
 
-	const { mutate, isError, error, isLoading } = useSubmitReportMutation(() => setIsOpen(false))
+	const handleCloseDialog = (e, reason) => {
+		if (reason && reason === 'backdropClick') return
+		setOpen(false)
+		setReportText('')
+	}
+
+	const { mutate, isError, error, isLoading } = useSubmitReportMutation({ handleCloseDialog })
 
 	const submitReport = (e) => {
 		e.preventDefault()
@@ -56,7 +62,7 @@ const ReportForm = ({ type, username, altId }) => {
 		<Fragment>
 			<CustomTooltip title="Report">
 				<CustomIconBtn
-					onClick={() => setIsOpen(true)}
+					onClick={() => setOpen(true)}
 					disabled={currUsername === username}
 					color="error"
 					size="large"
@@ -65,7 +71,7 @@ const ReportForm = ({ type, username, altId }) => {
 				</CustomIconBtn>
 			</CustomTooltip>
 
-			<Dialog open={open} onClose={() => setIsOpen(false)} maxWidth="xs" fullWidth>
+			<Dialog open={open} onClose={handleCloseDialog} maxWidth="xs" fullWidth>
 				<form onSubmit={submitReport} autoComplete="off">
 					<DialogTitle>Report form</DialogTitle>
 					<DialogContent dividers>
@@ -155,7 +161,7 @@ const ReportForm = ({ type, username, altId }) => {
 						</Box>
 					</DialogContent>
 					<DialogActions>
-						<CustomButton onClick={() => setIsOpen(false)}>Cancel</CustomButton>
+						<CustomButton onClick={handleCloseDialog}>Cancel</CustomButton>
 						<LoadingBtn loading={isLoading} type="submit" variant="contained" color="primary">
 							Submit
 						</LoadingBtn>

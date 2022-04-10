@@ -1,10 +1,8 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
 
 // @ Mui
 import { styled } from '@mui/material/styles'
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
@@ -17,8 +15,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 
 // @ Icons
-import BlockIcon from '@mui/icons-material/Block'
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTone'
@@ -32,7 +28,7 @@ import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
 
 // @ Others
-import { calculateTimeAgo, formatDate } from '../helpers/helpers'
+import { formatDate } from '../helpers/helpers'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)({

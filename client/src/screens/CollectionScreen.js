@@ -1,7 +1,5 @@
 // @ Modules
 import React, { Fragment } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
 
@@ -21,7 +19,6 @@ import Helmet from '../components/Helmet'
 
 // @ Others
 import {
-	useNotiSnackbar,
 	useGetListQuery,
 	useGetOwnedCollectionQuery,
 	useDeleteFromListMutation,

@@ -1,12 +1,11 @@
 // @ Modules
-import React, { useEffect, useState, useRef, Fragment } from 'react'
+import React, { useState, Fragment } from 'react'
 
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
-import Button from '@mui/material/Button'
 import Backdrop from '@mui/material/Backdrop'
 
 // @ Components
@@ -153,7 +152,7 @@ const AddWantedGamesScreen = () => {
 							value={data.shipPreffered}
 							onChange={(e, selected) => setShipPreffered(selected)}
 							limitTags={2}
-							options={[ 'Romanian Post', 'Courier', 'Personal', 'Fake' ]}
+							options={[ 'Romanian Post', 'Courier', 'Personal' ]}
 							renderTags={(value, getTagProps) =>
 								value.map((option, index) => (
 									<Chip size="small" label={option} {...getTagProps({ index })} />

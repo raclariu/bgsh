@@ -1,8 +1,6 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { useSelector } from 'react-redux'
-import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -19,7 +17,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 // @ Components
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
-import StatsBoxes from './SingleGameScreen/StatsBoxes'
+import StatsBoxes from './StatsBoxes'
 import GameDetailsButton from './GameDetailsButton'
 import CustomAvatar from './CustomAvatar'
 

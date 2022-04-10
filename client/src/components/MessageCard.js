@@ -1,6 +1,5 @@
 // @ Modules
 import React from 'react'
-import { useLocation } from 'react-router-dom'
 
 // @ Mui
 import Card from '@mui/material/Card'
@@ -13,11 +12,8 @@ import Collapse from '@mui/material/Collapse'
 import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import SendIcon from '@mui/icons-material/Send'
-import DoneAllIcon from '@mui/icons-material/DoneAll'
 
 // @ Components
 import CustomIconBtn from './CustomIconBtn'
@@ -72,7 +68,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 									size="small"
 									color="primary"
 									variant="outlined"
-									label={<Box>Read {calculateTimeAgo(msg.readAt)} </Box>}
+									label={<Box>Seen {calculateTimeAgo(msg.readAt)} </Box>}
 								/>
 							</CustomTooltip>
 						)}

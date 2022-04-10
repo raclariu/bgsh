@@ -1,12 +1,10 @@
 // @ Modules
 import React, { Fragment, useState, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useDebounce } from 'use-debounce'
 
 // @ Mui
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import Autocomplete from '@mui/material/Autocomplete'
 
 // @ Components
@@ -15,7 +13,6 @@ import Loader from './Loader'
 import Input from './Input'
 
 // @ Others
-import { apiBggSearchGames } from '../api/api'
 import { useAddToListMutation, useBggSearchGamesMutation } from '../hooks/hooks'
 
 // @ Main

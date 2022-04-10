@@ -1,12 +1,10 @@
 // @ Modules
-import React, { useEffect, useState, Fragment } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState, Fragment } from 'react'
 import { useParams } from 'react-router-dom'
 import { calculateTimeAgoStrict, formatDateSimple } from '../helpers/helpers'
 
 // @ Mui
 import Chip from '@mui/material/Chip'
-import Avatar from '@mui/material/Avatar'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -47,15 +45,7 @@ const UserProfileScreen = () => {
 	return (
 		<Fragment>
 			{isFetchingUserData && (
-				<Box
-					display="flex"
-					width="100%"
-					mb={4}
-					// justifyContent="space-between"
-					flexDirection="column"
-					alignItems="center"
-					gap={1}
-				>
+				<Box display="flex" width="100%" mb={4} flexDirection="column" alignItems="center" gap={1}>
 					<CustomSkeleton width={96} height={96} variant="circular" />
 					<CustomSkeleton width={220} height={51} variant="text" />
 					<CustomSkeleton width={75} height={44} variant="text" />
@@ -67,15 +57,7 @@ const UserProfileScreen = () => {
 			{isSuccessUserData && <Helmet title={`${userData.user.username}'s profile`} />}
 
 			{isSuccessUserData && (
-				<Box
-					display="flex"
-					width="100%"
-					mb={4}
-					// justifyContent="space-between"
-					flexDirection="column"
-					alignItems="center"
-					gap={1}
-				>
+				<Box display="flex" width="100%" mb={4} flexDirection="column" alignItems="center" gap={1}>
 					<CustomAvatar noClick size={12} username={userData.user.username} src={userData.user.avatar} />
 					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
 						{`${userData.user.username}'s profile`}

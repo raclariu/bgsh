@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 const CustomHelmet = ({ title }) => {
 	return (
 		<Helmet>
-			<title>{title}</title>
+			<title>{title || 'Meeples.Ro'}</title>
 		</Helmet>
 	)
 }

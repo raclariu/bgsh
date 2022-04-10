@@ -1,7 +1,6 @@
 // @ Modules
 import React, { Fragment, useState, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
 import { useMutation } from 'react-query'
 
@@ -49,7 +48,7 @@ const CreateAccountScreen = () => {
 	const [ passVisibility, setPassVisibility ] = useState(false)
 	const [ passConfirmationVisibility, setPassConfirmationVisibility ] = useState(false)
 
-	const { mutate, isError, error, isSuccess, isLoading } = useMutation((data) => apiCreateAccount(data), {
+	const { mutate, isError, error, isLoading } = useMutation((data) => apiCreateAccount(data), {
 		onSuccess : (data, vars) => {
 			showSnackbar.success({
 				text             : `Account created successfully. An activation email was sent to ${vars.email}`,

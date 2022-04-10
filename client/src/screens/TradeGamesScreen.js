@@ -1,7 +1,5 @@
 // @ Modules
-import React, { Fragment, useEffect, useState, useRef } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 
@@ -13,10 +11,8 @@ import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
-import RadioGroup from '@mui/material/RadioGroup'
 import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
-import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
 import Backdrop from '@mui/material/Backdrop'
 
@@ -30,7 +26,6 @@ import LoadingBtn from '../components/LoadingBtn'
 import Helmet from '../components/Helmet'
 
 // @ Others
-import { apiFetchGameDetails, apiListGamesForTrade } from '../api/api'
 import {
 	useGetListQuery,
 	useDeleteFromListMutation,
@@ -41,7 +36,6 @@ import citiesArr from '../constants/cities'
 
 // @ Main
 const TradeGamesScreen = () => {
-	const dispatch = useDispatch()
 	const location = useLocation()
 	const navigate = useNavigate()
 

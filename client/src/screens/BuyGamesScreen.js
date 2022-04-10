@@ -1,7 +1,5 @@
 // @ Modules
-import React, { Fragment, useEffect, useState, useRef } from 'react'
-import { styled } from '@mui/material/styles'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import queryString from 'query-string'
 
@@ -30,7 +28,6 @@ import {
 
 // @ Main
 const BuyGamesScreen = () => {
-	const dispatch = useDispatch()
 	const location = useLocation()
 	const navigate = useNavigate()
 

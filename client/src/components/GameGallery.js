@@ -1,5 +1,5 @@
 // @ Modules
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { useInView } from 'react-intersection-observer'
@@ -35,7 +35,6 @@ import { useGetGameGalleryQuery } from '../hooks/hooks'
 // @ Styles
 const StyledMasonryImg = styled('img')({
 	verticalAlign : 'middle',
-	// minHeight     : '100px',
 	maxHeight     : '100%',
 	width         : '100%',
 	objectFit     : 'contain',
@@ -94,7 +93,6 @@ const GameGallery = ({ idx }) => {
 	const handleCloseGalleryImageDialog = () => {
 		setOpenGalleryDialog(false)
 		setImgLoaded(false)
-		// setImgIdx(0)
 	}
 
 	const onImgLoad = () => {

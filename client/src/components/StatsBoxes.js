@@ -6,7 +6,7 @@ import approx from 'approximate-number'
 import Box from '@mui/material/Box'
 
 // @ Components
-import CustomTooltip from '../CustomTooltip'
+import CustomTooltip from './CustomTooltip'
 
 // @ Helpers
 const defaultBigBox = {

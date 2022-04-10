@@ -1,16 +1,15 @@
 // @ Modules
 import React, { lazy, useEffect, Suspense } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useQuery } from 'react-query'
 import { Route, Navigate, Routes, useLocation } from 'react-router-dom'
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles'
 import { isMobile } from 'react-device-detect'
-import CssBaseline from '@mui/material/CssBaseline'
 
 // @ CSS
 import './css/App.css'
 
 // @ Mui
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 import LinearProgress from '@mui/material/LinearProgress'
 
@@ -27,7 +26,6 @@ import Footer from './components/Footer'
 import { SnackbarProvider } from 'notistack'
 
 // @ Others
-import { apiGetMe } from './api/api'
 import { getMe } from './actions/userActions'
 
 // @ Theme
@@ -73,16 +71,6 @@ const App = () => {
 		},
 		[ token, success, dispatch ]
 	)
-
-	// const { isLoading, isError, error, data, isSuccess } = useQuery([ 'me' ], apiGetMe, {
-	// 	retry     : 5,
-	// 	enabled   : !!token,
-	// 	staleTime : Infinity,
-	// 	onSuccess : (data) => {
-	// 		console.log(data)
-	// 		dispatch(getMe(data))
-	// 	}
-	// })
 
 	const location = useLocation()
 	const notistackRef = React.createRef()

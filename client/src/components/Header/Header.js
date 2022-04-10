@@ -1,9 +1,8 @@
 // @ Modules
-import React, { Fragment, useState, useCallback } from 'react'
+import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
 
 // @ Mui
 import AppBar from '@mui/material/AppBar'
@@ -28,29 +27,22 @@ import MenuIcon from '@mui/icons-material/Menu'
 import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone'
 import LibraryBooksTwoToneIcon from '@mui/icons-material/LibraryBooksTwoTone'
 import FavoriteTwoToneIcon from '@mui/icons-material/FavoriteTwoTone'
-import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone'
 import MonetizationOnTwoToneIcon from '@mui/icons-material/MonetizationOnTwoTone'
 import MeetingRoomTwoToneIcon from '@mui/icons-material/MeetingRoomTwoTone'
-import BookmarkTwoToneIcon from '@mui/icons-material/BookmarkTwoTone'
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone'
 import LocalActivityTwoToneIcon from '@mui/icons-material/LocalActivityTwoTone'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import SwapHorizontalCircleTwoToneIcon from '@mui/icons-material/SwapHorizontalCircleTwoTone'
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone'
-import InboxTwoToneIcon from '@mui/icons-material/InboxTwoTone'
 import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone'
 import SendTwoToneIcon from '@mui/icons-material/SendTwoTone'
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone'
 import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
-import LogoutIcon from '@mui/icons-material/Logout'
 import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone'
-import GavelTwoToneIcon from '@mui/icons-material/GavelTwoTone'
 import KeyboardAltTwoToneIcon from '@mui/icons-material/KeyboardAltTwoTone'
 
 // @ Components
-import CustomIconBtn from '../CustomIconBtn'
 import CustomDivider from '../CustomDivider'
 import CustomButton from '../CustomButton'
 import MessagesBadge from '../MessagesBadge'
@@ -65,7 +57,6 @@ import { logOut } from '../../actions/userActions'
 // @ Main
 const Header = () => {
 	const dispatch = useDispatch()
-	const location = useLocation()
 
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openCollapseType, setOpenCollapseType ] = useState(null)

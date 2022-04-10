@@ -1,11 +1,8 @@
 // @ Modules
 import React from 'react'
-import { styled } from '@mui/material/styles'
 
 // @ Mui
 import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 
 // @ Main
@@ -23,7 +20,7 @@ const Footer = () => {
 			}}
 		>
 			<Box display="flex" alignItems="center" justifyContent="center" height="100%">
-				<Typography variant="body1" fontWeight="fontWeightMedium">
+				<Typography variant="body1" fontWeight="fontWeightMedium" color="grey.500">
 					Meeples.ro
 				</Typography>
 			</Box>

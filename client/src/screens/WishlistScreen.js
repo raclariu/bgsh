@@ -18,9 +18,7 @@ import LzLoad from '../components/LzLoad'
 import Helmet from '../components/Helmet'
 
 // @ Others
-import { apiAddOneToList, apiDeleteOneFromList } from '../api/api'
 import {
-	useNotiSnackbar,
 	useGetListQuery,
 	useGetWishlistCollectionQuery,
 	useDeleteFromListMutation,
