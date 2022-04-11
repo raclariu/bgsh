@@ -150,7 +150,6 @@ const SingleGameScreen = () => {
 
 			{isError && (
 				<Box display="flex" alignItems="center" width="100%" gap={1}>
-					<SaveGameButton altId={altId} />
 					<Box width="100%">
 						<CustomAlert>{error.response.data.message}</CustomAlert>
 					</Box>

@@ -71,8 +71,8 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 			return
 		}
 
-		if (uploadedImg.size > 5 * 1024 * 1024) {
-			showSnackbar.error({ text: 'Image too large. Maximum size is 5MB' })
+		if (uploadedImg.size > 7 * 1024 * 1024) {
+			showSnackbar.error({ text: 'Image too large. Maximum size is 7MB' })
 
 			return
 		}

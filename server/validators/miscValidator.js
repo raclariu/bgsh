@@ -2,7 +2,9 @@ import { check } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 
-const validateReportType = check('type').isIn([ 'user', 'game', 'other', 'bug' ]).withMessage('Report type invalid')
+const validateReportType = check('type')
+	.isIn([ 'user', 'game', 'other', 'bug', 'suggestion' ])
+	.withMessage('Report type invalid')
 
 const validateReportText = check('reportText')
 	.trim()

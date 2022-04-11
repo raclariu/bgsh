@@ -29,6 +29,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 	return (
 		<Card elevation={2}>
 			<CardHeader
+				disableTypography
 				avatar={
 					<CustomAvatar
 						size={6}
@@ -39,6 +40,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 				title={
 					<Box
 						color={!msg.read ? 'primary.main' : 'inherit'}
+						fontSize="body2.fontSize"
 						fontWeight="fontWeightBold"
 						mb="0.25em"
 						sx={{ wordBreak: 'break-word' }}
@@ -47,7 +49,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 					</Box>
 				}
 				subheader={
-					<Box display="flex" gap={0.5}>
+					<Box display="flex" gap={0.5} flexWrap="wrap">
 						<CustomTooltip title={formatDate(msg.createdAt)}>
 							<Chip
 								size="small"
@@ -64,7 +66,6 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 						{msg.readAt && (
 							<CustomTooltip title={formatDate(msg.readAt)}>
 								<Chip
-									sx={{ maxWidth: '100%' }}
 									size="small"
 									color="primary"
 									variant="outlined"

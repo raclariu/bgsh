@@ -81,7 +81,7 @@ const resizeAvatar = asyncHandler(async (req, res, next) => {
 const multerGameImage = multer({
 	storage    : memStorage,
 	limits     : {
-		fileSize : 5 * 1024 * 1024 // Maximum file size is 5MB
+		fileSize : 7 * 1024 * 1024 // Maximum file size is 7MB
 	},
 	fileFilter : (req, file, cb) => {
 		checkGameImageFileType(file, cb)

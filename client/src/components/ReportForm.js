@@ -49,7 +49,7 @@ const ReportForm = ({ type, username, altId }) => {
 
 	const submitReport = (e) => {
 		e.preventDefault()
-		if (selected === 'other' || selected === 'bug') {
+		if (selected === 'other' || selected === 'bug' || selected === 'suggestion') {
 			mutate({ type: selected, username: null, altId: null, reportText })
 		} else if (selected === 'user') {
 			mutate({ type: selected, username: typedUsername, altId: null, reportText })
@@ -88,6 +88,7 @@ const ReportForm = ({ type, username, altId }) => {
 									<MenuItem value="user">User</MenuItem>
 									<MenuItem value="game">Listed game</MenuItem>
 									<MenuItem value="bug">Bug</MenuItem>
+									<MenuItem value="suggestion">Suggestion</MenuItem>
 									<MenuItem value="other">Other</MenuItem>
 								</Select>
 								<FormHelperText error={isError ? !!error.response.data.message.type : false}>
