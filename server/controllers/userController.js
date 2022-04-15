@@ -374,6 +374,34 @@ const getOwnAvatar = asyncHandler(async (req, res) => {
 	return res.status(200).json({ avatar: user.avatar })
 })
 
+// ~ @desc    Get own socials
+// ~ @route   GET  /api/users/socials
+// ~ @access  Private route
+const getSocials = asyncHandler(async (req, res) => {
+	const user = await User.findOne({ _id: req.user._id }).select('socials').lean()
+	return res.status(200).json({ socials: user.socials })
+})
+
+// * @desc    Update socials
+// * @route   POST  /api/users/socials
+// * @access  Private route
+const updateSocials = asyncHandler(async (req, res) => {
+	const validationErrors = validationResult(req)
+	if (!validationErrors.isEmpty()) {
+		const err = validationErrors.mapped()
+		res.status(400)
+		throw {
+			message : {
+				bggUsernameError : err.bggUsername ? err.bggUsername.msg : null,
+				fbgUsernameError : err.fbgUsername ? err.fbgUsername.msg : null
+			}
+		}
+	}
+
+	await User.updateOne({ _id: req.user._id }, { socials: req.body })
+	return res.status(204).end()
+})
+
 export {
 	userLogin,
 	userRegister,
@@ -385,5 +413,7 @@ export {
 	getUserProfileData,
 	getUserProfileListingsData,
 	changeAvatar,
-	getOwnAvatar
+	getOwnAvatar,
+	getSocials,
+	updateSocials
 }

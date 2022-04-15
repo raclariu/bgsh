@@ -17,6 +17,20 @@ const errorHandler = (err, req, res, next) => {
 	const statusCode = res.statusCode === 200 ? 500 : res.statusCode
 	res.status(statusCode)
 
+	winstonLogger.log({
+		level   : 'error',
+		message : {
+			code      : err.code || null,
+			timestamp : new Date(),
+			status    : statusCode,
+			error     : err.message,
+			path      : req.originalUrl,
+			devErr    : err.devErr,
+			ref       : req.headers.referer,
+			method    : req.method || null
+		}
+	})
+
 	if (process.env.NODE_ENV === 'development') {
 		console.log(chalk.hex('#737373')('________________________________________________'))
 		console.log(chalk.bgHex('#f7edcb').hex('#1c1c1c').bold('\nERROR HANDLER\n'), err)
@@ -37,20 +51,6 @@ const errorHandler = (err, req, res, next) => {
 		} else if (typeof err.message === 'string') {
 			console.log(chalk.bgHex('#c21313').hex('#f7edcb').bold('\n' + 'Error(s)' + '\n' + `${err.message}` + '\n'))
 		}
-
-		winstonLogger.log({
-			level   : 'error',
-			message : {
-				code      : err.code || null,
-				timestamp : new Date(),
-				status    : statusCode,
-				message   : err.message,
-				path      : req.originalUrl,
-				devErr    : err.devErr,
-				ref       : req.headers.referer,
-				method    : req.method || null
-			}
-		})
 
 		console.log(chalk.hex('#737373')('________________________________________________'))
 	}

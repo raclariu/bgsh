@@ -34,10 +34,9 @@ const ChangePasswordForm = () => {
 		}
 	})
 
-	const passwordCurrentErrorMsg = isError && error.response && error.response.data.message.passwordCurrentError
-	const passwordNewErrorMsg = isError && error.response && error.response.data.message.passwordNewError
-	const passwordNewConfirmationErrorMsg =
-		isError && error.response && error.response.data.message.passwordNewConfirmationError
+	const passwordCurrentErrorMsg = isError && error.response.data.message.passwordCurrentError
+	const passwordNewErrorMsg = isError && error.response.data.message.passwordNewError
+	const passwordNewConfirmationErrorMsg = isError && error.response.data.message.passwordNewConfirmationError
 
 	const handlePassVisibility = (type) => {
 		if (type === 'passCurrent') {
@@ -62,8 +61,8 @@ const ChangePasswordForm = () => {
 		<form onSubmit={submitHandler} autoComplete="off">
 			<Input
 				sx={{ minHeight: '90px' }}
-				error={isError && passwordCurrentErrorMsg ? true : false}
-				helperText={isError ? passwordCurrentErrorMsg : false}
+				error={!!passwordCurrentErrorMsg}
+				helperText={passwordCurrentErrorMsg}
 				onChange={(inputVal) => setPasswordCurrent(inputVal)}
 				value={passwordCurrent}
 				size="medium"
@@ -86,8 +85,8 @@ const ChangePasswordForm = () => {
 
 			<Input
 				sx={{ minHeight: '90px' }}
-				error={isError && passwordNewErrorMsg ? true : false}
-				helperText={isError ? passwordNewErrorMsg : false}
+				error={!!passwordNewErrorMsg}
+				helperText={passwordNewErrorMsg}
 				onChange={(inputVal) => setPasswordNew(inputVal)}
 				value={passwordNew}
 				size="medium"
@@ -110,8 +109,8 @@ const ChangePasswordForm = () => {
 
 			<Input
 				sx={{ minHeight: '90px' }}
-				error={isError && passwordNewConfirmationErrorMsg ? true : false}
-				helperText={isError ? passwordNewConfirmationErrorMsg : false}
+				error={!!passwordNewConfirmationErrorMsg}
+				helperText={passwordNewConfirmationErrorMsg}
 				onChange={(inputVal) => setPasswordNewConfirmation(inputVal)}
 				value={passwordNewConfirmation}
 				size="medium"

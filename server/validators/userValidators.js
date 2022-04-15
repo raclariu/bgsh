@@ -205,6 +205,22 @@ const validatePasswordNewConfirmation = check('passwordNewConfirmation')
 	})
 	.withMessage('New password confirmation does not match new password')
 
+const validateSocialsBggUsername = check('bggUsername')
+	.optional({ nullable: true })
+	.trim()
+	.isLength({ min: 4, max: 20 })
+	.withMessage('BGG username must be between 4 and 20 characters long')
+	.bail()
+
+const validateSocialsFbgUsername = check('fbgUsername')
+	.optional({ nullable: true })
+	.trim()
+	.isLength({ min: 5, max: 20 })
+	.withMessage('FBG username must be between 5 and 20 characters long')
+	.bail()
+
+const validateSocialsShow = check('show').isIn([ true, false ]).withMessage('Invalid display checkbox selection')
+
 const validateLogin = [ validateEmail, validatePasswordLogIn ]
 const validateSignUp = [
 	validateEmailDuplicate,
@@ -213,6 +229,7 @@ const validateSignUp = [
 	validatePasswordConfirmation
 ]
 const validatePasswordChange = [ validatePasswordCurrent, validatePasswordNew, validatePasswordNewConfirmation ]
+const validateSocials = [ validateSocialsBggUsername, validateSocialsFbgUsername, validateSocialsShow ]
 
 export {
 	validateLogin,
@@ -221,5 +238,6 @@ export {
 	validateUsernameExist,
 	validateEmail,
 	validateResetPasswordNew,
-	validatePasswordNewConfirmation
+	validatePasswordNewConfirmation,
+	validateSocials
 }

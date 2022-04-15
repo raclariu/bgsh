@@ -1,10 +1,11 @@
 import cron from 'node-cron'
 import puppeteer from 'puppeteer'
+import winstonLogger from '../helpers/winstonLogger.js'
+import chalk from 'chalk'
 import { subDays } from 'date-fns'
 import Game from '../models/gameModel.js'
 import Kickstarter from '../models/ksModel.js'
 import Notification from '../models/notificationModel.js'
-import chalk from 'chalk'
 
 const options = {
 	scheduled : false,
@@ -45,6 +46,17 @@ const dailyTask = cron.schedule(
 		const ntfLookback = subDays(new Date(), 14)
 		const deletedNtfCount = await Notification.deleteMany({ createdAt: { $lte: ntfLookback } }).lean()
 
+		winstonLogger.log({
+			level   : 'info',
+			message : {
+				timestamp : new Date(),
+				info      :
+					`Ran daily task at ${new Date().toLocaleString('ro-RO')}` +
+					`>> updated ${modify.modifiedCount}/${modify.matchedCount} games to inactive` +
+					`>> deleted ${deletedNtfCount.deletedCount} notifications older than 14 days`
+			}
+		})
+
 		console.log(chalk.hex('#737373')('_____________________________________________'))
 		console.log(
 			chalk
@@ -67,20 +79,33 @@ const dailyTask = cron.schedule(
 
 const fetchKickstarters = cron.schedule(
 	'0 7,17 * * *',
+	//'*/10 * * * * *',
 	async () => {
 		const args = [
-			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36"'
+			'--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36"',
+			'--no-sandbox',
+			'--disable-setuid-sandbox'
 		]
 
-		const browser = await puppeteer.launch({ args, headless: false, ignoreHTTPSErrors: true }) //{ headless: false }
-		const page = (await browser.pages())[0]
-
 		try {
+			console.log('opening browser')
+			//executablePath    : '/usr/bin/chromium-browser'
+			const browser = await puppeteer.launch({
+				args,
+				headless          : true,
+				ignoreHTTPSErrors : true
+			}) //{ headless: false }
+			console.log('selecting page')
+			const page = (await browser.pages())[0]
+
+			console.log('go to page')
 			await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
 			// await page.screenshot({ path: './kickstarter.png' })
 			// await page.waitForNavigation()
+			console.log('wait for selector')
 			await page.waitForSelector('#projects_list')
 
+			console.log('evaluate')
 			const data = await page.evaluate(() => {
 				let kickstartersRaw = []
 
@@ -112,10 +137,19 @@ const fetchKickstarters = cron.schedule(
 				return kickstarters
 			})
 
+			console.log('close browser')
 			await browser.close()
 
 			await Kickstarter.deleteMany({})
 			await Kickstarter.insertMany(data)
+
+			winstonLogger.log({
+				level   : 'info',
+				message : {
+					timestamp : new Date(),
+					info      : `Ran kickstarter task at ${new Date().toLocaleString('ro-RO')}`
+				}
+			})
 
 			console.log(chalk.hex('#737373')('_____________________________________________'))
 			console.log(
@@ -126,6 +160,13 @@ const fetchKickstarters = cron.schedule(
 			)
 			console.log(chalk.hex('#737373')('_____________________________________________'))
 		} catch (error) {
+			winstonLogger.log({
+				level   : 'error',
+				message : {
+					timestamp : new Date(),
+					error     : `ERROR KS TASK - ${error}`
+				}
+			})
 			console.log(error)
 			await browser.close()
 		}

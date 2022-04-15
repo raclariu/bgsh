@@ -43,7 +43,21 @@ const userSchema = mongoose.Schema(
 				required : true,
 				ref      : 'Game'
 			}
-		]
+		],
+		socials    : {
+			bggUsername : {
+				type    : String,
+				default : null
+			},
+			fbgUsername : {
+				type    : String,
+				default : null
+			},
+			show        : {
+				type    : Boolean,
+				default : false
+			}
+		}
 	},
 	{
 		timestamps : true,

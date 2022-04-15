@@ -13,7 +13,9 @@ import {
 	getUserProfileData,
 	getUserProfileListingsData,
 	changeAvatar,
-	getOwnAvatar
+	getOwnAvatar,
+	getSocials,
+	updateSocials
 } from '../controllers/userController.js'
 import {
 	validateLogin,
@@ -22,13 +24,15 @@ import {
 	validateUsernameExist,
 	validateEmail,
 	validateResetPasswordNew,
-	validatePasswordNewConfirmation
+	validatePasswordNewConfirmation,
+	validateSocials
 } from '../validators/userValidators.js'
 
 // @route /api/users
 router.route('/login').post(validateLogin, userLogin)
 router.route('/signup').post(validateSignUp, userRegister)
 router.route('/me').get(protect, getMe)
+router.route('/socials').get(protect, getSocials).post([ protect, validateSocials ], updateSocials)
 router.route('/activate/:tokenUid').get(activateAccount)
 router.route('/password/change').post([ protect, ...validatePasswordChange ], changePassword)
 router.route('/password/forgot').post(validateEmail, forgotPassword)

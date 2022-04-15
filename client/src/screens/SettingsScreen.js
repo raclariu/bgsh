@@ -9,6 +9,7 @@ import CustomDivider from '../components/CustomDivider'
 import ChangePasswordForm from '../components/ChangePasswordForm'
 import Helmet from '../components/Helmet'
 import ChangeAvatar from '../components/ChangeAvatar'
+import SocialsForm from '../components/SocialsForm'
 
 // @ Main
 const SettingsScreen = () => {
@@ -16,12 +17,18 @@ const SettingsScreen = () => {
 		<Fragment>
 			<Helmet title="Settings" />
 			<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3}>
-				<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-					<ChangeAvatar />
-					<Box fontWeight="fontWeightMedium">Change avatar</Box>
-				</Box>
+				<ChangeAvatar />
 
 				<CustomDivider flexItem />
+				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+					Socials
+				</Box>
+				<SocialsForm />
+
+				<CustomDivider flexItem />
+				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+					Change your password
+				</Box>
 				<Box
 					sx={{
 						width : {

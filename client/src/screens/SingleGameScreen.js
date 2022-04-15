@@ -274,7 +274,15 @@ const SingleGameScreen = () => {
 									gap                 : 1
 								}}
 							>
-								<InfoBox data={`${data.games[idx].minPlayers} - ${data.games[idx].maxPlayers} players`}>
+								<InfoBox
+									data={
+										data.games[idx].minPlayers === data.games[idx].maxPlayers ? (
+											`${data.games[idx].maxPlayers} players`
+										) : (
+											`${data.games[idx].minPlayers} - ${data.games[idx].maxPlayers} players`
+										)
+									}
+								>
 									<PeopleAltTwoToneIcon fontSize="small" color="primary" />
 								</InfoBox>
 

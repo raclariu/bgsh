@@ -4,6 +4,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import chalk from 'chalk'
 import connectDB from './db/dbConnect.js'
+import winstonLogger from './helpers/winstonLogger.js'
 import { dailyTask, fetchKickstarters } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 import morganLogger from './middlewares/morganMiddleware.js'
@@ -47,6 +48,16 @@ const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	dailyTask.start()
 	fetchKickstarters.start()
+
+	if (process.env.NODE_ENV === 'production') {
+		winstonLogger.log({
+			level   : 'info',
+			message : {
+				timestamp : new Date(),
+				info      : `Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`
+			}
+		})
+	}
 
 	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 08:00 and 16:00`))
 	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))

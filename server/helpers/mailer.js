@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import winstonLogger from '../helpers/winstonLogger.js'
 
 export const sendAccountActivationMail = async ({ address, url }) => {
 	// create reusable transporter object using the default SMTP transport
@@ -26,6 +27,13 @@ export const sendAccountActivationMail = async ({ address, url }) => {
 				'Link expires after 6 hours'
 		})
 	} catch (error) {
+		winstonLogger.log({
+			level   : 'error',
+			message : {
+				timestamp : new Date(),
+				error     : `ERROR ACTIVATION EMAIL - ${error}`
+			}
+		})
 		console.log(error)
 	}
 }
@@ -49,13 +57,20 @@ export const sendForgotPasswordMail = async ({ address, url }) => {
 			to      : address, // list of receivers
 			subject : 'Reset password request', // Subject line
 			text    :
-				'Reset your Meeples password bu clicking the link below' +
+				'Reset your Meeples password by clicking the link below' +
 				'\n\n' +
 				`${url}` +
 				'\n\n' +
 				'Link expires after 6 hours'
 		})
 	} catch (error) {
+		winstonLogger.log({
+			level   : 'error',
+			message : {
+				timestamp : new Date(),
+				error     : `ERROR FORGOT PASSWORD EMAIL - ${error}`
+			}
+		})
 		console.log(error)
 	}
 }

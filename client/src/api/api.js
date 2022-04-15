@@ -353,3 +353,12 @@ export const apiGetOwnAvatar = async () => {
 export const apiSubmitReport = async (data) => {
 	await axsAUTH.post(`/api/misc/report`, data)
 }
+
+export const apiGetSocials = async () => {
+	const { data } = await axsAUTH.get(`/api/users/socials`)
+	return data
+}
+
+export const apiUpdateSocials = async (data) => {
+	await axsAUTH.post(`/api/users/socials`, data)
+}
