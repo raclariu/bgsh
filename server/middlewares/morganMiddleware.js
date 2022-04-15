@@ -48,9 +48,10 @@ const logger = () => {
 			].join(' ')
 		)
 	} else {
-		return morgan('short', {
-			stream : fs.createWriteStream(path.join(__dirname, '..', 'logs', 'access.log'), { flags: 'a' })
-		})
+		return morgan('short')
+		// return morgan('short', {
+		// 	stream : fs.createWriteStream(path.join(__dirname, '..', 'logs', 'access.log'), { flags: 'a' })
+		// })
 	}
 }
 
