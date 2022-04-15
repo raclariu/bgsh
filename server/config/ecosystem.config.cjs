@@ -2,7 +2,7 @@ module.exports = {
 	apps : [
 		{
 			name               : 'server',
-			script             : '../server.js',
+			script             : './server.js',
 			error_file         : '../logs/err.log',
 			out_file           : '../logs/out.log',
 			log_date_format    : 'DD-MM-YYYY HH:mm:ss',
