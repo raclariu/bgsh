@@ -1,5 +1,8 @@
 import morgan from 'morgan'
 import chalk from 'chalk'
+import fs from 'fs'
+import path from 'path'
+import { __dirname } from '../helpers/helpers.js'
 
 morgan.token('coloredStatus', (res) => {
 	if (res.statusCode >= 400) {
@@ -45,7 +48,9 @@ const logger = () => {
 			].join(' ')
 		)
 	} else {
-		return morgan('combined')
+		return morgan('short', {
+			stream : fs.createWriteStream(path.join(__dirname, '..', 'logs', 'access.log'), { flags: 'a' })
+		})
 	}
 }
 

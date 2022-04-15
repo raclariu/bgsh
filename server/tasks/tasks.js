@@ -1,6 +1,5 @@
 import cron from 'node-cron'
 import puppeteer from 'puppeteer'
-import winstonLogger from '../helpers/winstonLogger.js'
 import chalk from 'chalk'
 import { subDays } from 'date-fns'
 import Game from '../models/gameModel.js'
@@ -46,17 +45,6 @@ const dailyTask = cron.schedule(
 		const ntfLookback = subDays(new Date(), 14)
 		const deletedNtfCount = await Notification.deleteMany({ createdAt: { $lte: ntfLookback } }).lean()
 
-		winstonLogger.log({
-			level   : 'info',
-			message : {
-				timestamp : new Date(),
-				info      :
-					`Ran daily task at ${new Date().toLocaleString('ro-RO')}` +
-					`>> updated ${modify.modifiedCount}/${modify.matchedCount} games to inactive` +
-					`>> deleted ${deletedNtfCount.deletedCount} notifications older than 14 days`
-			}
-		})
-
 		console.log(chalk.hex('#737373')('_____________________________________________'))
 		console.log(
 			chalk
@@ -87,25 +75,25 @@ const fetchKickstarters = cron.schedule(
 			'--disable-setuid-sandbox'
 		]
 
+		console.log('Starting task')
 		try {
-			console.log('opening browser')
-			//executablePath    : '/usr/bin/chromium-browser'
+			console.log('Opening browser')
 			const browser = await puppeteer.launch({
+				executablePath    : '/usr/bin/chromium-browser',
 				args,
 				headless          : true,
 				ignoreHTTPSErrors : true
-			}) //{ headless: false }
-			console.log('selecting page')
+			})
+			console.log('Selecting page')
 			const page = (await browser.pages())[0]
 
-			console.log('go to page')
+			console.log('Go to page')
 			await page.goto('https://www.kickstarter.com/discover/advanced?state=live&category_id=34&sort=popularity')
 			// await page.screenshot({ path: './kickstarter.png' })
-			// await page.waitForNavigation()
-			console.log('wait for selector')
+			console.log('Wait for selector')
 			await page.waitForSelector('#projects_list')
 
-			console.log('evaluate')
+			console.log('Evaluate')
 			const data = await page.evaluate(() => {
 				let kickstartersRaw = []
 
@@ -137,19 +125,11 @@ const fetchKickstarters = cron.schedule(
 				return kickstarters
 			})
 
-			console.log('close browser')
+			console.log('Close browser')
 			await browser.close()
 
 			await Kickstarter.deleteMany({})
 			await Kickstarter.insertMany(data)
-
-			winstonLogger.log({
-				level   : 'info',
-				message : {
-					timestamp : new Date(),
-					info      : `Ran kickstarter task at ${new Date().toLocaleString('ro-RO')}`
-				}
-			})
 
 			console.log(chalk.hex('#737373')('_____________________________________________'))
 			console.log(
@@ -160,14 +140,7 @@ const fetchKickstarters = cron.schedule(
 			)
 			console.log(chalk.hex('#737373')('_____________________________________________'))
 		} catch (error) {
-			winstonLogger.log({
-				level   : 'error',
-				message : {
-					timestamp : new Date(),
-					error     : `ERROR KS TASK - ${error}`
-				}
-			})
-			console.log(error)
+			console.error(error)
 			await browser.close()
 		}
 	},

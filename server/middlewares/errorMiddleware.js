@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import winstonLogger from '../helpers/winstonLogger.js'
 
 const notFound = (req, res, next) => {
 	if (process.env.NODE_ENV === 'development') {
@@ -17,8 +16,7 @@ const errorHandler = (err, req, res, next) => {
 	const statusCode = res.statusCode === 200 ? 500 : res.statusCode
 	res.status(statusCode)
 
-	winstonLogger.log({
-		level   : 'error',
+	console.error({
 		message : {
 			code      : err.code || null,
 			timestamp : new Date(),

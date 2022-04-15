@@ -7,7 +7,6 @@ import PwToken from '../models/pwTokenModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
-import winstonLogger from '../helpers/winstonLogger.js'
 import { sendAccountActivationMail, sendForgotPasswordMail } from '../helpers/mailer.js'
 import { differenceInMinutes } from 'date-fns'
 
@@ -141,8 +140,7 @@ const activateAccount = asyncHandler(async (req, res) => {
 	await User.updateOne({ _id: tokenDoc.addedBy }, { status: 'active' })
 	await Token.deleteOne({ tokenUid })
 
-	winstonLogger.log({
-		level   : 'info',
+	console.log({
 		message : {
 			_id       : user._id,
 			username  : user.username,
