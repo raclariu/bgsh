@@ -49,6 +49,6 @@ app.listen(PORT, () => {
 	fetchKickstarters.start()
 
 	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 08:00 and 18:00`))
-	console.log(chalk.bgBlue.hex('#f7edcb').bold(`fetchKickstarters starting... running every day at 07:00 and 17:00`))
+	console.log(chalk.bgBlue.hex('#f7edcb').bold(`fetchKickstarters starting... running every day at 17:00`))
 	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
 })

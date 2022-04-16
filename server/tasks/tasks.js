@@ -66,7 +66,8 @@ const dailyTask = cron.schedule(
 )
 
 const fetchKickstarters = cron.schedule(
-	'0 7,17 * * *',
+	'0 17 * * *',
+	//'0 7,17 * * *',
 	//'*/10 * * * * *',
 	async () => {
 		const args = [

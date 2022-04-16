@@ -34,14 +34,24 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 		setOpen(true)
 	}
 
-	const handleCloseDialog = (e, reason) => {
-		if (reason && reason === 'backdropClick') return
+	const handleCloseDialog = (e) => {
 		setOpen(false)
-		setSubject('')
-		setMessage('')
 	}
 
-	const mutation = useSendNewMessageMutation({ handleCloseDialog })
+	const resetForm = () => {
+		if (recipientUsername) {
+			setOpen(false)
+			setSubject('')
+			setMessage('')
+		} else {
+			setOpen(false)
+			setRecipient('')
+			setSubject('')
+			setMessage('')
+		}
+	}
+
+	const mutation = useSendNewMessageMutation({ resetForm })
 
 	const submitHandler = (e) => {
 		e.preventDefault()

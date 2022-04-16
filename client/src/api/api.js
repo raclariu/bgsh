@@ -362,3 +362,8 @@ export const apiGetSocials = async () => {
 export const apiUpdateSocials = async (data) => {
 	await axsAUTH.post(`/api/users/socials`, data)
 }
+
+export const apiGetNewListings = async () => {
+	const { data } = await axsPUBLIC.get(`/api/games/new`)
+	return data
+}

@@ -738,6 +738,19 @@ const deleteOneGame = asyncHandler(async (req, res) => {
 	}
 })
 
+// ~ @desc    Get latest 12 games for homepage
+// ~ @route   GET /api/games/saved
+// ~ @access  Private route
+const getNewListings = asyncHandler(async (req, res) => {
+	const gamesData = await Game.find({ isActive: true, mode: { $in: [ 'sell', 'trade', 'want' ] } })
+		.limit(12)
+		.select('games totalPrice isPack mode createdAt')
+		.sort({ createdAt: -1 })
+		.lean()
+
+	res.status(200).json(gamesData)
+})
+
 export {
 	listSaleGames,
 	listTradeGames,
@@ -751,5 +764,6 @@ export {
 	deleteOneGame,
 	reactivateGame,
 	uploadImage,
-	deleteImage
+	deleteImage,
+	getNewListings
 }

@@ -200,7 +200,7 @@ const LogIn = ({ isActivationPage }) => {
 	return (
 		<Grid container justifyContent="center" alignItems="center" height="100%" sx={{ flex: 1 }}>
 			<Grid item xs={12} sm={8} md={6}>
-				<form onSubmit={submitHandler} autoComplete="off" style={{ height: '100%' }}>
+				<form onSubmit={submitHandler} autoComplete="on" style={{ height: '100%' }}>
 					<Helmet title="Log in" />
 
 					<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
@@ -215,6 +215,7 @@ const LogIn = ({ isActivationPage }) => {
 					<Box display="flex" alignItems="center" flexDirection="column" justifyContent="center">
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="email"
 							error={!!usernameErrorMsg}
 							helperText={usernameErrorMsg}
 							onChange={(inputVal) => setEmail(inputVal)}
@@ -231,6 +232,7 @@ const LogIn = ({ isActivationPage }) => {
 
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="current-password"
 							error={!!pwErrorMsg}
 							helperText={pwErrorMsg}
 							onChange={(inputVal) => setPassword(inputVal)}

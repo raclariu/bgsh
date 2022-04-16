@@ -23,6 +23,7 @@ import CustomAlert from './CustomAlert'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
 import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
+import StarIcon from '@mui/icons-material/Star'
 
 // @ Others
 import { useGetGameRecommendationsQuery } from '../hooks/hooks'
@@ -31,7 +32,7 @@ import { useGetGameRecommendationsQuery } from '../hooks/hooks'
 const StyledRecImg = styled('img')({
 	verticalAlign : 'bottom',
 	objectFit     : 'cover',
-	maxWidth      : 64,
+	width         : 64,
 	height        : 64,
 	borderRadius  : '4px'
 })
@@ -142,9 +143,9 @@ const GameRecs = ({ idx }) => {
 															gap={0.25}
 															fontWeight="fontWeightMedium"
 															fontSize={14}
-															color="grey.500"
+															color="grey.600"
 														>
-															<StarPurple500Icon color="primary" fontSize="small" />
+															<StarIcon color="primary" fontSize="small" />
 															{approx(rec.stats.avgRating)}
 														</Box>
 
@@ -154,7 +155,7 @@ const GameRecs = ({ idx }) => {
 															gap={0.25}
 															fontWeight="fontWeightMedium"
 															fontSize={14}
-															color="grey.500"
+															color="grey.600"
 														>
 															<MilitaryTechIcon color="primary" fontSize="small" />
 															{rec.stats.rank}

@@ -321,11 +321,11 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 
 	const { _id: userId } = req.userId
 
-	const user = await User.findById({ _id: userId }).select('_id username avatar lastSeen createdAt').lean()
+	const user = await User.findById({ _id: userId }).select('_id username avatar socials lastSeen createdAt').lean()
 
-	const { _id, username, avatar, lastSeen, createdAt } = user
+	const { _id, username, avatar, socials, lastSeen, createdAt } = user
 
-	return res.status(200).json({ user: { _id, username, avatar, lastSeen, createdAt } })
+	return res.status(200).json({ user: { _id, username, avatar, socials, lastSeen, createdAt } })
 })
 
 // ~ @desc    Get single user profile data

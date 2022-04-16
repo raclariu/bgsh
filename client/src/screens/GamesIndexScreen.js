@@ -105,10 +105,6 @@ const GamesIndexScreen = ({ mode }) => {
 				<SortGames mode={mode} handleFilters={handleFilters} />
 			</Box>
 
-			{isSuccess &&
-			data.gamesData.length === 0 && (
-				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
-			)}
 			{isLoading && (
 				<Grid container spacing={3} direction="row">
 					{[ ...Array(12).keys() ].map((i, k) => (
@@ -117,6 +113,11 @@ const GamesIndexScreen = ({ mode }) => {
 						</Grid>
 					))}
 				</Grid>
+			)}
+
+			{isSuccess &&
+			data.gamesData.length === 0 && (
+				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
 			)}
 
 			{isSuccess &&

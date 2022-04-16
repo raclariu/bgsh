@@ -70,7 +70,7 @@ const CreateAccountScreen = () => {
 	return (
 		<Grid container justifyContent="center" alignItems="center" height="100%" sx={{ flex: 1 }}>
 			<Grid item xs={12} sm={8} md={6}>
-				<form onSubmit={submitHandler} autoComplete="off">
+				<form onSubmit={submitHandler} autoComplete="on">
 					<Helmet title="Create an account" />
 					<Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={3}>
 						<CustomIconBtn color="primary" onClick={() => navigate('/')} size="large" edge="start">
@@ -84,6 +84,7 @@ const CreateAccountScreen = () => {
 					<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="email"
 							error={isError && error.response.data.message.emailError ? true : false}
 							helperText={isError ? error.response.data.message.emailError : false}
 							onChange={(inputVal) => setEmail(inputVal)}
@@ -100,6 +101,7 @@ const CreateAccountScreen = () => {
 
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="username"
 							error={isError && error.response.data.message.usernameError ? true : false}
 							helperText={isError ? error.response.data.message.usernameError : false}
 							onChange={(inputVal) => setUsername(inputVal)}
@@ -115,6 +117,7 @@ const CreateAccountScreen = () => {
 
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="new-password"
 							error={isError && error.response.data.message.passwordError ? true : false}
 							helperText={isError ? error.response.data.message.passwordError : false}
 							onChange={(inputVal) => setPassword(inputVal)}
@@ -143,6 +146,7 @@ const CreateAccountScreen = () => {
 
 						<Input
 							sx={{ minHeight: '90px' }}
+							autoComplete="new-password"
 							error={isError && error.response.data.message.passwordConfirmationError ? true : false}
 							helperText={isError ? error.response.data.message.passwordConfirmationError : false}
 							onChange={(inputVal) => setPasswordConfirmation(inputVal)}

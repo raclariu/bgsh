@@ -48,7 +48,7 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 			.lean()
 
 		const fuse = new Fuse(receivedList, {
-			keys      : [ 'sender.username' ],
+			keys      : [ 'sender.username', 'subject' ],
 			threshold : 0.3,
 			distance  : 200
 		})
@@ -119,7 +119,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 			.lean()
 
 		const fuse = new Fuse(sentList, {
-			keys      : [ 'recipient.username' ],
+			keys      : [ 'recipient.username', 'subject' ],
 			threshold : 0.3,
 			distance  : 200
 		})

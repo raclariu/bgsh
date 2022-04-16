@@ -104,6 +104,23 @@ const addSoldGamesToHistory = asyncHandler(async (req, res) => {
 				await Notification.insertMany(notifArr)
 				notifArr = []
 			}
+
+			// Create notification if otherUsername is presened
+			if (req.otherUsernameId) {
+				await Notification.create({
+					recipient : req.otherUsernameId,
+					type      : 'history',
+					text      : gameExists.isPack
+						? `${req.user.username} added your username when adding a pack containing ${simplifyGames
+								.map((game) => game.title)
+								.join(', ')} to sale history`
+						: `${req.user.username} referenced you when adding a game (${simplifyGames[0]
+								.title}) to sale history`,
+					meta      : {
+						thumbnail : simplifyGames[0].thumbnail
+					}
+				})
+			}
 		} else {
 			res.status(500)
 			throw {
@@ -213,6 +230,24 @@ const addTradedGamesToHistory = asyncHandler(async (req, res) => {
 				await Notification.insertMany(notifArr)
 				notifArr = []
 			}
+
+			// Create notification if otherUsername is presened
+			if (req.otherUsernameId) {
+				await Notification.create({
+					recipient : req.otherUsernameId,
+					type      : 'history',
+					text      : gameExists.isPack
+						? `${req.user
+								.username} referenced your username when adding a pack containing ${simplifyGames
+								.map((game) => game.title)
+								.join(', ')} to trade history`
+						: `${req.user.username} referenced you when adding a game (${simplifyGames[0]
+								.title}) to trade history`,
+					meta      : {
+						thumbnail : simplifyGames[0].thumbnail
+					}
+				})
+			}
 		} else {
 			res.status(500)
 			throw {
@@ -269,10 +304,25 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 			extraInfoPack : extraInfoPack ? extraInfoPack.trim() : null,
 			finalPrice    : finalPrice ? finalPrice : null
 		})
+
+		// Create notification if otherUsername is present
+		if (req.otherUsernameId) {
+			await Notification.create({
+				recipient : req.otherUsernameId,
+				type      : 'history',
+				text      : `${req.user.username} referenced your username when adding a pack containing ${games
+					.map((game) => game.title)
+					.join(', ')} to buy history`,
+				meta      : {
+					thumbnail : games[0].thumbnail
+				}
+			})
+		}
 	} else {
 		const buyList = []
+		const notifArr = []
 		for (let game of games) {
-			const otherUserId = game.otherUsername
+			const otherUser = game.otherUsername
 				? await User.findOne({ username: game.otherUsername }).select('_id').lean()
 				: null
 			const data = {
@@ -292,14 +342,29 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 					}
 				],
 				addedBy    : req.user._id,
-				otherUser  : otherUserId ? otherUserId._id : null,
+				otherUser  : otherUser ? otherUser._id : null,
 				finalPrice : game.price
 			}
 			buyList.push(data)
+
+			// Create notification if otherUser is present
+			if (otherUser) {
+				notifArr.push({
+					recipient : otherUser._id,
+					type      : 'history',
+					text      : `${req.user.username} referenced you when adding a game (${game.title}) to buy history`,
+					meta      : {
+						thumbnail : game.thumbnail
+					}
+				})
+			}
 		}
+
 		await History.insertMany(buyList)
+		await Notification.insertMany(notifArr)
 	}
-	res.status(204).end()
+
+	return res.status(204).end()
 })
 
 // ~ @desc    Get user games history

@@ -1,7 +1,6 @@
 // @ Modules
 import React, { useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { useMutation } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -17,7 +16,6 @@ import FormHelperText from '@mui/material/FormHelperText'
 
 // @ Component
 import Input from './Input'
-import CustomAlert from './CustomAlert'
 import LoadingBtn from './LoadingBtn'
 import CustomButton from './CustomButton'
 import CustomIconBtn from './CustomIconBtn'
@@ -39,13 +37,36 @@ const ReportForm = ({ type, username, altId }) => {
 	const [ typedAltId, setTypedAltId ] = useState(altId || '')
 	const [ reportText, setReportText ] = useState('')
 
-	const handleCloseDialog = (e, reason) => {
-		if (reason && reason === 'backdropClick') return
+	const handleCloseDialog = (e) => {
 		setOpen(false)
-		setReportText('')
 	}
 
-	const { mutate, isError, error, isLoading } = useSubmitReportMutation({ handleCloseDialog })
+	const resetForm = () => {
+		if (selected === 'user') {
+			if (username) {
+				setOpen(false)
+				setReportText('')
+			} else {
+				setOpen(false)
+				setTypedUsername('')
+				setReportText('')
+			}
+		} else if (selected === 'game') {
+			if (altId) {
+				setOpen(false)
+				setReportText('')
+			} else {
+				setOpen(false)
+				setTypedAltId('')
+				setReportText('')
+			}
+		} else {
+			setOpen(false)
+			setReportText('')
+		}
+	}
+
+	const { mutate, isError, error, isLoading } = useSubmitReportMutation({ resetForm })
 
 	const submitReport = (e) => {
 		e.preventDefault()

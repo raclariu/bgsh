@@ -12,6 +12,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 
 // @ Components
+import CustomSkeleton from './Skeletons/CustomSkeleton'
 import LoadingBtn from './LoadingBtn'
 
 // @ Icons
@@ -25,8 +26,8 @@ import { useNotiSnackbar, useGetOwnAvatarQuery, useChangeOwnAvatarMutation } fro
 // @ Styles
 const MyAvatar = styled(Avatar)(({ theme }) => ({
 	backgroundColor : theme.palette.primary.secondary,
-	width           : theme.spacing(14),
-	height          : theme.spacing(14),
+	width           : theme.spacing(12),
+	height          : theme.spacing(12),
 	imageRendering  : '-webkit-optimize-contrast',
 	transition      : 'background 0.35s',
 	cursor          : 'pointer',
@@ -41,7 +42,7 @@ const FileInput = styled('input')({
 })
 
 const ChangeAvatar = () => {
-	const { isSuccess, data: ownAvatarData } = useGetOwnAvatarQuery()
+	const { isLoading, isSuccess, data: ownAvatarData } = useGetOwnAvatarQuery()
 
 	const ref = useRef()
 	const [ image, setImage ] = useState(null)
@@ -131,6 +132,8 @@ const ChangeAvatar = () => {
 
 	return (
 		<Fragment>
+			{isLoading && <CustomSkeleton variant="circular" width={96} height={96} />}
+
 			{isSuccess && (
 				<label htmlFor="avatar">
 					<FileInput

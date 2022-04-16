@@ -119,14 +119,14 @@ const DashboardScreen = () => {
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
-					fontSize="h5.fontSize"
-					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"
 					boxShadow={2}
 					my={2}
 				>
-					<Box>BGG Hot games</Box>
+					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+						BGG Hot games
+					</Box>
 					{!errorHotGames && (
 						<CustomTooltip title="See more hot games">
 							<CustomIconBtn component={RouterLink} to="/hot" color="primary" size="large">
@@ -165,17 +165,17 @@ const DashboardScreen = () => {
 				<Box
 					component={Paper}
 					display="flex"
-					fontSize="h5.fontSize"
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
-					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"
 					boxShadow={2}
 					my={2}
 				>
-					<Box>Popular kickstarters</Box>
+					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+						Popular kickstarters
+					</Box>
 					<ExtLinkIconBtn
 						url={`https://www.kickstarter.com/discover/advanced?category_id=34&sort=popularity`}
 						tooltip="See more kickstarters"
@@ -214,14 +214,14 @@ const DashboardScreen = () => {
 					justifyContent="space-between"
 					alignItems="center"
 					width="100%"
-					fontSize="h5.fontSize"
-					fontWeight="fontWeightMedium"
 					p={2}
 					borderRadius="4px"
 					boxShadow={2}
 					my={2}
 				>
-					<Box>Latest r/boardgames posts</Box>
+					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+						Latest r/boardgames posts
+					</Box>
 					<ExtLinkIconBtn url={`https://reddit.com/r/boardgames`} tooltip="See more reddit posts" />
 				</Box>
 

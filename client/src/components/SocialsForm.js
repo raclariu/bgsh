@@ -1,45 +1,39 @@
+// @ Modules
 import React, { useState, Fragment } from 'react'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 
+// @ Mui
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
+// @ Components
 import Input from './Input'
 import LoadingBtn from './LoadingBtn'
 
-import { apiGetSocials, apiUpdateSocials } from '../api/api'
+// @ Others
+import { useUpdateSocialsMutation, useGetSocialsQuery } from '../hooks/hooks'
 
 const SocialsForm = () => {
-	const queryClient = useQueryClient()
-
 	const [ bggUsername, setBggUsername ] = useState('')
 	const [ fbgUsername, setFbgUsername ] = useState('')
 	const [ isChecked, setIsChecked ] = useState(false)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery([ 'socials' ], apiGetSocials, {
-		staleTime : Infinity,
-		onSuccess : (data) => {
-			setBggUsername(data.socials.bggUsername ? data.socials.bggUsername : '')
-			setFbgUsername(data.socials.fbgUsername ? data.socials.fbgUsername : '')
-			setIsChecked(data.socials.show)
-		}
-	})
+	const updateSocialsOnSuccess = (data) => {
+		setBggUsername(data.socials.bggUsername ? data.socials.bggUsername : '')
+		setFbgUsername(data.socials.fbgUsername ? data.socials.fbgUsername : '')
+		setIsChecked(data.socials.show)
+	}
 
-	const mutation = useMutation((data) => apiUpdateSocials(data), {
-		onSuccess : (data) => {
-			queryClient.invalidateQueries([ 'socials' ])
-		}
-	})
+	const { isLoading, data, isSuccess } = useGetSocialsQuery({ updateSocialsOnSuccess })
+
+	const mutation = useUpdateSocialsMutation()
 
 	const handleSocialsCheckbox = (e) => {
-		console.log('er')
 		setIsChecked(e.target.checked)
 	}
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		console.log('submitted')
 		mutation.mutate({ bggUsername, fbgUsername, show: isChecked })
 	}
 
@@ -56,7 +50,7 @@ const SocialsForm = () => {
 		<Fragment>
 			<Box width="100%">
 				<form onSubmit={handleSubmit} autoComplete="off">
-					<Box display="flex" flexDirection="column" gap={2}>
+					<Box display="flex" flexDirection="column">
 						{console.count('renders')}
 						<Input
 							sx={{ minHeight: '90px' }}
@@ -114,7 +108,7 @@ const SocialsForm = () => {
 								type="submit"
 								variant="contained"
 							>
-								Submit
+								Update
 							</LoadingBtn>
 						</Box>
 					</Box>

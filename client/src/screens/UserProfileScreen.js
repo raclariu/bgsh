@@ -11,11 +11,15 @@ import Grid from '@mui/material/Grid'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 
+// @ Icons
+import InterestsTwoToneIcon from '@mui/icons-material/InterestsTwoTone'
+
 // @ Components
 import CustomSkeleton from '../components/Skeletons/CustomSkeleton'
 import CustomAvatar from '../components/CustomAvatar'
 import UserProfileGameCard from '../components/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
+import CustomIconBtn from '../components/CustomIconBtn'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 import SendMessage from '../components/SendMessage'
@@ -79,6 +83,28 @@ const UserProfileScreen = () => {
 						variant="outlined"
 						label={`Account created on ${formatDateSimple(userData.user.createdAt)}`}
 					/>
+
+					{userData.user.socials.show && (
+						<Box display="flex" alignItems="center" gap={1}>
+							{userData.user.socials.bggUsername && (
+								<Chip
+									color="primary"
+									size="small"
+									variant="outlined"
+									label={`${userData.user.socials.bggUsername} @ bgg`}
+								/>
+							)}
+
+							{userData.user.socials.fbgUsername && (
+								<Chip
+									color="primary"
+									size="small"
+									variant="outlined"
+									label={`${userData.user.socials.fbgUsername} @ fbg`}
+								/>
+							)}
+						</Box>
+					)}
 				</Box>
 			)}
 

@@ -58,9 +58,10 @@ const ChangePasswordForm = () => {
 	}
 
 	return (
-		<form onSubmit={submitHandler} autoComplete="off">
+		<form onSubmit={submitHandler} autoComplete="on">
 			<Input
 				sx={{ minHeight: '90px' }}
+				autoComplete="current-password"
 				error={!!passwordCurrentErrorMsg}
 				helperText={passwordCurrentErrorMsg}
 				onChange={(inputVal) => setPasswordCurrent(inputVal)}
@@ -85,6 +86,7 @@ const ChangePasswordForm = () => {
 
 			<Input
 				sx={{ minHeight: '90px' }}
+				autoComplete="new-password"
 				error={!!passwordNewErrorMsg}
 				helperText={passwordNewErrorMsg}
 				onChange={(inputVal) => setPasswordNew(inputVal)}
@@ -109,6 +111,7 @@ const ChangePasswordForm = () => {
 
 			<Input
 				sx={{ minHeight: '90px' }}
+				autoComplete="new-password"
 				error={!!passwordNewConfirmationErrorMsg}
 				helperText={passwordNewConfirmationErrorMsg}
 				onChange={(inputVal) => setPasswordNewConfirmation(inputVal)}

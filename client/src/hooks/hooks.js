@@ -697,13 +697,13 @@ export const useClearAllNotificationsMutation = () => {
 	})
 }
 
-export const useSendNewMessageMutation = ({ handleCloseDialog }) => {
+export const useSendNewMessageMutation = ({ resetForm }) => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation(({ subject, message, recipient }) => api.apiSendMessage(subject, message, recipient), {
 		onSuccess : () => {
-			handleCloseDialog()
+			resetForm()
 			showSnackbar.success({ text: 'Message sent successfully' })
 			queryClient.invalidateQueries([ 'inbox', 'sent' ])
 		}
@@ -762,13 +762,34 @@ export const useGetSaveGameStatusQuery = ({ altId }) => {
 	})
 }
 
-export const useSubmitReportMutation = ({ handleCloseDialog }) => {
+export const useSubmitReportMutation = ({ resetForm }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation((data) => api.apiSubmitReport(data), {
 		onSuccess : () => {
-			handleCloseDialog()
+			resetForm()
 			showSnackbar.success({ text: 'Report sent successfully' })
+		}
+	})
+}
+
+export const useGetSocialsQuery = ({ updateSocialsOnSuccess }) => {
+	return useQuery([ 'socials' ], api.apiGetSocials, {
+		staleTime : Infinity,
+		onSuccess : (data) => {
+			updateSocialsOnSuccess(data)
+		}
+	})
+}
+
+export const useUpdateSocialsMutation = () => {
+	const [ showSnackbar ] = useNotiSnackbar()
+	const queryClient = useQueryClient()
+
+	return useMutation((data) => api.apiUpdateSocials(data), {
+		onSuccess : (data) => {
+			showSnackbar.success({ text: 'Socials updated successfully' })
+			queryClient.invalidateQueries([ 'socials' ])
 		}
 	})
 }
