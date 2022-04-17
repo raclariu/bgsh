@@ -50,9 +50,7 @@ const validateBuySingleUsername = check('otherUsername')
 			}
 
 			if (otherUsername.toLowerCase() === req.user.username.toLowerCase()) {
-				throw {
-					message : 'You cannot use your own username'
-				}
+				throw new Error('You cannot use your own username')
 			}
 
 			if (otherUsername) {
@@ -61,9 +59,7 @@ const validateBuySingleUsername = check('otherUsername')
 					.lean()
 
 				if (!otherUsernameExists) {
-					throw {
-						message : `User "${otherUsername}" not found`
-					}
+					throw new Error(`User "${otherUsername}" not found`)
 				} else {
 					req.otherUsernameId = otherUsernameExists._id
 					return true
@@ -90,9 +86,7 @@ const validateBuyMultipleUsernames = check('games.*.otherUsername')
 			const idx = path.split('[')[1].split(']')[0]
 
 			if (otherUsername.toLowerCase() === req.user.username.toLowerCase()) {
-				throw {
-					message : `You cannot use your own username for ${req.body.games[idx].title}`
-				}
+				throw new Error(`You cannot use your own username for ${req.body.games[idx].title}`)
 			}
 
 			if (otherUsername) {
@@ -101,9 +95,7 @@ const validateBuyMultipleUsernames = check('games.*.otherUsername')
 					.lean()
 
 				if (!otherUsernameExists) {
-					throw {
-						message : `Invalid username "${otherUsername} for ${req.body.games[idx].title}`
-					}
+					throw new Error(`Invalid username "${otherUsername}" for ${req.body.games[idx].title}`)
 				} else {
 					return true
 				}

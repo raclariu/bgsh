@@ -1,7 +1,6 @@
 // @ Modules
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { useQuery } from 'react-query'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Link as RouterLink } from 'react-router-dom'
@@ -22,9 +21,10 @@ import EmailIcon from '@mui/icons-material/Email'
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha'
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore'
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 
 // @ Others
-import { apiGetNewListings } from '../api/api'
+import { useGetNewListingsQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledThumb = styled('img')({
@@ -61,7 +61,7 @@ const NewListingsSkeletons = () => {
 const HomeScreen = () => {
 	const { success: successUserData } = useSelector((state) => state.userData)
 
-	const { isLoading, isError, error, data, isSuccess } = useQuery([ 'newListings' ], apiGetNewListings)
+	const { isLoading, data, isSuccess } = useGetNewListingsQuery()
 
 	return (
 		<Fragment>
@@ -145,8 +145,6 @@ const HomeScreen = () => {
 						</Button>
 					</Box>
 				)}
-
-				<CustomDivider flexItem />
 
 				<Box fontSize="h4.fontSize" fontWeight="fontWeightBold" pb={8} pt={10}>
 					New listings
@@ -264,21 +262,19 @@ const HomeScreen = () => {
 						gap                 : 3
 					}}
 				>
-					<Box display="flex" alignItems="center" gap={4}>
-						<Box
-							display="flex"
-							borderRadius="4px"
-							flexDirection="column"
-							bgcolor="background.paper"
-							alignItems="center"
-							boxShadow={2}
-							p={4}
-							height="100%"
-						>
-							<EmailIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
-							<Box textAlign="center" fontWeight="fontWeightMedium">
-								Messaging system between users with search capabilities
-							</Box>
+					<Box
+						display="flex"
+						borderRadius="4px"
+						flexDirection="column"
+						bgcolor="background.paper"
+						alignItems="center"
+						boxShadow={2}
+						p={4}
+						height="100%"
+					>
+						<EmailIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
+						<Box textAlign="center" fontWeight="fontWeightMedium">
+							Messaging system between users with search capabilities
 						</Box>
 					</Box>
 
@@ -298,58 +294,67 @@ const HomeScreen = () => {
 						</Box>
 					</Box>
 
-					<Box display="flex" alignItems="center" gap={4}>
-						<Box
-							display="flex"
-							borderRadius="4px"
-							flexDirection="column"
-							bgcolor="background.paper"
-							alignItems="center"
-							boxShadow={2}
-							p={4}
-							height="100%"
-						>
-							<SortByAlphaIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
-							<Box textAlign="center" fontWeight="fontWeightMedium">
-								Sort listed board games by multiple attributes like rank, release date, price and many
-								more
-							</Box>
+					<Box
+						display="flex"
+						borderRadius="4px"
+						flexDirection="column"
+						bgcolor="background.paper"
+						alignItems="center"
+						boxShadow={2}
+						p={4}
+						height="100%"
+					>
+						<SortByAlphaIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
+						<Box textAlign="center" fontWeight="fontWeightMedium">
+							Sort listed board games by multiple attributes like rank, release date, price and many more
 						</Box>
 					</Box>
 
-					<Box display="flex" alignItems="center" gap={4}>
-						<Box
-							display="flex"
-							borderRadius="4px"
-							flexDirection="column"
-							bgcolor="background.paper"
-							alignItems="center"
-							boxShadow={2}
-							p={4}
-							height="100%"
-						>
-							<SettingsBackupRestoreIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
-							<Box textAlign="center" fontWeight="fontWeightMedium">
-								History tracking of sold, traded and bought board games
-							</Box>
+					<Box
+						display="flex"
+						borderRadius="4px"
+						flexDirection="column"
+						bgcolor="background.paper"
+						alignItems="center"
+						boxShadow={2}
+						p={4}
+						height="100%"
+					>
+						<SettingsBackupRestoreIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
+						<Box textAlign="center" fontWeight="fontWeightMedium">
+							History tracking of sold, traded and bought board games
 						</Box>
 					</Box>
 
-					<Box display="flex" alignItems="center" gap={4}>
-						<Box
-							display="flex"
-							borderRadius="4px"
-							flexDirection="column"
-							bgcolor="background.paper"
-							alignItems="center"
-							boxShadow={2}
-							p={4}
-							height="100%"
-						>
-							<CircleNotificationsIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
-							<Box textAlign="center" fontWeight="fontWeightMedium">
-								Notification system for various alerts in regards to your listings, saved games and more
-							</Box>
+					<Box
+						display="flex"
+						borderRadius="4px"
+						flexDirection="column"
+						bgcolor="background.paper"
+						alignItems="center"
+						boxShadow={2}
+						p={4}
+						height="100%"
+					>
+						<CircleNotificationsIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
+						<Box textAlign="center" fontWeight="fontWeightMedium">
+							Notification system for various alerts in regards to your listings, saved games and more
+						</Box>
+					</Box>
+
+					<Box
+						display="flex"
+						borderRadius="4px"
+						flexDirection="column"
+						bgcolor="background.paper"
+						alignItems="center"
+						boxShadow={2}
+						p={4}
+						height="100%"
+					>
+						<FavoriteIcon sx={{ fontSize: '45px', mb: 5 }} color="secondary" />
+						<Box textAlign="center" fontWeight="fontWeightMedium">
+							Wishlist system so you can save your favorite listings for later
 						</Box>
 					</Box>
 				</Box>

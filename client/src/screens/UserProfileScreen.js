@@ -12,14 +12,13 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 
 // @ Icons
-import InterestsTwoToneIcon from '@mui/icons-material/InterestsTwoTone'
+import GavelIcon from '@mui/icons-material/Gavel'
 
 // @ Components
 import CustomSkeleton from '../components/Skeletons/CustomSkeleton'
 import CustomAvatar from '../components/CustomAvatar'
 import UserProfileGameCard from '../components/UserProfileGameCard'
 import CustomAlert from '../components/CustomAlert'
-import CustomIconBtn from '../components/CustomIconBtn'
 import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
 import LzLoad from '../components/LzLoad'
 import SendMessage from '../components/SendMessage'
@@ -66,10 +65,24 @@ const UserProfileScreen = () => {
 					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
 						{`${userData.user.username}'s profile`}
 					</Box>
-					<Box display="flex" alignItems="center" gap={1}>
-						<SendMessage recipientUsername={username} />
-						<ReportForm type="user" username={userData.user.username} />
-					</Box>
+					{userData.user.status === 'banned' ? (
+						<Chip
+							color="error"
+							size="large"
+							icon={<GavelIcon />}
+							variant="contained"
+							label={
+								<Box fontWeight="fontWeightMedium" fontSize="h6.fontSize">
+									BANNED
+								</Box>
+							}
+						/>
+					) : (
+						<Box display="flex" alignItems="center" gap={1}>
+							<SendMessage recipientUsername={username} />
+							<ReportForm type="user" username={userData.user.username} />
+						</Box>
+					)}
 
 					<Chip
 						color="primary"

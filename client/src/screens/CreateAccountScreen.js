@@ -1,5 +1,5 @@
 // @ Modules
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
 import { useMutation } from 'react-query'
@@ -119,7 +119,13 @@ const CreateAccountScreen = () => {
 							sx={{ minHeight: '90px' }}
 							autoComplete="new-password"
 							error={isError && error.response.data.message.passwordError ? true : false}
-							helperText={isError ? error.response.data.message.passwordError : false}
+							helperText={
+								isError ? (
+									error.response.data.message.passwordError
+								) : (
+									'At least one uppercase, one lowercase and one number required'
+								)
+							}
 							onChange={(inputVal) => setPassword(inputVal)}
 							value={password}
 							size="medium"

@@ -1,7 +1,6 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useQueryClient } from 'react-query'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -25,60 +24,37 @@ import Input from './Input'
 import LoadingBtn from './LoadingBtn'
 
 // @ Others
-import {
-	useNotiSnackbar,
-	useHistoryAddGameMutation,
-	useDeleteListedGameMutation,
-	useReactivateListedGameMutation
-} from '../hooks/hooks'
+import { useHistoryAddGameMutation, useDeleteListedGameMutation, useReactivateListedGameMutation } from '../hooks/hooks'
 
 // @ Main
 const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isActive, display }) => {
-	const queryClient = useQueryClient()
-
 	const currUsername = useSelector((state) => state.userData.username)
 
 	const [ openDialog, setOpenDialog ] = useState(false)
 	const [ otherUsername, setOtherUsername ] = useState('')
 	const [ finalPrice, setFinalPrice ] = useState(listedPrice ? listedPrice : '')
 	const [ extraInfo, setExtraInfo ] = useState('')
-	const [ showSnackbar ] = useNotiSnackbar()
 
 	const historyAddGame = useHistoryAddGameMutation({
-		onSuccess : () => {
-			showSnackbar.success({ text: 'Successfully added to history' })
+		handleCleanup : () => {
 			setOpenDialog(false)
-			invalidate()
-		}
+		},
+		mode
 	})
 
 	const deleteListing = useDeleteListedGameMutation({
-		onSuccess : () => {
+		handleCleanup : () => {
 			setOpenDialog(false)
-			showSnackbar.success({ text: 'Successfully deleted' })
-			invalidate()
-		}
+		},
+		mode
 	})
 
 	const reactivateGame = useReactivateListedGameMutation({
-		onSuccess : () => {
+		handleCleanup : () => {
 			setOpenDialog(false)
-			showSnackbar.success({ text: 'Successfully reactivated' })
-			invalidate()
-		}
+		},
+		mode
 	})
-
-	const invalidate = () => {
-		queryClient.invalidateQueries([ 'myListedGames' ])
-		if (mode === 'sell') {
-			queryClient.invalidateQueries([ 'index', 'sell' ])
-			queryClient.invalidateQueries([ 'history', 'sell' ])
-		}
-		if (mode === 'trade') {
-			queryClient.invalidateQueries([ 'index', 'trade' ])
-			queryClient.invalidateQueries([ 'history', 'trade' ])
-		}
-	}
 
 	const handleOpenDialog = () => {
 		setOpenDialog(true)
@@ -120,13 +96,12 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
 						<form onSubmit={addGameHandler} autoComplete="off">
 							<DialogTitle>
-								<Box textAlign="center">
-									Fill in the form below for history purposes. Username is not required, but it is
-									recommended to be filled in.
-								</Box>
-								<Box textAlign="center" mt={1} color="text.secondary" fontSize="subtitle2.fontSize">
-									Note: once you press the button below, this listing will be deleted and added to
-									your history.
+								<Box textAlign="center">{`Add listing to ${mode === 'sell'
+									? 'sale'
+									: 'trade'} history`}</Box>
+								<Box textAlign="center" mt={1} color="grey.500" fontSize="caption.fontSize">
+									Note: once you submit the form, this listing will be deleted and added to your
+									history.
 								</Box>
 							</DialogTitle>
 
@@ -152,7 +127,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 										name="username"
 										label="Username"
 										type="text"
-										placeholder="Username of the other person"
+										placeholder="Username of the other user"
 										autoFocus
 									/>
 

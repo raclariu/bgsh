@@ -14,7 +14,7 @@ const validateMessageRecipient = check('recipient')
 	.bail()
 	.custom(async (username, { req }) => {
 		if (username) {
-			const usernameExists = await User.findOne({ username }).select('_id').lean()
+			const usernameExists = await User.findOne({ username }).select('_id status').lean()
 
 			if (!usernameExists) {
 				throw new Error('User not found')
@@ -22,6 +22,11 @@ const validateMessageRecipient = check('recipient')
 				if (req.user._id.toString() === usernameExists._id.toString()) {
 					throw new Error('You cannot send a message to yourself')
 				}
+
+				if (usernameExists.status === 'banned') {
+					throw new Error('User is banned')
+				}
+
 				req.recipientId = usernameExists._id
 				return true
 			}

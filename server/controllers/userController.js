@@ -3,7 +3,6 @@ import { validationResult } from 'express-validator'
 import User from '../models/userModel.js'
 import Game from '../models/gameModel.js'
 import Token from '../models/tokenModel.js'
-import PwToken from '../models/pwTokenModel.js'
 import { hashPassword, generateToken } from '../helpers/helpers.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
@@ -31,13 +30,14 @@ const userLogin = asyncHandler(async (req, res) => {
 		const user = await User.findOne({ email }).select('_id email username isAdmin status').lean()
 
 		if (user.status === 'pending') {
-			const tokenDoc = await Token.findOne({ addedBy: user._id }).lean()
+			const tokenDoc = await Token.findOne({ addedBy: user._id, reason: 'new-account' }).lean()
 			const baseDomain =
 				process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
 
 			if (!tokenDoc) {
 				const createNewTokenDoc = await Token.create({
-					addedBy : user._id
+					addedBy : user._id,
+					reason  : 'new-account'
 				})
 
 				const activationUrl = baseDomain + `/activate/${createNewTokenDoc.tokenUid}`
@@ -102,7 +102,8 @@ const userRegister = asyncHandler(async (req, res) => {
 		})
 
 		const createdTokenDoc = await Token.create({
-			addedBy : user._id
+			addedBy : user._id,
+			reason  : 'new-account'
 		})
 
 		const baseDomain = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
@@ -119,7 +120,7 @@ const userRegister = asyncHandler(async (req, res) => {
 const activateAccount = asyncHandler(async (req, res) => {
 	const { tokenUid } = req.params
 
-	const tokenDoc = await Token.findOne({ tokenUid }).lean()
+	const tokenDoc = await Token.findOne({ tokenUid, reason: 'new-account' }).lean()
 
 	if (!tokenDoc) {
 		res.status(400)
@@ -138,7 +139,7 @@ const activateAccount = asyncHandler(async (req, res) => {
 	}
 
 	await User.updateOne({ _id: tokenDoc.addedBy }, { status: 'active' })
-	await Token.deleteOne({ tokenUid })
+	await Token.deleteOne({ tokenUid, reason: 'new-account' })
 
 	console.log({
 		message : {
@@ -201,7 +202,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 	} else {
 		const { email } = req.body
 		const user = await User.findOne({ email }).select('_id email').lean()
-		const pwTokenDoc = await PwToken.findOne({ addedBy: user._id }).lean()
+		const pwTokenDoc = await Token.findOne({ addedBy: user._id, reason: 'forgot-password' }).lean()
 		const baseDomain = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.BASE_DOMAIN
 
 		if (pwTokenDoc) {
@@ -210,7 +211,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 			if (lookback >= 15) {
 				const resetUrl = baseDomain + `/reset-password/${pwTokenDoc.tokenUid}`
 				await sendForgotPasswordMail({ address: user.email, url: resetUrl })
-				await PwToken.updateOne({ _id: pwTokenDoc._id }, { sent: new Date() })
+				await Token.updateOne({ _id: pwTokenDoc._id }, { sent: new Date() })
 
 				res.status(403)
 				throw {
@@ -225,8 +226,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
 				}
 			}
 		} else {
-			const createdPwTokenDoc = await PwToken.create({
-				addedBy : user._id
+			const createdPwTokenDoc = await Token.create({
+				addedBy : user._id,
+				reason  : 'forgot-password'
 			})
 
 			const resetUrl = baseDomain + `/reset-password/${createdPwTokenDoc.tokenUid}`
@@ -255,7 +257,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 	} else {
 		const { passwordNew, tokenUid } = req.body
 
-		const pwTokenDoc = await PwToken.findOne({ tokenUid }).lean()
+		const pwTokenDoc = await Token.findOne({ tokenUid, reason: 'forgot-password' }).lean()
 
 		if (!pwTokenDoc) {
 			res.status(400)
@@ -266,7 +268,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 		const hashed = await hashPassword(passwordNew)
 		await User.updateOne({ _id: pwTokenDoc.addedBy }, { password: hashed })
-		await PwToken.deleteOne({ _id: pwTokenDoc._id })
+		await Token.deleteOne({ _id: pwTokenDoc._id })
 
 		return res.status(204).end()
 	}
@@ -321,11 +323,17 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 
 	const { _id: userId } = req.userId
 
-	const user = await User.findById({ _id: userId }).select('_id username avatar socials lastSeen createdAt').lean()
+	const user = await User.findById({ _id: userId })
+		.select('_id username avatar status socials lastSeen createdAt')
+		.lean()
 
-	const { _id, username, avatar, socials, lastSeen, createdAt } = user
+	const { _id, username, avatar, socials, status, lastSeen, createdAt } = user
 
-	return res.status(200).json({ user: { _id, username, avatar, socials, lastSeen, createdAt } })
+	return res
+		.status(200)
+		.json({
+			user: { _id, username, avatar, socials, status: status === 'banned' ? 'banned' : null, lastSeen, createdAt }
+		})
 })
 
 // ~ @desc    Get single user profile data

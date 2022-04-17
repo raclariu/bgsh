@@ -18,6 +18,9 @@ import Input from '../components/Input'
 import LoadingBtn from '../components/LoadingBtn'
 import Helmet from '../components/Helmet'
 
+// @ Icons
+import LocalMallTwoToneIcon from '@mui/icons-material/LocalMallTwoTone'
+
 // @ Others
 import {
 	useGetListQuery,
@@ -115,11 +118,13 @@ const BuyGamesScreen = () => {
 		<form onSubmit={handleSubmit} autoComplete="off">
 			<Helmet title="Buy boardgames" />
 
-			<Box display="flex" alignItems="center" gap={2} mb={2}>
-				{isFetching && <Loader size={20} />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetching ? <Loader size={24} /> : <LocalMallTwoToneIcon color="primary" />}
 
-				<Box fontSize="h6.fontSize">Add bought games</Box>
+				<Box fontSize="h5.fontSize">Add bought games</Box>
 			</Box>
+
+			<CustomDivider sx={{ my: 4 }} />
 
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
@@ -157,50 +162,49 @@ const BuyGamesScreen = () => {
 						))}
 					</Grid>
 
-					<CustomDivider sx={{ my: 2 }} />
+					<CustomDivider sx={{ my: 4 }} />
 
-					<Box
-						display="flex"
-						flexDirection="column"
-						justifyContent="center"
-						alignItems="center"
-						gap={3}
-						sx={{
-							width : {
-								xs : '100%',
-								md : '50%'
-							}
-						}}
-					>
+					<Box display="flex" flexDirection="column" gap={2}>
 						{isPack && (
 							<Fragment>
-								<Input
-									value={data.otherUsername}
-									onChange={(inputVal) => setOtherUsername(inputVal)}
-									inputProps={{
-										minLength : 4,
-										maxLength : 20
+								<Box
+									sx={{
+										display             : 'grid',
+										gridTemplateColumns : {
+											xs : '1fr',
+											sm : '2fr 1fr' // auto min-content sau auto-auto sau auto 1fr
+										},
+										gap                 : 2
 									}}
-									id="username"
-									name="username"
-									label="Username"
-									type="text"
-									placeholder="Username of the person who sold you this game"
-									fullWidth
-								/>
+								>
+									<Input
+										value={data.otherUsername}
+										onChange={(inputVal) => setOtherUsername(inputVal)}
+										inputProps={{
+											minLength : 4,
+											maxLength : 20
+										}}
+										id="username"
+										name="username"
+										label="Username"
+										type="text"
+										placeholder="Username of the user who sold you this game"
+										fullWidth
+									/>
 
-								<Input
-									value={finalPrice}
-									onChange={(inputVal) => setFinalPrice(inputVal)}
-									type="number"
-									label="Pack price"
-									name="final-price"
-									InputProps={{
-										startAdornment : <InputAdornment position="start">RON</InputAdornment>
-									}}
-									required
-									fullWidth
-								/>
+									<Input
+										value={finalPrice}
+										onChange={(inputVal) => setFinalPrice(inputVal)}
+										type="number"
+										label="Pack price"
+										name="final-price"
+										InputProps={{
+											startAdornment : <InputAdornment position="start">RON</InputAdornment>
+										}}
+										required
+										fullWidth
+									/>
+								</Box>
 
 								<Input
 									value={extraInfoPack}
@@ -222,17 +226,19 @@ const BuyGamesScreen = () => {
 							</Fragment>
 						)}
 
-						<LoadingBtn
-							type="submit"
-							size="large"
-							disabled={isFetching || addMutation.isSuccess}
-							variant="contained"
-							color="primary"
-							loading={addMutation.isLoading}
-							fullWidth
-						>
-							Buy
-						</LoadingBtn>
+						<Box display="flex" justifyContent="flex-end">
+							<LoadingBtn
+								sx={{ width: 160 }}
+								type="submit"
+								size="large"
+								disabled={isFetching || addMutation.isSuccess}
+								variant="contained"
+								color="primary"
+								loading={addMutation.isLoading}
+							>
+								Buy
+							</LoadingBtn>
+						</Box>
 					</Box>
 				</Fragment>
 			)}

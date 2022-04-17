@@ -29,11 +29,15 @@ const validateReportUsername = check('username')
 			throw new Error('You cannot use your own username')
 		}
 
-		const usernameExists = await User.findOne({ username }).select('_id username').lean()
+		const usernameExists = await User.findOne({ username }).select('_id username status').lean()
 
 		if (!usernameExists) {
 			throw new Error('User not found')
 		} else {
+			if (usernameExists.status === 'banned') {
+				throw new Error('User is banned')
+			}
+
 			return true
 		}
 	})

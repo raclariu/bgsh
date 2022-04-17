@@ -44,6 +44,12 @@ export const useNotiSnackbar = () => {
 	return [ showSnackbar ]
 }
 
+export const useGetNewListingsQuery = () => {
+	return useQuery([ 'newListings' ], api.apiGetNewListings, {
+		staleTime : Infinity
+	})
+}
+
 export const useDeleteFromListMutation = () => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
@@ -71,7 +77,7 @@ export const useDeleteFromListMutation = () => {
 			queryClient.setQueryData([ 'list' ], ctx.prevList)
 		},
 		onSuccess : (data, { title }) => {
-			showSnackbar.info({ text: `${title} has been removed from your list` })
+			showSnackbar.info({ text: `${title} has been deleted from your list` })
 			queryClient.setQueryData([ 'list' ], data)
 		}
 	})
@@ -464,7 +470,10 @@ export const useGetUserProfileListingsDataQuery = ({ username }) => {
 	})
 }
 
-export const useHistoryAddGameMutation = ({ onSuccess }) => {
+export const useHistoryAddGameMutation = ({ handleCleanup, mode }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
 	return useMutation(
 		({ games, otherUsername, finalPrice, extraInfo, mode, gameId }) => {
 			if (mode === 'sell') {
@@ -487,12 +496,27 @@ export const useHistoryAddGameMutation = ({ onSuccess }) => {
 			}
 		},
 		{
-			onSuccess
+			onSuccess : () => {
+				handleCleanup()
+
+				queryClient.invalidateQueries([ 'myListedGames' ])
+				if (mode === 'sell') {
+					queryClient.invalidateQueries([ 'index', 'sell' ])
+					queryClient.invalidateQueries([ 'history', 'sell' ])
+				}
+				if (mode === 'trade') {
+					queryClient.invalidateQueries([ 'index', 'trade' ])
+					queryClient.invalidateQueries([ 'history', 'trade' ])
+				}
+
+				showSnackbar.success({ text: 'Successfully added to history' })
+			}
 		}
 	)
 }
 
-export const useDeleteListedGameMutation = ({ onSuccess }) => {
+export const useDeleteListedGameMutation = ({ handleCleanup, mode }) => {
+	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation((gameId) => api.apiDeleteListedGame(gameId), {
@@ -500,11 +524,26 @@ export const useDeleteListedGameMutation = ({ onSuccess }) => {
 			const text = err.response.data.message || 'Error occured while trying to delete a listing'
 			showSnackbar.error({ text })
 		},
-		onSuccess
+		onSuccess : () => {
+			handleCleanup()
+
+			queryClient.invalidateQueries([ 'myListedGames' ])
+			if (mode === 'sell') {
+				queryClient.invalidateQueries([ 'index', 'sell' ])
+				queryClient.invalidateQueries([ 'history', 'sell' ])
+			}
+			if (mode === 'trade') {
+				queryClient.invalidateQueries([ 'index', 'trade' ])
+				queryClient.invalidateQueries([ 'history', 'trade' ])
+			}
+
+			showSnackbar.success({ text: 'Successfully deleted listing' })
+		}
 	})
 }
 
-export const useReactivateListedGameMutation = ({ onSuccess }) => {
+export const useReactivateListedGameMutation = ({ handleCleanup, mode }) => {
+	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation((gameId) => api.apiReactivateListedGame(gameId), {
@@ -512,7 +551,21 @@ export const useReactivateListedGameMutation = ({ onSuccess }) => {
 			const text = err.response.data.message || 'Error occured while trying to reactivate a listing'
 			showSnackbar.error({ text })
 		},
-		onSuccess
+		onSuccess : () => {
+			handleCleanup()
+
+			queryClient.invalidateQueries([ 'myListedGames' ])
+			if (mode === 'sell') {
+				queryClient.invalidateQueries([ 'index', 'sell' ])
+				queryClient.invalidateQueries([ 'history', 'sell' ])
+			}
+			if (mode === 'trade') {
+				queryClient.invalidateQueries([ 'index', 'trade' ])
+				queryClient.invalidateQueries([ 'history', 'trade' ])
+			}
+
+			showSnackbar.success({ text: 'Successfully reactivated listing' })
+		}
 	})
 }
 
@@ -744,6 +797,25 @@ export const useUpdateSaveGameStatusMutation = () => {
 			// Update query with data from mutation so that saved status useQuery won't run
 			queryClient.setQueryData([ 'singleGameScreen', 'savedStatus', varAltId ], data)
 			// Invalidate entire saved games list
+			queryClient.invalidateQueries([ 'savedGames' ])
+		}
+	})
+}
+
+export const useDeleteSavedGameMutation = () => {
+	const [ showSnackbar ] = useNotiSnackbar()
+	const queryClient = useQueryClient()
+
+	return useMutation((altId) => api.apiDeleteSavedGame(altId), {
+		onError   : (err) => {
+			showSnackbar.error({
+				text : err.response.data.message || 'Error occured while trying to delete saved game from my saved list'
+			})
+		},
+		onSuccess : () => {
+			showSnackbar.success({
+				text : 'Saved game successfully deleted'
+			})
 			queryClient.invalidateQueries([ 'savedGames' ])
 		}
 	})

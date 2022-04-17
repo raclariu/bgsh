@@ -19,9 +19,10 @@ const Footer = () => {
 				borderTopWidth : 'thin'
 			}}
 		>
-			<Box display="flex" alignItems="center" justifyContent="center" height="100%">
+			<Box display="flex" alignItems="center" justifyContent="center" height="100%" gap={1}>
+				<img src="/meeples48.png" style={{ height: 24, width: 24, marginBottom: '4px' }} alt="logo" />
 				<Typography variant="body1" fontWeight="fontWeightMedium" color="grey.500">
-					Meeples.ro
+					Meeples.ro • 2022
 				</Typography>
 			</Box>
 		</Box>

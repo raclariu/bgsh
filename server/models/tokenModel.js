@@ -15,7 +15,8 @@ const tokenSchema = mongoose.Schema(
 		sent     : {
 			type    : Date,
 			default : new Date()
-		}
+		},
+		reason   : String
 	},
 	{
 		timestamps : true

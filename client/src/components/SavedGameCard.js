@@ -10,19 +10,22 @@ import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Chip from '@mui/material/Chip'
 
-// @ icons
+// @ Icons
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
 import SwapHorizontalCircleOutlinedIcon from '@mui/icons-material/SwapHorizontalCircleOutlined'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import CloseIcon from '@mui/icons-material/Close'
 
 // @ Components
-import SaveGameButton from './SaveGameButton'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
+
+// @ Others
+import { useDeleteSavedGameMutation } from '../hooks/hooks'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)({
@@ -38,6 +41,21 @@ const StyledTitleBox = styled(Box)({
 	width           : '100%',
 	textAlign       : 'center'
 })
+
+// @ DeleteSavedGameButton
+const DeleteSavedGameButton = ({ altId }) => {
+	const mutation = useDeleteSavedGameMutation(altId)
+
+	const handleDeleteSavedGame = () => {
+		mutation.mutate(altId)
+	}
+
+	return (
+		<CustomIconBtn onClick={handleDeleteSavedGame} size="large" color="error">
+			<CloseIcon />
+		</CustomIconBtn>
+	)
+}
 
 // @ Main
 const SavedGameCard = ({ data }) => {
@@ -209,7 +227,7 @@ const SavedGameCard = ({ data }) => {
 					{data.isActive ? (
 						<GameDetailsButton altId={data.altId} mode={data.mode} />
 					) : (
-						<SaveGameButton altId={data.altId} />
+						<DeleteSavedGameButton altId={data.altId} />
 					)}
 				</Box>
 			</CardActions>

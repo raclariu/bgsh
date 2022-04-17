@@ -1,10 +1,10 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
+import { styled } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
@@ -53,6 +53,13 @@ import NotificationsPopover from '../NotificationsPopover'
 
 // @ Others
 import { logOut } from '../../actions/userActions'
+
+// @ Styles
+const StyledLogo = styled('img')({
+	marginTop : '4px',
+	width     : '36px',
+	height    : '36px'
+})
 
 // @ Main
 const Header = () => {
@@ -107,7 +114,13 @@ const Header = () => {
 				borderBottomWidth : 'thin'
 			}}
 		>
-			<Toolbar sx={{ display: 'flex', justifyContent: 'right' }}>
+			<Toolbar sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center', flexWrap: 'wrap' }}>
+				<Box component={RouterLink} to="/" id="logo-container">
+					<StyledLogo id="logo" src="/meeples48.png" alt="logo" />
+				</Box>
+
+				<Box flexGrow={1} />
+
 				{!currUserId && (
 					<Box mr={1}>
 						<Theme />

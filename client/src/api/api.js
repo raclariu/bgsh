@@ -175,6 +175,10 @@ export const apiFetchGameSavedStatus = async (altId) => {
 	return data
 }
 
+export const apiDeleteSavedGame = async (altId) => {
+	await axsAUTH.delete(`/api/games/${altId}/save`)
+}
+
 export const apiUpdateSavedGameStatus = async (altId) => {
 	const { data } = await axsAUTH.patch(`/api/games/${altId}/save`, {})
 	return data

@@ -8,6 +8,9 @@ import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 import Backdrop from '@mui/material/Backdrop'
 
+// @ Icons
+import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
+
 // @ Components
 import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
@@ -83,11 +86,13 @@ const AddWantedGamesScreen = () => {
 		<form onSubmit={handleSubmit} autoComplete="off">
 			<Helmet title="Add wanted boardgames" />
 
-			<Box display="flex" alignItems="center" gap={2} mb={2}>
-				{isFetching && <Loader size={20} />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetching ? <Loader size={24} /> : <AddCircleTwoToneIcon color="primary" />}
 
-				<Box fontSize="h6.fontSize">Add wanted games</Box>
+				<Box fontSize="h5.fontSize">List wanted games</Box>
 			</Box>
+
+			<CustomDivider sx={{ my: 4 }} />
 
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
@@ -129,7 +134,7 @@ const AddWantedGamesScreen = () => {
 						)}
 					</Grid>
 
-					<CustomDivider sx={{ my: 2 }} />
+					<CustomDivider sx={{ my: 4 }} />
 
 					<Box
 						display="flex"
@@ -179,7 +184,7 @@ const AddWantedGamesScreen = () => {
 							loading={listMutation.isLoading}
 							fullWidth
 						>
-							Add wanted games
+							List wanted games
 						</LoadingBtn>
 					</Box>
 				</Fragment>

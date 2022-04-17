@@ -12,6 +12,7 @@ import {
 	switchSaveGame,
 	getSavedGames,
 	getSingleGameSavedStatus,
+	deleteSavedGame,
 	deleteOneGame,
 	reactivateGame,
 	uploadImage,
@@ -28,7 +29,11 @@ router.route('/user/listed').get(protect, getUserListedGames)
 router.route('/new').get(getNewListings)
 router.route('/saved').get(protect, getSavedGames)
 router.route('/:altId').get(protect, getSingleGame)
-router.route('/:altId/save').get(protect, getSingleGameSavedStatus).patch(protect, switchSaveGame)
+router
+	.route('/:altId/save')
+	.get(protect, getSingleGameSavedStatus)
+	.patch(protect, switchSaveGame)
+	.delete(protect, deleteSavedGame)
 router.route('/wanted').post([ protect, ...wantValidators ], listWantedGames)
 router.route('/trade').post([ protect, ...tradeValidators ], listTradeGames)
 router.route('/sell').post([ protect, ...sellValidators ], listSaleGames)

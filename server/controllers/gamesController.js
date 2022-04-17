@@ -551,6 +551,28 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	return res.status(200).json(game)
 })
 
+// ! @desc    Delete one saved game
+// ! @route   DELETE /api/games/:altId/save
+// ! @access  Private route
+const deleteSavedGame = asyncHandler(async (req, res) => {
+	const { altId } = req.params
+
+	const game = await Game.findOne({ altId }).select('_id addedBy').lean()
+
+	if (!game) {
+		res.status(404)
+		throw {
+			message : 'Game not found'
+		}
+	}
+
+	const user = await User.findById({ _id: req.user._id }).select('savedGames').lean()
+
+	const filtered = user.savedGames.filter((id) => id.toString() !== game._id.toString())
+	await User.updateOne({ _id: req.user._id }, { savedGames: filtered })
+	return res.status(204).end()
+})
+
 // <> @desc    Save game
 // <> @route   PATCH  /api/games/:altId/save
 // <> @access  Private route
@@ -568,7 +590,7 @@ const switchSaveGame = asyncHandler(async (req, res) => {
 	if (game.addedBy.toString() === req.user._id.toString()) {
 		res.status(400)
 		throw {
-			message : 'You cannot save your own listing'
+			message : 'You cannot save/unsave your own listing'
 		}
 	}
 
@@ -760,6 +782,7 @@ export {
 	switchSaveGame,
 	getSavedGames,
 	getSingleGameSavedStatus,
+	deleteSavedGame,
 	getUserListedGames,
 	deleteOneGame,
 	reactivateGame,

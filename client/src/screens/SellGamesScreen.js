@@ -19,6 +19,9 @@ import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
 import Backdrop from '@mui/material/Backdrop'
 
+// @ Icons
+import MonetizationOnTwoToneIcon from '@mui/icons-material/MonetizationOnTwoTone'
+
 // @ Components
 import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
@@ -184,11 +187,13 @@ const SellGamesScreen = () => {
 		<form onSubmit={handleSubmit} autoComplete="off">
 			<Helmet title="Sell your boardgames" />
 
-			<Box display="flex" alignItems="center" gap={2} mb={2}>
-				{isFetching && <Loader size={20} />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetching ? <Loader size={24} /> : <MonetizationOnTwoToneIcon color="primary" />}
 
-				<Box fontSize="h6.fontSize">List games for sale</Box>
+				<Box fontSize="h5.fontSize">List for sale</Box>
 			</Box>
+
+			<CustomDivider sx={{ my: 4 }} />
 
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
@@ -231,7 +236,7 @@ const SellGamesScreen = () => {
 							)}
 						</Grid>
 
-						<CustomDivider sx={{ my: 2 }} />
+						<CustomDivider sx={{ my: 4 }} />
 
 						{/* Shipping Area */}
 

@@ -16,6 +16,9 @@ import Chip from '@mui/material/Chip'
 import FormHelperText from '@mui/material/FormHelperText'
 import Backdrop from '@mui/material/Backdrop'
 
+// @ Icons
+import SwapHorizontalCircleTwoToneIcon from '@mui/icons-material/SwapHorizontalCircleTwoTone'
+
 // @ Components
 import CustomDivider from '../components/CustomDivider'
 import ListGameCard from '../components/ListGameCard'
@@ -139,11 +142,13 @@ const TradeGamesScreen = () => {
 		<form onSubmit={handleSubmit}>
 			<Helmet title="Trade your boardgames" />
 
-			<Box display="flex" alignItems="center" gap={2} mb={2}>
-				{isFetching && <Loader size={20} />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetching ? <Loader size={24} /> : <SwapHorizontalCircleTwoToneIcon color="primary" />}
 
-				<Box fontSize="h6.fontSize">List games for trading</Box>
+				<Box fontSize="h5.fontSize">List for trade</Box>
 			</Box>
+
+			<CustomDivider sx={{ my: 4 }} />
 
 			{isError && <CustomAlert>{error.response.data.message}</CustomAlert>}
 
@@ -184,7 +189,7 @@ const TradeGamesScreen = () => {
 						)}
 					</Grid>
 
-					<CustomDivider sx={{ my: 2 }} />
+					<CustomDivider sx={{ my: 4 }} />
 
 					{/* Shipping Area */}
 					<Box
@@ -296,7 +301,7 @@ const TradeGamesScreen = () => {
 							loading={listMutation.isLoading}
 							fullWidth
 						>
-							Trade
+							List for trade
 						</LoadingBtn>
 					</Box>
 				</Fragment>
