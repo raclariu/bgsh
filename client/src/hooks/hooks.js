@@ -845,12 +845,9 @@ export const useSubmitReportMutation = ({ resetForm }) => {
 	})
 }
 
-export const useGetSocialsQuery = ({ updateSocialsOnSuccess }) => {
+export const useGetSocialsQuery = () => {
 	return useQuery([ 'socials' ], api.apiGetSocials, {
-		staleTime : Infinity,
-		onSuccess : (data) => {
-			updateSocialsOnSuccess(data)
-		}
+		staleTime : Infinity
 	})
 }
 
@@ -859,9 +856,53 @@ export const useUpdateSocialsMutation = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation((data) => api.apiUpdateSocials(data), {
-		onSuccess : (data) => {
+		onSuccess : () => {
 			showSnackbar.success({ text: 'Socials updated successfully' })
 			queryClient.invalidateQueries([ 'socials' ])
+		}
+	})
+}
+
+export const useGetEmailNotificationStatusQuery = ({ emailCheckboxInView }) => {
+	return useQuery([ 'emailNtfStatus' ], api.apiGetEmailNotificationStatus, {
+		staleTime : Infinity,
+		enabled   : emailCheckboxInView
+	})
+}
+
+export const useUpdateEmailNotificationStatusMutation = () => {
+	const [ showSnackbar ] = useNotiSnackbar()
+	const queryClient = useQueryClient()
+
+	return useMutation(() => api.apiUpdateEmailNotificationStatus(), {
+		onMutate  : async () => {
+			// Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+			await queryClient.cancelQueries([ 'emailNtfStatus' ])
+			// Snapshot the previous value
+			const prevStatus = queryClient.getQueryData([ 'emailNtfStatus' ])
+			// Optimistically update to the new value
+			queryClient.setQueryData([ 'emailNtfStatus' ], (oldStatus) => {
+				const newStatus = { emailNotifications: !oldStatus.emailNotifications }
+				newStatus.emailNotifications
+					? showSnackbar.success({ text: 'Email notifications activated' })
+					: showSnackbar.info({ text: 'Email notifications deactivated' })
+
+				return newStatus
+			})
+
+			// Return a context object with the snapshotted value in case of error so we can revert to old status
+			return { prevStatus }
+		},
+		onError   : (err, data, ctx) => {
+			showSnackbar.error({
+				text : err.response.data.message || 'Error occured while trying update email notification status'
+			})
+			// If the mutation fails, use the context returned from onMutate to roll back
+			queryClient.setQueryData([ 'emailNtfStatus' ], ctx.prevStatus)
+		},
+		onSuccess : (data) => {
+			// Update query with data from mutation so that saved status useQuery won't run
+			queryClient.setQueryData([ 'emailNtfStatus' ], data)
 		}
 	})
 }

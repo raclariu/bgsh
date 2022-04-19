@@ -2,13 +2,12 @@ import asyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import Fuse from 'fuse.js'
 import Message from '../models/messageModel.js'
+import { sendNewMessageMailNotification } from '../helpers/mailer.js'
 
 // * @desc    Send message
 // * @route   POST  /api/messages
 // * @access  Private route
 const sendMessage = asyncHandler(async (req, res) => {
-	const { subject, message } = req.body
-
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
@@ -22,12 +21,19 @@ const sendMessage = asyncHandler(async (req, res) => {
 			}
 		}
 	} else {
-		await Message.create({
+		const { subject, message } = req.body
+		const { _id: recipientId, email, emailNotifications } = req.recipientData
+
+		const newMsg = await Message.create({
 			sender    : req.user._id,
-			recipient : req.recipientId,
+			recipient : recipientId,
 			subject,
 			message
 		})
+
+		if (newMsg && emailNotifications) {
+			await sendNewMessageMailNotification({ address: email, sender: req.user.username, subject, message })
+		}
 
 		return res.status(204).end()
 	}

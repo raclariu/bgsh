@@ -2,49 +2,49 @@ import mongoose from 'mongoose'
 
 const userSchema = mongoose.Schema(
 	{
-		email      : {
+		email              : {
 			type      : String,
 			lowercase : true,
 			trim      : true,
 			unique    : true,
 			required  : true
 		},
-		username   : {
+		username           : {
 			type      : String,
 			lowercase : true,
 			trim      : true,
 			unique    : true,
 			required  : true
 		},
-		password   : {
+		password           : {
 			type     : String,
 			required : true
 		},
-		isAdmin    : {
+		isAdmin            : {
 			type     : Boolean,
 			required : true,
 			default  : false
 		},
-		lastSeen   : {
+		lastSeen           : {
 			type    : Date,
 			default : new Date()
 		},
-		avatar     : {
+		avatar             : {
 			type    : String,
 			default : null
 		},
-		status     : {
+		status             : {
 			type    : String,
 			default : 'pending'
 		},
-		savedGames : [
+		savedGames         : [
 			{
 				type     : mongoose.Schema.Types.ObjectId,
 				required : true,
 				ref      : 'Game'
 			}
 		],
-		socials    : {
+		socials            : {
 			bggUsername : {
 				type    : String,
 				default : null
@@ -57,6 +57,10 @@ const userSchema = mongoose.Schema(
 				type    : Boolean,
 				default : false
 			}
+		},
+		emailNotifications : {
+			type    : Boolean,
+			default : false
 		}
 	},
 	{

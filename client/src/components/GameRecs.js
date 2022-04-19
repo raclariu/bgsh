@@ -21,7 +21,6 @@ import CustomAlert from './CustomAlert'
 
 // @ Icons
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
-import StarPurple500Icon from '@mui/icons-material/StarPurple500'
 import RecommendTwoToneIcon from '@mui/icons-material/RecommendTwoTone'
 import StarIcon from '@mui/icons-material/Star'
 

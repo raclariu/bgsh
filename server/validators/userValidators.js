@@ -231,7 +231,9 @@ const validateSocialsFbgUsername = check('fbgUsername')
 	.withMessage('FBG username must be between 5 and 20 characters long')
 	.bail()
 
-const validateSocialsShow = check('show').isIn([ true, false ]).withMessage('Invalid display checkbox selection')
+const validateSocialsShow = check('show')
+	.isIn([ true, false ])
+	.withMessage('Invalid socials display checkbox selection')
 
 const validateLogin = [ validateEmail, validatePasswordLogIn ]
 const validateSignUp = [

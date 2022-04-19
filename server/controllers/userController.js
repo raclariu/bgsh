@@ -329,11 +329,9 @@ const getUserProfileData = asyncHandler(async (req, res) => {
 
 	const { _id, username, avatar, socials, status, lastSeen, createdAt } = user
 
-	return res
-		.status(200)
-		.json({
-			user: { _id, username, avatar, socials, status: status === 'banned' ? 'banned' : null, lastSeen, createdAt }
-		})
+	return res.status(200).json({
+		user : { _id, username, avatar, socials, status: status === 'banned' ? 'banned' : null, lastSeen, createdAt }
+	})
 })
 
 // ~ @desc    Get single user profile data
@@ -376,7 +374,7 @@ const getUserProfileListingsData = asyncHandler(async (req, res) => {
 // ~ @route   GET /api/users/avatar
 // ~ @access  Private route
 const getOwnAvatar = asyncHandler(async (req, res) => {
-	const user = await User.findOne({ _id: req.user._id }).select('avatar').lean()
+	const user = await User.findById({ _id: req.user._id }).select('avatar').lean()
 	return res.status(200).json({ avatar: user.avatar })
 })
 
@@ -384,7 +382,7 @@ const getOwnAvatar = asyncHandler(async (req, res) => {
 // ~ @route   GET  /api/users/socials
 // ~ @access  Private route
 const getSocials = asyncHandler(async (req, res) => {
-	const user = await User.findOne({ _id: req.user._id }).select('socials').lean()
+	const user = await User.findById({ _id: req.user._id }).select('socials').lean()
 	return res.status(200).json({ socials: user.socials })
 })
 
@@ -404,8 +402,40 @@ const updateSocials = asyncHandler(async (req, res) => {
 		}
 	}
 
-	await User.updateOne({ _id: req.user._id }, { socials: req.body })
+	const { bggUsername, fbgUsername, show } = req.body
+	await User.updateOne(
+		{ _id: req.user._id },
+		{
+			socials : {
+				bggUsername,
+				fbgUsername,
+				show        : bggUsername === null && fbgUsername === null ? false : show
+			}
+		}
+	)
 	return res.status(204).end()
+})
+
+// ~ @desc    Get email notification status for new messages
+// ~ @route   GET  /api/users/email/status
+// ~ @access  Private route
+const getEmailNotificationStatus = asyncHandler(async (req, res) => {
+	const user = await User.findById({ _id: req.user._id }).select('emailNotifications').lean()
+	return res.status(200).json({ emailNotifications: user.emailNotifications })
+})
+
+// <> @desc    Update email notification status for new messages
+// <> @route   PATCH  /api/users/email/status
+// <> @access  Private route
+const updateEmailNotificationStatus = asyncHandler(async (req, res) => {
+	const user = await User.findById({ _id: req.user._id }).select('emailNotifications').lean()
+	const updateEmailNtfStatus = await User.findOneAndUpdate(
+		{ _id: req.user._id },
+		{ emailNotifications: !user.emailNotifications },
+		{ new: true, select: 'emailNotifications' }
+	)
+
+	return res.status(200).json({ emailNotifications: updateEmailNtfStatus.emailNotifications })
 })
 
 export {
@@ -421,5 +451,7 @@ export {
 	changeAvatar,
 	getOwnAvatar,
 	getSocials,
-	updateSocials
+	updateSocials,
+	getEmailNotificationStatus,
+	updateEmailNotificationStatus
 }

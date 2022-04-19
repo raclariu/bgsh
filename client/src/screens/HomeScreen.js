@@ -1,18 +1,18 @@
 // @ Modules
 import React, { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import { Link as RouterLink } from 'react-router-dom'
-import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Mui
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Chip from '@mui/material/Chip'
 
 // @ Components
 import CustomSkeleton from '../components/Skeletons/CustomSkeleton'
 import Helmet from '../components/Helmet'
+import LzLoad from '../components/LzLoad'
 import CustomDivider from '../components/CustomDivider'
 
 // @ Icons
@@ -25,6 +25,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
 
 // @ Others
 import { useGetNewListingsQuery } from '../hooks/hooks'
+import { calculateTimeAgo } from '../helpers/helpers'
 
 // @ Styles
 const StyledThumb = styled('img')({
@@ -37,7 +38,7 @@ const StyledThumb = styled('img')({
 })
 
 // @ Skeleton
-const NewListingsSkeletons = () => {
+const NewListingsSkeleton = () => {
 	return (
 		<Box borderRadius="4px" boxShadow={2} p={1} bgcolor="background.paper" height={72} width="100%">
 			<Box display="flex" alignItems="flex-start" gap={1} height="100%">
@@ -74,7 +75,7 @@ const HomeScreen = () => {
 				alignItems="center"
 				justifyContent="center"
 				height="100%"
-				pt="120px"
+				py={10}
 			>
 				<Box
 					display="flex"
@@ -84,24 +85,24 @@ const HomeScreen = () => {
 					sx={{ lineHeight: 1 }}
 					width="100%"
 					textAlign="center"
-					pb={7}
+					pb={8}
 				>
-					<Box fontSize="h2.fontSize" fontWeight="fontWeightBold">
+					<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
 						Sell
 					</Box>
-					<Box fontSize="h2.fontSize" fontWeight="fontWeightBold">
+					<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
 						Trade
 					</Box>
-					<Box fontSize="h2.fontSize" fontWeight="fontWeightBold">
+					<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
 						Buy
 					</Box>
-					<Box fontSize="h2.fontSize" fontWeight="fontWeightBold">
+					<Box fontSize="h3.fontSize" fontWeight="fontWeightBold">
 						Board games
 					</Box>
 				</Box>
 
 				{!successUserData && (
-					<Box display="flex" alignItems="center" justifyContent="center" pb={15} gap={2}>
+					<Box display="flex" alignItems="center" justifyContent="center" gap={2} pb={10}>
 						<Button
 							component={RouterLink}
 							to="/create-account"
@@ -124,29 +125,38 @@ const HomeScreen = () => {
 				)}
 
 				{successUserData && (
-					<Box display="flex" alignItems="center" justifyContent="center" pb={15} gap={2}>
-						<Button
-							component={RouterLink}
-							to="/dashboard"
-							sx={{ width: 160 }}
-							variant="contained"
-							color="primary"
-						>
+					<Box
+						sx={{
+							display             : 'grid',
+							gridTemplateColumns : {
+								xs : '1fr 1fr'
+							},
+							width               : {
+								xs : '100%',
+								sm : '75%',
+								md : '50%'
+							},
+							columnGap           : 3,
+							rowGap              : 2
+						}}
+						pb={10}
+					>
+						<Button component={RouterLink} to="/dashboard" fullWidth variant="outlined" color="primary">
 							Dashboard
 						</Button>
-						<Button
-							component={RouterLink}
-							to="/sales"
-							sx={{ width: 160 }}
-							variant="contained"
-							color="secondary"
-						>
+						<Button component={RouterLink} to="/wanted" fullWidth variant="outlined" color="primary">
+							Wanted
+						</Button>
+						<Button component={RouterLink} to="/sales" fullWidth variant="outlined" color="primary">
 							Listed for sale
+						</Button>
+						<Button component={RouterLink} to="/trades" fullWidth variant="outlined" color="primary">
+							Listed for trade
 						</Button>
 					</Box>
 				)}
 
-				<Box fontSize="h4.fontSize" fontWeight="fontWeightBold" pb={8} pt={10}>
+				<Box fontSize="h4.fontSize" fontWeight="fontWeightBold" pb={8}>
 					New listings
 				</Box>
 
@@ -163,13 +173,13 @@ const HomeScreen = () => {
 						}}
 						width="100%"
 					>
-						{[ ...Array(12).keys() ].map((i, k) => <NewListingsSkeletons />)}
+						{[ ...Array(12).keys() ].map((i, k) => <NewListingsSkeleton key={k} />)}
 					</Box>
 				)}
 
 				{isSuccess && (
 					<Box
-						pb={15}
+						pb={10}
 						id="new"
 						sx={{
 							display             : 'grid',
@@ -183,71 +193,91 @@ const HomeScreen = () => {
 						width="100%"
 					>
 						{data.map((item) => (
-							<Box borderRadius="4px" boxShadow={2} p={1} bgcolor="background.paper">
-								<Box display="flex" alignItems="flex-start" gap={2} height="100%">
-									<Box display="flex" justifyContent="center">
-										<StyledThumb
-											src={item.games[0].thumbnail}
-											alt={item.games[0].title}
-											title={item.games[0].title}
-										/>
-									</Box>
-
-									<Box
-										display="flex"
-										flexDirection="column"
-										alignItems="flex-start"
-										height="100%"
-										justifyContent="space-between"
-									>
-										{item.isPack ? (
-											<Box fontSize="body2.fontSize" fontWeight="fontWeightMedium">
-												Pack of {item.games.length} board games listed{' '}
-												{calculateTimeAgo(item.createdAt)}
-											</Box>
+							<LzLoad key={item._id} placeholder={<NewListingsSkeleton />}>
+								<Box borderRadius="4px" boxShadow={2} p={1} bgcolor="background.paper">
+									<Box display="flex" alignItems="flex-start" gap={2} height="100%">
+										{item.mode === 'want' ? (
+											<StyledThumb
+												src={item.games[0].thumbnail}
+												alt={item.games[0].title}
+												title={item.games[0].title}
+											/>
 										) : (
-											<Box fontSize="body2.fontSize" fontWeight="fontWeightMedium">
-												{item.games[0].title} listed {calculateTimeAgo(item.createdAt)}
+											<Box
+												component={RouterLink}
+												to={
+													item.mode === 'sell' ? (
+														`/sales/${item.altId}`
+													) : (
+														`/trades/${item.altId}`
+													)
+												}
+											>
+												<StyledThumb
+													src={item.games[0].thumbnail}
+													alt={item.games[0].title}
+													title={item.games[0].title}
+												/>
 											</Box>
 										)}
 
-										<Box display="flex" alignItems="center" gap={1}>
-											{item.mode === 'sell' && (
-												<Chip
-													size="small"
-													// variant="outlined"
-													color="success"
-													label={
-														<Box fontWeight="fontWeightMedium">{item.totalPrice} RON</Box>
-													}
-												/>
+										<Box
+											display="flex"
+											flexDirection="column"
+											alignItems="flex-start"
+											height="100%"
+											justifyContent="space-between"
+										>
+											{item.isPack ? (
+												<Box fontSize="body2.fontSize" fontWeight="fontWeightMedium">
+													Pack of {item.games.length} board games listed{' '}
+													{calculateTimeAgo(item.createdAt)}
+												</Box>
+											) : (
+												<Box fontSize="body2.fontSize" fontWeight="fontWeightMedium">
+													{item.games[0].title} listed {calculateTimeAgo(item.createdAt)}
+												</Box>
 											)}
 
-											<Chip
-												size="small"
-												variant="contained"
-												color="primary"
-												label={
-													item.mode === 'sell' ? (
-														'sale'
-													) : item.mode === 'trade' ? (
-														'trade'
-													) : (
-														'wanted'
-													)
-												}
-											/>
+											<Box display="flex" alignItems="center" gap={1}>
+												{item.mode === 'sell' && (
+													<Chip
+														size="small"
+														color="success"
+														label={
+															<Box fontWeight="fontWeightMedium">
+																{item.totalPrice} RON
+															</Box>
+														}
+													/>
+												)}
+
+												<Chip
+													size="small"
+													variant="contained"
+													color="primary"
+													label={
+														item.mode === 'sell' ? (
+															'sale'
+														) : item.mode === 'trade' ? (
+															'trade'
+														) : (
+															'wanted'
+														)
+													}
+												/>
+											</Box>
 										</Box>
 									</Box>
 								</Box>
-							</Box>
+							</LzLoad>
 						))}
 					</Box>
 				)}
 
 				<CustomDivider flexItem />
 
-				<Box fontSize="h4.fontSize" fontWeight="fontWeightBold" pb={8} pt={10}>
+				<Box fontSize="h4.fontSize" fontWeight="fontWeightBold" py={8}>
 					Features
 				</Box>
 

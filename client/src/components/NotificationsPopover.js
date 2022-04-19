@@ -44,9 +44,9 @@ const NotificationsPopover = () => {
 	const deleteMutation = useDeleteNotificationMutation()
 	const clearAllMutation = useClearAllNotificationsMutation()
 
-	const handleThumbClick = (altId) => {
+	const handleThumbClick = ({ altId, mode }) => {
 		setAnchorEl(null)
-		navigate(`/games/${altId}`)
+		mode === 'sell' ? navigate(`/sales/${altId}`) : navigate(`/trades/${altId}`)
 	}
 
 	const deleteNotificationHandler = (ntfId) => {
@@ -113,7 +113,7 @@ const NotificationsPopover = () => {
 												{ntf.type === 'wishlist' ? (
 													<Avatar
 														sx={{ cursor: 'pointer' }}
-														onClick={() => handleThumbClick(ntf.meta.altId)}
+														onClick={() => handleThumbClick(ntf.meta)}
 														variant="rounded"
 														src={ntf.meta.thumbnail}
 														alt={ntf.text}

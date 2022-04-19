@@ -1,5 +1,5 @@
 // @ Modules
-import React, { useState, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -18,15 +18,20 @@ const SocialsForm = () => {
 	const [ fbgUsername, setFbgUsername ] = useState('')
 	const [ isChecked, setIsChecked ] = useState(false)
 
-	const updateSocialsOnSuccess = (data) => {
-		setBggUsername(data.socials.bggUsername ? data.socials.bggUsername : '')
-		setFbgUsername(data.socials.fbgUsername ? data.socials.fbgUsername : '')
-		setIsChecked(data.socials.show)
-	}
-
-	const { isLoading, data, isSuccess } = useGetSocialsQuery({ updateSocialsOnSuccess })
+	const { isLoading, isSuccess, data } = useGetSocialsQuery()
 
 	const mutation = useUpdateSocialsMutation()
+
+	useEffect(
+		() => {
+			if (isSuccess) {
+				setBggUsername(data.socials.bggUsername || '')
+				setFbgUsername(data.socials.fbgUsername || '')
+				setIsChecked(data.socials.show)
+			}
+		},
+		[ data, isSuccess ]
+	)
 
 	const handleSocialsCheckbox = (e) => {
 		setIsChecked(e.target.checked)
@@ -51,7 +56,6 @@ const SocialsForm = () => {
 			<Box width="100%">
 				<form onSubmit={handleSubmit} autoComplete="off">
 					<Box display="flex" flexDirection="column">
-						{console.count('renders')}
 						<Input
 							sx={{ minHeight: '90px' }}
 							disabled={isLoading}
@@ -89,7 +93,7 @@ const SocialsForm = () => {
 							disabled={isLoading}
 							control={
 								<Checkbox
-									sx={{ height: 48, width: 48, mr: 1 }}
+									sx={{ height: 48, width: 48 }}
 									checked={isChecked}
 									onChange={(e) => handleSocialsCheckbox(e)}
 								/>

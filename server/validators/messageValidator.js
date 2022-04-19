@@ -14,7 +14,7 @@ const validateMessageRecipient = check('recipient')
 	.bail()
 	.custom(async (username, { req }) => {
 		if (username) {
-			const usernameExists = await User.findOne({ username }).select('_id status').lean()
+			const usernameExists = await User.findOne({ username }).select('_id status emailNotifications email').lean()
 
 			if (!usernameExists) {
 				throw new Error('User not found')
@@ -27,7 +27,7 @@ const validateMessageRecipient = check('recipient')
 					throw new Error('User is banned')
 				}
 
-				req.recipientId = usernameExists._id
+				req.recipientData = usernameExists
 				return true
 			}
 		}

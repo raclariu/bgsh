@@ -15,7 +15,9 @@ import {
 	changeAvatar,
 	getOwnAvatar,
 	getSocials,
-	updateSocials
+	updateSocials,
+	getEmailNotificationStatus,
+	updateEmailNotificationStatus
 } from '../controllers/userController.js'
 import {
 	validateLogin,
@@ -40,5 +42,6 @@ router.route('/password/reset').post([ validateResetPasswordNew, validatePasswor
 router.route('/avatar').post([ protect, uploadAvatar, resizeAvatar ], changeAvatar).get([ protect ], getOwnAvatar)
 router.route('/:username').get([ protect, validateUsernameExist ], getUserProfileData)
 router.route('/:username/listings').get([ protect, validateUsernameExist ], getUserProfileListingsData)
+router.route('/email/status').get(protect, getEmailNotificationStatus).patch(protect, updateEmailNotificationStatus)
 
 export default router

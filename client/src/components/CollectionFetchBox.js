@@ -34,7 +34,7 @@ const CollectionFetchBox = () => {
 				size="medium"
 				id="bggUsername"
 				name="bggUsername"
-				label="Import your BoardGameGeek collection"
+				label="Import"
 				placeholder="Enter your BoardGameGeek username"
 				type="text"
 				fullWidth

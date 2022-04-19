@@ -66,7 +66,7 @@ const DashboardScreen = () => {
 
 	return (
 		<Fragment>
-			<Helmet title="My dashboard" />
+			<Helmet title={`${currUsername}'s dashboard`} />
 
 			<Box
 				component={Paper}
@@ -89,25 +89,45 @@ const DashboardScreen = () => {
 			</Box>
 
 			<Box
-				component={Paper}
-				p={2}
-				borderRadius="4px"
-				boxShadow={2}
-				mb={6}
 				sx={{
 					display             : 'grid',
 					gridTemplateColumns : {
 						xs : '100%',
 						md : '1fr 1fr' // auto min-content sau auto-auto sau auto 1fr
 					},
-					gap                 : 4
+					gap                 : 2,
+					mb                  : 6
 				}}
 			>
-				<Box id="collection-fetch-box">
+				<Box
+					component={Paper}
+					p={2}
+					borderRadius="4px"
+					boxShadow={2}
+					id="collection-fetch-box"
+					display="flex"
+					flexDirection="column"
+					gap={2}
+				>
+					<Box fontSize="h6.fontSize" fontWeight="fontWeightMedium">
+						Import your BGG collection
+					</Box>
 					<CollectionFetchBox />
 				</Box>
 
-				<Box id="bgg-search-box">
+				<Box
+					component={Paper}
+					p={2}
+					borderRadius="4px"
+					boxShadow={2}
+					id="bgg-search-box"
+					display="flex"
+					flexDirection="column"
+					gap={2}
+				>
+					<Box fontSize="h6.fontSize" fontWeight="fontWeightMedium">
+						Search BGG titles
+					</Box>
 					<BggSearchGamesBox />
 				</Box>
 			</Box>
@@ -220,7 +240,7 @@ const DashboardScreen = () => {
 					my={2}
 				>
 					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
-						Latest r/boardgames posts
+						r/boardgames posts
 					</Box>
 					<ExtLinkIconBtn url={`https://reddit.com/r/boardgames`} tooltip="See more reddit posts" />
 				</Box>

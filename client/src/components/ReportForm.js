@@ -28,7 +28,7 @@ import ReportTwoToneIcon from '@mui/icons-material/ReportTwoTone'
 import { useSubmitReportMutation } from '../hooks/hooks'
 
 // @ Main
-const ReportForm = ({ type, username, altId }) => {
+const ReportForm = ({ type, username, altId, ...other }) => {
 	const currUsername = useSelector((state) => state.userData.username)
 
 	const [ open, setOpen ] = useState(false)
@@ -87,6 +87,7 @@ const ReportForm = ({ type, username, altId }) => {
 					disabled={currUsername === username}
 					color="error"
 					size="large"
+					{...other}
 				>
 					<ReportTwoToneIcon />
 				</CustomIconBtn>

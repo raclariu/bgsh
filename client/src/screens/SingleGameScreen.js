@@ -320,7 +320,7 @@ const SingleGameScreen = () => {
 								width="100%"
 							>
 								<Box display="flex" alignItems="center" gap={1}>
-									<ReportForm type="game" altId={data.altId} />
+									<ReportForm edge="start" type="game" altId={data.altId} />
 									<ExtLinkIconBtn
 										url={`https://boardgamegeek.com/boardgame/${data.games[idx].bggId}`}
 									/>
@@ -395,7 +395,7 @@ const SingleGameScreen = () => {
 								{data.games[idx].extraInfo && (
 									<Box display="flex" flexDirection="column">
 										<Box fontWeight="fontWeightMedium">Extra info</Box>
-										<Box fontStyle="italic" fontSize={12}>
+										<Box fontWeight="fontWeightMedium" fontSize={14}>
 											{data.games[idx].extraInfo}
 										</Box>
 									</Box>
@@ -404,7 +404,7 @@ const SingleGameScreen = () => {
 								{data.isPack && (
 									<Box display="flex" flexDirection="column">
 										<Box fontWeight="fontWeightMedium">Pack info</Box>
-										<Box fontStyle="italic" fontSize={12}>
+										<Box fontWeight="fontWeightMedium" fontSize={14}>
 											{data.extraInfoPack}
 										</Box>
 									</Box>
@@ -459,7 +459,7 @@ const SingleGameScreen = () => {
 										<Box fontWeight="fontWeightMedium">Game description</Box>
 										<Box>
 											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
-												<Box fontStyle="italic" fontSize={12}>
+												<Box fontStyle="italic" color="grey.300" fontSize={12}>
 													{data.games[idx].description
 														.split('&#10;')
 														.filter((part) => part.trim().length !== 0)

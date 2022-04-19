@@ -363,11 +363,27 @@ export const apiGetSocials = async () => {
 	return data
 }
 
-export const apiUpdateSocials = async (data) => {
-	await axsAUTH.post(`/api/users/socials`, data)
+export const apiUpdateSocials = async ({ bggUsername, fbgUsername, show }) => {
+	const data = {
+		bggUsername : bggUsername ? bggUsername : null,
+		fbgUsername : fbgUsername ? fbgUsername : null,
+		show
+	}
+
+	await axsAUTH.post('/api/users/socials', data)
 }
 
 export const apiGetNewListings = async () => {
 	const { data } = await axsPUBLIC.get(`/api/games/new`)
+	return data
+}
+
+export const apiGetEmailNotificationStatus = async () => {
+	const { data } = await axsAUTH.get(`/api/users/email/status`)
+	return data
+}
+
+export const apiUpdateEmailNotificationStatus = async () => {
+	const { data } = await axsAUTH.patch(`/api/users/email/status`, {})
 	return data
 }

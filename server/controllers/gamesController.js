@@ -125,6 +125,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `${data.games[0].title} has been listed for sale`,
 						meta      : {
+							mode      : 'sell',
 							altId     : data.altId,
 							thumbnail : data.games[0].thumbnail
 						}
@@ -236,6 +237,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `${data.games[0].title} has been listed for trade`,
 						meta      : {
+							mode      : 'trade',
 							altId     : data.altId,
 							thumbnail : data.games[0].thumbnail
 						}
@@ -766,7 +768,7 @@ const deleteOneGame = asyncHandler(async (req, res) => {
 const getNewListings = asyncHandler(async (req, res) => {
 	const gamesData = await Game.find({ isActive: true, mode: { $in: [ 'sell', 'trade', 'want' ] } })
 		.limit(12)
-		.select('games totalPrice isPack mode createdAt')
+		.select('games totalPrice altId isPack mode createdAt')
 		.sort({ createdAt: -1 })
 		.lean()
 
