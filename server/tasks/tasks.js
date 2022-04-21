@@ -76,10 +76,11 @@ const fetchKickstarters = cron.schedule(
 			'--disable-setuid-sandbox'
 		]
 
+		let browser
 		console.log('Starting task')
 		try {
 			console.log('Opening browser')
-			const browser = await puppeteer.launch({
+			browser = await puppeteer.launch({
 				executablePath    : '/usr/bin/chromium-browser',
 				args,
 				headless          : true,

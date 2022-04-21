@@ -170,7 +170,13 @@ const Header = () => {
 									<Box fontWeight="fontWeightMedium" mr={1} color="primary.main">
 										{currUsername}
 									</Box>
-									<MyAvatar size={6} />
+									<Box
+										onClick={() => setIsOpen(!isOpen)}
+										component={RouterLink}
+										to={`/profile/${currUsername}`}
+									>
+										<MyAvatar size={6} />
+									</Box>
 								</Box>
 							</Box>
 

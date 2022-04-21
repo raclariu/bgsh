@@ -230,7 +230,7 @@ const SingleGameScreen = () => {
 							<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium" textAlign="center">
 								{data.games[idx].title}
 							</Box>
-							<Box fontSize="caption.fontSize" color="grey.500">
+							<Box fontSize="caption.fontSize" color="text.secondary">
 								{`${data.games[idx].subtype} • ${data.games[idx].year}`}
 							</Box>
 							<Box display="flex" gap={1} my={2}>
@@ -459,7 +459,11 @@ const SingleGameScreen = () => {
 										<Box fontWeight="fontWeightMedium">Game description</Box>
 										<Box>
 											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
-												<Box fontStyle="italic" color="grey.300" fontSize={12}>
+												<Box
+													fontStyle="italic"
+													color="text.secondary"
+													fontSize="caption.fontSize"
+												>
 													{data.games[idx].description
 														.split('&#10;')
 														.filter((part) => part.trim().length !== 0)

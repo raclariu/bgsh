@@ -41,14 +41,16 @@ const logger = () => {
 				chalk.hex('#e38914').bold(tokens.url(req, res)),
 				chalk.hex('#2ed573').bold(tokens['response-time'](req, res) + ' ms'),
 				chalk.hex('#8f8f8f').bold.italic(`from ${tokens.referrer(req, res)}`)
-				// chalk.hex('#f78fb3').bold('@ ' + tokens.date(req, res)),
+				// chalk.hex('#f78fb3').bold(tokens.res(req, res, 'content-length'))
 				// chalk.yellow(tokens['remote-addr'](req, res)),
 				// chalk.hex('#1e90ff')(tokens['user-agent'](req, res)),
 				// '\n'
 			].join(' ')
 		)
 	} else {
-		return morgan('short')
+		return morgan(
+			':remote-addr  :method :status HTTP/:http-version  :url  :response-time[3] ms  :res[content-length]'
+		)
 		// return morgan('short', {
 		// 	stream : fs.createWriteStream(path.join(__dirname, '..', 'logs', 'access.log'), { flags: 'a' })
 		// })

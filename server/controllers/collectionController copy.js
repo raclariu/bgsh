@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler'
 import Fuse from 'fuse.js'
 import Collection from '../models/collectionModel.js'
 import Wishlist from '../models/wishlistModel.js'
+import ForTrade from '../models/bggForTradeModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
 // * @desc    Get collection from BGG and add to DB
@@ -12,19 +13,6 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 	try {
 		const { bggUsername } = req.body
 
-		// https://api.geekdo.com/xmlapi2/collection?username=sergiunastrut&prevowned=0&excludesubtype=boardgameexpansion
-
-		// const { data: ownedBoardgamesData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
-		// 	params : {
-		// 		username       : bggUsername,
-		// 		subtype        : 'boardgame',
-		// 		prevowned      : 0,
-		// 		version        : 1,
-		// 		stats          : 1,
-		// 		excludesubtype : 'boardgameexpansion'
-		// 	}
-		// })
-
 		// @ --------
 		// @ Owned---
 		// @ --------
@@ -32,22 +20,23 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			params : {
 				username       : bggUsername,
 				subtype        : 'boardgame',
-				excludesubtype : 'boardgameexpansion',
 				own            : 1,
 				wishlist       : 0,
 				version        : 1,
-				stats          : 1
+				stats          : 1,
+				excludesubtype : 'boardgameexpansion'
 			}
 		})
 
 		const { data: ownedExpansionsData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
-				subtype  : 'boardgameexpansion',
+				subtype  : 'boardgame',
 				own      : 1,
 				wishlist : 0,
 				version  : 1,
-				stats    : 1
+				stats    : 1,
+				subtype  : 'boardgameexpansion'
 			}
 		})
 
@@ -120,18 +109,19 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			params : {
 				username       : bggUsername,
 				subtype        : 'boardgame',
-				excludesubtype : 'boardgameexpansion',
 				own            : 0,
-				wishlist       : 1
+				wishlist       : 1,
+				excludesubtype : 'boardgameexpansion'
 			}
 		})
 
 		const { data: wishlistExpansionsData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
 			params : {
 				username : bggUsername,
-				subtype  : 'boardgameexpansion',
+				subtype  : 'boardgame',
 				own      : 0,
-				wishlist : 1
+				wishlist : 1,
+				subtype  : 'boardgameexpansion'
 			}
 		})
 
@@ -177,6 +167,93 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			}
 		}
 
+		// @ ------------
+		// @ For trade---
+		// @ ------------
+		const { data: forTradeBoardgamesData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+			params : {
+				username       : bggUsername,
+				subtype        : 'boardgame',
+				trade          : 1,
+				version        : 1,
+				stats          : 1,
+				excludesubtype : 'boardgameexpansion'
+			}
+		})
+
+		const { data: forTradeExpansionsData } = await axios.get('https://api.geekdo.com/xmlapi2/collection', {
+			params : {
+				username : bggUsername,
+				subtype  : 'boardgame',
+				trade    : 1,
+				version  : 1,
+				stats    : 1,
+				subtype  : 'boardgameexpansion'
+			}
+		})
+
+		let parsedForTradeBoardgames = await parseXML(forTradeBoardgamesData)
+		let parsedForTradeExpansions = await parseXML(forTradeExpansionsData)
+
+		// ensure owned boardgames is array if total items is 0,1 or more
+		const ensureParsedForTradeBoardgamesIsArray =
+			parsedForTradeBoardgames.totalitems === '0'
+				? []
+				: Array.isArray(parsedForTradeBoardgames.item)
+					? parsedForTradeBoardgames.item
+					: [ parsedForTradeBoardgames.item ]
+
+		// ensure owned expansions is array if total items is 0,1 or more
+		const ensureParsedForTradeExpansionsIsArray =
+			parsedForTradeExpansions.totalitems === '0'
+				? []
+				: Array.isArray(parsedForTradeExpansions.item)
+					? parsedForTradeExpansions.item
+					: [ parsedForTradeExpansions.item ]
+
+		// combine arrays of boardgames and expansions
+		const entireForTradeCollection = ensureParsedForTradeBoardgamesIsArray.concat(
+			ensureParsedForTradeExpansionsIsArray
+		)
+
+		let bggForTrade = []
+		if (entireForTradeCollection.length > 0) {
+			for (let game of entireForTradeCollection) {
+				const item = {
+					bggId     : game.objectid,
+					subtype   : game.subtype === 'boardgame' ? 'boardgame' : 'expansion',
+					title     : game.originalname ? game.originalname : game.name._ || null,
+					year      : game.yearpublished ? +game.yearpublished : null,
+					thumbnail : game.thumbnail ? game.thumbnail : null,
+					image     : game.image ? game.image : null,
+					added     : game.status.lastmodified,
+					stats     : {
+						userRating :
+							game.stats.rating.value && !isNaN(game.stats.rating.value)
+								? +parseFloat(game.stats.rating.value).toFixed(2)
+								: null,
+						avgRating  : +parseFloat(game.stats.rating.average.value).toFixed(2),
+						ratings    : +game.stats.rating.usersrated.value
+					},
+					version   : !game.version
+						? null
+						: game.version.item
+							? {
+									title : Array.isArray(game.version.item.name)
+										? game.version.item.name.find((obj) => obj.type === 'primary').value
+										: typeof game.version.item.name === 'object' ? game.version.item.name.value : null,
+
+									year  : +game.version.item.yearpublished.value
+										? +game.version.item.yearpublished.value
+										: null
+								}
+							: null
+				}
+
+				bggForTrade.push(item)
+			}
+		}
+
 		// Check if collection for this user exists and delete it to add the new one
 		const collectionExist = await Collection.findOne({ user: req.user._id }).select('_id').lean()
 		if (collectionExist) {
@@ -187,6 +264,12 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 		const wishlistExist = await Wishlist.findOne({ user: req.user._id }).select('_id').lean()
 		if (wishlistExist) {
 			await Wishlist.deleteOne({ user: req.user._id })
+		}
+
+		// Check if collection for this user exists and delete it to add the new one
+		const forTradeExist = await ForTrade.findOne({ user: req.user._id }).select('_id').lean()
+		if (forTradeExist) {
+			await ForTrade.deleteOne({ user: req.user._id })
 		}
 
 		await Collection.create({
@@ -201,8 +284,15 @@ const getBggCollectionAndWishlist = asyncHandler(async (req, res) => {
 			wishlistCount : bggWishlist.length
 		})
 
+		await ForTrade.create({
+			user          : req.user._id,
+			forTrade      : bggForTrade.length > 0 ? bggForTrade.sort((a, b) => (a.title > b.title ? 1 : -1)) : [],
+			forTradeCount : bggForTrade.length
+		})
+
 		return res.status(204).end()
 	} catch (error) {
+		console.log(error)
 		res.status(500)
 		throw {
 			message : 'Failed to retrieve collection data from BGG',

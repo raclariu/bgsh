@@ -15,8 +15,7 @@ const defaultBox = {
 	width          : 120,
 	boxShadow      : 2,
 	p              : 1,
-	borderRadius   : '8px',
-	bgcolor        : 'background.paper'
+	borderRadius   : '8px'
 }
 
 // @ Main

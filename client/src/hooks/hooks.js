@@ -615,8 +615,8 @@ export const useBggFetchCollectionMutation = () => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
 	return useMutation((bggUsername) => api.apiFetchBggCollection(bggUsername), {
-		retry      : 5,
-		retryDelay : 3000,
+		retry      : 6,
+		retryDelay : 3500,
 		onSuccess  : (data, bggUsername) => {
 			queryClient.invalidateQueries([ 'collection' ])
 			queryClient.invalidateQueries([ 'wishlist' ])

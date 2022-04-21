@@ -89,7 +89,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 						game.type === 'boardgame'
 							? Array.isArray(game.statistics.ratings.ranks.rank)
 								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
-								: null
+								: +[ game.statistics.ratings.ranks.rank ].find((obj) => +obj.id === 1).value
 							: null
 				},
 				complexity         : {

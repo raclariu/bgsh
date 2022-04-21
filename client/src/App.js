@@ -52,6 +52,7 @@ const MyListedGames = lazy(() => import('./screens/MyListedGamesScreen'))
 const GamesHistory = lazy(() => import('./screens/GamesHistoryScreen'))
 const HotGames = lazy(() => import('./screens/HotGamesScreen'))
 const UserProfile = lazy(() => import('./screens/UserProfileScreen'))
+const Changelog = lazy(() => import('./screens/ChangelogScreen'))
 const NotFound = lazy(() => import('./screens/NotFoundScreen'))
 
 // @ Main
@@ -125,6 +126,8 @@ const App = () => {
 									<Route path="reset-password/:tokenUid" element={<ResetPassword />} />
 
 									<Route path="create-account" element={<CreateAccount />} />
+
+									<Route path="changelog" element={<Changelog />} />
 
 									<Route
 										path="dashboard"

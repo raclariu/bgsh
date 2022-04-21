@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
+import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
@@ -40,8 +41,8 @@ const StyledThumb = styled('img')({
 // @ Skeleton
 const NewListingsSkeleton = () => {
 	return (
-		<Box borderRadius="4px" boxShadow={2} p={1} bgcolor="background.paper" height={72} width="100%">
-			<Box display="flex" alignItems="flex-start" gap={1} height="100%">
+		<Box component={Paper} borderRadius="4px" boxShadow={2} p={1} height={72} width="100%">
+			<Box display="flex" alignItems="flex-start" gap={2} height="100%">
 				<CustomSkeleton sx={{ borderRadius: '4px' }} variant="square" height={56} width={56} />
 				<Box
 					display="flex"
@@ -194,7 +195,7 @@ const HomeScreen = () => {
 					>
 						{data.map((item) => (
 							<LzLoad key={item._id} placeholder={<NewListingsSkeleton />}>
-								<Box borderRadius="4px" boxShadow={2} p={1} bgcolor="background.paper">
+								<Box component={Paper} borderRadius="4px" boxShadow={2} p={1} height="100%">
 									<Box display="flex" alignItems="flex-start" gap={2} height="100%">
 										{item.mode === 'want' ? (
 											<StyledThumb
@@ -266,6 +267,14 @@ const HomeScreen = () => {
 														)
 													}
 												/>
+
+												{item.isPack && (
+													<Chip
+														size="small"
+														color="secondary"
+														label={`${item.games.length} pack`}
+													/>
+												)}
 											</Box>
 										</Box>
 									</Box>
@@ -293,10 +302,10 @@ const HomeScreen = () => {
 					}}
 				>
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
@@ -309,10 +318,10 @@ const HomeScreen = () => {
 					</Box>
 
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
@@ -325,10 +334,10 @@ const HomeScreen = () => {
 					</Box>
 
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
@@ -341,10 +350,10 @@ const HomeScreen = () => {
 					</Box>
 
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
@@ -357,10 +366,10 @@ const HomeScreen = () => {
 					</Box>
 
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
@@ -373,10 +382,10 @@ const HomeScreen = () => {
 					</Box>
 
 					<Box
+						component={Paper}
 						display="flex"
 						borderRadius="4px"
 						flexDirection="column"
-						bgcolor="background.paper"
 						alignItems="center"
 						boxShadow={2}
 						p={4}
