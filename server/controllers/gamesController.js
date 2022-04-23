@@ -453,9 +453,9 @@ const getGames = asyncHandler(async (req, res) => {
 
 		const pagination = {
 			page,
-			totalPages   : Math.ceil(count / resultsPerPage),
-			totalItems   : count,
-			itemsPerPage : resultsPerPage
+			totalPages : Math.ceil(count / resultsPerPage),
+			totalItems : count,
+			perPage    : resultsPerPage
 		}
 
 		return res.status(200).json({ gamesData, pagination })
@@ -500,10 +500,10 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			.lean()
 
 		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(allUserGames.length / resultsPerPage),
-			totalItems   : allUserGames.length,
-			itemsPerPage : resultsPerPage
+			page       : page,
+			totalPages : Math.ceil(allUserGames.length / resultsPerPage),
+			totalItems : allUserGames.length,
+			perPage    : resultsPerPage
 		}
 
 		res.status(200).json({
@@ -697,10 +697,10 @@ const getSavedGames = asyncHandler(async (req, res) => {
 		})
 
 		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(user.savedGames.length / resultsPerPage),
-			totalItems   : user.savedGames.length,
-			itemsPerPage : resultsPerPage
+			page       : page,
+			totalPages : Math.ceil(user.savedGames.length / resultsPerPage),
+			totalItems : user.savedGames.length,
+			perPage    : resultsPerPage
 		}
 
 		res.status(200).json({

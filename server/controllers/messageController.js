@@ -103,10 +103,10 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 		}
 
 		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(count / resultsPerPage),
-			totalItems   : count,
-			itemsPerPage : resultsPerPage
+			page       : page,
+			totalPages : Math.ceil(count / resultsPerPage),
+			totalItems : count,
+			perPage    : resultsPerPage
 		}
 
 		return res.status(200).json({ messages: receivedMessages, pagination })
@@ -170,10 +170,10 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		}
 
 		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(count / resultsPerPage),
-			totalItems   : count,
-			itemsPerPage : resultsPerPage
+			page       : page,
+			totalPages : Math.ceil(count / resultsPerPage),
+			totalItems : count,
+			perPage    : resultsPerPage
 		}
 
 		return res.status(200).json({ messages: sentMessages, pagination })

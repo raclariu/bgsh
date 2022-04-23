@@ -414,10 +414,10 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 			.lean()
 
 		const pagination = {
-			page         : page,
-			totalPages   : Math.ceil(completeList.length / resultsPerPage),
-			totalItems   : completeList.length,
-			itemsPerPage : resultsPerPage
+			page       : page,
+			totalPages : Math.ceil(completeList.length / resultsPerPage),
+			totalItems : completeList.length,
+			perPage    : resultsPerPage
 		}
 
 		return res.status(200).json({
