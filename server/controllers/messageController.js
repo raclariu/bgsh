@@ -63,7 +63,8 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 
 		if (results.length === 0) {
 			return res.status(200).json({
-				messages : []
+				messages   : [],
+				pagination : {}
 			})
 		}
 
@@ -82,7 +83,8 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 
 		if (count === 0) {
 			return res.status(200).json({
-				messages : []
+				messages   : [],
+				pagination : {}
 			})
 		}
 
@@ -95,7 +97,8 @@ const getReceivedMessages = asyncHandler(async (req, res) => {
 
 		if (receivedMessages.length === 0) {
 			return res.status(200).json({
-				messages : []
+				messages   : [],
+				pagination : {}
 			})
 		}
 
@@ -133,7 +136,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		const results = fuse.search(search).map((msg) => msg.item)
 
 		if (results.length === 0) {
-			return res.status(200).json({ messages: [] })
+			return res.status(200).json({ messages: [], pagination: {} })
 		}
 
 		const pagination = {
@@ -150,7 +153,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 		const count = await Message.countDocuments({ sender: req.user._id, delSender: false })
 
 		if (count === 0) {
-			return res.status(200).json({ messages: [] })
+			return res.status(200).json({ messages: [], pagination: {} })
 		}
 
 		const sentMessages = await Message.find({ sender: req.user._id, delSender: false })
@@ -162,7 +165,7 @@ const getSentMessages = asyncHandler(async (req, res) => {
 
 		if (sentMessages.length === 0) {
 			if (results.length === 0) {
-				return res.status(200).json({ messages: [] })
+				return res.status(200).json({ messages: [], pagination: {} })
 			}
 		}
 

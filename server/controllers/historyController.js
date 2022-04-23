@@ -382,7 +382,7 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 		.lean()
 
 	if (completeList.length === 0) {
-		return res.status(200).json({ historyList: [] })
+		return res.status(200).json({ historyList: [], pagination: {} })
 	}
 
 	if (search) {

@@ -369,7 +369,7 @@ const getGames = asyncHandler(async (req, res) => {
 		const gamesData = await Game.find({ isActive: true, mode })
 			.populate('addedBy', 'username _id avatar')
 			.select(
-				'-extraInfoPack -shipping -__v -_id -games.categories -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
+				'-extraInfoPack -__v -_id -games.categories -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
 			)
 			.lean()
 
@@ -446,7 +446,7 @@ const getGames = asyncHandler(async (req, res) => {
 			.limit(resultsPerPage)
 			.populate('addedBy', 'username _id avatar')
 			.select(
-				'-extraInfoPack -shipping -__v -_id -games.categories -games.designers -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
+				'-extraInfoPack -__v -_id -games.categories -games.designers -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
 			)
 			.sort(checkSort())
 			.lean()
