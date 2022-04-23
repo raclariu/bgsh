@@ -1,7 +1,7 @@
 // @ Modules
 import React, { useState, Fragment } from 'react'
 import { useParams } from 'react-router-dom'
-import { calculateTimeAgoStrict, formatDateSimple } from '../helpers/helpers'
+import { calculateTimeAgo, formatDateSimple } from '../helpers/helpers'
 
 // @ Mui
 import Chip from '@mui/material/Chip'
@@ -88,7 +88,7 @@ const UserProfileScreen = () => {
 						color="primary"
 						size="small"
 						variant="outlined"
-						label={`Last seen ~${calculateTimeAgoStrict(userData.user.lastSeen)}`}
+						label={`Last seen ~${calculateTimeAgo(userData.user.lastSeen)}`}
 					/>
 					<Chip
 						color="primary"

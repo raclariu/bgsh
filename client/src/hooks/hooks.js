@@ -192,34 +192,37 @@ export const useGetBggGamesDetailsQuery = (onSuccess) => {
 	})
 }
 
-export const useGetOwnedCollectionQuery = (search, page) => {
+export const useGetCollectionQuery = (search, page, type) => {
 	const userList = useGetListQuery()
 	const [ showSnackbar ] = useNotiSnackbar()
 
-	return useQuery([ 'collection', { search, page } ], () => api.apiFetchOwnedCollection(search, page), {
-		staleTime        : Infinity,
-		enabled          : !!userList.data,
-		keepPreviousData : true,
-		onError          : (err) => {
-			const text = err.response.data.message || 'Error occured while fetching collection'
-			showSnackbar.error({ text })
+	return useQuery(
+		[ 'collection', type, { search, page } ],
+		() => {
+			if (type === 'owned') {
+				return api.apiFetchOwnedCollection(search, page)
+			} else if (type === 'forTrade') {
+				return api.apiFetchForTradeCollection(search, page)
+			} else if (type === 'wantInTrade') {
+				return api.apiFetchWantInTradeCollection(search, page)
+			} else if (type === 'wantToBuy') {
+				return api.apiFetchWantToBuyCollection(search, page)
+			} else if (type === 'wantToPlay') {
+				return api.apiFetchWantToPlayCollection(search, page)
+			} else if (type === 'wishlist') {
+				return api.apiFetchWishlistCollection(search, page)
+			}
+		},
+		{
+			staleTime        : Infinity,
+			enabled          : !!userList.data,
+			keepPreviousData : true,
+			onError          : (err) => {
+				const text = err.response.data.message || 'Error occured while fetching collection data'
+				showSnackbar.error({ text })
+			}
 		}
-	})
-}
-
-export const useGetWishlistCollectionQuery = (search, page) => {
-	const userList = useGetListQuery()
-	const [ showSnackbar ] = useNotiSnackbar()
-
-	return useQuery([ 'wishlist', { search, page } ], () => api.apiFetchWishlistCollection(search, page), {
-		staleTime        : Infinity,
-		enabled          : !!userList.data,
-		keepPreviousData : true,
-		onError          : (err) => {
-			const text = err.response.data.message || 'Error occured while fetching wishlist'
-			showSnackbar.error({ text })
-		}
-	})
+	)
 }
 
 export const useGetSavedGamesListQuery = (search, page) => {
@@ -610,7 +613,7 @@ export const useResetPasswordMutation = ({ resetForm }) => {
 	)
 }
 
-export const useBggFetchCollectionMutation = () => {
+export const useBggFetchCollectionMutation = ({ resetForm }) => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()
 
@@ -618,10 +621,10 @@ export const useBggFetchCollectionMutation = () => {
 		retry      : 6,
 		retryDelay : 3500,
 		onSuccess  : (data, bggUsername) => {
+			resetForm()
 			queryClient.invalidateQueries([ 'collection' ])
-			queryClient.invalidateQueries([ 'wishlist' ])
 			showSnackbar.success({
-				text : `Collection data from BGG for ${bggUsername} was successfully fetched`
+				text : `BGG collection data for ${bggUsername} synced successfully`
 			})
 		}
 	})

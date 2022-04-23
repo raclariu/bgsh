@@ -204,20 +204,7 @@ const MessagesScreen = ({ type }) => {
 			)}
 
 			{isSuccess &&
-				data.pagination &&
-				(data.pagination.totalPages > 1 && (
-					<Box
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-						height={60}
-						width="100%"
-						borderRadius="4px"
-						mt={4}
-					>
-						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
-					</Box>
-				))}
+			data.pagination.totalPages > 1 && <Paginate pagination={data.pagination} handleFilters={handleFilters} />}
 		</Fragment>
 	)
 }

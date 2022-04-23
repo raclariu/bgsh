@@ -210,7 +210,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 					<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
 						<form onSubmit={deleteGameHandler} autoComplete="off">
 							<DialogTitle>
-								<Box textAlign="center">Are you sure you want to delete this game?</Box>
+								<Box textAlign="center">Are you sure you want to delete this listing?</Box>
 							</DialogTitle>
 
 							<CustomDivider />

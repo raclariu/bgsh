@@ -24,9 +24,9 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
 					<CustomSkeleton variant="rectangle" width={175} height="100%" />
 					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
-						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
-						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
-						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: 2 }} />
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: '4px' }} />
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: '4px' }} />
+						<CustomSkeleton variant="rectangle" width={45} height={37} sx={{ borderRadius: '4px' }} />
 					</Box>
 				</Box>
 

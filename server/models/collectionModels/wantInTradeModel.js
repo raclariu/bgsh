@@ -1,13 +1,14 @@
 import mongoose from 'mongoose'
 
-const collectionSchema = mongoose.Schema(
+const wantInTradeSchema = mongoose.Schema(
 	{
-		user       : {
+		user             : {
 			type     : mongoose.Schema.Types.ObjectId,
 			required : true,
 			ref      : 'User'
 		},
-		owned      : [
+		bggUsername      : String,
+		wantInTrade      : [
 			{
 				bggId     : {
 					type     : String,
@@ -18,31 +19,26 @@ const collectionSchema = mongoose.Schema(
 				year      : Number,
 				thumbnail : String,
 				image     : String,
-				added     : Date,
+				priority  : Number,
+				modified  : Date,
+				numPlays  : Number,
 				_id       : false,
 				stats     : {
 					userRating : Number,
 					avgRating  : Number,
 					ratings    : Number
-				},
-				version   : {
-					type    : {
-						title : String,
-						year  : String
-					},
-					default : null,
-					_id     : false
 				}
 			}
 		],
-		ownedCount : Number
+
+		wantInTradeCount : Number
 	},
 	{
 		timestamps : true,
-		collection : 'bggCollections'
+		collection : 'bggWantInTrade'
 	}
 )
 
-const Collection = mongoose.model('Collection', collectionSchema)
+const WantInTrade = mongoose.model('WantInTrade', wantInTradeSchema)
 
-export default Collection
+export default WantInTrade

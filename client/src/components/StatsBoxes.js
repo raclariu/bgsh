@@ -16,7 +16,7 @@ const defaultBigBox = {
 	justifyContent : 'center',
 	fontWeight     : 'bold',
 	textAlign      : 'center',
-	borderRadius   : 4,
+	borderRadius   : '16px',
 	boxShadow      : 2,
 	height         : 64,
 	width          : 100,
@@ -30,8 +30,8 @@ const defaultMiniBox = {
 	textAlign    : 'center',
 	fontWeight   : 'fontWeightMedium',
 	minWidth     : 45,
-	boxShadow    : 2,
-	borderRadius : 2
+	boxShadow    : 1,
+	borderRadius : '4px'
 }
 
 const RatingBox = ({ variant, stats }) => {
@@ -113,7 +113,7 @@ const UserRatingBox = ({ stats }) => {
 
 const RankBox = ({ variant, stats }) => {
 	const handleRankBgColor = () => {
-		if (stats.rank && stats.rank <= 100) {
+		if (stats.rank && stats.rank <= 250) {
 			return '#cfb000'
 		} else {
 			return '#666e75'

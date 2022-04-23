@@ -142,7 +142,7 @@ const LogIn = ({ isActivationPage }) => {
 	useEffect(
 		() => {
 			if (success) {
-				navigate('/collection', { replace: true })
+				navigate('/dashboard', { replace: true })
 			}
 		},
 		[ navigate, success ]
@@ -156,7 +156,7 @@ const LogIn = ({ isActivationPage }) => {
 			const text = err.response.data.message || 'Error occured while activating account'
 
 			if (success) {
-				navigate('/collection', { replace: true })
+				navigate('/dashboard', { replace: true })
 			} else {
 				showSnackbar.error({ text })
 				navigate('/login', { replace: true })

@@ -93,10 +93,10 @@ const GamesIndexScreen = ({ mode }) => {
 				<Box>
 					{isSuccess &&
 					search && (
-						<Box display="flex" alignItems="center" width="100%" gap={1}>
+						<Box display="flex" alignItems="center" width="100%">
 							<BackButton />
-							<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
-								Found {data.pagination.totalItems || 0} game(s)
+							<Box fontSize="body2.fontSize" color="text.secondary">
+								Found {data.pagination.totalItems || 0} result(s)
 							</Box>
 						</Box>
 					)}
@@ -117,14 +117,14 @@ const GamesIndexScreen = ({ mode }) => {
 
 			{isSuccess &&
 			data.gamesData.length === 0 && (
-				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed yet'}</CustomAlert>
+				<CustomAlert severity="warning">{search ? 'No results found' : 'No games listed'}</CustomAlert>
 			)}
 
 			{isSuccess &&
 			data.gamesData.length > 0 && (
 				<Grid container spacing={3} direction="row">
 					{data.gamesData.map((data) => (
-						<Grid item key={data._id} xs={12} sm={6} md={4}>
+						<Grid item key={data.altId} xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<GameIndexCardSkeleton />}>
 								<GameIndexCard data={data} />
 							</LzLoad>
@@ -134,19 +134,7 @@ const GamesIndexScreen = ({ mode }) => {
 			)}
 
 			{isSuccess &&
-			data.pagination && (
-				<Box
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-					height={60}
-					width="100%"
-					borderRadius="4px"
-					mt={4}
-				>
-					<Paginate pagination={data.pagination} handleFilters={handleFilters} />
-				</Box>
-			)}
+			data.pagination.totalPages > 1 && <Paginate pagination={data.pagination} handleFilters={handleFilters} />}
 		</Fragment>
 	)
 }

@@ -129,6 +129,54 @@ export const apiFetchOwnedCollection = async (search, page) => {
 	return data
 }
 
+export const apiFetchForTradeCollection = async (search, page) => {
+	const config = {
+		params : {
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
+		}
+	}
+
+	const { data } = await axsAUTH.get('/api/collections/fortrade', config)
+	return data
+}
+
+export const apiFetchWantInTradeCollection = async (search, page) => {
+	const config = {
+		params : {
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
+		}
+	}
+
+	const { data } = await axsAUTH.get('/api/collections/wantintrade', config)
+	return data
+}
+
+export const apiFetchWantToBuyCollection = async (search, page) => {
+	const config = {
+		params : {
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
+		}
+	}
+
+	const { data } = await axsAUTH.get('/api/collections/wanttobuy', config)
+	return data
+}
+
+export const apiFetchWantToPlayCollection = async (search, page) => {
+	const config = {
+		params : {
+			search : search ? search.trim() : null,
+			page   : +page ? +page : 1
+		}
+	}
+
+	const { data } = await axsAUTH.get('/api/collections/wanttoplay', config)
+	return data
+}
+
 export const apiFetchWantedGames = async (search, page) => {
 	const config = {
 		params : {

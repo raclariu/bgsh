@@ -6,8 +6,10 @@ import queryString from 'query-string'
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 
 // @ Components
+import CustomDivider from '../components/CustomDivider'
 import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'
@@ -18,15 +20,10 @@ import LzLoad from '../components/LzLoad'
 import Helmet from '../components/Helmet'
 
 // @ Others
-import {
-	useGetListQuery,
-	useGetOwnedCollectionQuery,
-	useDeleteFromListMutation,
-	useAddToListMutation
-} from '../hooks/hooks'
+import { useGetListQuery, useGetCollectionQuery, useDeleteFromListMutation, useAddToListMutation } from '../hooks/hooks'
 
 // @ Main
-const CollectionScreen = () => {
+const CollectionScreen = ({ type }) => {
 	const navigate = useNavigate()
 	const location = useLocation()
 
@@ -34,7 +31,7 @@ const CollectionScreen = () => {
 
 	const userList = useGetListQuery()
 
-	const { isLoading, isSuccess, data } = useGetOwnedCollectionQuery(search, page)
+	const { isLoading, isSuccess, data } = useGetCollectionQuery(search, page, type)
 
 	const addMutation = useAddToListMutation()
 
@@ -56,7 +53,7 @@ const CollectionScreen = () => {
 	}
 
 	const listHandler = (e, game) => {
-		const { bggId, title, year, thumbnail, image, version } = game
+		const { bggId, title, year, thumbnail, image, version = null } = game
 		if (e.target.checked) {
 			addMutation.mutate({ bggId, title, year, thumbnail, image, version })
 		} else {
@@ -66,7 +63,12 @@ const CollectionScreen = () => {
 
 	return (
 		<Fragment>
-			<Helmet title="My BGG collection" />
+			{type === 'owned' && <Helmet title="Owned collection" />}
+			{type === 'forTrade' && <Helmet title="For trade collection" />}
+			{type === 'wantInTrade' && <Helmet title="Want in trade collection" />}
+			{type === 'wantToBuy' && <Helmet title="Want to buy collection" />}
+			{type === 'wantToPlay' && <Helmet title="Want to play collection" />}
+			{type === 'wishlist' && <Helmet title="Wishlist collection" />}
 
 			<Box display="flex" width="100%" mb={3} justifyContent="center" alignItems="center">
 				<Grid container justifyContent="center" spacing={2}>
@@ -78,16 +80,16 @@ const CollectionScreen = () => {
 
 			{isSuccess &&
 			search && (
-				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+				<Box display="flex" alignItems="center" width="100%" mb={2}>
 					<BackButton />
-					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
-						Found {data.pagination.totalItems || 0} game(s)
+					<Box fontSize="body2.fontSize" color="text.secondary">
+						Found {data.pagination.totalItems || 0} result(s)
 					</Box>
 				</Box>
 			)}
 
 			{isSuccess &&
-			data.owned.length === 0 && (
+			data.collection.length === 0 && (
 				<CustomAlert severity="warning">{search ? 'No results found' : 'Your collection is empty'}</CustomAlert>
 			)}
 
@@ -102,18 +104,19 @@ const CollectionScreen = () => {
 			)}
 
 			{isSuccess &&
-			data.owned.length > 0 && (
+			data.collection.length > 0 && (
 				<Grid container spacing={3} direction="row">
-					{data.owned.map((data) => (
-						<Grid item key={data.bggId} xs={12} sm={6} md={4}>
+					{data.collection.map((item) => (
+						<Grid item key={item.modified} xs={12} sm={6} md={4}>
 							<LzLoad placeholder={<CollectionCardSkeleton />}>
 								<CollectionGameCard
-									data={data}
+									data={item}
+									type={type}
 									listHandler={listHandler}
-									isChecked={userList.data.list.some((el) => el.bggId === data.bggId)}
+									isChecked={userList.data.list.some((el) => el.bggId === item.bggId)}
 									isDisabled={
 										userList.data.list.length === 6 ? userList.data.list.some(
-											(el) => el.bggId === data.bggId
+											(el) => el.bggId === item.bggId
 										) ? (
 											false
 										) : (
@@ -130,19 +133,7 @@ const CollectionScreen = () => {
 			)}
 
 			{isSuccess &&
-				(data.pagination.totalPages > 1 && (
-					<Box
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-						height={60}
-						width="100%"
-						borderRadius="4px"
-						mt={4}
-					>
-						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
-					</Box>
-				))}
+			data.pagination.totalPages > 1 && <Paginate pagination={data.pagination} handleFilters={handleFilters} />}
 		</Fragment>
 	)
 }

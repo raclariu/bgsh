@@ -10,30 +10,21 @@ import CustomSkeleton from './CustomSkeleton'
 import CustomDivider from '../CustomDivider'
 
 // @ Main
-const CollectionCardSkeleton = ({ page }) => {
+const CollectionCardSkeleton = () => {
 	return (
 		<Card elevation={2}>
-			<Box height={page === 'collection' ? 484 : 439} display="flex" flexDirection="column" alignItems="center">
-				<Box display="flex" flexDirection="column" height={page === 'collection' ? 241 : 196} gap={1} p={1}>
+			<Box height={484} display="flex" flexDirection="column" alignItems="center">
+				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
 					<CustomSkeleton variant="rectangle" width={175} height="100%" />
-					{page === 'collection' && (
-						<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
-							<CustomSkeleton
-								animation="wave"
-								variant="rectangle"
-								width={45}
-								height={37}
-								sx={{ borderRadius: 2 }}
-							/>
-							<CustomSkeleton
-								animation="wave"
-								variant="rectangle"
-								width={45}
-								height={37}
-								sx={{ borderRadius: 2 }}
-							/>
-						</Box>
-					)}
+					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
+						<CustomSkeleton
+							animation="wave"
+							variant="rectangle"
+							width={45}
+							height={37}
+							sx={{ borderRadius: '4px' }}
+						/>
+					</Box>
 				</Box>
 
 				<CustomDivider flexItem />
@@ -61,12 +52,8 @@ const CollectionCardSkeleton = ({ page }) => {
 					width="100%"
 					gap={0.5}
 				>
-					<CustomSkeleton variant="rectangle" width={100} sx={{ borderRadius: 4, height: 24 }} />
-					<CustomSkeleton
-						variant="rectangle"
-						width={page === 'collection' ? 190 : 75}
-						sx={{ borderRadius: 4, height: 24 }}
-					/>
+					{/* <CustomSkeleton variant="rectangle" width={100} sx={{ borderRadius: 4, height: 24 }} /> */}
+					<CustomSkeleton variant="rectangle" width={190} sx={{ borderRadius: 4, height: 24 }} />
 				</Box>
 
 				<CustomDivider flexItem />

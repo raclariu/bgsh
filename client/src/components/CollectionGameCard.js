@@ -1,7 +1,7 @@
 // @ Modules
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -39,12 +39,9 @@ const StyledTitleBox = styled(Box)({
 })
 
 // @ Main
-const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
-	const location = useLocation()
-	const currLoc = location.pathname === '/collection' ? 'collection' : 'wishlist'
-
+const CollectionGameCard = ({ data, type, listHandler, isChecked, isDisabled }) => {
 	return (
-		<Card elevation={2}>
+		<Card elevation={2} sx={{ position: 'relative' }}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
 					component="img"
@@ -59,6 +56,19 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 
 						<StatsBoxes variant="mini" stats={data.stats} type="rating" />
 					</Box>
+				)}
+
+				{data.numPlays > 0 && (
+					<Chip
+						sx={{
+							position : 'absolute',
+							top      : '8px',
+							left     : '8px'
+						}}
+						size="small"
+						color="secondary"
+						label={`${data.numPlays} ${data.numPlays === 1 ? 'play' : 'plays'}`}
+					/>
 				)}
 			</Box>
 
@@ -106,7 +116,8 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 						/>
 					)}
 
-					{data.priority && (
+					{type === 'wishlist' &&
+					data.priority && (
 						<Chip size="small" color="primary" variant="outlined" label={`Priority: ${data.priority}`} />
 					)}
 				</Box>
@@ -119,13 +130,26 @@ const CollectionGameCard = ({ data, listHandler, isChecked, isDisabled }) => {
 					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.bggId}`} />
 
 					<Box display="flex" gap={1} alignItems="center">
-						{currLoc === 'wishlist' && (
-							<CustomTooltip title={'Search for this game'}>
+						{(type === 'wantToBuy' || type === 'wantToPlay' || type === 'wishlist') && (
+							<CustomTooltip title={'Search for this game in listed sales'}>
 								<CustomIconBtn
 									color="primary"
 									size="large"
 									component={RouterLink}
 									to={`/sales?search=${data.bggId}`}
+								>
+									<SearchIcon color="primary" />
+								</CustomIconBtn>
+							</CustomTooltip>
+						)}
+
+						{type === 'wantInTrade' && (
+							<CustomTooltip title={'Search for this game in listed trades'}>
+								<CustomIconBtn
+									color="primary"
+									size="large"
+									component={RouterLink}
+									to={`/trades?search=${data.bggId}`}
 								>
 									<SearchIcon color="primary" />
 								</CustomIconBtn>

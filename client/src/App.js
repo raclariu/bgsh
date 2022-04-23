@@ -43,7 +43,6 @@ const SellGames = lazy(() => import('./screens/SellGamesScreen'))
 const TradeGames = lazy(() => import('./screens/TradeGamesScreen'))
 const AddWantedGames = lazy(() => import('./screens/AddWantedGamesScreen'))
 const BuyGames = lazy(() => import('./screens/BuyGamesScreen'))
-const Wishlist = lazy(() => import('./screens/WishlistScreen'))
 const GamesIndex = lazy(() => import('./screens/GamesIndexScreen'))
 const SingleGame = lazy(() => import('./screens/SingleGameScreen'))
 const SavedGames = lazy(() => import('./screens/SavedGamesScreen'))
@@ -184,19 +183,55 @@ const App = () => {
 									/>
 
 									<Route
-										path="collection"
+										path="collection/owned"
 										element={
 											<ProtectedRoute>
-												<Collection />
+												<Collection type="owned" />
 											</ProtectedRoute>
 										}
 									/>
 
 									<Route
-										path="wishlist"
+										path="collection/for-trade"
 										element={
 											<ProtectedRoute>
-												<Wishlist />
+												<Collection type="forTrade" />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
+										path="collection/want-in-trade"
+										element={
+											<ProtectedRoute>
+												<Collection type="wantInTrade" />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
+										path="collection/want-to-buy"
+										element={
+											<ProtectedRoute>
+												<Collection type="wantToBuy" />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
+										path="collection/want-to-play"
+										element={
+											<ProtectedRoute>
+												<Collection type="wantToPlay" />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
+										path="collection/wishlist"
+										element={
+											<ProtectedRoute>
+												<Collection type="wishlist" />
 											</ProtectedRoute>
 										}
 									/>

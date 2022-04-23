@@ -68,10 +68,10 @@ const GamesHistoryScreen = ({ mode }) => {
 
 			{isSuccess &&
 			search && (
-				<Box display="flex" alignItems="center" width="100%" gap={1} mb={2}>
+				<Box display="flex" alignItems="center" width="100%" mb={2}>
 					<BackButton />
-					<Box fontSize={14} color="grey.500" fontWeight="fontWeightMedium">
-						Found {data.pagination.totalItems || 0} game(s)
+					<Box fontSize="body2.fontSize" color="text.secondary">
+						Found {data.pagination.totalItems || 0} result(s)
 					</Box>
 				</Box>
 			)}
@@ -104,20 +104,7 @@ const GamesHistoryScreen = ({ mode }) => {
 			)}
 
 			{isSuccess &&
-				data.pagination &&
-				(data.pagination.totalPages > 1 && (
-					<Box
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-						height={60}
-						width="100%"
-						borderRadius="4px"
-						mt={4}
-					>
-						<Paginate pagination={data.pagination} handleFilters={handleFilters} />
-					</Box>
-				))}
+			data.pagination.totalPages > 1 && <Paginate pagination={data.pagination} handleFilters={handleFilters} />}
 		</Fragment>
 	)
 }

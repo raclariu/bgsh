@@ -35,7 +35,7 @@ const CreateAccountScreen = () => {
 	useEffect(
 		() => {
 			if (success) {
-				navigate('/collection', { replace: true })
+				navigate('/dashboard', { replace: true })
 			}
 		},
 		[ navigate, success ]

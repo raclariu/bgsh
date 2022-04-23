@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
 import Notification from '../models/notificationModel.js'
-import Wishlist from '../models/wishlistModel.js'
+import Wishlist from '../models/collectionModels/wishlistModel.js'
 import List from '../models/listModel.js'
 import storage from '../helpers/storage.js'
 import { genNanoId } from '../helpers/helpers.js'
@@ -366,7 +366,12 @@ const getGames = asyncHandler(async (req, res) => {
 	const resultsPerPage = 18
 
 	if (search) {
-		const gamesData = await Game.find({ isActive: true, mode }).populate('addedBy', 'username _id avatar').lean()
+		const gamesData = await Game.find({ isActive: true, mode })
+			.populate('addedBy', 'username _id avatar')
+			.select(
+				'-extraInfoPack -shipping -__v -_id -games.categories -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
+			)
+			.lean()
 
 		const fuse = new Fuse(gamesData, {
 			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
@@ -440,6 +445,9 @@ const getGames = asyncHandler(async (req, res) => {
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.populate('addedBy', 'username _id avatar')
+			.select(
+				'-extraInfoPack -shipping -__v -_id -games.categories -games.designers -games.extraInfo -games.isSleeved -games.languageDependence -games.mechanics -games.userImage -games.versions -games.expansions -games.parent -games.description -games.maxPlayers -games.minPlayers -games.minAge -games.playTime -games.suggestedPlayers'
+			)
 			.sort(checkSort())
 			.lean()
 
@@ -539,14 +547,14 @@ const getSingleGame = asyncHandler(async (req, res) => {
 	if (!game) {
 		res.status(404)
 		throw {
-			message : 'Game not found'
+			message : 'Listing not found'
 		}
 	}
 
 	if (!game.isActive) {
 		res.status(404)
 		throw {
-			message : 'Game is not active'
+			message : 'Listing is not active'
 		}
 	}
 

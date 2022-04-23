@@ -1,6 +1,7 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -41,6 +42,8 @@ const StyledCardMedia = styled(CardMedia)({
 
 // @ Main
 const GameIndexCard = ({ data }) => {
+	const navigate = useNavigate()
+
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -56,10 +59,22 @@ const GameIndexCard = ({ data }) => {
 		}
 	}
 
+	const navigateToDetails = () => {
+		if (data.mode === 'sell') {
+			navigate(`/sales/${data.altId}`)
+		} else if (data.mode === 'trade') {
+			navigate(`/trades/${data.altId}`)
+		} else {
+			return
+		}
+	}
+
 	return (
-		<Card sx={{ position: 'relative' }} elevation={2}>
+		<Card elevation={2} sx={{ position: 'relative' }}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
+					sx={{ cursor: data.mode === 'sell' || data.mode === 'trade' ? 'pointer' : 'default' }}
+					onClick={navigateToDetails}
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}

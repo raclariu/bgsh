@@ -22,7 +22,7 @@ import CustomTooltip from './CustomTooltip'
 import CustomAvatar from './CustomAvatar'
 
 // @ Others
-import { calculateTimeAgo, formatDate } from '../helpers/helpers'
+import { calculateTimeAgoStrict, formatDate } from '../helpers/helpers'
 
 // @ Main
 const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked, path }) => {
@@ -55,7 +55,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 								size="small"
 								color="primary"
 								variant="outlined"
-								label={<Box>Sent {calculateTimeAgo(msg.createdAt)}</Box>}
+								label={<Box>Sent {calculateTimeAgoStrict(msg.createdAt)}</Box>}
 							/>
 						</CustomTooltip>
 
@@ -69,7 +69,7 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 									size="small"
 									color="primary"
 									variant="outlined"
-									label={<Box>Seen {calculateTimeAgo(msg.readAt)} </Box>}
+									label={<Box>Seen {calculateTimeAgoStrict(msg.readAt)} </Box>}
 								/>
 							</CustomTooltip>
 						)}

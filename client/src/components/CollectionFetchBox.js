@@ -15,7 +15,11 @@ import { useBggFetchCollectionMutation } from '../hooks/hooks'
 const CollectionFetchBox = () => {
 	const [ bggUsername, setBggUsername ] = useState('')
 
-	const mutation = useBggFetchCollectionMutation()
+	const resetForm = () => {
+		setBggUsername('')
+	}
+
+	const mutation = useBggFetchCollectionMutation({ resetForm })
 
 	const submitToBGGHandler = (e) => {
 		e.preventDefault()

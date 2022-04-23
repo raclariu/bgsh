@@ -7,6 +7,7 @@ const wishlistSchema = mongoose.Schema(
 			required : true,
 			ref      : 'User'
 		},
+		bggUsername   : String,
 		wishlist      : [
 			{
 				bggId     : {
@@ -19,8 +20,14 @@ const wishlistSchema = mongoose.Schema(
 				thumbnail : String,
 				image     : String,
 				priority  : Number,
-				added     : Date,
-				_id       : false
+				modified  : Date,
+				numPlays  : Number,
+				_id       : false,
+				stats     : {
+					userRating : Number,
+					avgRating  : Number,
+					ratings    : Number
+				}
 			}
 		],
 
@@ -28,7 +35,7 @@ const wishlistSchema = mongoose.Schema(
 	},
 	{
 		timestamps : true,
-		collection : 'bggWishlists'
+		collection : 'bggWishlist'
 	}
 )
 

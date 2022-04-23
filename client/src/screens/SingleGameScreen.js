@@ -158,7 +158,13 @@ const SingleGameScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Helmet title={data.games[idx].title} />
+					<Helmet
+						title={data.games[idx].title}
+						description={`I am ${data.mode === 'sell' ? 'selling' : 'trading'} ${data.games[0]
+							.title} - For more details go to https://meeples.ro/${data.mode === 'sell'
+							? 'sales'
+							: 'trades'}/${data.altId}`}
+					/>
 
 					{data.isPack && (
 						<Box
@@ -387,7 +393,7 @@ const SingleGameScreen = () => {
 									/>
 									<Chip
 										size="small"
-										color={data.games[idx].isSleeved ? 'primary' : 'secondary'}
+										color={data.games[idx].isSleeved ? 'success' : 'default'}
 										label={data.games[idx].isSleeved ? 'Sleeved' : 'Not sleeved'}
 									/>
 								</Box>
@@ -456,7 +462,7 @@ const SingleGameScreen = () => {
 
 								{data.games[idx].description && (
 									<Box display="flex" flexDirection="column">
-										<Box fontWeight="fontWeightMedium">Game description</Box>
+										<Box fontWeight="fontWeightMedium">Description</Box>
 										<Box>
 											<Collapse in={showMoreDescription} collapsedSize={50} timeout="auto">
 												<Box
