@@ -46,7 +46,8 @@ const AddWantedGamesScreen = () => {
 					prefMode    : {
 						buy   : true,
 						trade : false
-					}
+					},
+					extraInfo   : ''
 				}
 			})
 		)
@@ -70,7 +71,8 @@ const AddWantedGamesScreen = () => {
 
 		const verifiedGames = values.map((val) => {
 			return {
-				...val
+				...val,
+				extraInfo : val.extraInfo.trim() ? val.extraInfo.trim() : null
 			}
 		})
 

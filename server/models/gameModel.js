@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { genNanoId } from '../helpers/helpers.js'
 
 const gameSchema = mongoose.Schema(
 	{
@@ -10,9 +9,8 @@ const gameSchema = mongoose.Schema(
 			ref      : 'User'
 		},
 		altId         : {
-			type    : String,
-			unique  : true,
-			default : () => genNanoId(8)
+			type   : String,
+			unique : true
 		},
 		games         : Array,
 		shipping      : {
@@ -40,7 +38,8 @@ const gameSchema = mongoose.Schema(
 		reactivatedAt : {
 			type    : Date,
 			default : new Date()
-		}
+		},
+		slug          : String
 	},
 	{
 		timestamps : true

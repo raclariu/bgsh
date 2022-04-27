@@ -60,20 +60,14 @@ const GameIndexCard = ({ data }) => {
 	}
 
 	const navigateToDetails = () => {
-		if (data.mode === 'sell') {
-			navigate(`/sales/${data.altId}`)
-		} else if (data.mode === 'trade') {
-			navigate(`/trades/${data.altId}`)
-		} else {
-			return
-		}
+		navigate(data.slug)
 	}
 
 	return (
 		<Card elevation={2} sx={{ position: 'relative' }}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
 				<StyledCardMedia
-					sx={{ cursor: data.mode === 'sell' || data.mode === 'trade' ? 'pointer' : 'default' }}
+					sx={{ cursor: 'pointer' }}
 					onClick={navigateToDetails}
 					component="img"
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
@@ -162,12 +156,15 @@ const GameIndexCard = ({ data }) => {
 						</Fragment>
 					) : (
 						<Fragment>
-							<Chip
-								size="small"
-								color={data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}
-								variant="outlined"
-								label={data.games[index].subtype}
-							/>
+							<Box display="flex" gap={0.5} alignItems="center" flexWrap="wrap">
+								{data.games[index].prefMode.buy && (
+									<Chip variant="outlined" size="small" color="secondary" label="buy" />
+								)}
+
+								{data.games[index].prefMode.trade && (
+									<Chip variant="outlined" size="small" color="secondary" label="trade" />
+								)}
+							</Box>
 
 							<Chip
 								size="small"
@@ -180,7 +177,7 @@ const GameIndexCard = ({ data }) => {
 								color="primary"
 								size="small"
 								variant="outlined"
-								label={`${data.shipping.shipPreffered}`}
+								label={`${data.shipping.shipPreffered.join(', ')}`}
 							/>
 						</Fragment>
 					)}
@@ -200,10 +197,10 @@ const GameIndexCard = ({ data }) => {
 					<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
 						<CustomAvatar size={5} username={data.addedBy.username} src={data.addedBy.avatar} />
 
-						<Box fontSize={12}>{calculateTimeAgo(data.createdAt)}</Box>
+						<Box fontSize="caption.fontSize">{calculateTimeAgo(data.createdAt)}</Box>
 					</Box>
 
-					<GameDetailsButton altId={data.altId} mode={data.mode} />
+					<GameDetailsButton slug={data.slug} />
 				</Box>
 			</CardActions>
 		</Card>

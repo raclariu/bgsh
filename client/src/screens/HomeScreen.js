@@ -197,30 +197,16 @@ const HomeScreen = () => {
 							<LzLoad key={item._id} placeholder={<NewListingsSkeleton />}>
 								<Box component={Paper} borderRadius="4px" boxShadow={2} p={1}>
 									<Box display="flex" alignItems="flex-start" gap={2}>
-										{item.mode === 'want' ? (
+										<Box
+											component={RouterLink}
+											to={item.mode === 'sell' ? `/sales/${item.altId}` : `/trades/${item.altId}`}
+										>
 											<StyledThumb
 												src={item.games[0].thumbnail}
 												alt={item.games[0].title}
 												title={item.games[0].title}
 											/>
-										) : (
-											<Box
-												component={RouterLink}
-												to={
-													item.mode === 'sell' ? (
-														`/sales/${item.altId}`
-													) : (
-														`/trades/${item.altId}`
-													)
-												}
-											>
-												<StyledThumb
-													src={item.games[0].thumbnail}
-													alt={item.games[0].title}
-													title={item.games[0].title}
-												/>
-											</Box>
-										)}
+										</Box>
 
 										<Box
 											display="flex"

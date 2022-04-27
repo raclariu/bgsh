@@ -10,22 +10,13 @@ import CustomTooltip from './CustomTooltip'
 import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTone'
 
 // @ Main
-const GameDetailsButton = ({ altId, mode }) => {
+const GameDetailsButton = ({ slug }) => {
 	return (
-		<Fragment>
-			{mode !== 'want' && (
-				<CustomTooltip title="Details">
-					<CustomIconBtn
-						component={RouterLink}
-						to={mode === 'sell' ? `/sales/${altId}` : `/trades/${altId}`}
-						color="primary"
-						size="large"
-					>
-						<CenterFocusWeakTwoToneIcon />
-					</CustomIconBtn>
-				</CustomTooltip>
-			)}
-		</Fragment>
+		<CustomTooltip title="Details">
+			<CustomIconBtn component={RouterLink} to={slug} color="primary" size="large">
+				<CenterFocusWeakTwoToneIcon />
+			</CustomIconBtn>
+		</CustomTooltip>
 	)
 }
 

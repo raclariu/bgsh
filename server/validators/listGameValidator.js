@@ -57,7 +57,7 @@ const validateGameCondition = check('games.*.condition')
 		}
 	})
 
-// (*) Validation for games extra info text @ sell,trade - done
+// (*) Validation for games extra info text @ sell,trade,wanted - done
 const validateExtraInfoTxt = check('games.*.extraInfo')
 	.optional({ nullable: true })
 	.trim()
@@ -235,6 +235,11 @@ const tradeValidators = [
 	validateShipCities
 ]
 
-const wantValidators = [ validateWantedPrefShipping, validateWantedGameVersion, validateWantedPrefMode ]
+const wantValidators = [
+	validateWantedPrefShipping,
+	validateWantedGameVersion,
+	validateWantedPrefMode,
+	validateExtraInfoTxt
+]
 
 export { sellValidators, tradeValidators, wantValidators }

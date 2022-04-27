@@ -183,6 +183,15 @@ const App = () => {
 									/>
 
 									<Route
+										path="wanted/:altId"
+										element={
+											<ProtectedRoute>
+												<SingleGame />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
 										path="collection/owned"
 										element={
 											<ProtectedRoute>

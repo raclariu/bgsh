@@ -169,7 +169,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 							value={data.version}
 							isOptionEqualToValue={(option, value) => option.title === value.title}
 							onChange={(e, selected) => handleGameInfo(selected, game.bggId, 'prefVersion')}
-							options={[ ...game.versions, { title: 'TEST FOR ERROR', year: 1999 } ]}
+							options={game.versions}
 							getOptionLabel={(option) => `${option.title} (${option.year})`}
 							renderInput={(params) => (
 								<Input
@@ -243,25 +243,23 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					/>
 				)}
 
-				{mode !== 'want' && (
-					<Input
-						sx={{ my: 2 }}
-						value={data.extraInfo}
-						onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'extraInfo')}
-						inputProps={{
-							maxLength   : 500,
-							placeholder : 'Any other info goes in here (500 characters limit)'
-						}}
-						label={`Extra info ${data.extraInfo.length}/500`}
-						name="extra-info-txt"
-						type="text"
-						size="medium"
-						multiline
-						minRows={3}
-						maxRows={10}
-						fullWidth
-					/>
-				)}
+				<Input
+					sx={{ my: 2 }}
+					value={data.extraInfo}
+					onChange={(inputVal) => handleGameInfo(inputVal, game.bggId, 'extraInfo')}
+					inputProps={{
+						maxLength   : 500,
+						placeholder : 'Any other info goes in here (500 characters limit)'
+					}}
+					label={`Extra info ${data.extraInfo.length}/500`}
+					name="extra-info-txt"
+					type="text"
+					size="medium"
+					multiline
+					minRows={3}
+					maxRows={10}
+					fullWidth
+				/>
 
 				{mode !== 'want' && (
 					<Grid container>

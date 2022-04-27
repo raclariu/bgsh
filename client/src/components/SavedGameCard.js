@@ -229,7 +229,7 @@ const SavedGameCard = ({ data }) => {
 					<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
 
 					{data.isActive ? (
-						<GameDetailsButton altId={data.altId} mode={data.mode} />
+						<GameDetailsButton slug={data.slug} />
 					) : (
 						<DeleteSavedGameButton altId={data.altId} />
 					)}

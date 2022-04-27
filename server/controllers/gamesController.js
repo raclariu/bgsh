@@ -6,6 +6,8 @@ import Game from '../models/gameModel.js'
 import User from '../models/userModel.js'
 import Notification from '../models/notificationModel.js'
 import Wishlist from '../models/collectionModels/wishlistModel.js'
+import WantInTrade from '../models/collectionModels/wantInTradeModel.js'
+import WantToBuy from '../models/collectionModels/wantToBuyModel.js'
 import List from '../models/listModel.js'
 import storage from '../helpers/storage.js'
 import { parseXML } from '../helpers/helpers.js'
@@ -42,7 +44,8 @@ const listSaleGames = asyncHandler(async (req, res) => {
 	} = req.body
 
 	if (isPack) {
-		const { altId, games: listedGames } = await Game.create({
+		const generatedAltId = genNanoId(8)
+		const { slug, games: listedGames } = await Game.create({
 			mode          : 'sell',
 			addedBy       : req.user._id,
 			games,
@@ -54,9 +57,11 @@ const listSaleGames = asyncHandler(async (req, res) => {
 				shipPersonal,
 				shipCities
 			},
+			altId         : generatedAltId,
 			totalPrice,
 			extraInfoPack,
-			isPack
+			isPack,
+			slug          : `/sales/${generatedAltId}`
 		})
 
 		res.status(204).end()
@@ -78,8 +83,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `A pack containing ${game.title} has been listed for sale`,
 						meta      : {
-							altId,
-							mode      : 'sell',
+							slug,
 							thumbnail : game.thumbnail
 						}
 					})
@@ -102,8 +106,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wantToBuy',
 						text      : `A pack containing ${game.title} has been listed for sale`,
 						meta      : {
-							altId,
-							mode      : 'sell',
+							slug,
 							thumbnail : game.thumbnail
 						}
 					})
@@ -111,10 +114,13 @@ const listSaleGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		await Notification.insertMany(notifArr)
+		if (notifArr.length > 0) {
+			await Notification.insertMany(notifArr)
+		}
 	} else {
 		let sellList = []
 		games.forEach((game, index) => {
+			const generatedAltId = genNanoId(8)
 			let data = {
 				mode          : 'sell',
 				addedBy       : req.user._id,
@@ -129,7 +135,9 @@ const listSaleGames = asyncHandler(async (req, res) => {
 				},
 				totalPrice    : games[index].price,
 				extraInfoPack,
-				isPack
+				altId         : generatedAltId,
+				isPack,
+				slug          : `/sales/${generatedAltId}`
 			}
 			sellList.push(data)
 		})
@@ -155,8 +163,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `${data.games[0].title} has been listed for sale`,
 						meta      : {
-							mode      : 'sell',
-							altId     : data.altId,
+							slug      : data.slug,
 							thumbnail : data.games[0].thumbnail
 						}
 					})
@@ -180,8 +187,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wantToBuy',
 						text      : `${data.games[0].title} has been listed for sale`,
 						meta      : {
-							mode      : 'sell',
-							altId     : data.altId,
+							slug      : data.slug,
 							thumbnail : data.games[0].thumbnail
 						}
 					})
@@ -189,7 +195,9 @@ const listSaleGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		await Notification.insertMany(notifArr)
+		if (notifArr.length > 0) {
+			await Notification.insertMany(notifArr)
+		}
 	}
 })
 
@@ -213,7 +221,8 @@ const listTradeGames = asyncHandler(async (req, res) => {
 	const { games, isPack, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
 
 	if (isPack) {
-		const { altId, games: listedGames } = await Game.create({
+		const generatedAltId = genNanoId(8)
+		const { slug, games: listedGames } = await Game.create({
 			mode          : 'trade',
 			addedBy       : req.user._id,
 			games,
@@ -224,7 +233,9 @@ const listTradeGames = asyncHandler(async (req, res) => {
 				shipCities
 			},
 			extraInfoPack,
-			isPack
+			isPack,
+			altId         : generatedAltId,
+			slug          : `/trades/${generatedAltId}`
 		})
 
 		res.status(204).end()
@@ -246,8 +257,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `A pack containing ${game.title} has been listed for trade`,
 						meta      : {
-							altId,
-							mode      : 'trade',
+							slug,
 							thumbnail : game.thumbnail
 						}
 					})
@@ -272,8 +282,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wantInTrade',
 						text      : `A pack containing ${game.title} has been listed for trade`,
 						meta      : {
-							altId,
-							mode      : 'trade',
+							slug,
 							thumbnail : game.thumbnail
 						}
 					})
@@ -281,10 +290,13 @@ const listTradeGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		await Notification.insertMany(notifArr)
+		if (notifArr.length > 0) {
+			await Notification.insertMany(notifArr)
+		}
 	} else {
 		let tradeList = []
 		for (let game of games) {
+			const generatedAltId = genNanoId(8)
 			let data = {
 				mode          : 'trade',
 				addedBy       : req.user._id,
@@ -296,7 +308,9 @@ const listTradeGames = asyncHandler(async (req, res) => {
 					shipCities
 				},
 				extraInfoPack,
-				isPack
+				isPack,
+				altId         : generatedAltId,
+				slug          : `/trades/${generatedAltId}`
 			}
 			tradeList.push(data)
 		}
@@ -322,8 +336,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `${data.games[0].title} has been listed for trade`,
 						meta      : {
-							mode      : 'trade',
-							altId     : data.altId,
+							slug      : data.slug,
 							thumbnail : data.games[0].thumbnail
 						}
 					})
@@ -334,7 +347,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		// for want in trade
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
-			const userWantInTradeLists = await WandInTrade.find({ 'wantInTrade.bggId': bggId }).select('user').lean()
+			const userWantInTradeLists = await WantInTrade.find({ 'wantInTrade.bggId': bggId }).select('user').lean()
 
 			if (userWantInTradeLists.length > 0) {
 				const filteredUserWantInTradeLists = userWantInTradeLists.filter(
@@ -347,8 +360,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wantInTrade',
 						text      : `${data.games[0].title} has been listed for trade`,
 						meta      : {
-							mode      : 'trade',
-							altId     : data.altId,
+							slug      : data.slug,
 							thumbnail : data.games[0].thumbnail
 						}
 					})
@@ -356,7 +368,9 @@ const listTradeGames = asyncHandler(async (req, res) => {
 			}
 		}
 
-		await Notification.insertMany(notifArr)
+		if (notifArr.length > 0) {
+			await Notification.insertMany(notifArr)
+		}
 	}
 })
 
@@ -381,6 +395,7 @@ const listWantedGames = asyncHandler(async (req, res) => {
 
 	let wantedList = []
 	for (let game of games) {
+		const generatedAltId = genNanoId(8)
 		let data = {
 			mode     : 'want',
 			addedBy  : req.user._id,
@@ -388,7 +403,9 @@ const listWantedGames = asyncHandler(async (req, res) => {
 			shipping : {
 				shipPreffered
 			},
-			isPack   : false
+			isPack   : false,
+			altId    : generatedAltId,
+			slug     : `/wanted/${generatedAltId}`
 		}
 		wantedList.push(data)
 	}
@@ -723,11 +740,7 @@ const reactivateGame = asyncHandler(async (req, res) => {
 // ~ @access  Private route
 const getSingleGame = asyncHandler(async (req, res) => {
 	const { altId } = req.params
-	const game = await Game.findOne({ altId })
-		.where('mode')
-		.ne('want')
-		.populate('addedBy', 'username _id avatar')
-		.lean()
+	const game = await Game.findOne({ altId }).where('mode').populate('addedBy', 'username _id avatar').lean()
 
 	if (!game) {
 		res.status(404)

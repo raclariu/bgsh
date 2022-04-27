@@ -237,7 +237,10 @@ const SingleGameScreen = () => {
 								{data.games[idx].title}
 							</Box>
 							<Box fontSize="caption.fontSize" color="text.secondary">
-								{`${data.games[idx].subtype} • ${data.games[idx].year}`}
+								{`${data.mode === 'sell'
+									? 'for sale'
+									: data.mode === 'trade' ? 'for trade' : 'wanted'} • ${data.games[idx]
+									.subtype} • ${data.games[idx].year}`}
 							</Box>
 							<Box display="flex" gap={1} my={2}>
 								<StatsBoxes variant="full" stats={data.games[idx].stats} type="rating" />
@@ -331,7 +334,9 @@ const SingleGameScreen = () => {
 										url={`https://boardgamegeek.com/boardgame/${data.games[idx].bggId}`}
 									/>
 									<SendMessage recipientUsername={data.addedBy.username} />
-									<SaveGameButton altId={altId} addedById={data.addedBy._id} />
+									{data.mode !== 'want' && (
+										<SaveGameButton altId={altId} addedById={data.addedBy._id} />
+									)}
 								</Box>
 								{data.mode === 'sell' && (
 									<Box fontWeight="fontWeightMedium" fontSize="1.5rem" color="success.main">
@@ -384,19 +389,40 @@ const SingleGameScreen = () => {
 									</Box>
 								</Box>
 
-								<Box display="flex" gap={0.5} flexWrap="wrap">
-									<Chip size="small" color="primary" label={data.games[idx].condition} />
-									<Chip
-										size="small"
-										color="primary"
-										label={`${data.games[idx].version.title} (${data.games[idx].version.year})`}
-									/>
-									<Chip
-										size="small"
-										color={data.games[idx].isSleeved ? 'success' : 'default'}
-										label={data.games[idx].isSleeved ? 'Sleeved' : 'Not sleeved'}
-									/>
-								</Box>
+								{data.mode === 'want' && (
+									<Box display="flex" gap={0.5} flexWrap="wrap">
+										{data.games[idx].prefMode.buy && (
+											<Chip size="small" color="primary" label="prefer buy" />
+										)}
+
+										{data.games[idx].prefMode.trade && (
+											<Chip size="small" color="primary" label="prefer trade" />
+										)}
+
+										<Chip
+											size="small"
+											color="primary"
+											label={`prefer ${data.games[idx].prefVersion.title} • ${data.games[idx]
+												.prefVersion.year}`}
+										/>
+									</Box>
+								)}
+
+								{data.mode !== 'want' && (
+									<Box display="flex" gap={0.5} flexWrap="wrap">
+										<Chip size="small" color="primary" label={data.games[idx].condition} />
+										<Chip
+											size="small"
+											color="primary"
+											label={`${data.games[idx].version.title} (${data.games[idx].version.year})`}
+										/>
+										<Chip
+											size="small"
+											color={data.games[idx].isSleeved ? 'success' : 'default'}
+											label={data.games[idx].isSleeved ? 'Sleeved' : 'Not sleeved'}
+										/>
+									</Box>
+								)}
 
 								{data.games[idx].extraInfo && (
 									<Box display="flex" flexDirection="column">
@@ -517,83 +543,157 @@ const SingleGameScreen = () => {
 										</Box>
 									</Box>
 
-									<Box
-										display="flex"
-										flexDirection="column"
-										justifyContent="center"
-										alignItems="center"
-										gap={1}
-									>
-										{data.shipping.shipPost ? (
-											<Fragment>
-												<MarkunreadMailboxTwoToneIcon color="primary" />
-												<Box textAlign="center">{`Shipping by post paid by ${data.shipping
-													.shipPostPayer === 'seller'
-													? `${data.addedBy.username}`
-													: 'buyer'}`}</Box>
-											</Fragment>
-										) : (
-											<Fragment>
-												<CancelRoundedIcon color="error" />
-												<Box textAlign="center">Shipping by post is not available</Box>
-											</Fragment>
-										)}
-									</Box>
+									{data.mode === 'want' && (
+										<Fragment>
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipPreffered.find(
+													(method) => method === 'Romanian Post'
+												) ? (
+													<Fragment>
+														<MarkunreadMailboxTwoToneIcon color="primary" />
+														<Box textAlign="center">Shipping by post is preferred</Box>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">Shipping by post is not preferred</Box>
+													</Fragment>
+												)}
+											</Box>
 
-									<Box
-										display="flex"
-										flexDirection="column"
-										justifyContent="center"
-										alignItems="center"
-										gap={1}
-									>
-										{data.shipping.shipCourier ? (
-											<Fragment>
-												<LocalShippingTwoToneIcon color="primary" />
-												<Box textAlign="center">{`Shipping by courier paid by ${data.shipping
-													.shipPostPayer === 'seller'
-													? `${data.addedBy.username}`
-													: 'buyer'}`}</Box>
-											</Fragment>
-										) : (
-											<Fragment>
-												<CancelRoundedIcon color="error" />
-												<Box textAlign="center">Shipping by courier is not available</Box>
-											</Fragment>
-										)}
-									</Box>
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipPreffered.find((method) => method === 'Courier') ? (
+													<Fragment>
+														<MarkunreadMailboxTwoToneIcon color="primary" />
+														<Box textAlign="center">Shipping by courier is preferred</Box>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">
+															Shipping by courier is not preferred
+														</Box>
+													</Fragment>
+												)}
+											</Box>
 
-									<Box
-										display="flex"
-										flexDirection="column"
-										justifyContent="center"
-										alignItems="center"
-										gap={1}
-									>
-										{data.shipping.shipPersonal ? (
-											<Fragment>
-												<LocalLibraryTwoToneIcon color="primary" />
-												<Box textAlign="center">Personal shipping is available in</Box>
-												<StyledChipsBox>
-													{data.shipping.shipCities.map((city) => (
-														<Chip
-															key={city}
-															icon={<RoomTwoToneIcon />}
-															size="small"
-															color="primary"
-															variant="outlined"
-															label={city}
-														/>
-													))}
-												</StyledChipsBox>
-											</Fragment>
-										) : (
-											<Fragment>
-												<CancelRoundedIcon color="error" />
-												<Box textAlign="center">Personal shipping is not available</Box>
-											</Fragment>
-										)}
-									</Box>
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipPreffered.find((method) => method === 'Personal') ? (
+													<Fragment>
+														<MarkunreadMailboxTwoToneIcon color="primary" />
+														<Box textAlign="center">Personal shipping is preferred</Box>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">Personal shipping is not preferred</Box>
+													</Fragment>
+												)}
+											</Box>
+										</Fragment>
+									)}
+
+									{data.mode !== 'want' && (
+										<Fragment>
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipPost ? (
+													<Fragment>
+														<MarkunreadMailboxTwoToneIcon color="primary" />
+														<Box textAlign="center">{`Shipping by post paid by ${data
+															.shipping.shipPostPayer === 'seller'
+															? `${data.addedBy.username}`
+															: 'buyer'}`}</Box>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">Shipping by post is not available</Box>
+													</Fragment>
+												)}
+											</Box>
+
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipCourier ? (
+													<Fragment>
+														<LocalShippingTwoToneIcon color="primary" />
+														<Box textAlign="center">{`Shipping by courier paid by ${data
+															.shipping.shipPostPayer === 'seller'
+															? `${data.addedBy.username}`
+															: 'buyer'}`}</Box>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">
+															Shipping by courier is not available
+														</Box>
+													</Fragment>
+												)}
+											</Box>
+
+											<Box
+												display="flex"
+												flexDirection="column"
+												justifyContent="center"
+												alignItems="center"
+												gap={1}
+											>
+												{data.shipping.shipPersonal ? (
+													<Fragment>
+														<LocalLibraryTwoToneIcon color="primary" />
+														<Box textAlign="center">Personal shipping is available in</Box>
+														<StyledChipsBox>
+															{data.shipping.shipCities.map((city) => (
+																<Chip
+																	key={city}
+																	icon={<RoomTwoToneIcon />}
+																	size="small"
+																	color="primary"
+																	variant="outlined"
+																	label={city}
+																/>
+															))}
+														</StyledChipsBox>
+													</Fragment>
+												) : (
+													<Fragment>
+														<CancelRoundedIcon color="error" />
+														<Box textAlign="center">Personal shipping is not available</Box>
+													</Fragment>
+												)}
+											</Box>
+										</Fragment>
+									)}
 								</Box>
 							</Box>
 						</Box>

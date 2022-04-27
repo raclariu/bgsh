@@ -44,9 +44,9 @@ const NotificationsPopover = () => {
 	const deleteMutation = useDeleteNotificationMutation()
 	const clearAllMutation = useClearAllNotificationsMutation()
 
-	const handleThumbClick = ({ altId, mode }) => {
+	const handleThumbClick = ({ slug }) => {
 		setAnchorEl(null)
-		mode === 'sell' ? navigate(`/sales/${altId}`) : navigate(`/trades/${altId}`)
+		navigate(slug)
 	}
 
 	const deleteNotificationHandler = (ntfId) => {

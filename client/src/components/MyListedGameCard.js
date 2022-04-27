@@ -231,19 +231,17 @@ const ListedGameCard = ({ data }) => {
 					/>
 
 					{data.mode !== 'want' && (
-						<Fragment>
-							<ActiveAddHistoryButton
-								games={data.games}
-								isActive={data.isActive}
-								price={data.totalPrice}
-								gameId={data._id}
-								mode={data.mode}
-								display="add"
-							/>
-
-							<GameDetailsButton altId={data.altId} mode={data.mode} />
-						</Fragment>
+						<ActiveAddHistoryButton
+							games={data.games}
+							isActive={data.isActive}
+							price={data.totalPrice}
+							gameId={data._id}
+							mode={data.mode}
+							display="add"
+						/>
 					)}
+
+					<GameDetailsButton slug={data.slug} />
 
 					<ActiveAddHistoryButton gameId={data._id} mode={data.mode} display="delete" />
 				</Box>

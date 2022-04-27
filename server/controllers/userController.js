@@ -350,19 +350,19 @@ const getUserProfileListingsData = asyncHandler(async (req, res) => {
 	const { _id: userId } = req.userId
 
 	const saleGames = await Game.find({ addedBy: userId, isActive: true, mode: 'sell' })
-		.select('_id mode games isPack altId totalPrice')
+		.select('_id mode games isPack altId totalPrice slug')
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
 
 	const tradeGames = await Game.find({ addedBy: userId, isActive: true, mode: 'trade' })
-		.select('_id mode games isPack altId')
+		.select('_id mode games isPack altId slug')
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
 
 	const wantedGames = await Game.find({ addedBy: userId, isActive: true, mode: 'want' })
-		.select('_id mode games isPack altId')
+		.select('_id mode games isPack altId slug')
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
