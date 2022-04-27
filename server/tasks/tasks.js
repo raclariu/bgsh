@@ -17,7 +17,7 @@ const dailyTask = cron.schedule(
 	// '*/10 * * * * *',
 	async () => {
 		const lookback = subDays(new Date(), 7)
-		const gamesToExpire = await Game.find({ isActive: true, updatedAt: { $lte: lookback } }).lean()
+		const gamesToExpire = await Game.find({ isActive: true, reactivatedAt: { $lte: lookback } }).lean()
 
 		let notifArr = []
 		for (let obj of gamesToExpire) {
@@ -39,7 +39,7 @@ const dailyTask = cron.schedule(
 		await Notification.insertMany(notifArr)
 		notifArr = []
 
-		const modify = await Game.updateMany({ isActive: true, updatedAt: { $lte: lookback } }, { isActive: false })
+		const modify = await Game.updateMany({ isActive: true, reactivatedAt: { $lte: lookback } }, { isActive: false })
 
 		// Clear notifications older than 14 days
 		const ntfLookback = subDays(new Date(), 14)

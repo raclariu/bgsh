@@ -36,6 +36,10 @@ const gameSchema = mongoose.Schema(
 		isActive      : {
 			type    : Boolean,
 			default : true
+		},
+		reactivatedAt : {
+			type    : Date,
+			default : new Date()
 		}
 	},
 	{

@@ -99,7 +99,7 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								<Box textAlign="center">{`Add listing to ${mode === 'sell'
 									? 'sale'
 									: 'trade'} history`}</Box>
-								<Box textAlign="center" mt={1} color="grey.500" fontSize="caption.fontSize">
+								<Box textAlign="center" mt={1} color="text.disabled" fontSize="caption.fontSize">
 									Note: once you submit the form, this listing will be deleted and added to your
 									history.
 								</Box>

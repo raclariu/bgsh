@@ -141,8 +141,8 @@ const GameRecs = ({ idx }) => {
 															display="flex"
 															gap={0.25}
 															fontWeight="fontWeightMedium"
-															fontSize={14}
-															color="grey.600"
+															fontSize="body2.fontSize"
+															color="text.secondary"
 														>
 															<StarIcon color="primary" fontSize="small" />
 															{approx(rec.stats.avgRating)}
@@ -153,8 +153,8 @@ const GameRecs = ({ idx }) => {
 															alignItems="center"
 															gap={0.25}
 															fontWeight="fontWeightMedium"
-															fontSize={14}
-															color="grey.600"
+															fontSize="body2.fontSize"
+															color="text.secondary"
 														>
 															<MilitaryTechIcon color="primary" fontSize="small" />
 															{rec.stats.rank}

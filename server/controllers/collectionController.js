@@ -79,15 +79,6 @@ const updateBggCollection = asyncHandler(async (req, res) => {
 			.filter((item) => item.status.wishlist === '1')
 			.concat(ensureJsonExpCollectionIsArray.filter((item) => item.status.wishlist === '1'))
 
-		// console.log({
-		// 	owned       : entireOwnedCollection.length,
-		// 	fortrade    : entireForTradeCollection.length,
-		// 	wantintrade : entireWantInTradeCollection.length,
-		// 	wanttobuy   : entireWantToBuyCollection.length,
-		// 	wanttoplay  : entireWantToPlayCollection.length,
-		// 	wishlist    : entireWishlistCollection.length
-		// })
-
 		let ownedArr = []
 		if (fullOwnedCollection.length > 0) {
 			for (let game of fullOwnedCollection) {
@@ -368,11 +359,15 @@ const getOwned = asyncHandler(async (req, res) => {
 	const getOwnedCount = await Owned.findOne({ user: req.user._id }).select('ownedCount').lean()
 
 	if (!getOwnedCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getOwnedCount.ownedCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -425,11 +420,15 @@ const getForTrade = asyncHandler(async (req, res) => {
 	const getForTradeCount = await ForTrade.findOne({ user: req.user._id }).select('forTradeCount').lean()
 
 	if (!getForTradeCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getForTradeCount.forTradeCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -482,11 +481,15 @@ const getWantInTrade = asyncHandler(async (req, res) => {
 	const getWantInTradeCount = await WantInTrade.findOne({ user: req.user._id }).select('wantInTradeCount').lean()
 
 	if (!getWantInTradeCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getWantInTradeCount.wantInTradeCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -539,11 +542,15 @@ const getWantToBuy = asyncHandler(async (req, res) => {
 	const getWantToBuyCount = await WantToBuy.findOne({ user: req.user._id }).select('wantToBuyCount').lean()
 
 	if (!getWantToBuyCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getWantToBuyCount.wantToBuyCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -596,11 +603,15 @@ const getWantToPlay = asyncHandler(async (req, res) => {
 	const getWantToPlayCount = await WantToPlay.findOne({ user: req.user._id }).select('wantToPlayCount').lean()
 
 	if (!getWantToPlayCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getWantToPlayCount.wantToPlayCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -653,11 +664,15 @@ const getWishlist = asyncHandler(async (req, res) => {
 	const getWishlistCount = await Wishlist.findOne({ user: req.user._id }).select('wishlistCount').lean()
 
 	if (!getWishlistCount) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (getWishlistCount.wishlistCount === 0) {
-		return res.status(200).json({ collection: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ collection: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {

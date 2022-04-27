@@ -108,7 +108,7 @@ const ListGameCard = ({ game, isPack, mode, data, removeFromListHandler, handleG
 					variant : 'subtitle2'
 				}}
 				subheaderTypographyProps={{
-					color   : 'grey.500',
+					color   : 'text.secondary',
 					variant : 'caption'
 				}}
 			/>

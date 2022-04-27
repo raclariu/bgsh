@@ -105,12 +105,12 @@ const GameVids = ({ idx }) => {
 							<Box
 								component={Paper}
 								display="flex"
-								gap={1}
 								alignItems="flex-start"
-								boxShadow={1}
 								borderRadius="4px"
 								width="100%"
+								boxShadow={1}
 								p={1}
+								gap={1}
 							>
 								<Box boxShadow={1} borderRadius="4px">
 									<LzLoad>
@@ -126,9 +126,10 @@ const GameVids = ({ idx }) => {
 								<Box
 									display="flex"
 									flexDirection="column"
+									alignSelf="stretch"
 									alignItems="flex-start"
-									justifyContent="flex-start"
-									gap={0.5}
+									justifyContent="space-between"
+									width="100%"
 								>
 									<Box
 										fontSize="0.875rem"
@@ -137,7 +138,7 @@ const GameVids = ({ idx }) => {
 									>
 										{video.title}
 									</Box>
-									<Box fontSize="caption.fontSize" color="grey.500" fontStyle="italic">
+									<Box fontSize="caption.fontSize" color="text.disabled" fontStyle="italic">
 										{video.user} • {video.type}
 									</Box>
 								</Box>

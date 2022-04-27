@@ -5,12 +5,14 @@ import {
 	addSoldGamesToHistory,
 	addTradedGamesToHistory,
 	addBoughtGamesToHistory,
-	getGamesHistory
+	getHistoryIndex,
+	deleteHistoryEntry
 } from '../controllers/historyController.js'
 import { sellValidators, tradeValidators, buyValidators } from '../validators/historyValidator.js'
 
 // @route /api/history
-router.route('/').get(protect, getGamesHistory)
+router.route('/').get(protect, getHistoryIndex)
+router.route('/:id').delete(protect, deleteHistoryEntry)
 router.route('/sell').post([ protect, ...sellValidators ], addSoldGamesToHistory)
 router.route('/trade').post([ protect, ...tradeValidators ], addTradedGamesToHistory)
 router.route('/buy').post([ protect, ...buyValidators ], addBoughtGamesToHistory)

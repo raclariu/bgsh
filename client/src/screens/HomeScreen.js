@@ -195,8 +195,8 @@ const HomeScreen = () => {
 					>
 						{data.map((item) => (
 							<LzLoad key={item._id} placeholder={<NewListingsSkeleton />}>
-								<Box component={Paper} borderRadius="4px" boxShadow={2} p={1} height="100%">
-									<Box display="flex" alignItems="flex-start" gap={2} height="100%">
+								<Box component={Paper} borderRadius="4px" boxShadow={2} p={1}>
+									<Box display="flex" alignItems="flex-start" gap={2}>
 										{item.mode === 'want' ? (
 											<StyledThumb
 												src={item.games[0].thumbnail}
@@ -224,9 +224,9 @@ const HomeScreen = () => {
 
 										<Box
 											display="flex"
+											alignSelf="stretch"
 											flexDirection="column"
 											alignItems="flex-start"
-											height="100%"
 											justifyContent="space-between"
 										>
 											{item.isPack ? (

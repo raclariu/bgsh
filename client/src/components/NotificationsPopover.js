@@ -112,7 +112,7 @@ const NotificationsPopover = () => {
 											<ListItemAvatar>
 												{ntf.type === 'wishlist' ? (
 													<Avatar
-														sx={{ cursor: 'pointer' }}
+														sx={{ cursor: 'pointer', height: '48px', width: '48px' }}
 														onClick={() => handleThumbClick(ntf.meta)}
 														variant="rounded"
 														src={ntf.meta.thumbnail}
@@ -121,14 +121,19 @@ const NotificationsPopover = () => {
 														{ntf.text.substring(0, 2).toUpperCase()}
 													</Avatar>
 												) : (
-													<Avatar variant="rounded" src={ntf.meta.thumbnail} alt={ntf.text}>
+													<Avatar
+														sx={{ height: '48px', width: '48px' }}
+														variant="rounded"
+														src={ntf.meta.thumbnail}
+														alt={ntf.text}
+													>
 														{ntf.text.substring(0, 2).toUpperCase()}
 													</Avatar>
 												)}
 											</ListItemAvatar>
 
 											<ListItemText
-												sx={{ mr: 1 }}
+												sx={{ mr: 1, ml: 0.5 }}
 												primary={ntf.text}
 												secondary={calculateTimeAgo(ntf.createdAt)}
 												primaryTypographyProps={{
@@ -136,7 +141,7 @@ const NotificationsPopover = () => {
 													color   : 'primary.light'
 												}}
 												secondaryTypographyProps={{
-													color   : 'grey.500',
+													color   : 'text.disabled',
 													variant : 'caption'
 												}}
 											/>

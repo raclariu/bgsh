@@ -37,7 +37,7 @@ const addOneToList = asyncHandler(async (req, res) => {
 	if (userList.list.some((item) => item.bggId === bggId)) {
 		res.status(400)
 		throw {
-			message : `${title} already in your list`
+			message : `${title} is already in your list`
 		}
 	}
 

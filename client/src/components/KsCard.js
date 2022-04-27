@@ -157,7 +157,7 @@ const KsDetails = ({ data }) => {
 					<Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
 						<Box
 							fontStyle="italic"
-							color="grey.500"
+							color="text.disabled"
 							fontSize="caption.fontSize"
 							ml={2}
 						>{`updated ${calculateTimeAgoStrict(data.createdAt)}`}</Box>

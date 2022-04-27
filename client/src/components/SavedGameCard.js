@@ -211,7 +211,11 @@ const SavedGameCard = ({ data }) => {
 							</CustomIconBtn>
 						</Fragment>
 					) : (
-						<StyledTitleBox>
+						<StyledTitleBox
+							sx={{
+								color : `${!data.isActive && 'grey.500'}`
+							}}
+						>
 							{data.games[index].title} ({data.games[index].year})
 						</StyledTitleBox>
 					)}

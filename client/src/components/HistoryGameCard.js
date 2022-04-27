@@ -19,6 +19,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTone'
 import CloseIcon from '@mui/icons-material/Close'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 
 // @ Components
 import CustomDivider from './CustomDivider'
@@ -26,9 +27,12 @@ import CustomAvatar from './CustomAvatar'
 import CustomTooltip from './CustomTooltip'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
+import CustomButton from './CustomButton'
+import LoadingBtn from './LoadingBtn'
 
 // @ Others
 import { formatDate } from '../helpers/helpers'
+import { useHistoryDeleteGameMutation } from '../hooks/hooks'
 
 // @ Styles
 const StyledCardMedia = styled(CardMedia)({
@@ -75,12 +79,16 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 			<Dialog fullWidth maxWidth="sm" open={openDialog} onClose={handleCloseDialog}>
 				<DialogTitle>
 					<Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={3}>
-						<Box display="flex" flexDirection="column" gap={0.5}>
+						<Box display="flex" alignItems="flex-start" flexDirection="column" gap={0.5}>
 							<Box fontSize="h6.fontSize">{data.games[index].title}</Box>
-							<Box fontSize="caption.fontSize" color="grey.500">
-								{`${data.games[index].subtype} • ${data.games[index].year}`}
-							</Box>
+							<Chip
+								color={`${data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}`}
+								size="small"
+								variant="outlined"
+								label={`${data.games[index].subtype} • ${data.games[index].year}`}
+							/>
 						</Box>
+
 						<CustomIconBtn onClick={handleCloseDialog} color="error" size="large">
 							<CloseIcon />
 						</CustomIconBtn>
@@ -207,7 +215,63 @@ const HistoryGameDetails = ({ data, cycleIndex, index }) => {
 							</Box>
 						)}
 
-						<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
+						<Box display="flex" gap={1} alignItems="center" alignSelf="flex-end">
+							<HistoryDeleteGame handleCloseDialog={handleCloseDialog} id={data._id} mode={data.mode} />
+							<ExtLinkIconBtn url={`https://boardgamegeek.com/boardgame/${data.games[index].bggId}`} />
+						</Box>
+					</Box>
+				</DialogActions>
+			</Dialog>
+		</Fragment>
+	)
+}
+
+// @ Delete
+const HistoryDeleteGame = ({ id, mode, handleCloseDialog: handleCloseDetailsDialog }) => {
+	const [ openDialog, setOpenDialog ] = useState(false)
+
+	const handleCleanup = () => {
+		// handle close details dialog and this delete dialog, works without but animation are not there
+		// because details dialog is closed forcefully because invalidation, this way it closes with animation before invalidation
+		setOpenDialog(false)
+		handleCloseDetailsDialog()
+	}
+
+	const { isLoading, mutate } = useHistoryDeleteGameMutation({ handleCleanup, mode })
+
+	const handleOpenDialog = () => {
+		setOpenDialog(true)
+	}
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false)
+	}
+
+	const handleDelete = () => {
+		mutate(id)
+	}
+
+	return (
+		<Fragment>
+			<CustomTooltip title="Delete">
+				<CustomIconBtn onClick={handleOpenDialog} size="large" color="error">
+					<DeleteOutlineIcon />
+				</CustomIconBtn>
+			</CustomTooltip>
+
+			<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
+				<DialogTitle>
+					<Box textAlign="center">Are you sure you want to delete this history entry?</Box>
+				</DialogTitle>
+
+				<CustomDivider />
+
+				<DialogActions>
+					<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
+						<CustomButton onClick={handleCloseDialog}>No</CustomButton>
+						<LoadingBtn loading={isLoading} onClick={handleDelete} variant="contained">
+							Delete
+						</LoadingBtn>
 					</Box>
 				</DialogActions>
 			</Dialog>

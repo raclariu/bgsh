@@ -263,6 +263,30 @@ export const useGetGamesHistoryListQuery = ({ search, page, mode }) => {
 	})
 }
 
+export const useHistoryDeleteGameMutation = ({ handleCleanup, mode }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation((id) => api.apiHistoryDeleteGame(id), {
+		onSuccess : () => {
+			if (mode === 'sell') {
+				queryClient.invalidateQueries([ 'history', 'sell' ])
+			} else if (mode === 'trade') {
+				queryClient.invalidateQueries([ 'history', 'trade' ])
+			} else if (mode === 'buy') {
+				queryClient.invalidateQueries([ 'history', 'buy' ])
+			}
+			handleCleanup()
+			showSnackbar.success({ text: 'Successfully deleted history entry' })
+		},
+		onError   : (err) => {
+			handleCleanup()
+			const text = err.response.data.message || 'Error occured while deleting history entry'
+			showSnackbar.error({ text })
+		}
+	})
+}
+
 export const useGetGamesIndexQuery = ({ sort, search, page, mode }) => {
 	const [ showSnackbar ] = useNotiSnackbar()
 
@@ -675,7 +699,7 @@ export const useDeleteUploadedGameImageMutation = ({ handleGameInfo }) => {
 
 export const useGetNewMessagesCountQuery = () => {
 	return useQuery([ 'inbox', 'count' ], api.apiGetNewMessagesCount, {
-		refetchInterval : 1000 * 60 * 2,
+		refetchInterval : 1000 * 30 * 3,
 		refetchOnMount  : false
 	})
 }

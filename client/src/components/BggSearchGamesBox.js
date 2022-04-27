@@ -24,7 +24,7 @@ const BggSearchGamesBox = () => {
 	const [ options, setOptions ] = useState([])
 	const [ selectedOption, setSelectedOption ] = useState(null)
 
-	const { mutate, data, reset: resetSearch, isLoading, isError, error } = useBggSearchGamesMutation({
+	const { mutate, data, reset: resetMutation, isLoading, isError, error } = useBggSearchGamesMutation({
 		onSuccess : (data) => {
 			setOptions(data.filter((v, i, a) => a.findIndex((t) => t.bggId === v.bggId) === i))
 		}
@@ -57,7 +57,7 @@ const BggSearchGamesBox = () => {
 	const resetHandler = () => {
 		setOptions([])
 		setSelectedOption(null)
-		resetSearch()
+		resetMutation()
 	}
 
 	const addToSaleListHandler = () => {
@@ -77,6 +77,7 @@ const BggSearchGamesBox = () => {
 				onChange={(e, value) => setSelectedOption(value)}
 				getOptionLabel={(option) => `${option.title} (${option.year})`}
 				options={options}
+				// clearOnBlur={false}
 				renderOption={(props, option) => {
 					return (
 						<li {...props} key={option.bggId}>

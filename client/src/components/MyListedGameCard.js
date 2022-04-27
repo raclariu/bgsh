@@ -64,6 +64,9 @@ const ListedGameCard = ({ data }) => {
 					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
 					alt={data.games[index].title}
 					title={data.games[index].title}
+					sx={{
+						filter : `${!data.isActive && 'grayscale(1)'}`
+					}}
 				/>
 			</Box>
 
@@ -155,6 +158,19 @@ const ListedGameCard = ({ data }) => {
 				</Box>
 			)}
 
+			{!data.isActive && (
+				<Chip
+					sx={{
+						position : 'absolute',
+						top      : '8px',
+						right    : '8px'
+					}}
+					size="small"
+					color="secondary"
+					label="inactive"
+				/>
+			)}
+
 			<CustomDivider />
 
 			<CardContent>
@@ -175,7 +191,11 @@ const ListedGameCard = ({ data }) => {
 							>
 								<ArrowBackIcon />
 							</CustomIconBtn>
-							<StyledTitleBox>
+							<StyledTitleBox
+								sx={{
+									color : `${!data.isActive && 'grey.500'}`
+								}}
+							>
 								{data.games[index].title} ({data.games[index].year})
 							</StyledTitleBox>
 							<CustomIconBtn
@@ -188,7 +208,11 @@ const ListedGameCard = ({ data }) => {
 							</CustomIconBtn>
 						</Fragment>
 					) : (
-						<StyledTitleBox>
+						<StyledTitleBox
+							sx={{
+								color : `${!data.isActive && 'grey.500'}`
+							}}
+						>
 							{data.games[index].title} ({data.games[index].year})
 						</StyledTitleBox>
 					)}

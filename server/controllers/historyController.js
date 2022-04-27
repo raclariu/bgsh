@@ -370,7 +370,7 @@ const addBoughtGamesToHistory = asyncHandler(async (req, res) => {
 // ~ @desc    Get user games history
 // ~ @route   GET  /api/history
 // ~ @access  Private route
-const getGamesHistory = asyncHandler(async (req, res) => {
+const getHistoryIndex = asyncHandler(async (req, res) => {
 	const page = +req.query.page
 	const search = req.query.search
 	const resultsPerPage = 18
@@ -382,7 +382,9 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 		.lean()
 
 	if (completeList.length === 0) {
-		return res.status(200).json({ historyList: [], pagination: {} })
+		return res
+			.status(200)
+			.json({ historyList: [], pagination: { page, totalPages: 0, totalItems: 0, perPage: resultsPerPage } })
 	}
 
 	if (search) {
@@ -427,4 +429,14 @@ const getGamesHistory = asyncHandler(async (req, res) => {
 	}
 })
 
-export { addSoldGamesToHistory, addTradedGamesToHistory, addBoughtGamesToHistory, getGamesHistory }
+// ! @desc    Delete history entry
+// ! @route   DELETE  /api/history/:id
+// ! @access  Private route
+const deleteHistoryEntry = asyncHandler(async (req, res) => {
+	const { id } = req.params
+	await History.deleteOne({ _id: id })
+
+	return res.status(204).end()
+})
+
+export { addSoldGamesToHistory, addTradedGamesToHistory, addBoughtGamesToHistory, getHistoryIndex, deleteHistoryEntry }

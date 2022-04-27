@@ -407,7 +407,8 @@ const SingleGameScreen = () => {
 									</Box>
 								)}
 
-								{data.isPack && (
+								{data.isPack &&
+								data.extraInfoPack && (
 									<Box display="flex" flexDirection="column">
 										<Box fontWeight="fontWeightMedium">Pack info</Box>
 										<Box fontWeight="fontWeightMedium" fontSize={14}>

@@ -1,4 +1,5 @@
 import { validationResult } from 'express-validator'
+import axios from 'axios'
 import Fuse from 'fuse.js'
 import asyncHandler from 'express-async-handler'
 import Game from '../models/gameModel.js'
@@ -7,6 +8,7 @@ import Notification from '../models/notificationModel.js'
 import Wishlist from '../models/collectionModels/wishlistModel.js'
 import List from '../models/listModel.js'
 import storage from '../helpers/storage.js'
+import { parseXML } from '../helpers/helpers.js'
 import { genNanoId } from '../helpers/helpers.js'
 
 // * @desc    Add games for sale
@@ -40,7 +42,7 @@ const listSaleGames = asyncHandler(async (req, res) => {
 	} = req.body
 
 	if (isPack) {
-		await Game.create({
+		const { altId, games: listedGames } = await Game.create({
 			mode          : 'sell',
 			addedBy       : req.user._id,
 			games,
@@ -60,7 +62,9 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
-		for (let game of games) {
+
+		// for wishlist
+		for (let game of listedGames) {
 			const userWishlists = await Wishlist.find({ 'wishlist.bggId': game.bggId }).select('user').lean()
 
 			if (userWishlists.length > 0) {
@@ -74,7 +78,32 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `A pack containing ${game.title} has been listed for sale`,
 						meta      : {
-							altId     : game.altId,
+							altId,
+							mode      : 'sell',
+							thumbnail : game.thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		// for want to buy
+		for (let game of listedGames) {
+			const userWantToBuyLists = await WantToBuy.find({ 'wantToBuy.bggId': game.bggId }).select('user').lean()
+
+			if (userWantToBuyLists.length > 0) {
+				const filteredUserWantToBuyLists = userWantToBuyLists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWantToBuyLists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wantToBuy',
+						text      : `A pack containing ${game.title} has been listed for sale`,
+						meta      : {
+							altId,
+							mode      : 'sell',
 							thumbnail : game.thumbnail
 						}
 					})
@@ -83,7 +112,6 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		}
 
 		await Notification.insertMany(notifArr)
-		notifArr = []
 	} else {
 		let sellList = []
 		games.forEach((game, index) => {
@@ -110,6 +138,8 @@ const listSaleGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
+
+		// for wishlists
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
 			const userWishlists = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
@@ -131,10 +161,35 @@ const listSaleGames = asyncHandler(async (req, res) => {
 						}
 					})
 				}
-				await Notification.insertMany(notifArr)
-				notifArr = []
 			}
 		}
+
+		// for want to buy
+		for (let data of insertedGames) {
+			const { bggId } = data.games[0]
+			const userWantToBuyLists = await WantToBuy.find({ 'wantToBuy.bggId': bggId }).select('user').lean()
+
+			if (userWantToBuyLists.length > 0) {
+				const filteredUserWantToBuyLists = userWantToBuyLists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWantToBuyLists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wantToBuy',
+						text      : `${data.games[0].title} has been listed for sale`,
+						meta      : {
+							mode      : 'sell',
+							altId     : data.altId,
+							thumbnail : data.games[0].thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		await Notification.insertMany(notifArr)
 	}
 })
 
@@ -158,7 +213,7 @@ const listTradeGames = asyncHandler(async (req, res) => {
 	const { games, isPack, shipPost, shipCourier, shipPersonal, shipCities, extraInfoPack } = req.body
 
 	if (isPack) {
-		await Game.create({
+		const { altId, games: listedGames } = await Game.create({
 			mode          : 'trade',
 			addedBy       : req.user._id,
 			games,
@@ -175,7 +230,9 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
-		for (let game of games) {
+
+		// for wishlists
+		for (let game of listedGames) {
 			const userWishlists = await Wishlist.find({ 'wishlist.bggId': game.bggId }).select('user').lean()
 
 			if (userWishlists.length > 0) {
@@ -189,7 +246,34 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						type      : 'wishlist',
 						text      : `A pack containing ${game.title} has been listed for trade`,
 						meta      : {
-							altId     : game.altId,
+							altId,
+							mode      : 'trade',
+							thumbnail : game.thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		// for want in trade
+		for (let game of listedGames) {
+			const userWantInTradeLists = await WantInTrade.find({ 'wantInTrade.bggId': game.bggId })
+				.select('user')
+				.lean()
+
+			if (userWantInTradeLists.length > 0) {
+				const filteredUserWantInTradeLists = userWantInTradeLists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWantInTradeLists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wantInTrade',
+						text      : `A pack containing ${game.title} has been listed for trade`,
+						meta      : {
+							altId,
+							mode      : 'trade',
 							thumbnail : game.thumbnail
 						}
 					})
@@ -198,7 +282,6 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		}
 
 		await Notification.insertMany(notifArr)
-		notifArr = []
 	} else {
 		let tradeList = []
 		for (let game of games) {
@@ -222,6 +305,8 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
+
+		// for wishlists
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
 			const userWishlists = await Wishlist.find({ 'wishlist.bggId': bggId }).select('user').lean()
@@ -243,10 +328,35 @@ const listTradeGames = asyncHandler(async (req, res) => {
 						}
 					})
 				}
-				await Notification.insertMany(notifArr)
-				notifArr = []
 			}
 		}
+
+		// for want in trade
+		for (let data of insertedGames) {
+			const { bggId } = data.games[0]
+			const userWantInTradeLists = await WandInTrade.find({ 'wantInTrade.bggId': bggId }).select('user').lean()
+
+			if (userWantInTradeLists.length > 0) {
+				const filteredUserWantInTradeLists = userWantInTradeLists.filter(
+					(list) => list.user.toString() !== req.user._id.toString()
+				)
+
+				for (let obj of filteredUserWantInTradeLists) {
+					notifArr.push({
+						recipient : obj.user,
+						type      : 'wantInTrade',
+						text      : `${data.games[0].title} has been listed for trade`,
+						meta      : {
+							mode      : 'trade',
+							altId     : data.altId,
+							thumbnail : data.games[0].thumbnail
+						}
+					})
+				}
+			}
+		}
+
+		await Notification.insertMany(notifArr)
 	}
 })
 
@@ -519,17 +629,92 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 const reactivateGame = asyncHandler(async (req, res) => {
 	const { id } = req.params
 
-	const gameExists = await Game.findById(id).select('_id')
+	const gameExists = await Game.findById(id).select('_id games').lean()
 
-	if (gameExists) {
-		await Game.updateOne({ _id: id }, { isActive: true })
-
-		return res.status(204).end()
-	} else {
+	if (!gameExists) {
 		res.status(404)
 		throw {
 			message : 'Game not found'
 		}
+	}
+
+	// Update thumbnail,image,suggestedPlayers,languagedep,stats,complexity,expansions
+	try {
+		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
+			params : {
+				id    : gameExists.games.map((game) => game.bggId).join(','),
+				stats : 1
+			}
+		})
+
+		const { item } = await parseXML(data)
+		const ensureArray = Array.isArray(item) ? item : [ item ]
+		const gamesArr = []
+
+		for (let game of ensureArray) {
+			const item = {
+				bggId              : game.id,
+				thumbnail          : game.thumbnail || null,
+				image              : game.image || null,
+				suggestedPlayers   :
+					+game.poll.find((obj) => obj.name === 'suggested_numplayers').totalvotes > 15
+						? Array.isArray(game.poll.find((obj) => obj.name === 'suggested_numplayers').results)
+							? +game.poll
+									.find((obj) => obj.name === 'suggested_numplayers')
+									.results.sort(
+										(a, b) =>
+											+b.result.find((obj) => obj.value === 'Best').numvotes -
+											+a.result.find((obj) => obj.value === 'Best').numvotes
+									)[0].numplayers
+							: null
+						: null,
+				languageDependence : game.poll
+					? +game.poll.find((obj) => obj.name === 'language_dependence').totalvotes > 10
+						? game.poll
+								.find((obj) => obj.name === 'language_dependence')
+								.results.result.sort((a, b) => +b.numvotes - +a.numvotes)[0].value
+						: null
+					: null,
+				stats              : {
+					ratings   : +game.statistics.ratings.usersrated.value,
+					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
+					rank      :
+						game.type === 'boardgame'
+							? Array.isArray(game.statistics.ratings.ranks.rank)
+								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
+								: +[ game.statistics.ratings.ranks.rank ].find((obj) => +obj.id === 1).value
+							: null
+				},
+				complexity         : {
+					weight :
+						+game.statistics.ratings.numweights.value > 0
+							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
+							: null,
+					votes  : +game.statistics.ratings.numweights.value
+				},
+				expansions         :
+					game.type === 'boardgame'
+						? game.link.filter((link) => link.type === 'boardgameexpansion').map((exp) => {
+								return { bggId: exp.id, title: exp.value }
+							})
+						: []
+			}
+			gamesArr.push(item)
+		}
+
+		const newData = []
+		for (let game of gameExists.games) {
+			newData.push({ ...game, ...gamesArr.find((obj) => obj.bggId === game.bggId) })
+		}
+
+		await Game.updateOne({ _id: id }, { isActive: true, reactivatedAt: Date.now(), games: newData })
+
+		return res.status(204).end()
+	} catch (error) {
+		console.error(error)
+		// Daca eroare, macar reactivare cu datele vechi
+		await Game.updateOne({ _id: id }, { isActive: true, reactivatedAt: Date.now() })
+		return res.status(204).end()
 	}
 })
 

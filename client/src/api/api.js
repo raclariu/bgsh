@@ -278,6 +278,10 @@ export const apiFetchGamesHistory = async ({ search, page, mode }) => {
 	return data
 }
 
+export const apiHistoryDeleteGame = async (id) => {
+	return await axsAUTH.delete(`/api/history/${id}`)
+}
+
 export const apiSendMessage = async (subject, message, recipient) => {
 	return await axsAUTH.post('/api/messages', { subject, message, recipient })
 }

@@ -79,7 +79,7 @@ const DashboardScreen = () => {
 				alignItems="center"
 				gap={1}
 			>
-				<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+				<Box fontSize="h6.fontSize" fontWeight="fontWeightMedium">
 					{`Welcome ${currUsername}`}
 				</Box>
 				<Box display="flex" alignItems="center" gap={1}>
@@ -303,7 +303,7 @@ const DashboardScreen = () => {
 										>
 											<Box sx={{ wordBreak: 'break-word' }}>{data.title}</Box>
 											<Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
-												<Box fontSize="caption.fontSize" color="grey.500">
+												<Box fontSize="caption.fontSize" color="text.disabled">
 													by {data.author}
 												</Box>
 												<ExtLinkIconBtn

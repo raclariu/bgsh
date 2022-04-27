@@ -24,11 +24,11 @@ const Footer = () => {
 			<Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
 				<Box display="flex" alignItems="center" gap={1} mt={2}>
 					<img src="/meeples48.png" style={{ height: 24, width: 24, marginBottom: '4px' }} alt="logo" />
-					<Typography variant="body1" fontWeight="fontWeightMedium" color="grey.500">
+					<Typography variant="body1" fontWeight="fontWeightMedium" color="text.disabled">
 						Meeples.ro • 2022
 					</Typography>
 				</Box>
-				<Link fontSize="caption.fontSize" color="grey.500" component={RouterLink} to="/changelog">
+				<Link fontSize="caption.fontSize" color="text.disabled" component={RouterLink} to="/changelog">
 					changelog
 				</Link>
 			</Box>
