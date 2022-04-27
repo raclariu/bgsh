@@ -96,7 +96,7 @@ const SaleListPopover = () => {
 				>
 					{/* Content */}
 					<Box p={2} textAlign="center" fontWeight="fontWeightMedium" color="primary.main">
-						My list ({data.list.length}/6)
+						My list ({data.list.length}/8)
 					</Box>
 					<CustomDivider />
 

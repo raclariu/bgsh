@@ -886,6 +886,7 @@ export const useUpdateSocialsMutation = () => {
 		onSuccess : () => {
 			showSnackbar.success({ text: 'Socials updated successfully' })
 			queryClient.invalidateQueries([ 'socials' ])
+			queryClient.invalidateQueries([ 'userData' ])
 		}
 	})
 }

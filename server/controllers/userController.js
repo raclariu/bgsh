@@ -350,19 +350,25 @@ const getUserProfileListingsData = asyncHandler(async (req, res) => {
 	const { _id: userId } = req.userId
 
 	const saleGames = await Game.find({ addedBy: userId, isActive: true, mode: 'sell' })
-		.select('_id mode games isPack altId totalPrice slug')
+		.select(
+			'_id altId isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+		)
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
 
 	const tradeGames = await Game.find({ addedBy: userId, isActive: true, mode: 'trade' })
-		.select('_id mode games isPack altId slug')
+		.select(
+			'_id altId isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+		)
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
 
 	const wantedGames = await Game.find({ addedBy: userId, isActive: true, mode: 'want' })
-		.select('_id mode games isPack altId slug')
+		.select(
+			'_id altId isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+		)
 		.limit(18)
 		.sort({ createdAt: -1 })
 		.lean()
@@ -393,6 +399,7 @@ const updateSocials = asyncHandler(async (req, res) => {
 	const validationErrors = validationResult(req)
 	if (!validationErrors.isEmpty()) {
 		const err = validationErrors.mapped()
+		console.log(err)
 		res.status(400)
 		throw {
 			message : {

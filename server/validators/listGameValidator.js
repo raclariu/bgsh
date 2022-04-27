@@ -191,7 +191,7 @@ const validateWantedGameVersion = check('games.*.prefVersion')
 
 // (*) Validation for games preffered mode @ wanted - done
 const validateWantedPrefMode = check('games.*.prefMode')
-	.custom((prefMode, { req, path }) => {
+	.custom((prefMode) => {
 		try {
 			if (!prefMode.buy && !prefMode.trade) {
 				throw new Error()

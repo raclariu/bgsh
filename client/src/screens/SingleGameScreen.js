@@ -158,14 +158,6 @@ const SingleGameScreen = () => {
 
 			{isSuccess && (
 				<Fragment>
-					<Helmet
-						title={data.games[idx].title}
-						description={`I am ${data.mode === 'sell' ? 'selling' : 'trading'} ${data.games[0]
-							.title} - For more details go to https://meeples.ro/${data.mode === 'sell'
-							? 'sales'
-							: 'trades'}/${data.altId}`}
-					/>
-
 					{data.isPack && (
 						<Box
 							sx={{
@@ -392,11 +384,11 @@ const SingleGameScreen = () => {
 								{data.mode === 'want' && (
 									<Box display="flex" gap={0.5} flexWrap="wrap">
 										{data.games[idx].prefMode.buy && (
-											<Chip size="small" color="primary" label="prefer buy" />
+											<Chip size="small" color="primary" label="prefer to buy" />
 										)}
 
 										{data.games[idx].prefMode.trade && (
-											<Chip size="small" color="primary" label="prefer trade" />
+											<Chip size="small" color="primary" label="prefer to trade" />
 										)}
 
 										<Chip

@@ -115,7 +115,7 @@ const CollectionScreen = ({ type }) => {
 									listHandler={listHandler}
 									isChecked={userList.data.list.some((el) => el.bggId === item.bggId)}
 									isDisabled={
-										userList.data.list.length === 6 ? userList.data.list.some(
+										userList.data.list.length === 8 ? userList.data.list.some(
 											(el) => el.bggId === item.bggId
 										) ? (
 											false

@@ -597,11 +597,15 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 18
 
-	const allUserGames = await Game.find({ addedBy: req.user._id }).lean()
+	const allUserGames = await Game.find({ addedBy: req.user._id })
+		.select(
+			'_id altId totalPrice isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+		)
+		.lean()
 
 	if (search) {
 		const fuse = new Fuse(allUserGames, {
-			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype', 'mode' ],
+			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
 			threshold : 0.3,
 			distance  : 200
 		})
@@ -624,6 +628,9 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			.skip(resultsPerPage * (page - 1))
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })
+			.select(
+				'_id altId totalPrice isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+			)
 			.lean()
 
 		const pagination = {
@@ -855,9 +862,16 @@ const getSavedGames = asyncHandler(async (req, res) => {
 	const search = req.query.search
 	const resultsPerPage = 18
 
-	const user = await User.findById({ _id: req.user._id }).select('savedGames').populate('savedGames').lean()
+	const savedGamesList = await User.findById({ _id: req.user._id })
+		.select('savedGames')
+		.populate({
+			path   : 'savedGames',
+			select :
+				'_id altId isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+		})
+		.lean()
 
-	if (!user) {
+	if (!savedGamesList) {
 		res.status(404)
 		throw {
 			message : 'User not found'
@@ -865,7 +879,7 @@ const getSavedGames = asyncHandler(async (req, res) => {
 	}
 
 	if (search) {
-		const fuse = new Fuse(user.savedGames, {
+		const fuse = new Fuse(savedGamesList.savedGames, {
 			keys      : [ 'games.bggId', 'games.title', 'games.designers', 'games.subtype' ],
 			threshold : 0.3,
 			distance  : 200
@@ -888,16 +902,18 @@ const getSavedGames = asyncHandler(async (req, res) => {
 		const { savedGames } = await User.findOne({ _id: req.user._id }).select('savedGames').populate({
 			path    : 'savedGames',
 			options : {
-				limit : resultsPerPage,
-				sort  : { createdAt: -1 },
-				skip  : resultsPerPage * (page - 1)
+				select :
+					'_id altId isActive isPack mode slug games.bggId games.year  games.designers games.image games.thumbnail games.subtype games.title',
+				limit  : resultsPerPage,
+				sort   : { createdAt: -1 },
+				skip   : resultsPerPage * (page - 1)
 			}
 		})
 
 		const pagination = {
 			page       : page,
-			totalPages : Math.ceil(user.savedGames.length / resultsPerPage),
-			totalItems : user.savedGames.length,
+			totalPages : Math.ceil(savedGamesList.savedGames.length / resultsPerPage),
+			totalItems : savedGamesList.savedGames.length,
 			perPage    : resultsPerPage
 		}
 

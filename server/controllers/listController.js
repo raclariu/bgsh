@@ -12,8 +12,8 @@ const getList = asyncHandler(async (req, res) => {
 		{ upsert: true, new: true, setDefaultsOnInsert: true }
 	).lean()
 
-	if (userList.list.length > 6) {
-		userList.list = userList.list.slice(0, 6)
+	if (userList.list.length > 8) {
+		userList.list = userList.list.slice(0, 8)
 		return res.status(200).json(userList)
 	}
 
@@ -27,10 +27,10 @@ const addOneToList = asyncHandler(async (req, res) => {
 	const { bggId, title, year, thumbnail, image, version = null } = req.body
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
-	if (userList.list.length === 6) {
+	if (userList.list.length === 8) {
 		res.status(400)
 		throw {
-			message : 'Maximum of 6 games can be added to your list'
+			message : 'Maximum of 8 games can be added to your list'
 		}
 	}
 
@@ -59,14 +59,6 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 
 	let userList = await List.findOne({ addedBy: req.user._id }).lean()
 
-	if (!userList) {
-		userList = await List.create({
-			addedBy : req.user._id,
-			list    : []
-		})
-		userList = await List.findOne({ addedBy: req.user._id }).lean()
-	}
-
 	if (userList.list.length === 0) {
 		return res.status(200).json(userList)
 	}
@@ -90,22 +82,4 @@ const deleteOneFromList = asyncHandler(async (req, res) => {
 	}
 })
 
-// ! @desc    Clear list
-// ! @route   DELETE  /api/list/clear
-// ! @access  Private route
-const clearList = async (req, res) => {
-	const userList = await List.findOne({ addedBy: req.user._id }).select('_id').lean()
-
-	if (!userList) {
-		res.status(404)
-		throw {
-			message : 'List not found'
-		}
-	}
-
-	await List.updateOne({ addedBy: req.user._id }, { list: [] })
-
-	return res.status(204).end()
-}
-
-export { addOneToList, deleteOneFromList, getList, clearList }
+export { addOneToList, deleteOneFromList, getList }
