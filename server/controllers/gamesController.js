@@ -241,7 +241,6 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
-
 		// for wishlists
 		for (let game of listedGames) {
 			const userWishlists = await Wishlist.find({ 'wishlist.bggId': game.bggId }).select('user').lean()
@@ -319,7 +318,6 @@ const listTradeGames = asyncHandler(async (req, res) => {
 		res.status(204).end()
 
 		let notifArr = []
-
 		// for wishlists
 		for (let data of insertedGames) {
 			const { bggId } = data.games[0]
@@ -391,7 +389,7 @@ const listWantedGames = asyncHandler(async (req, res) => {
 		}
 	}
 
-	const { games, shipPreffered } = req.body
+	const { games, shipPost, shipCourier, shipPersonal, shipCities } = req.body
 
 	let wantedList = []
 	for (let game of games) {
@@ -401,7 +399,10 @@ const listWantedGames = asyncHandler(async (req, res) => {
 			addedBy  : req.user._id,
 			games    : [ game ],
 			shipping : {
-				shipPreffered
+				shipPost,
+				shipCourier,
+				shipPersonal,
+				shipCities
 			},
 			isPack   : false,
 			altId    : generatedAltId,
@@ -509,6 +510,8 @@ const getGames = asyncHandler(async (req, res) => {
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
 			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt
+			} else if (sort === 'updated') {
+				return b.reactivatedAt - a.reactivatedAt
 			} else if (sortBy === 'old') {
 				return a.createdAt - b.createdAt
 			} else if (sortBy === 'price-low') {
@@ -519,14 +522,12 @@ const getGames = asyncHandler(async (req, res) => {
 				return a.games[0].stats.ratings - b.games[0].stats.ratings
 			} else if (sortBy === 'avgrating') {
 				return b.games[0].stats.avgRating - a.games[0].stats.avgRating
-			} else if (sortBy === 'rank') {
-				return a.games[0].stats.rank - b.games[0].stats.rank
 			} else if (sortBy === 'release-new') {
 				return b.games[0].year - a.games[0].year
 			} else if (sortBy === 'release-old') {
 				return a.games[0].year - b.games[0].year
 			} else {
-				return b.createdAt - a.createdAt
+				return b.reactivatedAt - a.reactivatedAt
 			}
 		})
 
@@ -545,6 +546,8 @@ const getGames = asyncHandler(async (req, res) => {
 		const checkSort = () => {
 			if (sortBy === 'new') {
 				return { createdAt: -1 }
+			} else if (sortBy === 'updated') {
+				return { reactivatedAt: -1 }
 			} else if (sortBy === 'old') {
 				return { createdAt: 1 }
 			} else if (sortBy === 'price-low') {
@@ -555,14 +558,12 @@ const getGames = asyncHandler(async (req, res) => {
 				return { 'games.stats.ratings': -1 }
 			} else if (sortBy === 'avgrating') {
 				return { 'games.stats.avgRating': -1 }
-			} else if (sortBy === 'rank') {
-				return { 'games.stats.rank': 1 }
 			} else if (sortBy === 'release-new') {
 				return { 'games.year': -1 }
 			} else if (sortBy === 'release-old') {
 				return { 'games.year': 1 }
 			} else {
-				return { createdAt: -1 }
+				return { reactivatedAt: -1 }
 			}
 		}
 

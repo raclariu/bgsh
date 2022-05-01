@@ -2,6 +2,7 @@
 import React from 'react'
 
 // @ Mui
+import SendMessage from './SendMessage'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -10,6 +11,7 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Collapse from '@mui/material/Collapse'
 import Checkbox from '@mui/material/Checkbox'
+import Paper from '@mui/material/Paper'
 
 // @ Icons
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -86,7 +88,10 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 						checked={isChecked}
 						onChange={(e) => handleSelect(e, msg._id, 'received')}
 					/>
-					<Box>
+					<Box display="flex" gap={1}>
+						<SendMessage
+							recipientUsername={path === 'received' ? msg.sender.username : msg.recipient.username}
+						/>
 						<CustomTooltip title={expanded ? 'Close message' : 'Open message'}>
 							<CustomIconBtn
 								onClick={() => handleExpandClick(msg._id, msg.read)}
@@ -101,7 +106,10 @@ const MessageCard = ({ msg, handleExpandClick, expanded, handleSelect, isChecked
 			</CardActions>
 
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
-				<CardContent>{msg.message}</CardContent>
+				<CustomDivider />
+				<CardContent>
+					<Box p={1}>{msg.message}</Box>
+				</CardContent>
 			</Collapse>
 		</Card>
 	)

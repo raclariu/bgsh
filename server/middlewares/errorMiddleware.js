@@ -17,11 +17,11 @@ const errorHandler = (err, req, res, next) => {
 	res.status(statusCode)
 
 	console.error({
-		message : {
+		error : {
 			code      : err.code || null,
 			timestamp : new Date(),
 			status    : statusCode,
-			error     : err.message,
+			message   : err.message,
 			path      : req.originalUrl,
 			devErr    : err.devErr,
 			ref       : req.headers.referer,

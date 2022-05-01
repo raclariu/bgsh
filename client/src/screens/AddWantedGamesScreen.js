@@ -7,6 +7,12 @@ import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 import Backdrop from '@mui/material/Backdrop'
+import FormControl from '@mui/material/FormControl'
+import FormGroup from '@mui/material/FormGroup'
+import FormLabel from '@mui/material/FormLabel'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import Checkbox from '@mui/material/Checkbox'
 
 // @ Icons
 import AddCircleTwoToneIcon from '@mui/icons-material/AddCircleTwoTone'
@@ -27,10 +33,14 @@ import {
 	useDeleteFromListMutation,
 	useListGamesMutation
 } from '../hooks/hooks'
+import citiesArr from '../constants/cities'
 
 // @ Main
 const AddWantedGamesScreen = () => {
-	const [ shipPreffered, setShipPreffered ] = useState([])
+	const [ shipPost, setShipPost ] = useState(true)
+	const [ shipCourier, setShipCourier ] = useState(false)
+	const [ shipPersonal, setShipPersonal ] = useState(false)
+	const [ shipCities, setShipCities ] = useState([])
 	const [ values, setValues ] = useState([])
 
 	const userList = useGetListQuery((listData) =>
@@ -56,12 +66,33 @@ const AddWantedGamesScreen = () => {
 	const deleteMutation = useDeleteFromListMutation()
 	const listMutation = useListGamesMutation('want')
 
+	const shipError = [ shipPost, shipCourier, shipPersonal ].filter((checkbox) => checkbox).length < 1
+
 	const handleGameInfo = (value, id, key) => {
 		setValues((vals) => vals.map((val) => (val.bggId === id ? { ...val, [key]: value } : val)))
 	}
 
 	const removeFromListHandler = (bggId, title) => {
 		deleteMutation.mutate({ bggId, title })
+	}
+
+	const handleShippingInfo = (data, type) => {
+		if (type === 'post') {
+			setShipPost(data)
+		}
+
+		if (type === 'courier') {
+			setShipCourier(data)
+		}
+
+		if (type === 'personal') {
+			setShipPersonal(data)
+			setShipCities([])
+		}
+
+		if (type === 'cities') {
+			setShipCities(data)
+		}
 	}
 
 	const handleSubmit = (e) => {
@@ -77,8 +108,11 @@ const AddWantedGamesScreen = () => {
 		})
 
 		const gamesData = {
-			games         : verifiedGames,
-			shipPreffered
+			games        : verifiedGames,
+			shipPost,
+			shipCourier,
+			shipPersonal,
+			shipCities
 		}
 
 		listMutation.mutate(gamesData)
@@ -151,31 +185,71 @@ const AddWantedGamesScreen = () => {
 							}
 						}}
 					>
-						<Autocomplete
-							multiple
-							filterSelectedOptions
-							value={data.shipPreffered}
-							onChange={(e, selected) => setShipPreffered(selected)}
-							limitTags={2}
-							options={[ 'Romanian Post', 'Courier', 'Personal' ]}
-							renderTags={(value, getTagProps) =>
-								value.map((option, index) => (
-									<Chip size="small" label={option} {...getTagProps({ index })} />
-								))}
-							renderInput={(params) => (
-								<Input
-									{...params}
-									inputProps={{
-										...params.inputProps,
-										required : shipPreffered.length === 0
-									}}
-									label="Preferred shipping methods"
-									placeholder={'Select prefered shipping methods'}
-									name="pref-shipping"
+						<FormControl required error={shipError} fullWidth>
+							{/* Post shipping */}
+							<FormLabel>Preferred shipping method</FormLabel>
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipPost}
+											onChange={(e) => handleShippingInfo(e.target.checked, 'post')}
+										/>
+									}
+									label="Romanian Post"
 								/>
-							)}
-							fullWidth
-						/>
+								{/* Courier shipping */}
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipCourier}
+											onChange={(e) => handleShippingInfo(e.target.checked, 'courier')}
+										/>
+									}
+									label="Courier"
+								/>
+								{/* Personal delivery */}
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={shipPersonal}
+											onChange={(e) => {
+												handleShippingInfo(e.target.checked, 'personal')
+											}}
+										/>
+									}
+									label="Personal"
+								/>
+								<Autocomplete
+									disabled={!shipPersonal}
+									multiple
+									filterSelectedOptions
+									value={shipCities}
+									onChange={(e, cities) => handleShippingInfo(cities, 'cities')}
+									limitTags={2}
+									options={citiesArr}
+									renderTags={(value, getTagProps) =>
+										value.map((option, index) => (
+											<Chip size="small" label={option} {...getTagProps({ index })} />
+										))}
+									renderInput={(params) => (
+										<Input
+											{...params}
+											inputProps={{
+												...params.inputProps,
+												required : shipCities.length === 0
+											}}
+											label="Cities"
+											placeholder={shipCities.length > 0 ? 'Cities' : 'Select cities'}
+											name="cities"
+										/>
+									)}
+								/>
+								{shipError && (
+									<FormHelperText error>Choose at least one preferred shipping method</FormHelperText>
+								)}
+							</FormGroup>
+						</FormControl>
 
 						<LoadingBtn
 							type="submit"

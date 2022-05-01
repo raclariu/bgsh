@@ -117,7 +117,7 @@ const validateGameTotalPrice = check('totalPrice')
 	.bail()
 	.toInt()
 
-// (*) Validation for shipping method @ sell,trade - done
+// (*) Validation for shipping method @ sell,trade,wanted - done
 const validateShippingMethod = body()
 	.custom((data) => {
 		if (!(data.shipPost || data.shipCourier || data.shipPersonal)) {
@@ -128,7 +128,7 @@ const validateShippingMethod = body()
 	})
 	.withMessage('Select at least one shipping method')
 
-// (*) Validation for shipping cities @ sell,trade - done
+// (*) Validation for shipping cities @ sell,trade,wanted - done
 const validateShipCities = check('shipCities')
 	.custom((shipCities, { req }) => {
 		if (shipCities.length === 0 && req.body.shipPersonal) {
@@ -140,29 +140,29 @@ const validateShipCities = check('shipCities')
 	.withMessage('Personal shipping method is checked. Select at least one city to ship to')
 
 // (*) Validation for preffered shipping methods @ wanted - done
-const validateWantedPrefShipping = check('shipPreffered')
-	.isArray({ min: 1, max: 3 })
-	.withMessage('Invalid preffered shipping methods')
-	.bail()
-	.custom((shipPreffered) => {
-		try {
-			shipPreffered.forEach((ship) => {
-				if (![ 'Romanian Post', 'Courier', 'Personal' ].includes(ship)) {
-					throw new Error()
-				}
-			})
-			return true
-		} catch (error) {
-			return false
-		}
-	})
-	.withMessage((value) => {
-		try {
-			return `"${value}" is not a valid preffered shipping method`
-		} catch (error) {
-			return 'Preffered shipping method error. Check your shipping method selection and resubmit'
-		}
-	})
+// const validateWantedPrefShipping = check('shipPreffered')
+// 	.isArray({ min: 1, max: 3 })
+// 	.withMessage('Invalid preffered shipping methods')
+// 	.bail()
+// 	.custom((shipPreffered) => {
+// 		try {
+// 			shipPreffered.forEach((ship) => {
+// 				if (![ 'Romanian Post', 'Courier', 'Personal' ].includes(ship)) {
+// 					throw new Error()
+// 				}
+// 			})
+// 			return true
+// 		} catch (error) {
+// 			return false
+// 		}
+// 	})
+// 	.withMessage((value) => {
+// 		try {
+// 			return `"${value}" is not a valid preffered shipping method`
+// 		} catch (error) {
+// 			return 'Preffered shipping method error. Check your shipping method selection and resubmit'
+// 		}
+// 	})
 
 // (*) Validation for games preffered versions @ wanted - done
 const validateWantedGameVersion = check('games.*.prefVersion')
@@ -236,10 +236,11 @@ const tradeValidators = [
 ]
 
 const wantValidators = [
-	validateWantedPrefShipping,
 	validateWantedGameVersion,
 	validateWantedPrefMode,
-	validateExtraInfoTxt
+	validateExtraInfoTxt,
+	validateShippingMethod,
+	validateShipCities
 ]
 
 export { sellValidators, tradeValidators, wantValidators }

@@ -50,6 +50,7 @@ const Messages = lazy(() => import('./screens/MessagesScreen'))
 const MyListedGames = lazy(() => import('./screens/MyListedGamesScreen'))
 const GamesHistory = lazy(() => import('./screens/GamesHistoryScreen'))
 const HotGames = lazy(() => import('./screens/HotGamesScreen'))
+const Crowdfunding = lazy(() => import('./screens/CrowdfundingScreen'))
 const UserProfile = lazy(() => import('./screens/UserProfileScreen'))
 const Changelog = lazy(() => import('./screens/ChangelogScreen'))
 const NotFound = lazy(() => import('./screens/NotFoundScreen'))
@@ -59,7 +60,7 @@ const App = () => {
 	const dispatch = useDispatch()
 	const theme = useSelector((state) => state.userPreferences.theme)
 	const token = useSelector((state) => state.userToken)
-	const { success, loading, error } = useSelector((state) => state.userData)
+	const { success, loading } = useSelector((state) => state.userData)
 
 	useEffect(
 		() => {
@@ -94,8 +95,6 @@ const App = () => {
 					<CssBaseline />
 
 					{loading && <LinearProgress />}
-
-					{error && <p>Error while loading user data. Refresh to try again</p>}
 
 					{(success || !token) && (
 						<Suspense fallback={<LinearProgress />}>
@@ -376,6 +375,15 @@ const App = () => {
 										element={
 											<ProtectedRoute>
 												<HotGames />
+											</ProtectedRoute>
+										}
+									/>
+
+									<Route
+										path="crowdfunding"
+										element={
+											<ProtectedRoute>
+												<Crowdfunding />
 											</ProtectedRoute>
 										}
 									/>

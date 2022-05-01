@@ -8,7 +8,7 @@ const LzLoad = ({ children, ...other }) => {
 
 // @ Default Props
 LzLoad.defaultProps = {
-	offset : 120,
+	offset : 200,
 	once   : true
 }
 

@@ -1,5 +1,5 @@
 // @ Modules
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
@@ -17,13 +17,11 @@ const MessagesBadge = () => {
 	const { isSuccess, data: count } = useGetNewMessagesCountQuery()
 
 	return (
-		<Fragment>
-			<CustomIconBtn component={RouterLink} to="/received" color="primary" size="large">
-				<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
-					<EmailTwoToneIcon />
-				</Badge>
-			</CustomIconBtn>
-		</Fragment>
+		<CustomIconBtn component={RouterLink} to="/received" color="primary" size="large">
+			<Badge color="secondary" badgeContent={isSuccess ? count : 0}>
+				<EmailTwoToneIcon />
+			</Badge>
+		</CustomIconBtn>
 	)
 }
 

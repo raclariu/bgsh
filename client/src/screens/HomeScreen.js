@@ -33,9 +33,10 @@ const StyledThumb = styled('img')({
 	verticalAlign  : 'bottom',
 	objectPosition : 'center 10%',
 	objectFit      : 'cover',
-	height         : 56,
-	width          : 56,
-	borderRadius   : '4px'
+	height         : 64,
+	width          : 64,
+	borderRadius   : '4px',
+	imageRendering : '-webkit-optimize-contrast'
 })
 
 // @ Skeleton

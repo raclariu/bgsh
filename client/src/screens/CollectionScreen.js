@@ -6,10 +6,8 @@ import queryString from 'query-string'
 // @ Mui
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 
 // @ Components
-import CustomDivider from '../components/CustomDivider'
 import CollectionGameCard from '../components/CollectionGameCard'
 import SearchBox from '../components/SearchBox'
 import BackButton from '../components/BackButton'

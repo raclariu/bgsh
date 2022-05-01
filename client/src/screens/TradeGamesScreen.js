@@ -10,10 +10,10 @@ import FormControl from '@mui/material/FormControl'
 import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import FormHelperText from '@mui/material/FormHelperText'
 import Checkbox from '@mui/material/Checkbox'
 import Autocomplete from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
-import FormHelperText from '@mui/material/FormHelperText'
 import Backdrop from '@mui/material/Backdrop'
 
 // @ Icons
@@ -208,7 +208,7 @@ const TradeGamesScreen = () => {
 						<FormControl required error={shipError} fullWidth>
 							{/* Post shipping */}
 
-							<FormLabel>Preffered trading method</FormLabel>
+							<FormLabel>Preferred shipping method</FormLabel>
 							<FormGroup>
 								<FormControlLabel
 									control={
@@ -277,7 +277,7 @@ const TradeGamesScreen = () => {
 								onChange={(inputVal) => setExtraInfoPack(inputVal)}
 								value={extraInfoPack}
 								name="extra-info-pack"
-								label={`Extra info ${extraInfoPack.length}/500`}
+								label={`Extra pack info ${extraInfoPack.length}/500`}
 								type="text"
 								size="medium"
 								multiline

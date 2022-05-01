@@ -26,7 +26,7 @@ const GamesIndexScreen = ({ mode }) => {
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	const { search, sort = 'new', page = 1 } = queryString.parse(location.search)
+	const { search, sort = 'updated', page = 1 } = queryString.parse(location.search)
 
 	const { isLoading, data, isSuccess } = useGetGamesIndexQuery({ sort, search, page, mode })
 

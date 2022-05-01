@@ -64,8 +64,8 @@ const GameVids = ({ idx }) => {
 
 	return (
 		<Box ref={vidsRef} id="videos" my={2} display="flex" flexDirection="column" gap={2}>
-			<Box display="flex" alignItems="center" gap={1}>
-				{isFetchingVids ? <Loader size={20} /> : <OndemandVideoTwoToneIcon color="primary" />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetchingVids ? <Loader size={24} /> : <OndemandVideoTwoToneIcon color="primary" />}
 
 				<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 					Videos

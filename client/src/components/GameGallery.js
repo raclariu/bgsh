@@ -34,12 +34,13 @@ import { useGetGameGalleryQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledMasonryImg = styled('img')({
-	verticalAlign : 'middle',
-	maxHeight     : '100%',
-	width         : '100%',
-	objectFit     : 'contain',
-	cursor        : 'zoom-in',
-	borderRadius  : '4px'
+	verticalAlign  : 'middle',
+	maxHeight      : '100%',
+	width          : '100%',
+	objectFit      : 'contain',
+	cursor         : 'zoom-in',
+	borderRadius   : '4px',
+	imageRendering : '-webkit-optimize-contrast'
 })
 
 const StyledDialogImg = styled('img')({
@@ -116,8 +117,8 @@ const GameGallery = ({ idx }) => {
 
 	return (
 		<Box ref={galleryRef} id="gallery" my={2} display="flex" flexDirection="column" gap={2}>
-			<Box display="flex" alignItems="center" gap={1}>
-				{isFetchingGallery ? <Loader size={20} /> : <ImageTwoToneIcon color="primary" />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetchingGallery ? <Loader size={24} /> : <ImageTwoToneIcon color="primary" />}
 
 				<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 					Gallery

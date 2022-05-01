@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { validationResult } from 'express-validator'
 import asyncHandler from 'express-async-handler'
-import Kickstarter from '../models/ksModel.js'
 import Report from '../models/reportModel.js'
 import { parseXML } from '../helpers/helpers.js'
 
@@ -128,7 +127,7 @@ const bggGetGamesDetails = asyncHandler(async (req, res) => {
 
 // ~ @desc    Get BGG hot games
 // ~ @route   GET /api/misc/bgg/hot
-// ~ @access  Public route
+// ~ @access  Private route
 const bggGetHotGamesList = asyncHandler(async (req, res) => {
 	try {
 		const { data } = await axios.get('https://api.geekdo.com/xmlapi2/hot', {
@@ -137,23 +136,54 @@ const bggGetHotGamesList = asyncHandler(async (req, res) => {
 			}
 		})
 
-		const hotArr = []
-		let { item } = await parseXML(data)
+		let { item: simpleHotArr } = await parseXML(data)
+		const ensureSimpleHotArray = Array.isArray(simpleHotArr) ? simpleHotArr : [ simpleHotArr ]
+
+		const { data: fullData } = await axios.get('https://api.geekdo.com/xmlapi2/thing', {
+			params : {
+				id    : ensureSimpleHotArray.map((game) => game.id).join(','),
+				stats : 1
+			}
+		})
+
+		let { item } = await parseXML(fullData)
 		const ensureArray = Array.isArray(item) ? item : [ item ]
 
+		const hotGamesArr = []
 		for (let game of ensureArray) {
-			const hotGame = {
-				bggId     : game.id || null,
-				// rank      : game.rank ? +game.rank : null,
-				thumbnail : game.thumbnail ? game.thumbnail.value : null,
-				title     : game.name ? game.name.value : '',
-				year      : game.yearpublished ? +game.yearpublished.value : null
+			const item = {
+				subtype    : game.type === 'boardgame' ? 'boardgame' : 'expansion',
+				bggId      : game.id,
+				thumbnail  : game.thumbnail || null,
+				image      : game.image || null,
+				title      : Array.isArray(game.name)
+					? game.name.find((obj) => obj.type === 'primary').value
+					: game.name.value,
+				year       : +game.yearpublished.value || 'N/A',
+
+				stats      : {
+					ratings   : +game.statistics.ratings.usersrated.value,
+					avgRating : +parseFloat(game.statistics.ratings.average.value).toFixed(2),
+					rank      :
+						game.type === 'boardgame'
+							? Array.isArray(game.statistics.ratings.ranks.rank)
+								? +game.statistics.ratings.ranks.rank.find((obj) => +obj.id === 1).value
+								: +[ game.statistics.ratings.ranks.rank ].find((obj) => +obj.id === 1).value
+							: null
+				},
+				complexity : {
+					weight :
+						+game.statistics.ratings.numweights.value > 0
+							? +parseFloat(game.statistics.ratings.averageweight.value).toFixed(2)
+							: null,
+					votes  : +game.statistics.ratings.numweights.value
+				}
 			}
 
-			hotArr.push(hotGame)
+			hotGamesArr.push(item)
 		}
 
-		return res.status(200).json(hotArr)
+		return res.status(200).json(hotGamesArr)
 	} catch (error) {
 		res.status(400)
 		throw {
@@ -259,7 +289,7 @@ const bggSearchGame = asyncHandler(async (req, res) => {
 
 // ~ @desc    Get BGG "fans also like"
 // ~ @route   GET  /api/misc/bgg/reccomendations
-// ~ @access  Public route
+// ~ @access  Private route
 const getBggReccomendations = asyncHandler(async (req, res) => {
 	try {
 		const { bggId } = req.query
@@ -287,7 +317,7 @@ const getBggReccomendations = asyncHandler(async (req, res) => {
 			})
 		}
 
-		return res.status(200).json(recArr)
+		return res.status(200).json(recArr.slice(0, 24))
 	} catch (error) {
 		res.status(503)
 		throw {
@@ -299,7 +329,7 @@ const getBggReccomendations = asyncHandler(async (req, res) => {
 
 // ~ @desc    Get BGG videos
 // ~ @route   GET  /api/misc/bgg/videos
-// ~ @access  Public route
+// ~ @access  Private route
 const getBggVideos = asyncHandler(async (req, res) => {
 	try {
 		const { bggId } = req.query
@@ -351,20 +381,75 @@ const getBggVideos = asyncHandler(async (req, res) => {
 	}
 })
 
-// ~ @desc    Get all kickstarters
-// ~ @route   GET  /api/misc/kickstarters
-// ~ @access  Public route
-const getKickstarters = asyncHandler(async (req, res) => {
-	const kickstarters = await Kickstarter.find({})
+// ~ @desc    Get BGG new releases
+// ~ @route   GET  /api/misc/releases
+// ~ @access  Private route
+const getBggNewReleases = asyncHandler(async (req, res) => {
+	try {
+		const { data } = await axios.get('https://api.geekdo.com/api/newreleases')
 
-	if (kickstarters.length === 0) {
-		res.status(404)
+		const newRelArr = []
+		if (data.length > 0) {
+			for (let obj of data) {
+				const newRelease = {
+					bggId       : obj.item.id,
+					title       : obj.itemName,
+					publisher   : obj.publisherName,
+					description : obj.description,
+					thumbnail   : obj.image.src
+				}
+
+				newRelArr.push(newRelease)
+			}
+		}
+
+		return res.status(200).json(newRelArr)
+	} catch (error) {
+		res.status(503)
 		throw {
-			message : 'No kickstarters found'
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
 		}
 	}
+})
 
-	return res.status(200).json(kickstarters)
+// ~ @desc    Get ending crowdfunding campaigns
+// ~ @route   GET  /api/misc/crowdfunding
+// ~ @access  Private route
+const getBggCrowdfundingCampaigns = asyncHandler(async (req, res) => {
+	try {
+		const { data } = await axios.get('https://api.geekdo.com/api/ending_preorders')
+
+		const campaigns = []
+		if (data.length > 0) {
+			for (let obj of data) {
+				if (!obj.featured) {
+					const campaign = {
+						bggId    : obj.item.id,
+						deadline : obj.endDate,
+						title    : obj.name,
+						progress : obj.progress,
+						currency : obj.currency,
+						pledged  : obj.pledged,
+						backers  : obj.backersCount,
+						image    : obj.images.mediacard.src,
+						url      : obj.orderUrl,
+						from     : obj.orderType
+					}
+
+					campaigns.push(campaign)
+				}
+			}
+		}
+
+		return res.status(200).json(campaigns)
+	} catch (error) {
+		res.status(503)
+		throw {
+			message : 'Failed to retrieve data from BGG',
+			devErr  : error.stack
+		}
+	}
 })
 
 // * @desc    Submit report
@@ -403,8 +488,9 @@ export {
 	bggGetHotGamesList,
 	bggGetGallery,
 	bggSearchGame,
-	getKickstarters,
 	getBggReccomendations,
 	getBggVideos,
-	submitReport
+	submitReport,
+	getBggNewReleases,
+	getBggCrowdfundingCampaigns
 }

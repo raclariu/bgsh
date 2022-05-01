@@ -34,7 +34,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 		setOpen(true)
 	}
 
-	const handleCloseDialog = (e) => {
+	const handleCloseDialog = () => {
 		setOpen(false)
 	}
 

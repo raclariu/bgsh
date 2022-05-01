@@ -2,9 +2,8 @@
 import React, { useState, Fragment } from 'react'
 import { useParams } from 'react-router-dom'
 import Zoom from 'react-medium-image-zoom'
-
-import 'react-medium-image-zoom/dist/styles.css'
 import { parseEntities } from 'parse-entities'
+import 'react-medium-image-zoom/dist/styles.css'
 import { calculateTimeAgoStrict } from '../helpers/helpers'
 
 // @ Mui
@@ -50,7 +49,6 @@ import SaveGameButton from '../components/SaveGameButton'
 import Loader from '../components/Loader'
 import ReportForm from '../components/ReportForm'
 import SendMessage from '../components/SendMessage'
-import Helmet from '../components/Helmet'
 import CustomAlert from '../components/CustomAlert'
 import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
 import GameGallery from '../components/GameGallery'
@@ -364,7 +362,7 @@ const SingleGameScreen = () => {
 								boxShadow={1}
 								borderRadius="4px"
 							>
-								<Box display="flex" alignItems="center" gap={1}>
+								<Box display="flex" alignItems="center" gap={2}>
 									<InfoTwoToneIcon color="primary" />
 									<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 										Information
@@ -528,14 +526,14 @@ const SingleGameScreen = () => {
 									boxShadow={1}
 									borderRadius="4px"
 								>
-									<Box display="flex" alignItems="center" gap={1}>
+									<Box display="flex" alignItems="center" gap={2}>
 										<LocalShippingTwoToneIcon color="primary" />
 										<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 											Shipping
 										</Box>
 									</Box>
 
-									{data.mode === 'want' && (
+									{(data.mode === 'want' || data.mode === 'trade') && (
 										<Fragment>
 											<Box
 												display="flex"
@@ -544,9 +542,7 @@ const SingleGameScreen = () => {
 												alignItems="center"
 												gap={1}
 											>
-												{data.shipping.shipPreffered.find(
-													(method) => method === 'Romanian Post'
-												) ? (
+												{data.shipping.shipPost ? (
 													<Fragment>
 														<MarkunreadMailboxTwoToneIcon color="primary" />
 														<Box textAlign="center">Shipping by post is preferred</Box>
@@ -566,7 +562,7 @@ const SingleGameScreen = () => {
 												alignItems="center"
 												gap={1}
 											>
-												{data.shipping.shipPreffered.find((method) => method === 'Courier') ? (
+												{data.shipping.shipCourier ? (
 													<Fragment>
 														<MarkunreadMailboxTwoToneIcon color="primary" />
 														<Box textAlign="center">Shipping by courier is preferred</Box>
@@ -588,10 +584,22 @@ const SingleGameScreen = () => {
 												alignItems="center"
 												gap={1}
 											>
-												{data.shipping.shipPreffered.find((method) => method === 'Personal') ? (
+												{data.shipping.shipPersonal ? (
 													<Fragment>
-														<MarkunreadMailboxTwoToneIcon color="primary" />
+														<LocalLibraryTwoToneIcon color="primary" />
 														<Box textAlign="center">Personal shipping is preferred</Box>
+														<StyledChipsBox>
+															{data.shipping.shipCities.map((city) => (
+																<Chip
+																	key={city}
+																	icon={<RoomTwoToneIcon />}
+																	size="small"
+																	color="primary"
+																	variant="outlined"
+																	label={city}
+																/>
+															))}
+														</StyledChipsBox>
 													</Fragment>
 												) : (
 													<Fragment>
@@ -603,7 +611,7 @@ const SingleGameScreen = () => {
 										</Fragment>
 									)}
 
-									{data.mode !== 'want' && (
+									{data.mode === 'sell' && (
 										<Fragment>
 											<Box
 												display="flex"

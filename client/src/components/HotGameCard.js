@@ -10,6 +10,7 @@ import CardActions from '@mui/material/CardActions'
 import Box from '@mui/material/Box'
 
 // @ Components
+import StatsBoxes from './StatsBoxes'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomDivider from './CustomDivider'
 
@@ -39,6 +40,14 @@ const HotGameCard = ({ data }) => {
 					image={data.thumbnail ? data.thumbnail : '/images/gameImgPlaceholder.jpg'}
 					title={data.title}
 				/>
+
+				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
+					<StatsBoxes variant="mini" stats={data.stats} type="rating" />
+
+					<StatsBoxes variant="mini" stats={data.stats} type="rank" />
+
+					<StatsBoxes variant="mini" complexity={data.complexity} type="complexity" />
+				</Box>
 			</Box>
 
 			<CustomDivider />

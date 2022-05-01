@@ -2,25 +2,18 @@
 import React from 'react'
 
 // @ Mui
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
-import Skeleton from '@mui/material/Skeleton'
+import Box from '@mui/material/Box'
 
 // @ Components
-import CustomSkeleton from './CustomSkeleton'
 import CustomDivider from '../CustomDivider'
+import CustomSkeleton from './CustomSkeleton'
 
 // @ Main
-const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
+const HotGamesCardSkeleton = () => {
 	return (
 		<Card elevation={2}>
-			<Box
-				height={mode === 'sell' || mode === 'want' ? 508 : 472}
-				display="flex"
-				flexDirection="column"
-				alignItems="center"
-			>
+			<Box height={387} display="flex" flexDirection="column" alignItems="center">
 				<Box display="flex" flexDirection="column" height={241} gap={1} p={1}>
 					<CustomSkeleton variant="rectangle" width={175} height="100%" />
 					<Box display="flex" justifyContent="center" gap={1} height={37} width="100%">
@@ -46,24 +39,6 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 
 				<CustomDivider flexItem />
 
-				<Box
-					height={mode === 'sell' || mode === 'want' ? 120 : 84}
-					display="flex"
-					justifyContent="center"
-					alignItems="center"
-					flexDirection="column"
-					width="100%"
-					gap={0.5}
-				>
-					<CustomSkeleton variant="rectangle" width={150} height={24} sx={{ borderRadius: 4 }} />
-					<CustomSkeleton variant="rectangle" width={210} height={24} sx={{ borderRadius: 4 }} />
-					{(mode === 'sell' || mode === 'want') && (
-						<CustomSkeleton variant="rectangle" width={70} height={32} sx={{ borderRadius: 4 }} />
-					)}
-				</Box>
-
-				<CustomDivider flexItem />
-
 				<Box display="flex" justifyContent="center" width="100%" alignItems="center" height={64} gap={1}>
 					<CustomSkeleton variant="text" width="75%" />
 				</Box>
@@ -72,4 +47,4 @@ const GameIndexCardSkeleton = ({ mode = 'sell' }) => {
 	)
 }
 
-export default GameIndexCardSkeleton
+export default HotGamesCardSkeleton

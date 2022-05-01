@@ -16,7 +16,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 }))
 
 // @ Main
-const MyAvatar = ({ size }) => {
+const MyAvatar = ({ size, variant = 'circular' }) => {
 	const currUsername = useSelector((state) => state.userData.username)
 
 	const { isSuccess, data: avatarData } = useGetOwnAvatarQuery()
@@ -25,6 +25,7 @@ const MyAvatar = ({ size }) => {
 		<Fragment>
 			{isSuccess && (
 				<StyledAvatar
+					variant={variant}
 					sx={{
 						width  : (theme) => theme.spacing(size),
 						height : (theme) => theme.spacing(size)

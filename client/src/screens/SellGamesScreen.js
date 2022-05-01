@@ -373,7 +373,7 @@ const SellGamesScreen = () => {
 										onChange={(inputVal) => setExtraInfoPack(inputVal)}
 										value={extraInfoPack}
 										name="extra-info-pack"
-										label={`Extra info ${extraInfoPack.length}/500`}
+										label={`Extra pack info ${extraInfoPack.length}/500`}
 										size="medium"
 										multiline
 										minRows={3}

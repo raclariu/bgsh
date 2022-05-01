@@ -4,7 +4,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import chalk from 'chalk'
 import connectDB from './db/dbConnect.js'
-import { dailyTask, fetchKickstarters } from './tasks/tasks.js'
+import { dailyTask } from './tasks/tasks.js'
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 import morganLogger from './middlewares/morganMiddleware.js'
 import userRoutes from './routes/userRoutes.js'
@@ -46,9 +46,7 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
 	dailyTask.start()
-	fetchKickstarters.start()
 
 	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every day at 08:00 and 18:00`))
-	console.log(chalk.bgBlue.hex('#f7edcb').bold(`fetchKickstarters starting... running every day at 17:00`))
 	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
 })

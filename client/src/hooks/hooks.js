@@ -457,25 +457,31 @@ export const useChangeOwnAvatarMutation = ({ changeState }) => {
 	})
 }
 
-export const useGetHotGamesQuery = () => {
-	return useQuery([ 'hotGames' ], api.apiFetchHotGames, {
+export const useGetBggHotGamesQuery = () => {
+	return useQuery([ 'dashboard', 'hotGames' ], api.apiFetchBggHotGames, {
 		staleTime        : 1000 * 60 * 60,
 		keepPreviousData : true
 	})
 }
 
-export const useGetKickstartersQuery = ({ inView }) => {
-	return useQuery([ 'kickstarters' ], api.apiFetchKickstarters, {
+export const useGetBggNewReleasesQuery = ({ inView }) => {
+	return useQuery([ 'dashboard', 'newReleases' ], api.apiFetchBggNewReleases, {
 		enabled   : inView,
 		staleTime : 1000 * 60 * 60
 	})
 }
 
+export const useGetBggCrowdfundingQuery = ({ inView, enabled = false }) => {
+	return useQuery([ 'dashboard', 'crowdfunding' ], api.apiFetchBggCrowdfunding, {
+		enabled   : inView || enabled,
+		staleTime : 1000 * 60 * 60
+	})
+}
+
 export const useGetRedditPostsQuery = ({ inView }) => {
-	return useQuery([ 'redditPosts' ], api.apiFetchRedditPosts, {
-		enabled        : inView,
-		staleTime      : 1000 * 60 * 60,
-		refetchOnMount : false
+	return useQuery([ 'dashboard', 'redditPosts' ], api.apiFetchRedditPosts, {
+		enabled   : inView,
+		staleTime : 1000 * 60 * 60
 	})
 }
 

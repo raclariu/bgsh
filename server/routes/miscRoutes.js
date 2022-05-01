@@ -6,10 +6,11 @@ import {
 	bggGetHotGamesList,
 	bggGetGallery,
 	bggSearchGame,
-	getKickstarters,
 	getBggReccomendations,
 	getBggVideos,
-	submitReport
+	submitReport,
+	getBggNewReleases,
+	getBggCrowdfundingCampaigns
 } from '../controllers/miscController.js'
 import {
 	validateReportType,
@@ -19,7 +20,6 @@ import {
 } from '../validators/miscValidator.js'
 
 // @route /api/misc
-router.route('/kickstarters').get(protect, getKickstarters)
 router
 	.route('/report')
 	.post(
@@ -32,5 +32,7 @@ router.route('/bgg/hot').get(protect, bggGetHotGamesList)
 router.route('/bgg/gallery').get(protect, bggGetGallery)
 router.route('/bgg/recommendations').get(protect, getBggReccomendations)
 router.route('/bgg/videos').get(protect, getBggVideos)
+router.route('/bgg/releases').get(protect, getBggNewReleases)
+router.route('/bgg/crowdfunding').get(protect, getBggCrowdfundingCampaigns)
 
 export default router

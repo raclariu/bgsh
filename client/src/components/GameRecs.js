@@ -29,11 +29,12 @@ import { useGetGameRecommendationsQuery } from '../hooks/hooks'
 
 // @ Styles
 const StyledRecImg = styled('img')({
-	verticalAlign : 'bottom',
-	objectFit     : 'cover',
-	width         : 64,
-	height        : 64,
-	borderRadius  : '4px'
+	verticalAlign  : 'bottom',
+	objectFit      : 'cover',
+	width          : 64,
+	height         : 64,
+	borderRadius   : '4px',
+	imageRendering : '-webkit-optimize-contrast'
 })
 
 const StyledTitleBox = styled(Box)({
@@ -60,6 +61,45 @@ const RecsSkeleton = () => {
 	)
 }
 
+// @ Recs card
+const RecCard = ({ rec }) => {
+	return (
+		<Box component={Paper} display="flex" p={1} boxShadow={1} borderRadius="4px" gap={1}>
+			<a href={`https://boardgamegeek.com/boardgame/${rec.bggId}`} target="_blank" rel="noreferrer">
+				<StyledRecImg src={rec.thumbnail} alt={rec.title} title={rec.title} />
+			</a>
+
+			<Box display="flex" flexDirection="column" justifyContent="space-between" width="100%">
+				<StyledTitleBox fontWeight="fontWeightMedium">{rec.title}</StyledTitleBox>
+				<Box display="flex" gap={1}>
+					<Box
+						display="flex"
+						gap={0.25}
+						fontWeight="fontWeightMedium"
+						fontSize="body2.fontSize"
+						color="text.secondary"
+					>
+						<StarIcon color="primary" fontSize="small" />
+						{approx(rec.stats.avgRating)}
+					</Box>
+
+					<Box
+						display="flex"
+						alignItems="center"
+						gap={0.25}
+						fontWeight="fontWeightMedium"
+						fontSize="body2.fontSize"
+						color="text.secondary"
+					>
+						<MilitaryTechIcon color="primary" fontSize="small" />
+						{rec.stats.rank}
+					</Box>
+				</Box>
+			</Box>
+		</Box>
+	)
+}
+
 // @ Main
 const GameRecs = ({ idx }) => {
 	const [ expanded, setExpanded ] = useState(false)
@@ -80,8 +120,8 @@ const GameRecs = ({ idx }) => {
 
 	return (
 		<Box ref={recsRef} id="recommendations" my={2} display="flex" flexDirection="column" gap={2}>
-			<Box display="flex" alignItems="center" gap={1}>
-				{isFetchingRecs ? <Loader size={20} /> : <RecommendTwoToneIcon color="primary" />}
+			<Box display="flex" alignItems="center" gap={2}>
+				{isFetchingRecs ? <Loader size={24} /> : <RecommendTwoToneIcon color="primary" />}
 
 				<Box fontSize="1.3rem" fontWeight="fontWeightMedium">
 					Recommendations
@@ -90,7 +130,7 @@ const GameRecs = ({ idx }) => {
 
 			{isLoadingRecs && (
 				<Grid container spacing={1}>
-					{[ ...Array(matches ? 12 : 4).keys() ].map((i, k) => (
+					{[ ...Array(matches ? 12 : 6).keys() ].map((i, k) => (
 						<Grid key={k} item xs={12} sm={6} md={4}>
 							<RecsSkeleton key={k} />
 						</Grid>
@@ -101,80 +141,50 @@ const GameRecs = ({ idx }) => {
 			{isSuccessRec &&
 			recData.length > 0 && (
 				<Box id="recommendations-list">
-					<Collapse in={expanded} timeout="auto" collapsedSize="345px">
+					<Grid container spacing={1} sx={{ mb: 1 }}>
+						{isSuccessRec &&
+							recData.slice(0, matches ? 12 : 6).map((rec) => (
+								<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
+									<LzLoad placeholder={<RecsSkeleton />}>
+										<RecCard rec={rec} />
+									</LzLoad>
+								</Grid>
+							))}
+					</Grid>
+
+					<Collapse in={expanded} timeout="auto">
 						<Grid container spacing={1}>
 							{isSuccessRec &&
-								recData.map((rec) => (
+								recData.slice(matches ? 12 : 6).map((rec) => (
 									<Grid key={rec.bggId} item xs={12} sm={6} md={4}>
 										<LzLoad placeholder={<RecsSkeleton />}>
-											<Box
-												component={Paper}
-												display="flex"
-												p={1}
-												boxShadow={1}
-												borderRadius="4px"
-												gap={1}
-											>
-												<a
-													href={`https://boardgamegeek.com/boardgame/${rec.bggId}`}
-													target="_blank"
-													rel="noreferrer"
-												>
-													<StyledRecImg
-														src={rec.thumbnail}
-														alt={rec.title}
-														title={rec.title}
-													/>
-												</a>
-
-												<Box
-													display="flex"
-													flexDirection="column"
-													justifyContent="space-between"
-													width="100%"
-												>
-													<StyledTitleBox fontWeight="fontWeightMedium">
-														{rec.title}
-													</StyledTitleBox>
-													<Box display="flex" gap={1}>
-														<Box
-															display="flex"
-															gap={0.25}
-															fontWeight="fontWeightMedium"
-															fontSize="body2.fontSize"
-															color="text.secondary"
-														>
-															<StarIcon color="primary" fontSize="small" />
-															{approx(rec.stats.avgRating)}
-														</Box>
-
-														<Box
-															display="flex"
-															alignItems="center"
-															gap={0.25}
-															fontWeight="fontWeightMedium"
-															fontSize="body2.fontSize"
-															color="text.secondary"
-														>
-															<MilitaryTechIcon color="primary" fontSize="small" />
-															{rec.stats.rank}
-														</Box>
-													</Box>
-												</Box>
-											</Box>
+											<RecCard rec={rec} />
 										</LzLoad>
 									</Grid>
 								))}
 						</Grid>
 					</Collapse>
 
-					<Box display="flex" justifyContent="flex-end" mt={1}>
-						<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
-							{expanded ? 'Show less' : 'Show more'}
-						</CustomButton>
-					</Box>
+					{matches ? (
+						recData.length > 12 && (
+							<Box display="flex" justifyContent="flex-end" mt={1}>
+								<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
+									{expanded ? 'Show less' : 'Show more'}
+								</CustomButton>
+							</Box>
+						)
+					) : (
+						recData.length > 6 && (
+							<Box display="flex" justifyContent="flex-end" mt={1}>
+								<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
+									{expanded ? 'Show less' : 'Show more'}
+								</CustomButton>
+							</Box>
+						)
+					)}
 				</Box>
 			)}
+
 			{isSuccessRec &&
 			recData.length === 0 && <CustomAlert severity="warning">No recommendations found</CustomAlert>}
 		</Box>

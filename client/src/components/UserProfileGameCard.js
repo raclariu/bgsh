@@ -1,6 +1,7 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import Card from '@mui/material/Card'
@@ -55,12 +56,16 @@ const UserProfileGameCard = ({ data }) => {
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
-				<StyledCardMedia
-					component="img"
-					alt={data.games[index].title}
-					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-					title={data.games[index].title}
-				/>
+				<Box component={RouterLink} to={data.slug}>
+					<StyledCardMedia
+						component="img"
+						alt={data.games[index].title}
+						image={
+							data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'
+						}
+						title={data.games[index].title}
+					/>
+				</Box>
 
 				{data.isPack && (
 					<Fragment>

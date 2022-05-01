@@ -210,7 +210,7 @@ const BuyGamesScreen = () => {
 									value={extraInfoPack}
 									onChange={(inputVal) => setExtraInfoPack(inputVal)}
 									name="extra-info-pack"
-									label={`Extra info ${extraInfoPack.length}/500`}
+									label={`Extra pack info ${extraInfoPack.length}/500`}
 									type="text"
 									size="medium"
 									multiline

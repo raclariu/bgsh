@@ -3,24 +3,28 @@ import React, { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useInView } from 'react-intersection-observer'
+import { useNavigate } from 'react-router-dom'
 
 // @ Mui
+import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 
 // @ Icons
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import MoreTwoToneIcon from '@mui/icons-material/MoreTwoTone'
 
 // @ Components
-import RedditSkeleton from '../components/Skeletons/RedditSkeleton'
-import KsCardSkeleton from '../components/Skeletons/KsCardSkeleton'
-import GeneralCardSkeleton from '../components/Skeletons/GeneralCardSkeleton'
+import MyAvatar from '../components/MyAvatar'
+import CustomSkeleton from '../components/Skeletons/CustomSkeleton'
+import HotGamesCardSkeleton from '../components/Skeletons/HotGamesCardSkeleton'
+import CrowdfundingCardSkeleton from '../components/Skeletons/CrowdfundingCardSkeleton'
+import CrowdfundingCard from '../components/CrowdfundingCard'
 import CustomTooltip from '../components/CustomTooltip'
 import CustomIconBtn from '../components/CustomIconBtn'
 import ReportForm from '../components/ReportForm'
 import HotGameCard from '../components/HotGameCard'
-import KsCard from '../components/KsCard'
 import CustomAlert from '../components/CustomAlert'
 import LzLoad from '../components/LzLoad'
 import ExtLinkIconBtn from '../components/ExtLinkIconBtn'
@@ -28,12 +32,87 @@ import CollectionFetchBox from '../components/CollectionFetchBox'
 import BggSearchGamesBox from '../components/BggSearchGamesBox'
 import SendMessage from '../components/SendMessage'
 import Helmet from '../components/Helmet'
+import CustomDivider from '../components/CustomDivider'
 
 // @ Others
-import { useGetHotGamesQuery, useGetKickstartersQuery, useGetRedditPostsQuery } from '../hooks/hooks'
+import {
+	useGetBggHotGamesQuery,
+	useGetBggNewReleasesQuery,
+	useGetBggCrowdfundingQuery,
+	useGetRedditPostsQuery
+} from '../hooks/hooks'
+import { dateDiff } from '../helpers/helpers'
+
+// @ Styles
+const StyledDescriptionBox = styled(Box)({
+	display         : '-webkit-box',
+	WebkitLineClamp : '2',
+	WebkitBoxOrient : 'vertical',
+	overflow        : 'hidden',
+	width           : '100%'
+})
+
+const StyledImg = styled('img')({
+	verticalAlign  : 'bottom',
+	objectFit      : 'cover',
+	width          : 120,
+	height         : 81,
+	borderRadius   : '4px',
+	imageRendering : '-webkit-optimize-contrast'
+})
+
+// @ New releases skeleton
+const NewReleasesSkeleton = () => {
+	return (
+		<Paper
+			sx={{
+				display      : 'flex',
+				alignItems   : 'flex-start',
+				boxShadow    : 1,
+				borderRadius : 1,
+				p            : 1,
+				gap          : 2,
+				width        : '100%'
+			}}
+		>
+			<CustomSkeleton sx={{ borderRadius: '4px' }} variant="rectangle" height={81} width={120} />
+			<Box display="flex" flexDirection="column">
+				<CustomSkeleton width={220} />
+				<CustomSkeleton width={120} />
+				<CustomSkeleton width={240} />
+			</Box>
+		</Paper>
+	)
+}
+
+// @ RedditSkeleton
+const RedditSkeleton = () => {
+	return (
+		<Paper
+			sx={{
+				display      : 'flex',
+				boxShadow    : 1,
+				borderRadius : 1,
+				p            : 1,
+				width        : '100%',
+				height       : '116px',
+				gap          : 1
+			}}
+		>
+			<CustomSkeleton variant="rectangle" width={180} height={100} sx={{ borderRadius: 1 }} />
+			<Box display="flex" flexDirection="column" width="100%" ml={1}>
+				<CustomSkeleton variant="text" width="90%" />
+				<CustomSkeleton variant="text" width="75%" />
+				<CustomSkeleton variant="text" width="60%" />
+			</Box>
+		</Paper>
+	)
+}
 
 // @ Main
 const DashboardScreen = () => {
+	const navigate = useNavigate()
+
 	const currUsername = useSelector((state) => state.userData.username)
 
 	const { ref: redditRef, inView: redditInView } = useInView({
@@ -41,7 +120,12 @@ const DashboardScreen = () => {
 		triggerOnce : true
 	})
 
-	const { ref: ksRef, inView: ksInView } = useInView({
+	const { ref: newRelRef, inView: newRelInView } = useInView({
+		threshold   : 0,
+		triggerOnce : true
+	})
+
+	const { ref: crowdfundingRef, inView: crowdfundingInView } = useInView({
 		threshold   : 0,
 		triggerOnce : true
 	})
@@ -51,11 +135,23 @@ const DashboardScreen = () => {
 		error      : errorHotGames,
 		data       : hotGamesList,
 		isSuccess  : isSuccessHotGames
-	} = useGetHotGamesQuery()
+	} = useGetBggHotGamesQuery()
 
-	const { isFetching: isFetchingKs, error: errorKs, data: ksList, isSuccess: isSuccessKs } = useGetKickstartersQuery({
-		inView : ksInView
+	const {
+		isFetching : isFetchingNewRel,
+		error      : errorNewRel,
+		data       : newReleases,
+		isSuccess  : isSuccessNewRel
+	} = useGetBggNewReleasesQuery({
+		inView : newRelInView
 	})
+
+	const {
+		isFetching : isFetchingCrowdfunding,
+		error      : errorCrowdfunding,
+		data       : crowdfundingCampaigns,
+		isSuccess  : isSuccessCrowdfunding
+	} = useGetBggCrowdfundingQuery({ inView: crowdfundingInView })
 
 	const {
 		isFetching : isFetchingRedditPosts,
@@ -68,25 +164,22 @@ const DashboardScreen = () => {
 		<Fragment>
 			<Helmet title={`${currUsername}'s dashboard`} />
 
-			<Box
-				component={Paper}
-				display="flex"
-				mb={2}
-				p={2}
-				borderRadius="4px"
-				boxShadow={2}
-				justifyContent="space-between"
-				alignItems="center"
-				gap={1}
-			>
-				<Box fontSize="h6.fontSize" fontWeight="fontWeightMedium">
-					{`Welcome ${currUsername}`}
+			<Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+				<Box sx={{ cursor: 'pointer' }} onClick={() => navigate(`/profile/${currUsername}`)}>
+					<MyAvatar variant="rounded" size={9} />
 				</Box>
-				<Box display="flex" alignItems="center" gap={1}>
-					<SendMessage />
-					<ReportForm />
+				<Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+						{currUsername}
+					</Box>
+					<Box display="flex" alignItems="center" gap={1}>
+						<SendMessage />
+						<ReportForm />
+					</Box>
 				</Box>
 			</Box>
+
+			<CustomDivider sx={{ my: 2 }} />
 
 			<Box
 				sx={{
@@ -145,8 +238,9 @@ const DashboardScreen = () => {
 					my={2}
 				>
 					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
-						BGG Hot games
+						Hot games
 					</Box>
+
 					{!errorHotGames && (
 						<CustomTooltip title="See more hot games">
 							<CustomIconBtn component={RouterLink} to="/hot" color="primary" size="large">
@@ -162,7 +256,7 @@ const DashboardScreen = () => {
 					<Grid container spacing={3} direction="row">
 						{[ ...Array(12).keys() ].map((i, k) => (
 							<Grid item key={k} xs={12} sm={6} md={4}>
-								<GeneralCardSkeleton fontSize="small" />
+								<HotGamesCardSkeleton />
 							</Grid>
 						))}
 					</Grid>
@@ -172,7 +266,7 @@ const DashboardScreen = () => {
 					<Grid container spacing={3}>
 						{hotGamesList.slice(0, 6).map((data) => (
 							<Grid key={data.bggId} item xs={12} sm={6} md={4}>
-								<LzLoad offset={200} once placeholder={<GeneralCardSkeleton />}>
+								<LzLoad offset={200} once placeholder={<HotGamesCardSkeleton />}>
 									<HotGameCard data={data} />
 								</LzLoad>
 							</Grid>
@@ -181,7 +275,7 @@ const DashboardScreen = () => {
 				)}
 			</Box>
 
-			<Box ref={ksRef} id="kickstarters" mb={6}>
+			<Box ref={newRelRef} id="new-releases" mb={6}>
 				<Box
 					component={Paper}
 					display="flex"
@@ -194,35 +288,137 @@ const DashboardScreen = () => {
 					my={2}
 				>
 					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
-						Popular kickstarters
+						New releases
 					</Box>
-					<ExtLinkIconBtn
-						url={`https://www.kickstarter.com/discover/advanced?category_id=34&sort=popularity`}
-						tooltip="See more kickstarters"
-					/>
+					<ExtLinkIconBtn url={`https://boardgamegeek.com/newreleases`} tooltip="See new releases" />
 				</Box>
 
-				{errorKs && <CustomAlert>{errorKs.response.data.message}</CustomAlert>}
+				{errorNewRel && <CustomAlert>{errorNewRel.response.data.message}</CustomAlert>}
 
-				{isFetchingKs && (
+				{isFetchingNewRel && (
+					<Box
+						sx={{
+							display             : 'grid',
+							gridTemplateColumns : {
+								xs : '100%',
+								sm : 'repeat(2, 1fr)' // auto min-content sau auto-auto sau auto 1fr
+							},
+							gap                 : 2
+						}}
+					>
+						{[ ...Array(10).keys() ].map((i, k) => <NewReleasesSkeleton key={k} />)}
+					</Box>
+				)}
+
+				{isSuccessNewRel && (
+					<Box
+						sx={{
+							display             : 'grid',
+							gridTemplateColumns : {
+								xs : '100%',
+								sm : 'repeat(2, 1fr)' // auto min-content sau auto-auto sau auto 1fr
+							},
+							gap                 : 2
+						}}
+					>
+						{newReleases.map((rel) => (
+							<LzLoad key={rel.bggId} placeholder={<NewReleasesSkeleton />}>
+								<Paper
+									key={rel.bggId}
+									sx={{
+										display      : 'flex',
+										alignItems   : 'flex-start',
+										boxShadow    : 1,
+										borderRadius : 1,
+										p            : 1,
+										gap          : 2,
+										width        : '100%',
+										height       : '100%'
+									}}
+								>
+									<a
+										href={`https://boardgamegeek.com/boardgame/${rel.bggId}`}
+										target="_blank"
+										rel="noreferrer"
+									>
+										<StyledImg src={rel.thumbnail} alt={rel.title} title={rel.title} />
+									</a>
+
+									<Box display="flex" flexDirection="column" sx={{ wordBreak: 'break-word' }}>
+										<Box fontWeight="fontWeightMedium">{rel.title}</Box>
+										<Box
+											display="flex"
+											flexDirection="column"
+											justifyContent="flex-start"
+											alignItems="flex-start"
+											gap={0.5}
+										>
+											<Box fontSize="caption.fontSize" color="text.disabled">
+												{rel.publisher}
+											</Box>
+											<StyledDescriptionBox
+												sx={{ color: 'text.secondary', fontSize: 'caption.fontSize' }}
+											>
+												{rel.description}
+											</StyledDescriptionBox>
+										</Box>
+									</Box>
+								</Paper>
+							</LzLoad>
+						))}
+					</Box>
+				)}
+			</Box>
+
+			<Box ref={crowdfundingRef} id="crowdfunding" mb={6}>
+				<Box
+					component={Paper}
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+					width="100%"
+					p={2}
+					borderRadius="4px"
+					boxShadow={2}
+					my={2}
+				>
+					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+						Crowdfunding countdown
+					</Box>
+
+					{!errorCrowdfunding && (
+						<CustomTooltip title="See more projects">
+							<CustomIconBtn component={RouterLink} to="/crowdfunding" color="primary" size="large">
+								<MoreTwoToneIcon />
+							</CustomIconBtn>
+						</CustomTooltip>
+					)}
+				</Box>
+
+				{errorCrowdfunding && <CustomAlert>{errorCrowdfunding.response.data.message}</CustomAlert>}
+
+				{isFetchingCrowdfunding && (
 					<Grid container spacing={3} direction="row">
-						{[ ...Array(6).keys() ].map((i, k) => (
+						{[ ...Array(12).keys() ].map((i, k) => (
 							<Grid item key={k} xs={12} sm={6} md={4}>
-								<KsCardSkeleton />
+								<CrowdfundingCardSkeleton />
 							</Grid>
 						))}
 					</Grid>
 				)}
 
-				{isSuccessKs && (
+				{isSuccessCrowdfunding && (
 					<Grid container spacing={3}>
-						{ksList.map((data) => (
-							<Grid key={data.ksId} item xs={12} sm={6} md={4}>
-								<LzLoad placeholder={<KsCardSkeleton />}>
-									<KsCard data={data} />
-								</LzLoad>
-							</Grid>
-						))}
+						{crowdfundingCampaigns.slice(0, 12).map(
+							(data) =>
+								dateDiff(data.deadline, 'm') > 0 && (
+									<Grid key={data.bggId} item xs={12} sm={6} md={4}>
+										<LzLoad placeholder={<CrowdfundingCardSkeleton />}>
+											<CrowdfundingCard data={data} />
+										</LzLoad>
+									</Grid>
+								)
+						)}
 					</Grid>
 				)}
 			</Box>
@@ -254,7 +450,7 @@ const DashboardScreen = () => {
 				)}
 
 				{isSuccessRedditPosts && (
-					<Box display="flex" flexDirection="column" gap={1}>
+					<Box display="flex" flexDirection="column" gap={2}>
 						{redditPosts.map(
 							({ data }) =>
 								!data.stickied && (
@@ -262,6 +458,7 @@ const DashboardScreen = () => {
 										key={data.id}
 										sx={{
 											display      : 'flex',
+
 											boxShadow    : 1,
 											borderRadius : 1,
 											p            : 1,
@@ -271,37 +468,25 @@ const DashboardScreen = () => {
 									>
 										{data.is_gallery && (
 											<Box
-												sx={{
-													width  : {
-														xs : 150,
-														sm : 180
-													},
-													height : {
-														xs : 85,
-														sm : 100
-													}
-												}}
+												alignSelf="flex-start"
+												component="a"
+												href={`https://reddit.com${data.permalink}`}
+												target="_blank"
+												rel="noreferrer"
 											>
-												<Box
-													component="img"
-													sx={{
-														width        : '100%',
-														height       : '100%',
-														objectFit    : 'cover',
-														borderRadius : 1
-													}}
-													src={data.thumbnail}
-													alt={data.title}
-												/>
+												<StyledImg src={data.thumbnail} alt={data.title} />
 											</Box>
 										)}
+
 										<Box
 											display="flex"
 											flexDirection="column"
 											width="100%"
 											justifyContent="space-between"
 										>
-											<Box sx={{ wordBreak: 'break-word' }}>{data.title}</Box>
+											<Box sx={{ wordBreak: 'break-word' }} fontWeight="fontWeightMedium">
+												{data.title}
+											</Box>
 											<Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
 												<Box fontSize="caption.fontSize" color="text.disabled">
 													by {data.author}

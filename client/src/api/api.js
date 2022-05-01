@@ -19,11 +19,6 @@ export const apiGetMe = async () => {
 	return data
 }
 
-export const apiFetchKickstarters = async () => {
-	const { data } = await axsAUTH.get('/api/misc/kickstarters')
-	return data
-}
-
 export const apiFetchRedditPosts = async () => {
 	const { data } = await axsPUBLIC.get('https://www.reddit.com/r/boardgames/.json', {
 		params : {
@@ -70,7 +65,7 @@ export const apiGetGamesIndex = async ({ search, page, sort, mode }) => {
 		params : {
 			search : search ? search.trim() : null,
 			page   : +page ? +page : 1,
-			sort   : sort ? sort : 'new',
+			sort   : sort ? sort : 'updated',
 			mode
 		}
 	}
@@ -265,6 +260,16 @@ export const apiFetchVideos = async (bggId) => {
 	return data
 }
 
+export const apiFetchBggNewReleases = async () => {
+	const { data } = await axsAUTH.get('/api/misc/bgg/releases')
+	return data
+}
+
+export const apiFetchBggCrowdfunding = async () => {
+	const { data } = await axsAUTH.get('/api/misc/bgg/crowdfunding')
+	return data
+}
+
 export const apiFetchGamesHistory = async ({ search, page, mode }) => {
 	const config = {
 		params : {
@@ -343,7 +348,7 @@ export const apiReactivateListedGame = async (id) => {
 	return await axsAUTH.patch(`/api/games/${id}/reactivate`, {})
 }
 
-export const apiFetchHotGames = async () => {
+export const apiFetchBggHotGames = async () => {
 	const { data } = await axsAUTH.get('/api/misc/bgg/hot')
 	return data
 }

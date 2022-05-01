@@ -1,7 +1,7 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
 import Box from '@mui/material/Box'
@@ -42,8 +42,6 @@ const StyledCardMedia = styled(CardMedia)({
 
 // @ Main
 const GameIndexCard = ({ data }) => {
-	const navigate = useNavigate()
-
 	const [ index, setIndex ] = useState(0)
 
 	const handleIndex = (type) => {
@@ -59,21 +57,20 @@ const GameIndexCard = ({ data }) => {
 		}
 	}
 
-	const navigateToDetails = () => {
-		navigate(data.slug)
-	}
-
 	return (
 		<Card elevation={2} sx={{ position: 'relative' }}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
-				<StyledCardMedia
-					sx={{ cursor: 'pointer' }}
-					onClick={navigateToDetails}
-					component="img"
-					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-					alt={data.games[index].title}
-					title={data.games[index].title}
-				/>
+				<Box component={RouterLink} to={data.slug}>
+					<StyledCardMedia
+						sx={{ cursor: 'pointer' }}
+						component="img"
+						image={
+							data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'
+						}
+						alt={data.games[index].title}
+						title={data.games[index].title}
+					/>
+				</Box>
 
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={1}>
 					<StatsBoxes variant="mini" stats={data.games[index].stats} type="rating" />
@@ -137,9 +134,42 @@ const GameIndexCard = ({ data }) => {
 
 			<CardContent>
 				<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={0.5}>
-					{data.mode !== 'want' ? (
+					{data.mode === 'want' && (
 						<Fragment>
 							<Chip
+								sx={{ maxWidth: '100%' }}
+								size="small"
+								color={data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}
+								variant="outlined"
+								label={`${data.games[index].subtype}`}
+							/>
+
+							<Chip
+								sx={{ maxWidth: '100%' }}
+								size="small"
+								color="primary"
+								variant="outlined"
+								label={`${data.games[index].prefVersion.title} • ${data.games[index].prefVersion.year}`}
+							/>
+
+							<Box
+								display="flex"
+								gap={0.5}
+								alignItems="center"
+								flexWrap="wrap"
+								fontWeight="fontWeightMedium"
+							>
+								{data.games[index].prefMode.buy && <Chip color="success" label="buy" />}
+
+								{data.games[index].prefMode.trade && <Chip color="success" label="trade" />}
+							</Box>
+						</Fragment>
+					)}
+
+					{(data.mode === 'sell' || data.mode === 'trade') && (
+						<Fragment>
+							<Chip
+								sx={{ maxWidth: '100%' }}
 								size="small"
 								color={data.games[index].subtype === 'boardgame' ? 'primary' : 'secondary'}
 								variant="outlined"
@@ -153,39 +183,13 @@ const GameIndexCard = ({ data }) => {
 								variant="outlined"
 								label={`${data.games[index].version.title} • ${data.games[index].version.year}`}
 							/>
+
+							{data.mode === 'sell' && (
+								<Box fontWeight="fontWeightMedium">
+									<Chip color="success" label={`${data.totalPrice} RON`} />
+								</Box>
+							)}
 						</Fragment>
-					) : (
-						<Fragment>
-							<Box display="flex" gap={0.5} alignItems="center" flexWrap="wrap">
-								{data.games[index].prefMode.buy && (
-									<Chip variant="outlined" size="small" color="secondary" label="buy" />
-								)}
-
-								{data.games[index].prefMode.trade && (
-									<Chip variant="outlined" size="small" color="secondary" label="trade" />
-								)}
-							</Box>
-
-							<Chip
-								size="small"
-								color="primary"
-								variant="outlined"
-								label={`${data.games[index].prefVersion.title} • ${data.games[index].prefVersion.year}`}
-							/>
-
-							<Chip
-								color="primary"
-								size="small"
-								variant="outlined"
-								label={`${data.shipping.shipPreffered.join(', ')}`}
-							/>
-						</Fragment>
-					)}
-
-					{data.mode === 'sell' && (
-						<Box fontWeight="fontWeightMedium">
-							<Chip color="success" label={`${data.totalPrice} RON`} />
-						</Box>
 					)}
 				</Box>
 			</CardContent>
