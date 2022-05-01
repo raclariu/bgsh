@@ -164,12 +164,15 @@ const DashboardScreen = () => {
 		<Fragment>
 			<Helmet title={`${currUsername}'s dashboard`} />
 
-			<Box display="flex" flexDirection="column" alignItems="center" gap={1}>
-				<Box sx={{ cursor: 'pointer' }} onClick={() => navigate(`/profile/${currUsername}`)}>
-					<MyAvatar variant="rounded" size={9} />
+			<Box display="flex" alignItems="flex-start" gap={2}>
+				<Box
+					sx={{ cursor: 'pointer', borderRadius: '50%' }}
+					onClick={() => navigate(`/profile/${currUsername}`)}
+				>
+					<MyAvatar size={10} />
 				</Box>
 				<Box display="flex" flexDirection="column" alignItems="center" gap={1}>
-					<Box fontSize="h5.fontSize" fontWeight="fontWeightMedium">
+					<Box sx={{ lineHeight: 1.2 }} fontSize="h5.fontSize" fontWeight="fontWeightMedium">
 						{currUsername}
 					</Box>
 					<Box display="flex" alignItems="center" gap={1}>
