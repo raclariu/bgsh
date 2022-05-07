@@ -1,8 +1,9 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
-import { styled } from '@mui/material/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 // @ Mui
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
@@ -23,12 +24,13 @@ import CustomDivider from './CustomDivider'
 import ActiveAddHistoryButton from './ActiveAddHistoryButton'
 import GameDetailsButton from './GameDetailsButton'
 import CustomTooltip from './CustomTooltip'
+import EditListedGameBtn from './EditListedGameBtn'
 
 // @ Styles
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+const StyledCardMedia = styled(CardMedia)({
 	objectFit : 'contain',
 	height    : '180px'
-}))
+})
 
 const StyledTitleBox = styled(Box)({
 	display         : '-webkit-box',
@@ -59,15 +61,19 @@ const ListedGameCard = ({ data }) => {
 	return (
 		<Card sx={{ position: 'relative' }} elevation={2}>
 			<Box display="flex" flexDirection="column" p={1} gap={1}>
-				<StyledCardMedia
-					component="img"
-					image={data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'}
-					alt={data.games[index].title}
-					title={data.games[index].title}
-					sx={{
-						filter : `${!data.isActive && 'grayscale(1)'}`
-					}}
-				/>
+				<Box component={RouterLink} to={data.slug}>
+					<StyledCardMedia
+						component="img"
+						image={
+							data.games[index].thumbnail ? data.games[index].thumbnail : '/images/gameImgPlaceholder.jpg'
+						}
+						alt={data.games[index].title}
+						title={data.games[index].title}
+						sx={{
+							filter : `${!data.isActive && 'grayscale(1)'}`
+						}}
+					/>
+				</Box>
 			</Box>
 
 			{data.isPack && (
@@ -242,6 +248,12 @@ const ListedGameCard = ({ data }) => {
 					)}
 
 					<GameDetailsButton slug={data.slug} />
+
+					<EditListedGameBtn
+						bggId={data.games[index].bggId}
+						currPrice={data.totalPrice}
+						currExtraInfo={data.games[index].extraInfo}
+					/>
 
 					<ActiveAddHistoryButton gameId={data._id} mode={data.mode} display="delete" />
 				</Box>

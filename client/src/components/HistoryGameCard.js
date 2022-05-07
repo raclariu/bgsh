@@ -27,7 +27,7 @@ import CustomAvatar from './CustomAvatar'
 import CustomTooltip from './CustomTooltip'
 import ExtLinkIconBtn from './ExtLinkIconBtn'
 import CustomIconBtn from './CustomIconBtn'
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import LoadingBtn from './LoadingBtn'
 
 // @ Others
@@ -268,7 +268,7 @@ const HistoryDeleteGame = ({ id, mode, handleCloseDialog: handleCloseDetailsDial
 
 				<DialogActions>
 					<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-						<CustomButton onClick={handleCloseDialog}>No</CustomButton>
+						<CustomBtn onClick={handleCloseDialog}>No</CustomBtn>
 						<LoadingBtn loading={isLoading} onClick={handleDelete} variant="contained">
 							Delete
 						</LoadingBtn>

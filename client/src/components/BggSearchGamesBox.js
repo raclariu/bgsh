@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import Autocomplete from '@mui/material/Autocomplete'
 
 // @ Components
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import Loader from './Loader'
 import Input from './Input'
 
@@ -117,17 +117,12 @@ const BggSearchGamesBox = () => {
 			/>
 
 			<Box display="flex" alignItems="center" justifyContent="flex-end" mt={2} gap={1}>
-				<CustomButton
-					variant="contained"
-					onClick={resetHandler}
-					disabled={options.length === 0}
-					color="secondary"
-				>
+				<CustomBtn variant="contained" onClick={resetHandler} disabled={options.length === 0} color="secondary">
 					Reset
-				</CustomButton>
-				<CustomButton variant="contained" onClick={addToSaleListHandler} disabled={!selectedOption}>
+				</CustomBtn>
+				<CustomBtn variant="contained" onClick={addToSaleListHandler} disabled={!selectedOption}>
 					Add to my list
-				</CustomButton>
+				</CustomBtn>
 			</Box>
 		</Box>
 	)

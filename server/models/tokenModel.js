@@ -14,7 +14,7 @@ const tokenSchema = mongoose.Schema(
 		},
 		sent     : {
 			type    : Date,
-			default : new Date()
+			default : Date.now
 		},
 		reason   : String
 	},

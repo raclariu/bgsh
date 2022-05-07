@@ -163,8 +163,10 @@ const GameGallery = ({ idx }) => {
 							<DialogTitle>
 								<Box display="flex" alignItems="flex-start" justifyContent="space-between" gap={3}>
 									<Box display="flex" flexDirection="column" gap={0.5}>
-										<Box fontSize="1rem">{galleryData[imgIdx].caption}</Box>
-										<Box fontStyle="italic" fontSize="caption.fontSize" color="grey.500">
+										<Box fontSize="body1.fontSize" sx={{ wordBreak: 'break-all' }}>
+											{galleryData[imgIdx].caption}
+										</Box>
+										<Box fontSize="caption.fontSize" color="text.disabled">
 											{`uploaded by ${galleryData[imgIdx].postedBy}`}
 										</Box>
 									</Box>

@@ -24,7 +24,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import Loader from '../components/Loader'
 import CustomIconBtn from '../components/CustomIconBtn'
 import Input from '../components/Input'
-import CustomButton from '../components/CustomButton'
+import CustomBtn from '../components/CustomBtn'
 import LoadingBtn from '../components/LoadingBtn'
 import Helmet from '../components/Helmet'
 
@@ -112,7 +112,7 @@ const ForgotPasswordDialog = () => {
 					</DialogContent>
 
 					<DialogActions>
-						<CustomButton onClick={handleDialogClose}>Cancel</CustomButton>
+						<CustomBtn onClick={handleDialogClose}>Cancel</CustomBtn>
 						<LoadingBtn type="submit" loading={isLoading} variant="contained">
 							Send email
 						</LoadingBtn>

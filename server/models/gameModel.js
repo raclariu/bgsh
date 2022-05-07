@@ -22,11 +22,7 @@ const gameSchema = mongoose.Schema(
 			shipPost         : Boolean,
 			shipPersonal     : Boolean,
 			shipCourierPayer : String,
-			shipPostPayer    : String,
-			shipPreffered    : {
-				type    : Array,
-				default : undefined
-			}
+			shipPostPayer    : String
 		},
 		extraInfoPack : String,
 		totalPrice    : Number,
@@ -35,11 +31,11 @@ const gameSchema = mongoose.Schema(
 			type    : Boolean,
 			default : true
 		},
+		slug          : String,
 		reactivatedAt : {
 			type    : Date,
-			default : new Date()
-		},
-		slug          : String
+			default : Date.now
+		}
 	},
 	{
 		timestamps : true
@@ -47,6 +43,7 @@ const gameSchema = mongoose.Schema(
 )
 
 gameSchema.index({ createdAt: -1 })
+gameSchema.index({ reactivatedAt: -1 })
 const Game = mongoose.model('Game', gameSchema)
 
 export default Game

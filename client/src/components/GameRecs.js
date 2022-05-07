@@ -16,7 +16,7 @@ import Paper from '@mui/material/Paper'
 import LzLoad from './LzLoad'
 import Loader from './Loader'
 import CustomSkeleton from './Skeletons/CustomSkeleton'
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import CustomAlert from './CustomAlert'
 
 // @ Icons
@@ -168,17 +168,17 @@ const GameRecs = ({ idx }) => {
 					{matches ? (
 						recData.length > 12 && (
 							<Box display="flex" justifyContent="flex-end" mt={1}>
-								<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
+								<CustomBtn onClick={() => setExpanded((expanded) => !expanded)}>
 									{expanded ? 'Show less' : 'Show more'}
-								</CustomButton>
+								</CustomBtn>
 							</Box>
 						)
 					) : (
 						recData.length > 6 && (
 							<Box display="flex" justifyContent="flex-end" mt={1}>
-								<CustomButton onClick={() => setExpanded((expanded) => !expanded)}>
+								<CustomBtn onClick={() => setExpanded((expanded) => !expanded)}>
 									{expanded ? 'Show less' : 'Show more'}
-								</CustomButton>
+								</CustomBtn>
 							</Box>
 						)
 					)}

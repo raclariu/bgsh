@@ -10,8 +10,8 @@ const options = {
 }
 
 const dailyTask = cron.schedule(
-	//'0 3,15 * * *',
-	'0 8,18 * * *',
+	'0 */2 * * *',
+	// '0 8,18 * * *',
 	// '*/10 * * * * *',
 	async () => {
 		const lookback = subDays(new Date(), 7)

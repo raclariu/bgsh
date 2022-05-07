@@ -718,8 +718,7 @@ const SingleGameScreen = () => {
 
 					{/* Chips */}
 					<StyledChipsBox sx={{ my: 2 }}>
-						{data.games[idx].parent &&
-						data.games[idx].parent.length > 0 && (
+						{data.games[idx].parent && (
 							<Chip
 								sx={{ maxWidth: '100%' }}
 								icon={<DonutSmallOutlinedIcon />}

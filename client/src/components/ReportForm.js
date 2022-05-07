@@ -17,7 +17,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 // @ Component
 import Input from './Input'
 import LoadingBtn from './LoadingBtn'
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import CustomIconBtn from './CustomIconBtn'
 import CustomTooltip from './CustomTooltip'
 
@@ -184,7 +184,7 @@ const ReportForm = ({ type, username, altId, ...other }) => {
 						</Box>
 					</DialogContent>
 					<DialogActions>
-						<CustomButton onClick={handleCloseDialog}>Cancel</CustomButton>
+						<CustomBtn onClick={handleCloseDialog}>Cancel</CustomBtn>
 						<LoadingBtn loading={isLoading} type="submit" variant="contained" color="primary">
 							Submit
 						</LoadingBtn>

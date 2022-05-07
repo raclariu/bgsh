@@ -18,7 +18,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 // @ Components
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import CustomTooltip from './CustomTooltip'
 import Input from './Input'
 import LoadingBtn from './LoadingBtn'
@@ -180,9 +180,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 								</Box>
 							</DialogContent>
 							<DialogActions>
-								<CustomButton disabled={historyAddGame.isLoading} onClick={handleCloseDialog}>
+								<CustomBtn disabled={historyAddGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</CustomButton>
+								</CustomBtn>
 
 								<LoadingBtn
 									type="submit"
@@ -216,9 +216,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							<CustomDivider />
 
 							<DialogActions>
-								<CustomButton disabled={deleteListing.isLoading} onClick={handleCloseDialog}>
+								<CustomBtn disabled={deleteListing.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</CustomButton>
+								</CustomBtn>
 
 								<LoadingBtn
 									type="submit"
@@ -251,9 +251,9 @@ const ActiveAddHistoryButton = ({ games, price: listedPrice, mode, gameId, isAct
 							<CustomDivider />
 
 							<DialogActions>
-								<CustomButton disabled={reactivateGame.isLoading} onClick={handleCloseDialog}>
+								<CustomBtn disabled={reactivateGame.isLoading} onClick={handleCloseDialog}>
 									Cancel
-								</CustomButton>
+								</CustomBtn>
 
 								<LoadingBtn
 									type="submit"

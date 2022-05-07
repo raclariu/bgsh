@@ -10,7 +10,7 @@ import CustomTooltip from './CustomTooltip'
 import CenterFocusWeakTwoToneIcon from '@mui/icons-material/CenterFocusWeakTwoTone'
 
 // @ Main
-const GameDetailsButton = ({ slug }) => {
+const GameDetailsButton = ({ slug, isActive }) => {
 	return (
 		<CustomTooltip title="Details">
 			<CustomIconBtn component={RouterLink} to={slug} color="primary" size="large">

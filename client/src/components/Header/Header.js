@@ -44,7 +44,7 @@ import AssignmentTurnedInTwoToneIcon from '@mui/icons-material/AssignmentTurnedI
 
 // @ Components
 import CustomDivider from '../CustomDivider'
-import CustomButton from '../CustomButton'
+import CustomBtn from '../CustomBtn'
 import MessagesBadge from '../MessagesBadge'
 import SaleListPopover from '../SaleListPopover'
 import Theme from '../Theme'
@@ -809,19 +809,19 @@ const Header = () => {
 
 							<DialogActions>
 								<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-									<CustomButton onClick={handleCloseDialog}>No</CustomButton>
-									<CustomButton onClick={logOutHandler} variant="contained">
+									<CustomBtn onClick={handleCloseDialog}>No</CustomBtn>
+									<CustomBtn onClick={logOutHandler} variant="contained">
 										Yes
-									</CustomButton>
+									</CustomBtn>
 								</Box>
 							</DialogActions>
 						</Dialog>
 					</Fragment>
 				) : (
 					<Fragment>
-						<CustomButton variant="outlined" component={RouterLink} to="/login">
+						<CustomBtn variant="outlined" component={RouterLink} to="/login">
 							Login
-						</CustomButton>
+						</CustomBtn>
 					</Fragment>
 				)}
 			</Toolbar>

@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 
 // @ Components
-import CustomButton from '../components/CustomButton'
+import CustomBtn from '../components/CustomBtn'
 import Helmet from '../components/Helmet'
 
 // @ Main
@@ -32,12 +32,12 @@ const NotFoundScreen = () => {
 				<Box fontSize="h3.fontSize">404</Box>
 				<Box fontSize="h4.fontSize">Page not found</Box>
 				<Box display="flex" justifyContent="center" alignItems="center" width="100%" gap={2}>
-					<CustomButton component={Link} to="/" variant="contained">
+					<CustomBtn component={Link} to="/" variant="contained">
 						Home
-					</CustomButton>
-					<CustomButton component={Link} to="/dashboard" variant="contained">
+					</CustomBtn>
+					<CustomBtn component={Link} to="/dashboard" variant="contained">
 						Dashboard
-					</CustomButton>
+					</CustomBtn>
 				</Box>
 			</Box>
 		</Fragment>

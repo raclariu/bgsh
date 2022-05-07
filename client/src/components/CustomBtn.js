@@ -5,13 +5,8 @@ import React from 'react'
 import Button from '@mui/material/Button'
 
 // @ Main
-const CustomButton = ({ children, ...other }) => {
+const CustomBtn = ({ children, ...other }) => {
 	return <Button {...other}>{children}</Button>
 }
 
-// @ Default Props
-CustomButton.defaultProps = {
-	color : 'primary'
-}
-
-export default CustomButton
+export default CustomBtn

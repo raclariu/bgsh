@@ -493,6 +493,8 @@ const getGames = asyncHandler(async (req, res) => {
 	const mode = req.query.mode
 	const resultsPerPage = 18
 
+	console.log(page, search, sortBy, mode, resultsPerPage)
+
 	if (search) {
 		const gamesData = await Game.find({ isActive: true, mode })
 			.populate('addedBy', 'username _id avatar')
@@ -510,7 +512,7 @@ const getGames = asyncHandler(async (req, res) => {
 		const results = fuse.search(search).map((game) => game.item).sort((a, b) => {
 			if (sortBy === 'new') {
 				return b.createdAt - a.createdAt
-			} else if (sort === 'updated') {
+			} else if (sortBy === 'updated') {
 				return b.reactivatedAt - a.reactivatedAt
 			} else if (sortBy === 'old') {
 				return a.createdAt - b.createdAt
@@ -600,7 +602,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 
 	const allUserGames = await Game.find({ addedBy: req.user._id })
 		.select(
-			'_id altId totalPrice isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+			'_id altId totalPrice extraInfoPack games.extraInfo reactivatedAt isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
 		)
 		.lean()
 
@@ -630,7 +632,7 @@ const getUserListedGames = asyncHandler(async (req, res) => {
 			.limit(resultsPerPage)
 			.sort({ createdAt: -1 })
 			.select(
-				'_id altId totalPrice isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
+				'_id altId totalPrice extraInfoPack games.extraInfo reactivatedAt isActive isPack mode slug games.bggId games.year games.designers games.image games.thumbnail games.subtype games.title'
 			)
 			.lean()
 

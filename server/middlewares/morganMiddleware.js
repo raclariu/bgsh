@@ -48,9 +48,7 @@ const logger = () => {
 			].join(' ')
 		)
 	} else {
-		return morgan(
-			':remote-addr  :method :status HTTP/:http-version  :url  :response-time[3] ms  :res[content-length]'
-		)
+		return morgan(':method :status HTTP/:http-version  :url  :response-time[3] ms  :res[content-length]')
 		// return morgan('short', {
 		// 	stream : fs.createWriteStream(path.join(__dirname, '..', 'logs', 'access.log'), { flags: 'a' })
 		// })

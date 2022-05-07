@@ -11,7 +11,7 @@ import DialogActions from '@mui/material/DialogActions'
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone'
 
 // @ Components
-import CustomButton from './CustomButton'
+import CustomBtn from './CustomBtn'
 import CustomIconBtn from './CustomIconBtn'
 import CustomDivider from './CustomDivider'
 import CustomTooltip from './CustomTooltip'
@@ -144,7 +144,7 @@ const SendMessage = ({ recipientUsername = '', ...other }) => {
 					<CustomDivider />
 
 					<DialogActions>
-						<CustomButton onClick={handleCloseDialog}>Cancel</CustomButton>
+						<CustomBtn onClick={handleCloseDialog}>Cancel</CustomBtn>
 						<LoadingBtn
 							disabled={currUsername.trim().toLowerCase() === recipient.trim().toLowerCase()}
 							type="submit"
