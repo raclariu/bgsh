@@ -377,6 +377,18 @@ export const apiAddWantedGames = async (gamesData) => {
 	return await axsAUTH.post('/api/games/wanted', gamesData)
 }
 
+export const apiEditSaleListing = async (update, id) => {
+	return await axsAUTH.patch(`/api/games/sell/${id}/edit`, update)
+}
+
+export const apiEditTradeListing = async (update, id) => {
+	return await axsAUTH.patch(`/api/games/trade/${id}/edit`, update)
+}
+
+export const apiEditWantedListing = async (update, id) => {
+	return await axsAUTH.patch(`/api/games/wanted/${id}/edit`, update)
+}
+
 export const apiGetProfileData = async (username) => {
 	const { data } = await axsAUTH.get(`/api/users/${username}`)
 	return data

@@ -168,6 +168,42 @@ export const useListGamesMutation = (mode) => {
 	)
 }
 
+export const useEditListingMutation = ({ mode, cleanUp }) => {
+	const queryClient = useQueryClient()
+	const [ showSnackbar ] = useNotiSnackbar()
+
+	return useMutation(
+		({ update, id }) => {
+			if (mode === 'sell') {
+				return api.apiEditSaleListing(update, id)
+			} else if (mode === 'trade') {
+				return api.apiEditTradeListing(update, id)
+			} else if (mode === 'want') {
+				return api.apiEditWantedListing(update, id)
+			}
+		},
+		{
+			onSuccess : () => {
+				cleanUp()
+				showSnackbar.success({ text: 'Listing was successfully updated' })
+				if (mode === 'sell') {
+					queryClient.invalidateQueries([ 'index', 'sell' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+					queryClient.invalidateQueries([ 'singleGameScreen', 'data' ])
+				} else if (mode === 'trade') {
+					queryClient.invalidateQueries([ 'index', 'trade' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+					queryClient.invalidateQueries([ 'singleGameScreen', 'data' ])
+				} else if (mode === 'want') {
+					queryClient.invalidateQueries([ 'index', 'want' ])
+					queryClient.invalidateQueries([ 'myListedGames' ])
+					queryClient.invalidateQueries([ 'singleGameScreen', 'data' ])
+				}
+			}
+		}
+	)
+}
+
 export const useClearListMutation = () => {
 	const queryClient = useQueryClient()
 	const [ showSnackbar ] = useNotiSnackbar()

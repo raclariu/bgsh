@@ -62,7 +62,7 @@ const UserProfileScreen = () => {
 			{isSuccessUserData && (
 				<Box display="flex" width="100%" mb={4} flexDirection="column" alignItems="center" gap={1}>
 					<CustomAvatar noClick size={12} username={userData.user.username} src={userData.user.avatar} />
-					<Box fontSize="h4.fontSize" fontWeight="fontWeightBold">
+					<Box fontSize="h4.fontSize" textAlign="center" fontWeight="fontWeightBold">
 						{`${userData.user.username}'s profile`}
 					</Box>
 					{userData.user.status === 'banned' ? (

@@ -249,11 +249,7 @@ const ListedGameCard = ({ data }) => {
 
 					<GameDetailsButton slug={data.slug} />
 
-					<EditListedGameBtn
-						bggId={data.games[index].bggId}
-						currPrice={data.totalPrice}
-						currExtraInfo={data.games[index].extraInfo}
-					/>
+					<EditListedGameBtn data={data} />
 
 					<ActiveAddHistoryButton gameId={data._id} mode={data.mode} display="delete" />
 				</Box>

@@ -114,7 +114,7 @@ const ForgotPasswordDialog = () => {
 					<DialogActions>
 						<CustomBtn onClick={handleDialogClose}>Cancel</CustomBtn>
 						<LoadingBtn type="submit" loading={isLoading} variant="contained">
-							Send email
+							Reset password
 						</LoadingBtn>
 					</DialogActions>
 				</form>

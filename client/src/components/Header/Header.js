@@ -1,7 +1,7 @@
 // @ Modules
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 // @ Mui
 import { styled } from '@mui/material/styles'
@@ -64,6 +64,7 @@ const StyledLogo = styled('img')({
 // @ Main
 const Header = () => {
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 
 	const [ isOpen, setIsOpen ] = useState(false)
 	const [ openCollapseType, setOpenCollapseType ] = useState(null)
@@ -171,9 +172,11 @@ const Header = () => {
 										{currUsername}
 									</Box>
 									<Box
-										onClick={() => setIsOpen(!isOpen)}
-										component={RouterLink}
-										to={`/profile/${currUsername}`}
+										sx={{ cursor: 'pointer', borderRadius: '50%' }}
+										onClick={() => {
+											setIsOpen(!isOpen)
+											navigate(`/profile/${currUsername}`)
+										}}
 									>
 										<MyAvatar size={6} />
 									</Box>

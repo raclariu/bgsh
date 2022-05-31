@@ -415,6 +415,144 @@ const listWantedGames = asyncHandler(async (req, res) => {
 	return res.status(204).end()
 })
 
+// <> @desc    Edit sale listing
+// <> @route   PATCH /api/games/sell/:id/edit
+// <> @access  Private route
+const editSaleGame = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const { id } = req.params
+	const { games, price, extraInfoPack } = req.body
+	const gameExists = await Game.findById({ _id: id }).lean()
+	const oldPrice = gameExists.totalPrice
+
+	for (let game of games) {
+		const found = gameExists.games.find((el) => el.bggId === game.bggId)
+		found.extraInfo = game.extraInfo
+	}
+
+	const update = {
+		games         : gameExists.games,
+		totalPrice    : price,
+		extraInfoPack : gameExists.isPack ? extraInfoPack : gameExists.extraInfoPack
+	}
+
+	await Game.updateOne({ _id: id }, update)
+
+	res.status(204).end()
+
+	// Notification for saved games because price change
+	if (oldPrice !== price) {
+		const users = await User.find({ savedGames: id }).select('_id savedGames').lean()
+		if (users.length > 0) {
+			let notifArr = []
+			for (let user of users) {
+				notifArr.push({
+					recipient : user._id,
+					type      : 'price-updated',
+					text      : gameExists.isPack
+						? `Price for one of your saved boardgame packs containing ${gameExists.games
+								.map((game) => game.title)
+								.join(', ')} has changed to ${price} RON from ${oldPrice} RON`
+						: `Price for one of your saved boardgames (${gameExists.games[0]
+								.title}) has changed to ${price} RON from ${oldPrice} RON`,
+					meta      : {
+						slug      : gameExists.slug,
+						thumbnail : gameExists.games[0].thumbnail
+					}
+				})
+			}
+
+			await Notification.insertMany(notifArr)
+			notifArr = []
+		}
+	}
+})
+
+// <> @desc    Edit traude listing
+// <> @route   PATCH /api/games/trade/:id/edit
+// <> @access  Private route
+const editTradeGame = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const { id } = req.params
+	const { games, extraInfoPack } = req.body
+	const gameExists = await Game.findById({ _id: id }).lean()
+
+	for (let game of games) {
+		const found = gameExists.games.find((el) => el.bggId === game.bggId)
+		found.extraInfo = game.extraInfo
+	}
+
+	const update = {
+		games         : gameExists.games,
+		extraInfoPack : gameExists.isPack ? extraInfoPack : gameExists.extraInfoPack
+	}
+
+	await Game.updateOne({ _id: id }, update)
+
+	// NTF pentru saved games
+	return res.status(204).end()
+})
+
+// <> @desc    Edit wanted listing
+// <> @route   PATCH /api/games/wamted/:id/edit
+// <> @access  Private route
+const editWantedGame = asyncHandler(async (req, res) => {
+	let message = {}
+	const validationErrors = validationResult(req).formatWith(({ msg, param }) => {
+		message[param] = msg
+	})
+	if (!validationErrors.isEmpty()) {
+		validationErrors.mapped()
+
+		res.status(400)
+		throw {
+			message
+		}
+	}
+
+	const { id } = req.params
+	const { games } = req.body
+	const gameExists = await Game.findById({ _id: id }).lean()
+
+	for (let game of games) {
+		const found = gameExists.games.find((el) => el.bggId === game.bggId)
+		found.extraInfo = game.extraInfo
+	}
+
+	const update = {
+		games : gameExists.games
+	}
+
+	await Game.updateOne({ _id: id }, update)
+
+	// NTF pentru saved games
+	return res.status(204).end()
+})
+
 // * @desc    Upload game image
 // * @route   POST  /api/games/images
 // * @access  Private route
@@ -492,8 +630,6 @@ const getGames = asyncHandler(async (req, res) => {
 	const sortBy = req.query.sort
 	const mode = req.query.mode
 	const resultsPerPage = 18
-
-	console.log(page, search, sortBy, mode, resultsPerPage)
 
 	if (search) {
 		const gamesData = await Game.find({ isActive: true, mode })
@@ -993,7 +1129,7 @@ const deleteOneGame = asyncHandler(async (req, res) => {
 const getNewListings = asyncHandler(async (req, res) => {
 	const gamesData = await Game.find({ isActive: true, mode: { $in: [ 'sell', 'trade', 'want' ] } })
 		.limit(12)
-		.select('games totalPrice altId isPack mode createdAt')
+		.select('games.title games.thumbnail totalPrice altId isPack mode createdAt slug')
 		.sort({ createdAt: -1 })
 		.lean()
 
@@ -1004,6 +1140,9 @@ export {
 	listSaleGames,
 	listTradeGames,
 	listWantedGames,
+	editSaleGame,
+	editTradeGame,
+	editWantedGame,
 	getGames,
 	getSingleGame,
 	switchSaveGame,

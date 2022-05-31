@@ -112,7 +112,7 @@ const HomeScreen = () => {
 							variant="contained"
 							color="primary"
 						>
-							Create account
+							New account
 						</Button>
 						<Button
 							component={RouterLink}
@@ -198,10 +198,7 @@ const HomeScreen = () => {
 							<LzLoad key={item._id} placeholder={<NewListingsSkeleton />}>
 								<Box component={Paper} borderRadius="4px" boxShadow={2} p={1}>
 									<Box display="flex" alignItems="flex-start" gap={2}>
-										<Box
-											component={RouterLink}
-											to={item.mode === 'sell' ? `/sales/${item.altId}` : `/trades/${item.altId}`}
-										>
+										<Box component={RouterLink} to={item.slug}>
 											<StyledThumb
 												src={item.games[0].thumbnail}
 												alt={item.games[0].title}

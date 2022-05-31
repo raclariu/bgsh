@@ -110,7 +110,7 @@ const NotificationsPopover = () => {
 									<Collapse key={ntf._id}>
 										<ListItem alignItems="flex-start" divider>
 											<ListItemAvatar>
-												{ntf.type === 'wishlist' ? (
+												{ntf.meta.slug ? (
 													<Avatar
 														sx={{ cursor: 'pointer', height: '48px', width: '48px' }}
 														onClick={() => handleThumbClick(ntf.meta)}

@@ -132,7 +132,7 @@ const TradeGamesScreen = () => {
 			shipCourier,
 			shipPersonal,
 			shipCities,
-			extraInfoPack : isPack ? extraInfoPack.trim() : null
+			extraInfoPack : isPack && extraInfoPack.trim() ? extraInfoPack.trim() : null
 		}
 
 		listMutation.mutate(gamesData)

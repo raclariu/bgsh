@@ -1,5 +1,5 @@
 // @ Modules
-import React, { Fragment } from 'react'
+import React from 'react'
 
 // @ Mui
 import Box from '@mui/material/Box'

@@ -1,10 +1,10 @@
 {
+	"name": "Sell or trade your boardgames",
 	"short_name": "Meeples.Ro",
-	"name": "Second hand boardgame website where people can list their used games for sale or trade",
 	"start_url": "https://meeples.ro",
 	"display": "standalone",
 	"theme_color": "#651fff",
-	"background_color": "#ffffff",
+	"background_color": "#16213F",
 	"icons": [
 		{
 			"src": "favicon.ico",

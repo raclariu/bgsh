@@ -40,6 +40,7 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 import DonutSmallOutlinedIcon from '@mui/icons-material/DonutSmallOutlined'
 
 // @ Components
+import Helmet from '../components/Helmet'
 import CustomAvatar from '../components/CustomAvatar'
 import CustomIconBtn from '../components/CustomIconBtn'
 import CustomDivider from '../components/CustomDivider'
@@ -140,6 +141,51 @@ const SingleGameScreen = () => {
 
 	return (
 		<Fragment>
+			{isSuccess && (
+				<Fragment>
+					{data.mode === 'sell' && (
+						<Helmet
+							title={data.games[idx].title}
+							description={
+								data.isPack ? (
+									`I am selling a pack of ${data.games
+										.length} boardgames - For more details go to https://meeples.ro/sales/${data.altId}`
+								) : (
+									`I am selling ${data.games[0]
+										.title} - For more details go to https://meeples.ro/sales/${data.altId}`
+								)
+							}
+							img={data.games[idx].thumbnail}
+						/>
+					)}
+
+					{data.mode === 'trade' && (
+						<Helmet
+							title={data.games[idx].title}
+							description={
+								data.isPack ? (
+									`I am trading a pack of ${data.games
+										.length} boardgames - For more details go to https://meeples.ro/trades/${data.altId}`
+								) : (
+									`I am trading ${data.games[0]
+										.title} - For more details go to https://meeples.ro/trades/${data.altId}`
+								)
+							}
+							img={data.games[idx].thumbnail}
+						/>
+					)}
+
+					{data.mode === 'want' && (
+						<Helmet
+							title={data.games[idx].title}
+							description={`I am looking to buy ${data.games[0]
+								.title} -  For more details go to https://meeples.ro/wanted/${data.altId}`}
+							img={data.games[idx].thumbnail}
+						/>
+					)}
+				</Fragment>
+			)}
+
 			{isLoading && (
 				<Box display="flex" justifyContent="center">
 					<Loader />
@@ -732,7 +778,7 @@ const SingleGameScreen = () => {
 								sx={{ maxWidth: '100%' }}
 								icon={<AllOutOutlinedIcon />}
 								key="expansions"
-								label="More than 15 expansions available"
+								label={`${data.games[idx].expansions.length} expansions available`}
 								color="warning"
 							/>
 						) : (

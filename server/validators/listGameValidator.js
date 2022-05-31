@@ -65,9 +65,9 @@ const validateExtraInfoTxt = check('games.*.extraInfo')
 	.withMessage((value, { req, path }) => {
 		try {
 			const idx = path.split('[')[1].split(']')[0]
-			return `Invalid extra info for ${req.body.games[idx].title}. Only 0-500 character allowed`
+			return `Invalid extra info for ${req.body.games[idx].title}. 0-500 character allowed`
 		} catch (error) {
-			return 'Invalid extra info. Only 0-500 character allowed'
+			return 'Invalid extra info. 0-500 character allowed'
 		}
 	})
 
@@ -77,7 +77,7 @@ const validateExtraInfoPackTxt = check('extraInfoPack')
 	.if((value, { req }) => req.body.isPack) // if pack is true, continue
 	.trim()
 	.isLength({ min: 0, max: 500 })
-	.withMessage('Invalid pack extra info. Only 0-500 character allowed')
+	.withMessage('Invalid pack extra info. 0-500 character allowed')
 
 // (*) Validation for games sleeving @ sell,trade - done
 const validateIsSleeved = check('games.*.isSleeved').isIn([ true, false ]).withMessage((value, { req, path }) => {
@@ -211,6 +211,35 @@ const validateWantedPrefMode = check('games.*.prefMode')
 		}
 	})
 
+// (*) Validation for games prices @ EDIT @ sell - done
+const validateEditGamePrice = check('price')
+	.isInt({ min: 0, max: 10000 })
+	.withMessage('Price error. Must be between 0 and 10000 RON')
+	.bail()
+	.toInt()
+
+// (*) Validation for games prices @ EDIT @ sell, trade, wanted - done
+const validateEditGameExtraInfoTxt = check('games.*.extraInfo')
+	.optional({ nullable: true })
+	.trim()
+	.isLength({ min: 0, max: 500 })
+	.withMessage((value, { req, path }) => {
+		try {
+			const idx = path.split('[')[1].split(']')[0]
+			return `Invalid extra info for ${req.body.games[idx].title}. 0-500 character allowed`
+		} catch (error) {
+			return 'Invalid extra info. 0-500 character allowed'
+		}
+	})
+
+// (*) Validation for pack extra info text @ EDIT @ sell,trade - done
+const validateEditGameExtraInfoPackTxt = check('extraInfoPack')
+	.optional({ nullable: true })
+	.if((value, { req }) => req.body.isPack) // if pack is true, continue
+	.trim()
+	.isLength({ min: 0, max: 500 })
+	.withMessage('Invalid pack extra info. 0-500 character allowed')
+
 const sellValidators = [
 	validateGameVersion,
 	validateGameCondition,
@@ -235,7 +264,7 @@ const tradeValidators = [
 	validateShipCities
 ]
 
-const wantValidators = [
+const wantedValidators = [
 	validateWantedGameVersion,
 	validateWantedPrefMode,
 	validateExtraInfoTxt,
@@ -243,4 +272,15 @@ const wantValidators = [
 	validateShipCities
 ]
 
-export { sellValidators, tradeValidators, wantValidators }
+const sellEditValidators = [ validateEditGamePrice, validateEditGameExtraInfoTxt, validateEditGameExtraInfoPackTxt ]
+const tradeEditValidators = [ validateEditGameExtraInfoTxt, validateEditGameExtraInfoPackTxt ]
+const wantedEditValidators = [ validateEditGameExtraInfoTxt, validateEditGameExtraInfoPackTxt ]
+
+export {
+	sellValidators,
+	tradeValidators,
+	wantedValidators,
+	sellEditValidators,
+	tradeEditValidators,
+	wantedEditValidators
+}
