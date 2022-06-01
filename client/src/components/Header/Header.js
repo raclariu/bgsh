@@ -2,6 +2,7 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { useQueryClient } from 'react-query'
 
 // @ Mui
 import { styled } from '@mui/material/styles'
@@ -56,780 +57,894 @@ import { logOut } from '../../actions/userActions'
 
 // @ Styles
 const StyledLogo = styled('img')({
-	marginTop : '4px',
-	width     : '36px',
-	height    : '36px'
+    marginTop: '4px',
+    width: '36px',
+    height: '36px'
 })
 
 // @ Main
 const Header = () => {
-	const dispatch = useDispatch()
-	const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
-	const [ isOpen, setIsOpen ] = useState(false)
-	const [ openCollapseType, setOpenCollapseType ] = useState(null)
-	const [ selectedIndex, setSelectedIndex ] = useState(0)
-	const [ openDialog, setOpenDialog ] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const [openCollapseType, setOpenCollapseType] = useState(null)
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [openDialog, setOpenDialog] = useState(false)
 
-	const { _id: currUserId, username: currUsername } = useSelector((state) => state.userData)
+    const { _id: currUserId, username: currUsername } = useSelector((state) => state.userData)
 
-	const handleExpandClick = (type) => {
-		if (type === openCollapseType) {
-			setOpenCollapseType(null)
-		} else {
-			setOpenCollapseType(type)
-		}
-	}
+    const handleExpandClick = (type) => {
+        if (type === openCollapseType) {
+            setOpenCollapseType(null)
+        } else {
+            setOpenCollapseType(type)
+        }
+    }
 
-	const handleClick = (e, ind) => {
-		setSelectedIndex(ind)
-		setIsOpen(false)
-	}
+    const handleClick = (e, ind) => {
+        setSelectedIndex(ind)
+        setIsOpen(false)
+    }
 
-	const handleOpenDialog = () => {
-		setOpenDialog(true)
-	}
+    const handleOpenDialog = () => {
+        setOpenDialog(true)
+    }
 
-	const handleCloseDialog = () => {
-		setOpenDialog(false)
-	}
+    const handleCloseDialog = () => {
+        setOpenDialog(false)
+    }
 
-	const logOutHandler = () => {
-		dispatch(logOut())
-		setOpenDialog(false)
-		setIsOpen(false)
-	}
+    const logOutHandler = () => {
+        dispatch(logOut())
+        queryClient.clear()
+        setOpenDialog(false)
+        setIsOpen(false)
+    }
 
-	// const ClgTheme = styled('span')(({ theme }) => console.log(theme))
+    // const ClgTheme = styled('span')(({ theme }) => console.log(theme))
 
-	return (
-		<AppBar
-			elevation={0}
-			position="static"
-			color="transparent"
-			sx={{
-				borderStyle       : 'solid',
-				borderColor       : (theme) =>
-					theme.palette.mode === 'light' ? '#E7EBF0' : 'rgba(194, 224, 255, 0.08)',
-				borderWidth       : '0',
-				borderBottomWidth : 'thin'
-			}}
-		>
-			<Toolbar sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center', flexWrap: 'wrap' }}>
-				<Box component={RouterLink} to="/" id="logo-container">
-					<StyledLogo id="logo" src="/meeples48.png" alt="logo" />
-				</Box>
+    return (
+        <AppBar
+            elevation={0}
+            position='static'
+            color='transparent'
+            sx={{
+                borderStyle: 'solid',
+                borderColor: (theme) => (theme.palette.mode === 'light' ? '#E7EBF0' : 'rgba(194, 224, 255, 0.08)'),
+                borderWidth: '0',
+                borderBottomWidth: 'thin'
+            }}
+        >
+            <Toolbar sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Box component={RouterLink} to='/' id='logo-container'>
+                    <StyledLogo id='logo' src='/meeples48.png' alt='logo' />
+                </Box>
 
-				<Box flexGrow={1} />
+                <Box flexGrow={1} />
 
-				{!currUserId && (
-					<Box mr={1}>
-						<Theme />
-					</Box>
-				)}
+                {!currUserId && (
+                    <Fragment>
+                        <Box mr={1}>
+                            <Theme />
+                        </Box>
+                        <CustomBtn sx={{ mr: 2 }} variant='outlined' color='secondary' component={RouterLink} to='/login'>
+                            Login
+                        </CustomBtn>
 
-				{currUserId ? (
-					<Fragment>
-						<Box mr={1}>
-							<NotificationsPopover />
-						</Box>
-						<Box mr={1}>
-							<MessagesBadge />
-						</Box>
-						<Box mr={1}>
-							<SaleListPopover />
-						</Box>
-						<Box mr={1}>
-							<Theme />
-						</Box>
+                        <ButtonBase
+                            disableRipple
+                            color='primary'
+                            onClick={() => setIsOpen(!isOpen)}
+                            aria-label='menu'
+                            size='large'
+                            sx={{
+                                border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                                p: 1,
+                                borderRadius: '10px'
+                            }}
+                        >
+                            <MenuIcon fontSize='small' color='primary' />
+                        </ButtonBase>
 
-						<ButtonBase
-							disableRipple
-							color="primary"
-							onClick={() => setIsOpen(!isOpen)}
-							aria-label="menu"
-							size="large"
-							sx={{
-								border       : (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-								p            : 1,
-								borderRadius : '10px'
-							}}
-						>
-							<MenuIcon fontSize="small" color="primary" />
-						</ButtonBase>
+                        <Drawer
+                            keepMounted
+                            variant='temporary'
+                            disableScrollLock
+                            anchor='right'
+                            open={isOpen}
+                            onClose={() => setIsOpen(!isOpen)}
+                        >
+                            <Box
+                                display='flex'
+                                alignItems='center'
+                                justifyContent='center'
+                                flexDirection='column'
+                                mb={2}
+                                mt={4}
+                                gap={2}
+                            >
+                                <CustomBtn
+                                    component={RouterLink}
+                                    to='/create-account'
+                                    size='small'
+                                    sx={{ width: 160 }}
+                                    variant='outlined'
+                                    color='primary'
+                                >
+                                    New account
+                                </CustomBtn>
+                                <CustomBtn
+                                    component={RouterLink}
+                                    to='/login'
+                                    size='small'
+                                    sx={{ width: 160 }}
+                                    variant='outlined'
+                                    color='secondary'
+                                >
+                                    Login
+                                </CustomBtn>
+                            </Box>
 
-						<Drawer
-							keepMounted
-							variant="temporary"
-							disableScrollLock
-							anchor="right"
-							open={isOpen}
-							onClose={() => setIsOpen(!isOpen)}
-						>
-							<Box display="flex" alignItems="center" justifyContent="flex-end" m={2} minHeight="48px">
-								<Box display="flex" alignItems="center">
-									<Box fontWeight="fontWeightMedium" mr={1} color="primary.main">
-										{currUsername}
-									</Box>
-									<Box
-										sx={{ cursor: 'pointer', borderRadius: '50%' }}
-										onClick={() => {
-											setIsOpen(!isOpen)
-											navigate(`/profile/${currUsername}`)
-										}}
-									>
-										<MyAvatar size={6} />
-									</Box>
-								</Box>
-							</Box>
+                            <Box>
+                                <CustomDivider />
+                                <List disablePadding sx={{ width: 250 }}>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 1)}
+                                        selected={selectedIndex === 1}
+                                        component={RouterLink}
+                                        to='/'
+                                    >
+                                        <ListItemIcon>
+                                            <HomeTwoToneIcon color={selectedIndex === 1 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 1 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Home
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-							<Box>
-								<CustomDivider />
-								<List disablePadding sx={{ width: 250 }}>
-									<ListItemButton
-										onClick={(e) => handleClick(e, 1)}
-										selected={selectedIndex === 1}
-										component={RouterLink}
-										to="/"
-									>
-										<ListItemIcon>
-											<HomeTwoToneIcon color={selectedIndex === 1 ? 'primary' : 'inherit'} />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 1 ? 'primary.main' : 'text.secondary'}
-												>
-													Home
-												</Box>
-											}
-										/>
-									</ListItemButton>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 3)}
+                                        selected={selectedIndex === 3}
+                                        component={RouterLink}
+                                        to='/sales'
+                                    >
+                                        <ListItemIcon>
+                                            <MonetizationOnTwoToneIcon color={selectedIndex === 3 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 3 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Sales
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-									<ListItemButton
-										onClick={(e) => handleClick(e, 2)}
-										selected={selectedIndex === 2}
-										component={RouterLink}
-										to="/dashboard"
-									>
-										<ListItemIcon>
-											<KeyboardAltTwoToneIcon
-												color={selectedIndex === 2 ? 'primary' : 'inherit'}
-											/>
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 2 ? 'primary.main' : 'text.secondary'}
-												>
-													Dashboard
-												</Box>
-											}
-										/>
-									</ListItemButton>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 4)}
+                                        selected={selectedIndex === 4}
+                                        component={RouterLink}
+                                        to='/trades'
+                                    >
+                                        <ListItemIcon>
+                                            <SwapHorizontalCircleTwoToneIcon
+                                                color={selectedIndex === 4 ? 'primary' : 'inherit'}
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 4 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Trades
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-									<ListItemButton onClick={() => handleExpandClick('games')}>
-										<ListItemIcon>
-											<CasinoTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color="text.secondary"
-												>
-													Boardgames
-												</Box>
-											}
-										/>
-										{openCollapseType === 'games' ? (
-											<ArrowDropUpIcon color="disabled" />
-										) : (
-											<ArrowDropDownIcon color="disabled" />
-										)}
-									</ListItemButton>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 5)}
+                                        selected={selectedIndex === 5}
+                                        component={RouterLink}
+                                        to='/wanted'
+                                    >
+                                        <ListItemIcon>
+                                            <AddCircleTwoToneIcon color={selectedIndex === 5 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 5 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Wanted
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
+                                </List>
+                            </Box>
+                        </Drawer>
+                    </Fragment>
+                )}
 
-									<Collapse in={openCollapseType === 'games'} timeout="auto" unmountOnExit>
-										<List disablePadding>
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 3)}
-												selected={selectedIndex === 3}
-												component={RouterLink}
-												to="/sales"
-											>
-												<ListItemIcon>
-													<MonetizationOnTwoToneIcon
-														color={selectedIndex === 3 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 3 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Sales
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                {currUserId && (
+                    <Fragment>
+                        <Box mr={1}>
+                            <NotificationsPopover />
+                        </Box>
+                        <Box mr={1}>
+                            <MessagesBadge />
+                        </Box>
+                        <Box mr={1}>
+                            <SaleListPopover />
+                        </Box>
+                        <Box mr={1}>
+                            <Theme />
+                        </Box>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 4)}
-												selected={selectedIndex === 4}
-												component={RouterLink}
-												to="/trades"
-											>
-												<ListItemIcon>
-													<SwapHorizontalCircleTwoToneIcon
-														color={selectedIndex === 4 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 4 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Trades
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                        <ButtonBase
+                            disableRipple
+                            color='primary'
+                            onClick={() => setIsOpen(!isOpen)}
+                            aria-label='menu'
+                            size='large'
+                            sx={{
+                                border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                                p: 1,
+                                borderRadius: '10px'
+                            }}
+                        >
+                            <MenuIcon fontSize='small' color='primary' />
+                        </ButtonBase>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 5)}
-												selected={selectedIndex === 5}
-												component={RouterLink}
-												to="/wanted"
-											>
-												<ListItemIcon>
-													<AddCircleTwoToneIcon
-														color={selectedIndex === 5 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 5 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Wanted
-														</Box>
-													}
-												/>
-											</ListItemButton>
-										</List>
-									</Collapse>
+                        <Drawer
+                            keepMounted
+                            variant='temporary'
+                            disableScrollLock
+                            anchor='right'
+                            open={isOpen}
+                            onClose={() => setIsOpen(!isOpen)}
+                        >
+                            <Box display='flex' alignItems='center' justifyContent='flex-end' m={2} minHeight='48px'>
+                                <Box display='flex' alignItems='center'>
+                                    <Box fontWeight='fontWeightMedium' mr={1} color='primary.main'>
+                                        {currUsername}
+                                    </Box>
+                                    <Box
+                                        sx={{ cursor: 'pointer', borderRadius: '50%' }}
+                                        onClick={() => {
+                                            setIsOpen(!isOpen)
+                                            navigate(`/profile/${currUsername}`)
+                                        }}
+                                    >
+                                        <MyAvatar size={6} />
+                                    </Box>
+                                </Box>
+                            </Box>
 
-									{/* AICI */}
-									<ListItemButton onClick={() => handleExpandClick('collection')}>
-										<ListItemIcon>
-											<FactCheckTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color="text.secondary"
-												>
-													My collection
-												</Box>
-											}
-										/>
-										{openCollapseType === 'collection' ? (
-											<ArrowDropUpIcon color="disabled" />
-										) : (
-											<ArrowDropDownIcon color="disabled" />
-										)}
-									</ListItemButton>
+                            <Box>
+                                <CustomDivider />
+                                <List disablePadding sx={{ width: 250 }}>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 1)}
+                                        selected={selectedIndex === 1}
+                                        component={RouterLink}
+                                        to='/'
+                                    >
+                                        <ListItemIcon>
+                                            <HomeTwoToneIcon color={selectedIndex === 1 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 1 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Home
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-									<Collapse in={openCollapseType === 'collection'} timeout="auto" unmountOnExit>
-										<List disablePadding>
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 6)}
-												selected={selectedIndex === 6}
-												component={RouterLink}
-												to="/collection/owned"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 6 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 6 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Owned
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 2)}
+                                        selected={selectedIndex === 2}
+                                        component={RouterLink}
+                                        to='/dashboard'
+                                    >
+                                        <ListItemIcon>
+                                            <KeyboardAltTwoToneIcon color={selectedIndex === 2 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 2 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Dashboard
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 7)}
-												selected={selectedIndex === 7}
-												component={RouterLink}
-												to="/collection/for-trade"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 7 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 7 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															For trade
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                    <ListItemButton onClick={() => handleExpandClick('games')}>
+                                        <ListItemIcon>
+                                            <CasinoTwoToneIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color='text.secondary'
+                                                >
+                                                    Boardgames
+                                                </Box>
+                                            }
+                                        />
+                                        {openCollapseType === 'games' ? (
+                                            <ArrowDropUpIcon color='disabled' />
+                                        ) : (
+                                            <ArrowDropDownIcon color='disabled' />
+                                        )}
+                                    </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 8)}
-												selected={selectedIndex === 8}
-												component={RouterLink}
-												to="/collection/want-in-trade"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 8 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 8 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Want in trade
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                    <Collapse in={openCollapseType === 'games'} timeout='auto' unmountOnExit>
+                                        <List disablePadding>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 3)}
+                                                selected={selectedIndex === 3}
+                                                component={RouterLink}
+                                                to='/sales'
+                                            >
+                                                <ListItemIcon>
+                                                    <MonetizationOnTwoToneIcon
+                                                        color={selectedIndex === 3 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 3 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Sales
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 9)}
-												selected={selectedIndex === 9}
-												component={RouterLink}
-												to="/collection/want-to-buy"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 9 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 9 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Want to buy
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 4)}
+                                                selected={selectedIndex === 4}
+                                                component={RouterLink}
+                                                to='/trades'
+                                            >
+                                                <ListItemIcon>
+                                                    <SwapHorizontalCircleTwoToneIcon
+                                                        color={selectedIndex === 4 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 4 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Trades
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 10)}
-												selected={selectedIndex === 10}
-												component={RouterLink}
-												to="/collection/want-to-play"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 10 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 10 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Want to play
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 5)}
+                                                selected={selectedIndex === 5}
+                                                component={RouterLink}
+                                                to='/wanted'
+                                            >
+                                                <ListItemIcon>
+                                                    <AddCircleTwoToneIcon
+                                                        color={selectedIndex === 5 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 5 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Wanted
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 11)}
-												selected={selectedIndex === 11}
-												component={RouterLink}
-												to="/collection/wishlist"
-											>
-												<ListItemIcon>
-													<AssignmentTurnedInTwoToneIcon
-														color={selectedIndex === 11 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 11 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Wishlist
-														</Box>
-													}
-												/>
-											</ListItemButton>
-										</List>
-									</Collapse>
+                                    {/* AICI */}
+                                    <ListItemButton onClick={() => handleExpandClick('collection')}>
+                                        <ListItemIcon>
+                                            <FactCheckTwoToneIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color='text.secondary'
+                                                >
+                                                    My collection
+                                                </Box>
+                                            }
+                                        />
+                                        {openCollapseType === 'collection' ? (
+                                            <ArrowDropUpIcon color='disabled' />
+                                        ) : (
+                                            <ArrowDropDownIcon color='disabled' />
+                                        )}
+                                    </ListItemButton>
 
-									<ListItemButton
-										onClick={(e) => handleClick(e, 12)}
-										selected={selectedIndex === 12}
-										component={RouterLink}
-										to="/user/listed"
-									>
-										<ListItemIcon>
-											<LocalActivityTwoToneIcon
-												color={selectedIndex === 12 ? 'primary' : 'inherit'}
-											/>
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 12 ? 'primary.main' : 'text.secondary'}
-												>
-													My listed games
-												</Box>
-											}
-										/>
-									</ListItemButton>
+                                    <Collapse in={openCollapseType === 'collection'} timeout='auto' unmountOnExit>
+                                        <List disablePadding>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 6)}
+                                                selected={selectedIndex === 6}
+                                                component={RouterLink}
+                                                to='/collection/owned'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 6 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 6 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Owned
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-									<ListItemButton onClick={() => handleExpandClick('history')}>
-										<ListItemIcon>
-											<ArchiveTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color="text.secondary"
-												>
-													My History
-												</Box>
-											}
-										/>
-										{openCollapseType === 'history' ? (
-											<ArrowDropUpIcon color="disabled" />
-										) : (
-											<ArrowDropDownIcon color="disabled" />
-										)}
-									</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 7)}
+                                                selected={selectedIndex === 7}
+                                                component={RouterLink}
+                                                to='/collection/for-trade'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 7 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 7 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            For trade
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-									<Collapse in={openCollapseType === 'history'} timeout="auto" unmountOnExit>
-										<List disablePadding>
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 13)}
-												selected={selectedIndex === 13}
-												component={RouterLink}
-												to="/user/history/sold"
-											>
-												<ListItemIcon>
-													<MonetizationOnTwoToneIcon
-														color={selectedIndex === 13 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 13 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Sold
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 8)}
+                                                selected={selectedIndex === 8}
+                                                component={RouterLink}
+                                                to='/collection/want-in-trade'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 8 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 8 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Want in trade
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 14)}
-												selected={selectedIndex === 14}
-												component={RouterLink}
-												to="/user/history/traded"
-											>
-												<ListItemIcon>
-													<SwapHorizontalCircleTwoToneIcon
-														color={selectedIndex === 14 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 14 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Traded
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 9)}
+                                                selected={selectedIndex === 9}
+                                                component={RouterLink}
+                                                to='/collection/want-to-buy'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 9 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 9 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Want to buy
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 15)}
-												selected={selectedIndex === 15}
-												component={RouterLink}
-												to="/user/history/bought"
-											>
-												<ListItemIcon>
-													<LocalMallTwoToneIcon
-														color={selectedIndex === 15 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 15 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Bought
-														</Box>
-													}
-												/>
-											</ListItemButton>
-										</List>
-									</Collapse>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 10)}
+                                                selected={selectedIndex === 10}
+                                                component={RouterLink}
+                                                to='/collection/want-to-play'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 10 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 10 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Want to play
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-									<ListItemButton
-										onClick={(e) => handleClick(e, 16)}
-										selected={selectedIndex === 16}
-										component={RouterLink}
-										to="/saved"
-									>
-										<ListItemIcon>
-											<FavoriteTwoToneIcon color={selectedIndex === 16 ? 'primary' : 'inherit'} />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 16 ? 'primary.main' : 'text.secondary'}
-												>
-													Saved games
-												</Box>
-											}
-										/>
-									</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 11)}
+                                                selected={selectedIndex === 11}
+                                                component={RouterLink}
+                                                to='/collection/wishlist'
+                                            >
+                                                <ListItemIcon>
+                                                    <AssignmentTurnedInTwoToneIcon
+                                                        color={selectedIndex === 11 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 11 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Wishlist
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
 
-									<ListItemButton onClick={() => handleExpandClick('inbox')}>
-										<ListItemIcon>
-											<CommentTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color="text.secondary"
-												>
-													Messages
-												</Box>
-											}
-										/>
-										{openCollapseType === 'inbox' ? (
-											<ArrowDropUpIcon color="disabled" />
-										) : (
-											<ArrowDropDownIcon color="disabled" />
-										)}
-									</ListItemButton>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 12)}
+                                        selected={selectedIndex === 12}
+                                        component={RouterLink}
+                                        to='/user/listed'
+                                    >
+                                        <ListItemIcon>
+                                            <LocalActivityTwoToneIcon color={selectedIndex === 12 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 12 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    My listed games
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-									<Collapse in={openCollapseType === 'inbox'} timeout="auto" unmountOnExit>
-										<List disablePadding>
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 17)}
-												selected={selectedIndex === 17}
-												component={RouterLink}
-												to="/received"
-											>
-												<ListItemIcon>
-													<EmailTwoToneIcon
-														color={selectedIndex === 17 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 17 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Received
-														</Box>
-													}
-												/>
-											</ListItemButton>
+                                    <ListItemButton onClick={() => handleExpandClick('history')}>
+                                        <ListItemIcon>
+                                            <ArchiveTwoToneIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color='text.secondary'
+                                                >
+                                                    My History
+                                                </Box>
+                                            }
+                                        />
+                                        {openCollapseType === 'history' ? (
+                                            <ArrowDropUpIcon color='disabled' />
+                                        ) : (
+                                            <ArrowDropDownIcon color='disabled' />
+                                        )}
+                                    </ListItemButton>
 
-											<ListItemButton
-												sx={{ pl: 4 }}
-												onClick={(e) => handleClick(e, 18)}
-												selected={selectedIndex === 18}
-												component={RouterLink}
-												to="/sent"
-											>
-												<ListItemIcon>
-													<SendTwoToneIcon
-														color={selectedIndex === 18 ? 'primary' : 'inherit'}
-													/>
-												</ListItemIcon>
-												<ListItemText
-													primary={
-														<Box
-															fontWeight="fontWeightMedium"
-															fontSize="subtitle2.fontSize"
-															color={
-																selectedIndex === 18 ? 'primary.main' : 'text.secondary'
-															}
-														>
-															Sent
-														</Box>
-													}
-												/>
-											</ListItemButton>
-										</List>
-									</Collapse>
+                                    <Collapse in={openCollapseType === 'history'} timeout='auto' unmountOnExit>
+                                        <List disablePadding>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 13)}
+                                                selected={selectedIndex === 13}
+                                                component={RouterLink}
+                                                to='/user/history/sold'
+                                            >
+                                                <ListItemIcon>
+                                                    <MonetizationOnTwoToneIcon
+                                                        color={selectedIndex === 13 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 13 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Sold
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-									<ListItemButton
-										onClick={(e) => handleClick(e, 19)}
-										selected={selectedIndex === 19}
-										component={RouterLink}
-										to="/user/settings"
-									>
-										<ListItemIcon>
-											<SettingsTwoToneIcon color={selectedIndex === 19 ? 'primary' : 'inherit'} />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color={selectedIndex === 19 ? 'primary.main' : 'text.secondary'}
-												>
-													Settings
-												</Box>
-											}
-										/>
-									</ListItemButton>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 14)}
+                                                selected={selectedIndex === 14}
+                                                component={RouterLink}
+                                                to='/user/history/traded'
+                                            >
+                                                <ListItemIcon>
+                                                    <SwapHorizontalCircleTwoToneIcon
+                                                        color={selectedIndex === 14 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 14 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Traded
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
 
-									<ListItemButton onClick={handleOpenDialog}>
-										<ListItemIcon>
-											<MeetingRoomTwoToneIcon />
-										</ListItemIcon>
-										<ListItemText
-											primary={
-												<Box
-													fontWeight="fontWeightMedium"
-													fontSize="subtitle2.fontSize"
-													color="text.secondary"
-												>
-													Logout
-												</Box>
-											}
-										/>
-									</ListItemButton>
-								</List>
-							</Box>
-						</Drawer>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 15)}
+                                                selected={selectedIndex === 15}
+                                                component={RouterLink}
+                                                to='/user/history/bought'
+                                            >
+                                                <ListItemIcon>
+                                                    <LocalMallTwoToneIcon
+                                                        color={selectedIndex === 15 ? 'primary' : 'inherit'}
+                                                    />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 15 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Bought
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
 
-						<Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth="xs">
-							<DialogTitle>
-								<Box textAlign="center">Are you sure you want to log out?</Box>
-							</DialogTitle>
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 16)}
+                                        selected={selectedIndex === 16}
+                                        component={RouterLink}
+                                        to='/saved'
+                                    >
+                                        <ListItemIcon>
+                                            <FavoriteTwoToneIcon color={selectedIndex === 16 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 16 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Saved games
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
 
-							<CustomDivider />
+                                    <ListItemButton onClick={() => handleExpandClick('inbox')}>
+                                        <ListItemIcon>
+                                            <CommentTwoToneIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color='text.secondary'
+                                                >
+                                                    Messages
+                                                </Box>
+                                            }
+                                        />
+                                        {openCollapseType === 'inbox' ? (
+                                            <ArrowDropUpIcon color='disabled' />
+                                        ) : (
+                                            <ArrowDropDownIcon color='disabled' />
+                                        )}
+                                    </ListItemButton>
 
-							<DialogActions>
-								<Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-									<CustomBtn onClick={handleCloseDialog}>No</CustomBtn>
-									<CustomBtn onClick={logOutHandler} variant="contained">
-										Yes
-									</CustomBtn>
-								</Box>
-							</DialogActions>
-						</Dialog>
-					</Fragment>
-				) : (
-					<Fragment>
-						<CustomBtn variant="outlined" component={RouterLink} to="/login">
-							Login
-						</CustomBtn>
-					</Fragment>
-				)}
-			</Toolbar>
-		</AppBar>
-	)
+                                    <Collapse in={openCollapseType === 'inbox'} timeout='auto' unmountOnExit>
+                                        <List disablePadding>
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 17)}
+                                                selected={selectedIndex === 17}
+                                                component={RouterLink}
+                                                to='/received'
+                                            >
+                                                <ListItemIcon>
+                                                    <EmailTwoToneIcon color={selectedIndex === 17 ? 'primary' : 'inherit'} />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 17 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Received
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
+
+                                            <ListItemButton
+                                                sx={{ pl: 4 }}
+                                                onClick={(e) => handleClick(e, 18)}
+                                                selected={selectedIndex === 18}
+                                                component={RouterLink}
+                                                to='/sent'
+                                            >
+                                                <ListItemIcon>
+                                                    <SendTwoToneIcon color={selectedIndex === 18 ? 'primary' : 'inherit'} />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Box
+                                                            fontWeight='fontWeightMedium'
+                                                            fontSize='subtitle2.fontSize'
+                                                            color={selectedIndex === 18 ? 'primary.main' : 'text.secondary'}
+                                                        >
+                                                            Sent
+                                                        </Box>
+                                                    }
+                                                />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
+
+                                    <ListItemButton
+                                        onClick={(e) => handleClick(e, 19)}
+                                        selected={selectedIndex === 19}
+                                        component={RouterLink}
+                                        to='/user/settings'
+                                    >
+                                        <ListItemIcon>
+                                            <SettingsTwoToneIcon color={selectedIndex === 19 ? 'primary' : 'inherit'} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color={selectedIndex === 19 ? 'primary.main' : 'text.secondary'}
+                                                >
+                                                    Settings
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
+
+                                    <ListItemButton onClick={handleOpenDialog}>
+                                        <ListItemIcon>
+                                            <MeetingRoomTwoToneIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={
+                                                <Box
+                                                    fontWeight='fontWeightMedium'
+                                                    fontSize='subtitle2.fontSize'
+                                                    color='text.secondary'
+                                                >
+                                                    Logout
+                                                </Box>
+                                            }
+                                        />
+                                    </ListItemButton>
+                                </List>
+                            </Box>
+                        </Drawer>
+
+                        <Dialog fullWidth open={openDialog} onClose={handleCloseDialog} maxWidth='xs'>
+                            <DialogTitle>
+                                <Box textAlign='center'>Are you sure you want to log out?</Box>
+                            </DialogTitle>
+
+                            <CustomDivider />
+
+                            <DialogActions>
+                                <Box display='flex' justifyContent='center' alignItems='center' gap={1}>
+                                    <CustomBtn onClick={handleCloseDialog}>No</CustomBtn>
+                                    <CustomBtn onClick={logOutHandler} variant='contained'>
+                                        Yes
+                                    </CustomBtn>
+                                </Box>
+                            </DialogActions>
+                        </Dialog>
+                    </Fragment>
+                )}
+            </Toolbar>
+        </AppBar>
+    )
 }
 
 export default Header

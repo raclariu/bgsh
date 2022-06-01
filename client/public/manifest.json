@@ -12,6 +12,12 @@
 			"type": "image/x-icon"
 		},
 		{
+			"src": "meeples128mask",
+			"type": "image/png",
+			"sizes": "128x128",
+			"purpose": "maskable"
+		},
+		{
 			"src": "meeples192.png",
 			"type": "image/png",
 			"sizes": "192x192"

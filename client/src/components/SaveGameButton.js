@@ -19,47 +19,61 @@ import { useUpdateSaveGameStatusMutation, useGetSaveGameStatusQuery } from '../h
 
 // @ Main
 const SaveGameButton = ({ altId, addedById }) => {
-	const currUserId = useSelector((state) => state.userData._id)
+    const currUserId = useSelector((state) => state.userData._id)
 
-	const { isFetching, data, isSuccess } = useGetSaveGameStatusQuery({ altId })
+    // disabled if !!altId && !!currUserId; also show placeholder as you can see in return
+    const { isFetching, data, isSuccess } = useGetSaveGameStatusQuery({ altId, currUserId })
 
-	const updateSaveStatusMutation = useUpdateSaveGameStatusMutation()
-	const saveGameHandler = () => {
-		updateSaveStatusMutation.mutate(altId)
-	}
+    const updateSaveStatusMutation = useUpdateSaveGameStatusMutation()
+    const saveGameHandler = () => {
+        updateSaveStatusMutation.mutate(altId)
+    }
 
-	return (
-		<Fragment>
-			{isFetching && (
-				<CustomIconBtn disabled disableRipple size="large">
-					<Loader size={20} />
-				</CustomIconBtn>
-			)}
+    return (
+        <Fragment>
+            {!currUserId && (
+                <CustomTooltip title='Save'>
+                    <CustomIconBtn
+                        disabled
+                        sx={{
+                            height: 48,
+                            width: 48
+                        }}
+                    >
+                        <FavoriteBorder />
+                    </CustomIconBtn>
+                </CustomTooltip>
+            )}
 
-			{isSuccess &&
-			!isFetching && (
-				<CustomTooltip title={data.isSaved ? 'Unsave' : 'Save'}>
-					<Checkbox
-						sx={{
-							height          : 48,
-							width           : 48,
-							color           : 'primary.main',
-							'&.Mui-checked' : {
-								color : 'secondary.main'
-							}
-						}}
-						disabled={addedById && addedById.toString() === currUserId.toString()}
-						id="save-button"
-						onChange={saveGameHandler}
-						icon={<FavoriteBorder />}
-						checkedIcon={<Favorite />}
-						name="saved"
-						checked={data.isSaved}
-					/>
-				</CustomTooltip>
-			)}
-		</Fragment>
-	)
+            {isFetching && (
+                <CustomIconBtn disabled disableRipple size='large'>
+                    <Loader size={20} />
+                </CustomIconBtn>
+            )}
+
+            {currUserId && isSuccess && !isFetching && (
+                <CustomTooltip title={data.isSaved ? 'Unsave' : 'Save'}>
+                    <Checkbox
+                        sx={{
+                            height: 48,
+                            width: 48,
+                            color: 'primary.main',
+                            '&.Mui-checked': {
+                                color: 'secondary.main'
+                            }
+                        }}
+                        disabled={addedById && addedById.toString() === currUserId.toString()}
+                        id='save-button'
+                        onChange={saveGameHandler}
+                        icon={<FavoriteBorder />}
+                        checkedIcon={<Favorite />}
+                        name='saved'
+                        checked={data.isSaved}
+                    />
+                </CustomTooltip>
+            )}
+        </Fragment>
+    )
 }
 
 export default SaveGameButton

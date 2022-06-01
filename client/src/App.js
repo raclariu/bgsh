@@ -57,357 +57,305 @@ const NotFound = lazy(() => import('./screens/NotFoundScreen'))
 
 // @ Main
 const App = () => {
-	const dispatch = useDispatch()
-	const theme = useSelector((state) => state.userPreferences.theme)
-	const token = useSelector((state) => state.userToken)
-	const { success, loading } = useSelector((state) => state.userData)
+    const dispatch = useDispatch()
+    const theme = useSelector((state) => state.userPreferences.theme)
+    const token = useSelector((state) => state.userToken)
+    const { success, loading } = useSelector((state) => state.userData)
 
-	useEffect(
-		() => {
-			if (token) {
-				if (!success) {
-					dispatch(getMe())
-				}
-			}
-		},
-		[ token, success, dispatch ]
-	)
+    useEffect(() => {
+        if (token) {
+            if (!success) {
+                dispatch(getMe())
+            }
+        }
+    }, [token, success, dispatch])
 
-	const location = useLocation()
-	const notistackRef = React.createRef()
-	const onClickDismiss = (key) => () => {
-		notistackRef.current.closeSnackbar(key)
-	}
+    const location = useLocation()
+    const notistackRef = React.createRef()
+    const onClickDismiss = (key) => () => {
+        notistackRef.current.closeSnackbar(key)
+    }
 
-	return (
-		<StyledEngineProvider injectFirst>
-			<ThemeProvider theme={theme === 'light' ? light : dark}>
-				<SnackbarProvider
-					maxSnack={3}
-					dense={isMobile ? true : false}
-					ref={notistackRef}
-					action={(key) => (
-						<CustomIconBtn sx={{ color: '#fff' }} size="small" onClick={onClickDismiss(key)}>
-							<ClearIcon sx={{ color: '#fff' }} fontSize="small" />
-						</CustomIconBtn>
-					)}
-				>
-					<CssBaseline />
+    return (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme === 'light' ? light : dark}>
+                <SnackbarProvider
+                    maxSnack={3}
+                    dense={isMobile ? true : false}
+                    ref={notistackRef}
+                    action={(key) => (
+                        <CustomIconBtn sx={{ color: '#fff' }} size='small' onClick={onClickDismiss(key)}>
+                            <ClearIcon sx={{ color: '#fff' }} fontSize='small' />
+                        </CustomIconBtn>
+                    )}
+                >
+                    <CssBaseline />
 
-					{loading && <LinearProgress />}
+                    {loading && <LinearProgress />}
 
-					{(success || !token) && (
-						<Suspense fallback={<LinearProgress />}>
-							{location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
+                    {(success || !token) && (
+                        <Suspense fallback={<LinearProgress />}>
+                            {location.pathname !== '/login' && location.pathname !== '/create-account' && <Header />}
 
-							<Container
-								maxWidth="md"
-								component="main"
-								sx={{
-									display       : 'flex',
-									flexDirection : 'column',
-									pt            : 4,
-									pb            : 8,
-									minHeight     :
-										location.pathname !== '/login' && location.pathname !== '/create-account'
-											? 'calc(100% - 155px)'
-											: '100%'
-								}}
-							>
-								<Routes>
-									<Route index path="/" element={<Home />} />
+                            <Container
+                                maxWidth='md'
+                                component='main'
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    pt: 4,
+                                    pb: 8,
+                                    minHeight:
+                                        location.pathname !== '/login' && location.pathname !== '/create-account'
+                                            ? 'calc(100% - 155px)'
+                                            : '100%'
+                                }}
+                            >
+                                <Routes>
+                                    <Route index path='/' element={<Home />} />
 
-									<Route path="login" element={<LogIn isActivationPage={false} />} />
+                                    <Route path='login' element={<LogIn isActivationPage={false} />} />
 
-									<Route path="activate/:tokenUid" element={<LogIn isActivationPage={true} />} />
+                                    <Route path='activate/:tokenUid' element={<LogIn isActivationPage={true} />} />
 
-									<Route path="reset-password/:tokenUid" element={<ResetPassword />} />
+                                    <Route path='reset-password/:tokenUid' element={<ResetPassword />} />
 
-									<Route path="create-account" element={<CreateAccount />} />
+                                    <Route path='create-account' element={<CreateAccount />} />
 
-									<Route path="changelog" element={<Changelog />} />
+                                    <Route path='changelog' element={<Changelog />} />
 
-									<Route
-										path="dashboard"
-										element={
-											<ProtectedRoute>
-												<Dashboard />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='dashboard'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Dashboard />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="sales"
-										element={
-											<ProtectedRoute>
-												<GamesIndex mode="sell" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='sales' element={<GamesIndex mode='sell' />} />
 
-									<Route
-										path="trades"
-										element={
-											<ProtectedRoute>
-												<GamesIndex mode="trade" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='trades' element={<GamesIndex mode='trade' />} />
 
-									<Route
-										path="wanted"
-										element={
-											<ProtectedRoute>
-												<GamesIndex mode="want" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='wanted' element={<GamesIndex mode='want' />} />
 
-									<Route
-										path="sales/:altId"
-										element={
-											<ProtectedRoute>
-												<SingleGame />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='sales/:altId' element={<SingleGame />} />
 
-									<Route
-										path="trades/:altId"
-										element={
-											<ProtectedRoute>
-												<SingleGame />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='trades/:altId' element={<SingleGame />} />
 
-									<Route
-										path="wanted/:altId"
-										element={
-											<ProtectedRoute>
-												<SingleGame />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='wanted/:altId' element={<SingleGame />} />
 
-									<Route
-										path="collection/owned"
-										element={
-											<ProtectedRoute>
-												<Collection type="owned" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/owned'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='owned' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="collection/for-trade"
-										element={
-											<ProtectedRoute>
-												<Collection type="forTrade" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/for-trade'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='forTrade' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="collection/want-in-trade"
-										element={
-											<ProtectedRoute>
-												<Collection type="wantInTrade" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/want-in-trade'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='wantInTrade' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="collection/want-to-buy"
-										element={
-											<ProtectedRoute>
-												<Collection type="wantToBuy" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/want-to-buy'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='wantToBuy' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="collection/want-to-play"
-										element={
-											<ProtectedRoute>
-												<Collection type="wantToPlay" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/want-to-play'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='wantToPlay' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="collection/wishlist"
-										element={
-											<ProtectedRoute>
-												<Collection type="wishlist" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='collection/wishlist'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Collection type='wishlist' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="sell"
-										element={
-											<ProtectedRoute>
-												<SellGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='sell'
+                                        element={
+                                            <ProtectedRoute>
+                                                <SellGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="trade"
-										element={
-											<ProtectedRoute>
-												<TradeGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='trade'
+                                        element={
+                                            <ProtectedRoute>
+                                                <TradeGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="want"
-										element={
-											<ProtectedRoute>
-												<AddWantedGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='want'
+                                        element={
+                                            <ProtectedRoute>
+                                                <AddWantedGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="buy"
-										element={
-											<ProtectedRoute>
-												<BuyGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='buy'
+                                        element={
+                                            <ProtectedRoute>
+                                                <BuyGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="saved"
-										element={
-											<ProtectedRoute>
-												<SavedGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='saved'
+                                        element={
+                                            <ProtectedRoute>
+                                                <SavedGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="received"
-										element={
-											<ProtectedRoute>
-												<Messages type="received" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='received'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Messages type='received' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="sent"
-										element={
-											<ProtectedRoute>
-												<Messages type="sent" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='sent'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Messages type='sent' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="settings"
-										element={
-											<ProtectedRoute>
-												<Settings />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='settings'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Settings />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="user/settings"
-										element={
-											<ProtectedRoute>
-												<Settings />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='user/settings'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Settings />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="user/listed"
-										element={
-											<ProtectedRoute>
-												<MyListedGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='user/listed'
+                                        element={
+                                            <ProtectedRoute>
+                                                <MyListedGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="user/history/sold"
-										element={
-											<ProtectedRoute>
-												<GamesHistory mode="sell" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='user/history/sold'
+                                        element={
+                                            <ProtectedRoute>
+                                                <GamesHistory mode='sell' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="user/history/traded"
-										element={
-											<ProtectedRoute>
-												<GamesHistory mode="trade" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='user/history/traded'
+                                        element={
+                                            <ProtectedRoute>
+                                                <GamesHistory mode='trade' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="user/history/bought"
-										element={
-											<ProtectedRoute>
-												<GamesHistory mode="buy" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='user/history/bought'
+                                        element={
+                                            <ProtectedRoute>
+                                                <GamesHistory mode='buy' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="profile/:username"
-										element={
-											<ProtectedRoute>
-												<UserProfile />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route path='profile/:username' element={<UserProfile />} />
 
-									<Route
-										path="hot"
-										element={
-											<ProtectedRoute>
-												<HotGames />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='hot'
+                                        element={
+                                            <ProtectedRoute>
+                                                <HotGames />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="crowdfunding"
-										element={
-											<ProtectedRoute>
-												<Crowdfunding />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='crowdfunding'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Crowdfunding />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route
-										path="logout"
-										element={
-											<ProtectedRoute>
-												<Navigate to="/" />
-											</ProtectedRoute>
-										}
-									/>
+                                    <Route
+                                        path='logout'
+                                        element={
+                                            <ProtectedRoute>
+                                                <Navigate to='/' />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
-									<Route path="*" element={<NotFound />} />
-								</Routes>
-							</Container>
+                                    <Route path='*' element={<NotFound />} />
+                                </Routes>
+                            </Container>
 
-							{location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
-						</Suspense>
-					)}
-				</SnackbarProvider>
-			</ThemeProvider>
-		</StyledEngineProvider>
-	)
+                            {location.pathname !== '/login' && location.pathname !== '/create-account' && <Footer />}
+                        </Suspense>
+                    )}
+                </SnackbarProvider>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    )
 }
 
 export default App
