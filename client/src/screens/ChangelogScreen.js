@@ -51,6 +51,11 @@ const ChangelogScreen = () => {
                                 aceste date
                             </li>
                             <li>imbunatarie galerie content layout shift</li>
+                            <li>
+                                redenumire filtru sort "Updated" la "Reactivated + New" pentru a se intelege ca se arata
+                                numai jocurile listate/reactivate recent si nu cele care au fost updatate prin noua metoda de
+                                editare mentionata mai sus
+                            </li>
                             <li>Jocul de baza nu aparea la chips jos in pagina listarii daca listarea este o expansiune</li>
                             <li>imbunatatiri frontend/server</li>
                             <li>🐛 rezolvate frontend/server</li>
