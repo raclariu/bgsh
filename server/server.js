@@ -16,6 +16,7 @@ import miscRoutes from './routes/miscRoutes.js'
 import listRoutes from './routes/listRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
 
+// test
 dotenv.config()
 connectDB()
 const app = express()
