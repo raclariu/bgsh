@@ -16,7 +16,6 @@ import miscRoutes from './routes/miscRoutes.js'
 import listRoutes from './routes/listRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
 
-// test
 dotenv.config()
 connectDB()
 const app = express()
@@ -38,7 +37,7 @@ app.use('/api/misc', miscRoutes)
 app.use('/api/notifications', notificationRoutes)
 
 app.get('/', (req, res) => {
-	return res.status(200).send('Api is running...')
+    return res.status(200).send('Api is running...')
 })
 
 app.use(notFound)
@@ -46,8 +45,8 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-	dailyTask.start()
+    dailyTask.start()
 
-	console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every 2 hours`))
-	console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
+    console.log(chalk.bgBlue.hex('#f7edcb').bold(`setInactiveTask starting... running every 2 hours`))
+    console.log(chalk.bgYellow.hex('#f7edcb').bold(`Server running in ${process.env.NODE_ENV} mode @ port ${PORT}`))
 })
